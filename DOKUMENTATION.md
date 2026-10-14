@@ -1,4 +1,4 @@
-# Doku VT 1.2.1 – Dokumentation
+# Doku VT 1.2.2 – Dokumentation
 
 Die App ist eine Datei (`index.html`, ca. 245 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
 

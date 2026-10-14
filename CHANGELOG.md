@@ -1,5 +1,9 @@
 # Änderungsprotokoll – Doku VT
 
+## 1.2.2 – 14.10.2026
+
+- **Feste App-ID im Manifest** (`id`): Chrome erkennt die App eindeutig. Ein hängengebliebener, fehlerhafter Installationsversuch blockiert keine Neuinstallation mehr.
+
 ## 1.2.1 – 14.10.2026
 
 - **Installation repariert:** Die App-Icons liegen jetzt direkt neben `index.html` statt im Ordner `icons/`. Beim Hochladen vom Handy ging der Ordner verloren. Die Folge waren ein graues Platzhalter-Icon und eine App, die sich nach der Installation nicht öffnen ließ.

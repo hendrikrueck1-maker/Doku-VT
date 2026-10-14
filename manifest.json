@@ -1,4 +1,5 @@
 {
+  "id": "./?app=doku-vt",
   "name": "Doku VT – Beleuchtungsdokumentation",
   "short_name": "Doku VT",
   "description": "Beleuchtungsdokumentation für den Theaterbetrieb – offline, mit Fotos, PDF-Export und Geräte-Abgleich.",
@@ -10,8 +11,23 @@
   "background_color": "#0b0d10",
   "theme_color": "#0b0d10",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
