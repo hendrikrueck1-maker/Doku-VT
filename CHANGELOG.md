@@ -1,5 +1,12 @@
 # Änderungsprotokoll – Doku VT
 
+## 1.4.0 – 14.10.2026
+
+- **Einrichtung & Züge** je Veranstaltung: ein Feld „Allgemeine Einrichtung“ und Basisinformationen für OLZ 1, OLZ 2, BGZ 1, BGZ 2 (Höhe/Marke, Bestückung, Bemerkung). Weitere Züge lassen sich hinzufügen und wieder entfernen. Der Bereich steht aufklappbar über der Kreisliste und bekommt im PDF eine eigene Seite (mit Eintrag im Inhaltsverzeichnis). Jeder Zug wird beim Abgleich einzeln zusammengeführt; Duplizieren übernimmt alles.
+- **Bildansicht:** Kreis, Kategorie, Felder und Bemerkung sind immer eingeblendet, auch beim Durchwischen. Das Foto wird darüber eingepasst und nicht mehr verdeckt.
+- **Kamera – echte Objektive:** Der reine Digitalzoom ist entfernt. Zoomstufen erscheinen nur noch, wenn das Gerät darüber wirklich auf das Weitwinkel-Objektiv umschaltet. Gibt ein Gerät seine Objektive nicht an den Browser frei (z. B. Pixel), zeigt die Kamera das an.
+- **Geräte-Kamera:** Neuer Knopf „Geräte-Kamera · alle Objektive“ in der Kamera und in den Einstellungen die Wahl „Fotos aufnehmen mit: Doku-VT-Kamera / Geräte-Kamera“. Die Kamera-App des Geräts erreicht auf jedem Smartphone und Tablet alle Objektive; das Foto landet direkt in der gewählten Kategorie und wird quadratisch zugeschnitten.
+
 ## 1.3.1 – 14.10.2026
 
 - **Kamera-Auswahl nur Rückseite:** Zur Wahl stehen die Objektive auf der Rückseite: „0,5× Weitwinkel“, „1× Normal“ und „Tele“. Die Selfie-Kamera ist ausgeblendet, ebenso die virtuellen Kombi-Kameras von iOS („Dual“/„Triple“), die selbst das Objektiv wechseln. Die Kamera startet auf „1× Normal“ oder dem zuletzt gewählten Objektiv. Die Wechseltaste schaltet reihum durch die Rückkameras.

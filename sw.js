@@ -2,7 +2,7 @@
    Offline-Start: Die App-Dateien kommen aus dem Cache, im Hintergrund wird
    die neue Fassung geholt (stale-while-revalidate). Bei jeder neuen Version
    VERSION erhöhen – dann wird der alte Cache entfernt.                       */
-const VERSION = '1.3.1';
+const VERSION = '1.4.0';
 const CACHE = 'dokuvt-' + VERSION;
 const CORE = ['./', './index.html', './manifest.json'];                       // muss vorhanden sein
 const EXTRA = ['./icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];  // fehlertolerant

@@ -1,4 +1,4 @@
-# Doku VT 1.3.1 – Dokumentation
+# Doku VT 1.4.0 – Dokumentation
 
 Die App ist eine Datei (`index.html`, ca. 245 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
 
@@ -21,6 +21,7 @@ Die App ist eine Datei (`index.html`, ca. 245 KB), keine Abhängigkeiten, kein C
 | `Pdf` | Eigener PDF-1.4-Generator: Helvetica mit WinAnsiEncoding (Umlaute), JPEG per DCTDecode, Deckblatt mit Inhaltsverzeichnis und Seitenzahlen |
 | `Sync` + Adapter | Kern: Pakete bauen und einspielen, Status, Protokoll. Adapter mit gleichem Interface (`id, name, available(), push(), pull()`): `FileAdapter`, `PeerAdapter`/`PeerSession` (WebRTC), `ServerAdapter` (vorbereitet für eine spätere Version) |
 | `Ui` | Ebenen mit History-Eintrag (Android-Zurück, Wischgeste und Esc schließen die oberste Ebene), eigene Dialoge, Toasts, Busy-Anzeige |
+| `SetupView` | „Einrichtung & Züge“: Anzeige über der Liste, Bearbeitungsblatt. Daten im Show-Datensatz: `einrichtung` und je Zug ein Feld `z:<id>` (OLZ 1/2, BGZ 1/2 fest, weitere frei) → feldweiser Merge je Zug |
 | `Views`, `Editor`, `SyncView`, `PeerView`, `DiagView`, `SettingsView`, `App` | Oberfläche, Routing per Hash (`#/show/<id>`), Ereignis-Delegation |
 
 **Datenfluss:** UI → `Repo.saveDraft/patch…` → eine IDB-Transaktion → Cache → `Repo.emit(change)` → (a) UI zeichnet die Liste debounced neu, **nie während ein Eingabefeld fokussiert ist**; (b) eine offene Live-Verbindung schickt die Änderung sofort als `delta` an das andere Gerät.
@@ -87,7 +88,7 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 
 ## 3. Bewusste Designentscheidungen und Abweichungen
 
-0. **Automatischer Test (ab 1.3.0):** 77 Prüfungen in Chromium mit simulierter Kamera – Start, Liste, Filter, Suche, Sortierung, Lightbox, Checkliste, Editor mit Kamera und Schnelltasten, Zusammenführen, Markieren, PDF (qpdf-Prüfung, Umlaute, Seitenzahl), Backup-Import auf zweitem Gerät, Sync-Paket, QR (auch gedreht), WebRTC-Live-Abgleich zwischen zwei Geräten, Einstellungen, iPad hoch und iPhone. Echte Geräte ersetzt das nicht: Safari-Teilen, mehrere Kameras und Taschenlampe bitte auf iPad/iPhone/Pixel prüfen.
+0. **Automatischer Test (ab 1.3.0, erweitert in 1.4.0):** 94 Prüfungen in Chromium mit simulierter Kamera – Start, Liste, Filter, Suche, Sortierung, Lightbox, Checkliste, Editor mit Kamera und Schnelltasten, Zusammenführen, Markieren, PDF (qpdf-Prüfung, Umlaute, Seitenzahl), Backup-Import auf zweitem Gerät, Sync-Paket, QR (auch gedreht), WebRTC-Live-Abgleich zwischen zwei Geräten, Einstellungen, iPad hoch und iPhone. Echte Geräte ersetzt das nicht: Safari-Teilen, mehrere Kameras und Taschenlampe bitte auf iPad/iPhone/Pixel prüfen.
 12. **Farbiger Rand nur in der Anzeige**, nicht ins Foto eingebrannt. So bleibt ein Foto korrekt, wenn es später in die andere Kategorie verschoben wird, und das PDF zeigt saubere Bilder.
 
 1. **Feld-Zeitstempel statt Eintrags-Zeitstempel.** Wenn zwei Leute denselben Eintrag ändern (einer die Bemerkung, einer den Filter), bleiben beide Änderungen erhalten. Das geht über die Vorgabe „Merge pro Eintrag“ hinaus.
@@ -120,3 +121,13 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 
 ## Hinweis zum Namen
 Intern heißen Speicher und Paketformat weiterhin `lichtdoku`. Dadurch bleiben Backups, Sync-Pakete und Verbindungscodes aus Version 1.0.0 lesbar.
+
+---
+
+## Kamera-Objektive im Browser – was geht
+
+Ob eine Web-App die einzelnen Objektive (Ultraweitwinkel, Normal, Tele) ansteuern kann, entscheidet der Gerätehersteller, nicht die App:
+- **iPhone/iPad (Safari):** Die Objektive sind einzeln verfügbar → Auswahl direkt in der Doku-VT-Kamera.
+- **Android mit einzeln freigegebenen Kameras (oft Samsung):** ebenfalls direkte Auswahl.
+- **Android mit „logischer“ Kamera (z. B. Pixel):** Der Browser sieht nur eine Rückkamera. Nur wenn sie Zoom unter 1× meldet, schaltet Doku VT darüber auf Weitwinkel; sonst ist das Weitwinkel für Web-Apps nicht erreichbar.
+- **Auf jedem Gerät:** „Geräte-Kamera“ (Kamera-App des Herstellers) – dort sind alle Objektive verfügbar.
