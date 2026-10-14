@@ -101,6 +101,9 @@ svg.i.lg{width:28px;height:28px}
 html.editing .appbar{box-shadow:inset 0 -3px 0 var(--edit)}
 .brand{display:flex;align-items:center;gap:10px}
 .brand-mark{width:30px;height:30px;border-radius:8px;background:var(--surf2);display:grid;place-items:center;border:1px solid var(--line)}
+.ver{display:inline-flex;align-items:center;height:22px;padding:0 7px;border-radius:6px;border:1px solid var(--line);background:var(--surf);
+  font-family:var(--mono);font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0;vertical-align:middle;margin-left:8px;flex:none}
+.appver{text-align:center;color:var(--muted);font-size:12px;font-family:var(--mono);padding:28px 0 0}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--tap);min-width:var(--tap);padding:0 16px;
   border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surf2);color:var(--text);font-weight:600;font-size:15px;
@@ -231,7 +234,13 @@ html[data-theme="red"] .tag{color:#000}
 .card .chk .box{width:34px;height:34px;border-radius:9px;border:2.5px solid currentColor;display:grid;place-items:center}
 .card .chk[aria-checked="true"]{background:var(--ks);color:var(--k)}
 .card .chk[aria-checked="true"] .box{background:var(--k);border-color:var(--k);color:var(--bg)}
-.card.done .info{opacity:.55}
+/* Kreis-Spalte rechts: Nummer immer an derselben Stelle, unabhängig von Fotos und Text */
+.card .kcol{flex:none;width:clamp(92px,24%,190px);display:flex;flex-direction:column;align-items:flex-end;text-align:right;gap:2px;padding-left:8px;border-left:1px dashed var(--line)}
+.card .kcol small{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.card .kcol .kreis{font-size:clamp(20px,4.6vw,30px);overflow-wrap:anywhere}
+.card .kcol .kreis.none{font-size:15px}
+@media (max-width:520px){.cards:not(.grid) .card .th:nth-child(2){display:none}.cards:not(.grid) .card .th{width:64px;height:64px}}
+.card.done .info,.card.done .kcol{opacity:.55}
 .card .dup{position:absolute;top:8px;right:8px;font-size:11px;font-weight:700;color:var(--edit);background:var(--edit-soft);padding:2px 6px;border-radius:5px}
 /* Kachelansicht */
 .cards.grid .card{flex-direction:column;min-height:0}
@@ -241,6 +250,8 @@ html[data-theme="red"] .tag{color:#000}
 .cards.grid .card .th{width:100%;height:auto;aspect-ratio:1;border-radius:0}
 .cards.grid .card .th:not(:first-child){display:none}
 .cards.grid .card .info{padding:10px 10px 12px}
+.cards.grid .card .kcol{order:-1;width:auto;align-items:flex-start;text-align:left;border-left:0;padding:10px 10px 0}
+.cards.grid .card .thumbs{order:-2}
 .cards.grid .card .kreis{font-size:24px}
 .cards.grid .card .note{-webkit-line-clamp:1;font-size:13px}
 .cards.grid .card .chk{width:auto;height:52px;border-left:0;border-top:1px solid var(--line)}
@@ -297,7 +308,7 @@ html[data-theme="red"] .tag{color:#000}
 .sheet-b{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:16px calc(var(--sar) + 18px) 16px calc(var(--sal) + 18px);overscroll-behavior:contain}
 .sheet-f{flex:none;display:flex;gap:10px;padding:12px calc(var(--sar) + 16px) calc(var(--sab) + 12px) calc(var(--sal) + 16px);border-top:1px solid var(--line);background:var(--bg2)}
 .dialog{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-lg);width:min(460px,calc(100% - 32px));margin:auto;padding:22px 20px 16px;box-shadow:var(--shadow);animation:pop .18s ease}
-.scrim.dlg{align-items:center;z-index:300}
+.scrim.dlg{align-items:center;z-index:450}
 .dialog h2{margin:0 0 8px;font-size:20px}
 .dialog p{margin:0 0 14px;color:var(--text2);white-space:pre-line}
 .dialog .btns{display:flex;flex-direction:column;gap:8px;margin-top:16px}
@@ -326,6 +337,12 @@ html[data-theme="red"] .toast{background:#2a0606;color:var(--text);border:1px so
 .inwrap input{flex:1}
 .plusbtn{flex:none;width:60px;height:60px;border-radius:var(--r-sm);border:1px solid var(--line2);background:var(--surf2);font-size:26px;font-weight:700;font-family:var(--mono)}
 .f.mono input{font-family:var(--mono);font-weight:700}
+/* Filter-Schnelltasten */
+.qkeys{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.qkeys button{min-height:44px;min-width:56px;padding:0 14px;border-radius:10px;border:1px solid var(--line2);background:var(--surf2);font-family:var(--mono);font-weight:700;font-size:15px}
+.qkeys button[aria-pressed="true"]{background:var(--edit);border-color:var(--edit);color:#1a0a00}
+.qkeys button.used{border-style:dashed}
+.qkeys .qclr{font-family:var(--font);font-weight:600;color:var(--muted)}
 details.more{border:1px solid var(--line);border-radius:var(--r);background:var(--surf)}
 details.more summary{list-style:none;cursor:pointer;min-height:var(--tap);display:flex;align-items:center;gap:10px;padding:0 14px;font-weight:600;color:var(--text2)}
 details.more summary::-webkit-details-marker{display:none}
@@ -342,6 +359,8 @@ details.more .inner{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px;padding:12px}
 .slot{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:var(--surf2);border:0;padding:0}
 .slot img{width:100%;height:100%;object-fit:cover;filter:var(--photo-filter)}
+.slot:not(.add){box-shadow:inset 0 0 0 4px var(--k)}
+.slot:not(.add) img{padding:4px;border-radius:12px}
 .slot .lbl{position:absolute;left:6px;top:6px;background:rgba(0,0,0,.72);color:#fff;font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px}
 .slot .busy{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.55);color:#fff;font-size:12px;font-weight:700}
 .slot.add{border:2px dashed var(--line2);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--text2);font-weight:700;font-size:14px}
@@ -376,10 +395,16 @@ button.item:hover{background:var(--surf2)}
 
 /* Kamera */
 .cam{position:fixed;inset:0;z-index:200;background:#000;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:calc(var(--sat) + 8px) var(--sar) calc(var(--sab) + 8px) var(--sal)}
+  padding:calc(var(--sat) + 68px) var(--sar) calc(var(--sab) + 8px) var(--sal)}
 .cam .top{position:absolute;top:calc(var(--sat) + 8px);left:calc(var(--sal) + 10px);right:calc(var(--sar) + 10px);display:flex;align-items:center;gap:8px;z-index:2}
-.cam .top .ttl{flex:1;text-align:center;font-weight:700}
-.cam .vf{position:relative;width:min(100vw,calc(var(--vh)*100 - 260px));width:min(100vw,calc(100dvh - 260px));aspect-ratio:1;background:#111;overflow:hidden;border-radius:6px}
+.cam .top .ttl{flex:1;text-align:center;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cam .vf{--kc:#4ea1ff;position:relative;width:min(100vw,calc(var(--vh)*100 - 340px));width:min(100vw,calc(100dvh - 340px));aspect-ratio:1;background:#111;overflow:hidden;border-radius:8px;
+  border:6px solid var(--kc);transition:border-color .15s}
+.cam .vf[data-k="E"]{--kc:#ffcc33}
+.cam .camname{font-size:12px;color:#ccc;text-align:center;min-height:16px;margin-top:6px}
+.cam .camlist{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:560px;padding:4px 12px}
+.cam .camlist button{border:0;min-height:40px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.14);color:#fff;font-size:13px;font-weight:600}
+.cam .camlist button[aria-pressed="true"]{background:#fff;color:#000}
 .cam .vf video{width:100%;height:100%;object-fit:cover}
 .cam .vf .grid3{position:absolute;inset:0;pointer-events:none;background:
   linear-gradient(to right,transparent 33.2%,rgba(255,255,255,.22) 33.3%,transparent 33.5%,transparent 66.5%,rgba(255,255,255,.22) 66.6%,transparent 66.8%),
@@ -394,7 +419,8 @@ button.item:hover{background:var(--surf2)}
 .cam .cbtn{width:56px;height:56px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center}
 .cam .cbtn[aria-pressed="true"]{background:#ffcc33;color:#000}
 .cam .strip{display:flex;gap:6px;height:56px;align-items:center;overflow-x:auto;max-width:100%;padding:0 12px}
-.cam .strip img{width:48px;height:48px;border-radius:6px;object-fit:cover;border:2px solid #fff}
+.cam .strip img{width:48px;height:48px;border-radius:6px;object-fit:cover;border:3px solid #4ea1ff;flex:none}
+.cam .strip img[data-k="E"]{border-color:#ffcc33}
 .cam .katsw{display:flex;gap:6px;margin-top:4px}
 .cam .katsw button{border:0;min-height:44px;padding:0 16px;border-radius:999px;font-weight:700;background:rgba(255,255,255,.14);color:#fff}
 .cam .katsw button[aria-pressed="true"][data-k="A"]{background:var(--blue);color:#06213f}
@@ -404,24 +430,24 @@ button.item:hover{background:var(--surf2)}
 .cam .tbtn.done{background:#fff;color:#000}
 
 /* Lightbox */
-.lb{position:fixed;inset:0;z-index:250;background:#000;color:#fff;touch-action:none;user-select:none;-webkit-user-select:none;overflow:hidden}
-.lb .stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-.lb .stage img{max-width:100%;max-height:100%;width:auto;height:auto;transform-origin:0 0;will-change:transform;filter:var(--photo-filter);pointer-events:none}
-.lb .bar{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:8px;padding:calc(var(--sat) + 8px) calc(var(--sar) + 10px) 10px calc(var(--sal) + 10px);
+.lbx{position:fixed;inset:0;z-index:250;background:#000;color:#fff;touch-action:none;user-select:none;-webkit-user-select:none;overflow:hidden}
+.lbx .stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.lbx .stage img{max-width:100%;max-height:100%;width:auto;height:auto;transform-origin:0 0;will-change:transform;filter:var(--photo-filter);pointer-events:none}
+.lbx .bar{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:8px;padding:calc(var(--sat) + 8px) calc(var(--sar) + 10px) 10px calc(var(--sal) + 10px);
   background:linear-gradient(rgba(0,0,0,.75),transparent);transition:opacity .2s}
-.lb .bar .pos{flex:1;text-align:center;font-family:var(--mono);font-weight:700}
-.lb .lbtn{width:52px;height:52px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;display:grid;place-items:center}
-.lb .infos{position:absolute;left:0;right:0;bottom:0;padding:24px calc(var(--sar) + 18px) calc(var(--sab) + 18px) calc(var(--sal) + 18px);
+.lbx .bar .pos{flex:1;text-align:center;font-family:var(--mono);font-weight:700}
+.lbx .lbtn{width:52px;height:52px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;display:grid;place-items:center}
+.lbx .infos{position:absolute;left:0;right:0;bottom:0;padding:24px calc(var(--sar) + 18px) calc(var(--sab) + 18px) calc(var(--sal) + 18px);
   background:linear-gradient(transparent,rgba(0,0,0,.88) 34%);transition:opacity .2s}
-.lb .infos .row1{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.lb .infos .kreis{color:#fff;font-size:44px}
-.lb .infos .chips .chip{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.18);height:30px;font-size:15px}
-.lb .infos .chips .chip b{color:#bbb}
-.lb .infos .note{margin-top:8px;font-size:18px;line-height:1.4;white-space:pre-wrap;max-height:30vh;overflow:auto}
-.lb.ui-off .bar,.lb.ui-off .infos{opacity:0;pointer-events:none}
-.lb .nav{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center}
-.lb .nav.prev{left:calc(var(--sal) + 10px)} .lb .nav.next{right:calc(var(--sar) + 10px)}
-@media (hover:none){.lb .nav{display:none}}
+.lbx .infos .row1{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.lbx .infos .kreis{color:#fff;font-size:44px}
+.lbx .infos .chips .chip{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.18);height:30px;font-size:15px}
+.lbx .infos .chips .chip b{color:#bbb}
+.lbx .infos .note{margin-top:8px;font-size:18px;line-height:1.4;white-space:pre-wrap;max-height:30vh;overflow:auto}
+.lbx.ui-off .bar,.lbx.ui-off .infos{opacity:0;pointer-events:none}
+.lbx .nav{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center}
+.lbx .nav.prev{left:calc(var(--sal) + 10px)} .lbx .nav.next{right:calc(var(--sar) + 10px)}
+@media (hover:none){.lbx .nav{display:none}}
 
 /* Annotation */
 .ann{position:fixed;inset:0;z-index:260;background:#000;display:flex;flex-direction:column;color:#fff}
@@ -488,7 +514,7 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '1.2.2';
+const APP_VERSION = '1.3.0';
 const DB_NAME = 'lichtdoku';
 const DB_VERSION = 1;
 const FORMAT_VERSION = 1;              // Format von Backup-/Sync-Paketen
@@ -622,6 +648,44 @@ const Utils = {
     }
     Utils.download(blob, name);
     return 'download';
+  },
+  /** Fertige Datei anbieten: Dialog mit „Teilen“ / „Sichern“.
+      Teilen wird direkt im Tipp-Handler gestartet – Safari erlaubt navigator.share
+      nur unmittelbar nach einer Berührung. Nach einer längeren Berechnung (PDF, Backup)
+      ist diese Erlaubnis abgelaufen; deshalb ein zweiter, frischer Tipp.
+      Ergebnis: 'shared' | 'download' | 'abort' */
+  offerFile(blob, name, title, info = '') {
+    return new Promise(resolve => {
+      const file = new File([blob], name, { type: blob.type || 'application/octet-stream' });
+      let canShare = false;
+      try { canShare = !!(navigator.share && navigator.canShare && navigator.canShare({ files: [file] })); } catch (e) { canShare = false; }
+      const scrim = document.createElement('div'); scrim.className = 'scrim dlg';
+      scrim.innerHTML = `<div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="ofT">
+        <h2 id="ofT">${Utils.esc(title)}</h2><p>${Utils.esc(name)}\n${Utils.fmtBytes(blob.size)}${info ? '\n' + Utils.esc(info) : ''}</p>
+        <div class="btns">${canShare ? `<button class="btn big primary" data-o="share">${I('share')} Teilen (AirDrop, Mail, Dateien …)</button>` : ''}
+          <button class="btn big ${canShare ? '' : 'primary'}" data-o="dl">${I('download')} ${Utils.isIOS() ? 'Öffnen / Sichern' : 'Herunterladen'}</button>
+          <button class="btn big ghost" data-o="x">Schließen</button></div></div>`;
+      let done = false;
+      const finish = v => { if (done) return; done = true; L.close(); resolve(v); };
+      scrim.addEventListener('click', e => {
+        const b = e.target.closest('[data-o]');
+        if (!b) { if (e.target === scrim) finish('abort'); return; }
+        const o = b.dataset.o;
+        if (o === 'x') finish('abort');
+        else if (o === 'dl') { Utils.download(blob, name); finish('download'); }
+        else if (o === 'share') {
+          // synchron im Klick aufrufen (Nutzergeste bleibt gültig)
+          let p;
+          try { p = navigator.share({ files: [file], title }); } catch (err) { p = Promise.reject(err); }
+          p.then(() => finish('shared'), err => {
+            if (err && err.name === 'AbortError') return;          // Nutzer hat das Teilen-Menü geschlossen – Dialog bleibt offen
+            Ui.toast('Teilen nicht möglich – bitte „' + (Utils.isIOS() ? 'Öffnen / Sichern' : 'Herunterladen') + '“ verwenden.', 'warn');
+          });
+        }
+      });
+      const L = Ui.layer(scrim, { onBack: () => { done = true; resolve('abort'); return true; } });
+      setTimeout(() => { const p = scrim.querySelector('.btn.primary'); p && p.focus(); }, 30);
+    });
   },
   isIOS() { return /iP(ad|hone|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); },
   isEditable(el) { return !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable); }
@@ -1042,7 +1106,9 @@ const Repo = {
 const Settings = {
   v: {
     theme: 'dark', dim: 0, maxPx: 1600, quality: 0.82, view: 'list', sort: 'kreis', burst: true,
-    demoOnFirstStart: true, deviceName: '', redPhotos: true
+    demoOnFirstStart: true, deviceName: '', redPhotos: true,
+    cameraId: '',                                   // zuletzt gewählte Kamera (deviceId)
+    filterKeys: ['nc', 'L201', 'L202', 'L203', 'L204', 'L205', 'L216', 'L250', 'L132']   // Filter-Schnelltasten
   },
   async load() { Object.assign(this.v, await Store.metaGet('settings', {})); this.apply(); },
   async set(patch) { Object.assign(this.v, patch); this.apply(); await Store.metaSet('settings', this.v); },
@@ -1161,10 +1227,29 @@ const Thumbs = {
 const Camera = {
   stream: null,
   supported() { return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) && window.isSecureContext !== false; },
+  /** Alle Kameras des Geräts (Bezeichnungen gibt der Browser erst nach erteilter Erlaubnis heraus) */
+  async list() {
+    try {
+      const all = await navigator.mediaDevices.enumerateDevices();
+      return all.filter(d => d.kind === 'videoinput' && d.deviceId);
+    } catch (e) { return []; }
+  },
+  /** Kamera-Bezeichnung lesbar machen (iOS/Android liefern englische Namen) */
+  label(d, i) {
+    let l = (d.label || '').replace(/\s*\([^)]*\)\s*$/, '').trim();
+    const map = [[/ultra ?wide/i, 'Ultraweitwinkel'], [/tele(photo)?/i, 'Tele'], [/dual wide/i, 'Dual-Weitwinkel'], [/triple/i, 'Triple'], [/dual/i, 'Dual'], [/wide/i, 'Weitwinkel']];
+    if (!l) return `Kamera ${i + 1}`;
+    const front = /front|user|facetime|vorder/i.test(l), back = /back|rear|environment|rück/i.test(l);
+    for (const [re, de] of map) if (re.test(l)) return (front ? 'Vorne · ' : back ? 'Hinten · ' : '') + de;
+    if (/^camera\s*\d+,\s*facing back/i.test(l)) return 'Hinten ' + (l.match(/\d+/) || [''])[0];
+    if (/^camera\s*\d+,\s*facing front/i.test(l)) return 'Vorne ' + (l.match(/\d+/) || [''])[0];
+    if (front) return 'Vorne'; if (back) return 'Hinten';
+    return l.length > 28 ? l.slice(0, 27) + '…' : l;
+  },
   /** opts: {kat, startIndex, title, onShot(promise, kat), allowKatSwitch} → Promise(void) beim Schließen */
   open(opts) {
     return new Promise(resolve => {
-      let kat = opts.kat || 'A', count = 0, facing = 'environment', torch = false;
+      let kat = opts.kat || 'A', count = 0, torch = false, devices = [], curId = Settings.v.cameraId || '';
       const el = document.createElement('div');
       el.className = 'cam'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Kamera');
       el.innerHTML = `
@@ -1173,8 +1258,9 @@ const Camera = {
           <div class="ttl">${Utils.esc(opts.title || 'Foto aufnehmen')}</div>
           <button class="tbtn done" data-a="done">Fertig</button>
         </div>
-        <div class="vf"><video playsinline muted autoplay></video><div class="grid3"></div><div class="hintlbl"></div><div class="flash"></div></div>
+        <div class="vf" data-k="${kat}"><video playsinline muted autoplay></video><div class="grid3"></div><div class="hintlbl"></div><div class="flash"></div></div>
         <div class="msg hidden"></div>
+        <div class="camlist hidden" role="group" aria-label="Kamera wählen"></div>
         ${opts.allowKatSwitch ? `<div class="katsw" role="group" aria-label="Kategorie">
           <button data-k="A" aria-pressed="${kat === 'A'}">Aufbau</button><button data-k="E" aria-pressed="${kat === 'E'}">Einleuchten</button></div>` : ''}
         <div class="ctrl">
@@ -1182,29 +1268,49 @@ const Camera = {
           <button class="shutter" data-a="shot" aria-label="Auslösen"></button>
           <div style="display:flex;gap:10px">
             <button class="cbtn hidden" data-a="torch" aria-label="Taschenlampe" aria-pressed="false">${I('torch')}</button>
-            <button class="cbtn" data-a="flip" aria-label="Kamera wechseln">${I('flip')}</button>
+            <button class="cbtn" data-a="flip" aria-label="Nächste Kamera">${I('flip')}</button>
           </div>
         </div>
         <div class="strip" aria-label="Aufgenommene Fotos"></div>
         <input type="file" accept="image/*" multiple class="hidden">`;
       const video = el.querySelector('video'), hint = el.querySelector('.hintlbl'), strip = el.querySelector('.strip');
       const msg = el.querySelector('.msg'), vf = el.querySelector('.vf'), fileIn = el.querySelector('input[type=file]');
+      const camlist = el.querySelector('.camlist');
       const setHint = () => {
         const n = (opts.startIndex || 0) + count + 1;
         hint.textContent = `${KAT[kat].name} · Foto ${n}${n === 1 ? ' · Nahaufnahme' : n === 2 ? ' · Totale' : ''}`;
         hint.style.background = kat === 'A' ? 'rgba(30,90,200,.85)' : 'rgba(200,150,0,.9)';
+        vf.dataset.k = kat;
+      };
+      const renderCams = () => {
+        camlist.classList.toggle('hidden', devices.length < 2);
+        camlist.innerHTML = devices.map((d, i) => `<button data-cam="${Utils.esc(d.deviceId)}" aria-pressed="${d.deviceId === curId}">${Utils.esc(this.label(d, i))}</button>`).join('');
+        el.querySelector('[data-a=flip]').classList.toggle('hidden', devices.length < 2);
       };
       const stop = () => { if (this.stream) { this.stream.getTracks().forEach(t => t.stop()); this.stream = null; } video.srcObject = null; };
       const start = async () => {
         stop();
         if (!this.supported()) return fail('Live-Kamera ist hier nicht verfügbar (die Seite muss über https oder als installierte App laufen).');
+        const base = { width: { ideal: 1920 }, height: { ideal: 1920 } };
+        const tryGet = v => navigator.mediaDevices.getUserMedia({ audio: false, video: Object.assign({}, base, v) });
         try {
-          this.stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: facing }, width: { ideal: 1920 }, height: { ideal: 1920 } } });
+          try { this.stream = await tryGet(curId ? { deviceId: { exact: curId } } : { facingMode: { ideal: 'environment' } }); }
+          catch (e) {
+            if (!curId || e.name === 'NotAllowedError') throw e;
+            curId = '';                                                     // gespeicherte Kamera gibt es nicht mehr → Rückkamera
+            this.stream = await tryGet({ facingMode: { ideal: 'environment' } });
+          }
           video.srcObject = this.stream; msg.classList.add('hidden'); vf.classList.remove('hidden');
+          el.querySelector('.shutter').classList.remove('hidden');
           await video.play().catch(() => {});
           const tr = this.stream.getVideoTracks()[0];
+          const st = tr && tr.getSettings ? tr.getSettings() : {};
+          if (st.deviceId) curId = st.deviceId;
           const caps = tr && tr.getCapabilities ? tr.getCapabilities() : {};
+          torch = false; el.querySelector('[data-a=torch]').setAttribute('aria-pressed', 'false');
           el.querySelector('[data-a=torch]').classList.toggle('hidden', !caps.torch);
+          devices = await this.list(); renderCams();
+          if (curId && curId !== Settings.v.cameraId) Settings.set({ cameraId: curId }).catch(() => {});
         } catch (e) {
           fail(e && e.name === 'NotAllowedError' ? 'Der Kamerazugriff wurde verweigert. Du kannst ihn in den Browser-Einstellungen erlauben – oder Fotos über die System-Kamera aufnehmen.' :
             'Die Kamera konnte nicht gestartet werden. Nutze die System-Kamera bzw. die Mediathek.');
@@ -1215,8 +1321,8 @@ const Camera = {
         msg.innerHTML = `<p>${Utils.esc(text)}</p><p><button class="tbtn done" data-a="file2">${I('camera')} System-Kamera / Mediathek</button></p>`;
         el.querySelector('.shutter').classList.add('hidden');
       };
-      const addThumb = (p) => {
-        const im = document.createElement('img'); im.alt = '';
+      const addThumb = (p, k) => {
+        const im = document.createElement('img'); im.alt = ''; im.dataset.k = k;
         strip.appendChild(im); strip.scrollLeft = strip.scrollWidth;
         p.then(r => { im.src = Thumbs.local(r.thumb); }).catch(() => im.remove());
       };
@@ -1229,11 +1335,11 @@ const Camera = {
         const flash = el.querySelector('.flash'); flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
         if (navigator.vibrate) navigator.vibrate(15);
         const p = Photo.fromCanvas(c).finally(() => { c.width = c.height = 0; });
-        opts.onShot(p, kat); addThumb(p); count++; setHint();
+        opts.onShot(p, kat); addThumb(p, kat); count++; setHint();
         if (!Settings.v.burst) close();
       };
       const fromFiles = files => {
-        [...files].forEach(f => { const p = Photo.fromFile(f); opts.onShot(p, kat); addThumb(p); count++; });
+        [...files].forEach(f => { const p = Photo.fromFile(f); opts.onShot(p, kat); addThumb(p, kat); count++; });
         setHint(); if (!Settings.v.burst || !this.stream) close();
       };
       let layer;
@@ -1243,10 +1349,14 @@ const Camera = {
         const b = e.target.closest('button'); if (!b) return;
         const a = b.dataset.a;
         if (b.dataset.k) { kat = b.dataset.k; el.querySelectorAll('.katsw button').forEach(x => x.setAttribute('aria-pressed', x.dataset.k === kat)); setHint(); return; }
+        if (b.dataset.cam) { if (b.dataset.cam !== curId) { curId = b.dataset.cam; start(); } return; }
         if (a === 'close' || a === 'done') close();
         else if (a === 'shot') shoot();
         else if (a === 'file' || a === 'file2') { fileIn.value = ''; fileIn.click(); }
-        else if (a === 'flip') { facing = facing === 'environment' ? 'user' : 'environment'; start(); }
+        else if (a === 'flip') {
+          if (devices.length > 1) { const i = devices.findIndex(d => d.deviceId === curId); curId = devices[(i + 1) % devices.length].deviceId; }
+          start();
+        }
         else if (a === 'torch') {
           torch = !torch; b.setAttribute('aria-pressed', torch);
           const tr = this.stream && this.stream.getVideoTracks()[0];
@@ -1342,7 +1452,7 @@ const Lightbox = {
   open(items, start = 0) {
     if (!items.length) return;
     let i = start, st = { s: 1, x: 0, y: 0 }, fullUrl = null, showInfo = true;
-    const el = document.createElement('div'); el.className = 'lb'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Fotoansicht');
+    const el = document.createElement('div'); el.className = 'lbx'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Fotoansicht');
     el.tabIndex = -1;
     el.innerHTML = `<div class="stage"><img alt=""></div>
       <div class="bar"><button class="lbtn" data-a="close" aria-label="Schließen">${I('close')}</button><div class="pos" aria-live="polite"></div>
@@ -1932,10 +2042,18 @@ const QR = (() => {
       fm = dim - 6.5;
     } else { [fx, fy] = est(1)[0]; fm = dim - 3.5; }
     const lo = 3.5, hi = dim - 3.5;
-    const t = times(sq2q(tl.x, tl.y, tr.x, tr.y, fx, fy, bl.x, bl.y), adj(sq2q(lo, lo, hi, lo, fm, fm, lo, hi)));
-    const grid = new Uint8Array(dim * dim);
-    for (let y = 0; y < dim; y++) for (let x = 0; x < dim; x++) { const [px, py] = apply(t, x + 0.5, y + 0.5); grid[y * dim + x] = dark(px, py) ? 1 : 0; }
-    return decodeGrid((x, y) => grid[y * dim + x] === 1, dim);
+    /* Erst mit dem gefundenen Ausrichtungsmuster, bei Misserfolg mit den geschätzten Positionen
+       (bei kleinen Codes liegt das Ausrichtungsmuster dicht an Datenmodulen und wird verwechselt) */
+    const pts = [[fx, fy]];
+    if (ver >= 2) est((dim - 10) / (dim - 7)).forEach(p => { if (Math.hypot(p[0] - fx, p[1] - fy) > 1) pts.push(p); });
+    let lastErr;
+    for (const [qx, qy] of pts) {
+      const t = times(sq2q(tl.x, tl.y, tr.x, tr.y, qx, qy, bl.x, bl.y), adj(sq2q(lo, lo, hi, lo, fm, fm, lo, hi)));
+      const grid = new Uint8Array(dim * dim);
+      for (let y = 0; y < dim; y++) for (let x = 0; x < dim; x++) { const [px, py] = apply(t, x + 0.5, y + 0.5); grid[y * dim + x] = dark(px, py) ? 1 : 0; }
+      try { return decodeGrid((x, y) => grid[y * dim + x] === 1, dim); } catch (e) { lastErr = e; }
+    }
+    throw lastErr;
   }
   /** ImageData (RGBA) → Text oder null */
   function decodeImage(img) {
@@ -1948,12 +2066,16 @@ const QR = (() => {
     const bin = binarize(gray, w, h);
     const F = chooseTriple(findFinders(bin, w, h));
     if (!F) return null;
-    const ms = (F.tl.ms + F.tr.ms + F.bl.ms) / 3;
+    /* Modulgröße wurde waagrecht gemessen – bei gedrehtem Code ist der Schnitt um 1/cos(Winkel) zu lang.
+       Winkel aus der Lage der oberen Finder-Muster bestimmen und korrigieren. */
+    let ang = Math.atan2(F.tr.y - F.tl.y, F.tr.x - F.tl.x) % (Math.PI / 2);
+    if (ang > Math.PI / 4) ang -= Math.PI / 2; else if (ang < -Math.PI / 4) ang += Math.PI / 2;
+    const ms = (F.tl.ms + F.tr.ms + F.bl.ms) / 3 * Math.abs(Math.cos(ang));
     const d0 = Math.round((Math.hypot(F.tr.x - F.tl.x, F.tr.y - F.tl.y) + Math.hypot(F.bl.x - F.tl.x, F.bl.y - F.tl.y)) / 2 / ms) + 7;
     const dims = [];
-    for (let dd = -8; dd <= 8; dd++) { const v = d0 + dd; if (v >= 21 && v <= 177 && v % 4 === 1) dims.push(v); }
+    for (let dd = -10; dd <= 10; dd++) { const v = d0 + dd; if (v >= 21 && v <= 177 && v % 4 === 1) dims.push(v); }
     dims.sort((a, b) => Math.abs(a - d0) - Math.abs(b - d0));
-    for (const dim of dims.slice(0, 3)) { try { return tryDim(bin, w, h, F, dim); } catch (e) { /* nächste Größe probieren */ } }
+    for (const dim of dims.slice(0, 4)) { try { return tryDim(bin, w, h, F, dim); } catch (e) { /* nächste Größe probieren */ } }
     return null;
   }
   return { encode, toCanvas, decodeImage, decodeGray, decodeGrid, _rs: { rsCorrect, addEcc } };
@@ -2210,7 +2332,9 @@ const Pdf = {
         const x = M + k * cw;
         if (k) c.rgb(0.75, 0.77, 0.8, true).line(x, rowTop - 50, x, rowTop, 0.6);
         c.rgb(0.45, 0.48, 0.53).text(x + 10, rowTop - 16, lab, 'F2', 7.5);
-        c.rgb(0.07, 0.08, 0.1).text(x + 10, rowTop - 38, this.fit(val || '—', 'F2', 14, cw - 18), 'F2', 14);
+        // lange Werte (z. B. Kreis „12+17+103+113+620“) erst verkleinern, erst ganz zuletzt kürzen
+        const v = val || '—'; let fs = 14; while (fs > 8 && this.width(v, 'F2', fs) > cw - 18) fs -= 0.5;
+        c.rgb(0.07, 0.08, 0.1).text(x + 10, rowTop - 38, this.fit(v, 'F2', fs, cw - 18), 'F2', fs);
       });
       c.rgb(0.75, 0.77, 0.8, true).line(M, rowTop - 50, W - M, rowTop - 50, 0.6);
       let y = rowTop - 66;
@@ -2267,6 +2391,7 @@ const Pdf = {
     const infoId = nextId++;
     const pdfStr = s => '(' + this.esc(this.win(s)) + ')';
     obj(infoId, `<< /Title ${pdfStr(show.f.titel)} /Producer ${pdfStr('Doku VT ' + APP_VERSION)} /Creator ${pdfStr('Doku VT')} >>`);
+    this.lastPages = pageIds.length;
     const xrefPos = offset;
     let x = `xref\n0 ${nextId}\n0000000000 65535 f \n`;
     for (let i = 1; i < nextId; i++) x += (xref[i] != null ? String(xref[i]).padStart(10, '0') + ' 00000 n ' : '0000000000 65535 f ') + '\n';
@@ -2364,11 +2489,12 @@ const Sync = {
 const FileAdapter = {
   id: 'file', name: 'Sync-Paket (Datei)',
   available: () => true,
-  async push({ full = false, showIds = null } = {}, onProgress) {
+  async push({ full = false, showIds = null, onReady = null } = {}, onProgress) {
     const since = full ? 0 : Sync.state.lastPackageAt || 0;
     const { blob, counts } = await Sync.buildPackage({ type: 'sync', since, showIds }, onProgress);
     const name = `DokuVT_Sync_${Utils.safeName(Sync.deviceName())}_${Utils.stamp()}.ldsync.json`;
-    const res = await Utils.shareFile(blob, name, 'Doku VT Sync-Paket');
+    if (onReady) onReady();                       // Fortschrittsanzeige schließen, bevor der Dialog erscheint
+    const res = await Utils.offerFile(blob, name, 'Sync-Paket ist fertig', `${counts.entries} Einträge, ${counts.blobs} Bilder`);
     if (res !== 'abort') {
       Sync.state.lastPackageAt = Date.now();
       await Sync.markSynced(`Sync-Paket erstellt (${full ? 'komplett' : 'Änderungen'}): ${counts.entries} Einträge, ${counts.blobs} Bilder`);
@@ -2703,10 +2829,10 @@ const Views = {
         ${thumbs ? `<span class="thumbs">${thumbs}</span>` : ''}
         <span class="info">
           <span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="tag ${it.kat}">${it.kat === 'N' ? 'Ohne Foto' : KAT[it.kat].name}</span></span>
-          <span class="kreis ${e.f.kreis ? '' : 'none'}">${e.f.kreis ? Utils.esc(e.f.kreis) : 'ohne Kreis'}</span>
           ${(e.f.gruppe || e.f.filter || e.f.adresse) ? `<span class="chips">${this.chips(e)}</span>` : ''}
           ${e.f.bemerkung ? `<span class="note">${Utils.esc(e.f.bemerkung)}</span>` : ''}
         </span>
+        <span class="kcol"><small>Kreis</small><span class="kreis ${e.f.kreis ? '' : 'none'}">${e.f.kreis ? Utils.esc(e.f.kreis).replace(/\+/g, '+<wbr>') : 'ohne'}</span></span>
       </button>
       ${dup ? '<span class="dup" title="Kreis doppelt">doppelt</span>' : ''}
       ${checklist ? `<button class="chk" role="checkbox" aria-checked="${checked}" data-act="chk" aria-label="${it.kat === 'E' ? 'Eingeleuchtet' : 'Aufgebaut'}"><span class="box">${checked ? I('check') : ''}</span></button>` : ''}
@@ -2766,6 +2892,8 @@ const Editor = {
         <div class="f mono"><label for="ed-filter">Filter</label><input id="ed-filter" name="filter" enterkeyhint="next" placeholder="z. B. L201, nc" value="${Utils.esc(f0.filter)}" autocapitalize="off" spellcheck="false"></div>
         <div class="f mono"><label for="ed-adresse">Adresse</label><input id="ed-adresse" name="adresse" enterkeyhint="next" placeholder="z. B. 12/301" value="${Utils.esc(f0.adresse)}" autocapitalize="off" spellcheck="false"></div>
       </div>
+      <div class="f"><label>Filter-Schnelltasten <span style="text-transform:none;letter-spacing:0;font-weight:500">· Antippen setzt, nochmal antippen entfernt</span></label>
+        <div class="qkeys" data-qkeys role="group" aria-label="Filter-Schnelltasten"></div></div>
       <div class="f"><label for="ed-bem">Bemerkung</label><textarea id="ed-bem" name="bemerkung" rows="3" placeholder="Wo steckt es, was ist zu beachten?">${Utils.esc(f0.bemerkung)}</textarea></div>
       <details class="more" ${extraOpen ? 'open' : ''}><summary>${I('layers', 'sm')} Weitere Angaben <span class="muted" style="font-weight:400">Gerät, DMX, Position, Farbe</span>${I('arrowR', 'sm chev')}</summary>
         <div class="inner">
@@ -2782,6 +2910,31 @@ const Editor = {
     </form>`;
     const form = sh.body.querySelector('form'), saveBtn = sh.el.querySelector('[data-act=save]');
     const kreisIn = form.querySelector('#ed-kreis');
+
+    /* ---- Filter-Schnelltasten: feste Liste (Einstellungen) + in dieser Veranstaltung schon benutzte Filter ---- */
+    const filterIn = form.querySelector('#ed-filter'), qbox = form.querySelector('[data-qkeys]');
+    const ftok = v => String(v || '').split(/\s*[+,;]\s*/).map(x => x.trim()).filter(Boolean);
+    const fixed = (Settings.v.filterKeys || []).filter(Boolean);
+    const freq = new Map();
+    Repo.entriesOf(showId).forEach(e => ftok(e.f.filter).forEach(t => { if (!fixed.some(k => k.toLowerCase() === t.toLowerCase())) freq.set(t, (freq.get(t) || 0) + 1); }));
+    const used = [...freq.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(x => x[0]);
+    const renderQ = () => {
+      const cur = ftok(filterIn.value).map(t => t.toLowerCase());
+      qbox.innerHTML = fixed.concat(used).map((k, i) => `<button type="button" data-q="${Utils.esc(k)}" class="${i >= fixed.length ? 'used' : ''}" aria-pressed="${cur.includes(k.toLowerCase())}" ${i >= fixed.length ? 'title="in dieser Veranstaltung benutzt"' : ''}>${Utils.esc(k)}</button>`).join('')
+        + (cur.length ? `<button type="button" class="qclr" data-qclr aria-label="Filter leeren">${I('close', 'sm')}</button>` : '');
+    };
+    qbox.addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      if (b.hasAttribute('data-qclr')) filterIn.value = '';
+      else {
+        const k = b.dataset.q, cur = ftok(filterIn.value), i = cur.findIndex(t => t.toLowerCase() === k.toLowerCase());
+        if (i >= 0) cur.splice(i, 1); else cur.push(k);
+        filterIn.value = cur.join('+');
+      }
+      markDirty(); renderQ();
+    });
+    filterIn.addEventListener('input', renderQ);
+    renderQ();
     form.addEventListener('input', markDirty);
     kreisIn.addEventListener('blur', () => { const n = Utils.normKreis(kreisIn.value); if (n !== kreisIn.value) kreisIn.value = n; });
     // Eingabe-Navigation: „Weiter“ springt ins nächste Feld
@@ -2843,7 +2996,7 @@ const Editor = {
       }).finally(() => { pending--; updateSave(); });
     };
     const shoot = k => Camera.open({
-      kat: k, startIndex: slots[k].length, title: `${KAT[k].name} · ${kreisIn.value ? 'Kreis ' + kreisIn.value : 'neuer Eintrag'}`,
+      kat: k, startIndex: slots[k].length, title: kreisIn.value ? 'Kreis ' + kreisIn.value : 'Neuer Eintrag',
       allowKatSwitch: true, onShot: (p, kk) => addPending(p, kk)
     });
     const slotMenu = async s => {
@@ -2973,7 +3126,7 @@ const SyncView = {
     if (v === 'inc' && !nCh) { Ui.toast('Keine Änderungen seit dem letzten Paket.'); return; }
     const bz = Ui.busy('Paket wird erstellt …');
     try {
-      const r = await FileAdapter.push({ full: v === 'full' }, (i, n) => bz.set(`Bilder werden verpackt … ${i}/${n}`));
+      const r = await FileAdapter.push({ full: v === 'full', onReady: () => bz.close() }, (i, n) => bz.set(`Bilder werden verpackt … ${i}/${n}`));
       bz.close();
       if (r.res === 'abort') Ui.toast('Teilen abgebrochen – kein Paket gesendet.', 'warn');
       else Ui.toast(r.res === 'shared' ? `Sync-Paket geteilt (${Utils.fmtBytes(r.size)})` : `Sync-Paket gespeichert (${Utils.fmtBytes(r.size)}) – jetzt auf dem anderen Gerät einspielen.`);
@@ -3163,6 +3316,9 @@ const SettingsView = {
         <div style="display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap">${[1200, 1600, 2048].map(px => `<button class="btn ${v.maxPx === px ? 'primary' : ''}" data-num="maxPx" data-val="${px}">${px} px</button>`).join('')}</div>
         <label class="item"><span class="lb">Serienaufnahme<small>Kamera bleibt nach dem Auslösen offen</small></span><span class="switch"><input type="checkbox" data-bool="burst" ${v.burst ? 'checked' : ''}><span></span></span></label>
       </div>
+      <div class="group"><h3>Eingabe</h3>
+        <button class="item" data-act="fkeys"><span class="lb">Filter-Schnelltasten<small class="mono">${Utils.esc((v.filterKeys || []).join('  ') || '–')}</small></span>${I('edit')}</button>
+      </div>
       <div class="group"><h3>Gerät</h3>
         <button class="item" data-act="name"><span class="lb">Gerätename<small>${Utils.esc(Sync.deviceName())} – wird beim Abgleich angezeigt</small></span>${I('edit')}</button>
       </div>
@@ -3182,6 +3338,10 @@ const SettingsView = {
       if (b.dataset.set) { await Settings.set({ [b.dataset.set]: b.dataset.val }); render(); }
       else if (b.dataset.num) { await Settings.set({ [b.dataset.num]: +b.dataset.val }); render(); }
       else if (b.dataset.act === 'name') { const n = await Ui.prompt('Gerätename', Settings.v.deviceName || Sync.deviceName(), 'z. B. iPad Beleuchtung'); if (n != null) { await Settings.set({ deviceName: n.trim() }); render(); } }
+      else if (b.dataset.act === 'fkeys') {
+        const n = await Ui.prompt('Filter-Schnelltasten', (Settings.v.filterKeys || []).join(', '), 'z. B. nc, L201, L202, R132', 'Mit Komma oder Leerzeichen trennen. Die Reihenfolge bleibt so erhalten.');
+        if (n != null) { await Settings.set({ filterKeys: [...new Set(n.split(/[\s,;]+/).map(x => x.trim()).filter(Boolean))].slice(0, 30) }); render(); }
+      }
       else if (b.dataset.act === 'sync') SyncView.open();
       else if (b.dataset.act === 'diag') DiagView.open();
       else if (b.dataset.act === 'demo') { await Demo.create(); Ui.toast('Demo-Veranstaltung angelegt'); App.render(); }
@@ -3369,7 +3529,7 @@ const App = {
   /* ---------- Startseite ---------- */
   renderHome() {
     const bar = document.getElementById('appbarRow');
-    bar.innerHTML = `<div class="brand" style="flex:1;min-width:0"><span class="brand-mark">${I('bulb')}</span><h1>Doku VT</h1></div>
+    bar.innerHTML = `<div class="brand" style="flex:1;min-width:0"><span class="brand-mark">${I('bulb')}</span><h1>Doku VT<span class="ver" title="App-Version">v${APP_VERSION}</span></h1></div>
       ${this.pillHtml()}<button class="btn icon ghost" data-act="settings" aria-label="Einstellungen">${I('settings')}</button>`;
     const shows = Repo.liveShows();
     const main = document.getElementById('main');
@@ -3378,7 +3538,8 @@ const App = {
         <button class="btn" data-act="import">${I('download')} Import</button></div>
       ${shows.length ? `<div class="shows">${shows.map(s => this.showCard(s)).join('')}</div>` :
         `<div class="empty"><div class="ico">${I('bulb', 'lg')}</div><h3>Noch keine Veranstaltung</h3><p>Lege die erste Produktion an – oder spiele ein Backup bzw. Sync-Paket ein.</p></div>`}
-      <input type="file" class="hidden" accept=".json,.ldsync,application/json,text/plain" data-file></div>
+      <input type="file" class="hidden" accept=".json,.ldsync,application/json,text/plain" data-file>
+      <div class="appver">Doku VT · Version ${APP_VERSION}</div></div>
       <div class="fabbar"><button class="fab" data-act="newshow">${I('plus')} Veranstaltung</button></div>`;
     Thumbs.observe(main);
     this.updatePill();
@@ -3499,7 +3660,7 @@ const App = {
         const io = new IntersectionObserver(en => { if (en[0].isIntersecting) { io.disconnect(); appendChunk(); } }, { rootMargin: '800px' }); io.observe(s);
       } else {
         const f = document.createElement('div'); f.className = 'listfoot';
-        f.textContent = `${items.length} Karte${items.length === 1 ? '' : 'n'}${dupKeys.size ? ` · ${dupKeys.size} doppelte Kreis-Nummer(n) – über „⋯“ zusammenführen` : ''}`;
+        f.textContent = `${items.length} Karte${items.length === 1 ? '' : 'n'}${dupKeys.size ? ` · ${dupKeys.size} doppelte Kreis-Nummer(n) – über „⋯“ zusammenführen` : ''} · Doku VT v${APP_VERSION}`;
         list.appendChild(f);
       }
       Thumbs.observe(list);
@@ -3624,7 +3785,7 @@ const App = {
         <div class="group"><h3>Inhalt</h3><div style="display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap">${seg('kat', 'all', 'Alles')}${seg('kat', 'A', 'Nur Aufbau')}${seg('kat', 'E', 'Nur Einleuchten')}</div>
           <label class="item"><span class="lb">Deckblatt mit Inhaltsverzeichnis</span><span class="switch"><input type="checkbox" data-c="cover" ${o.cover ? 'checked' : ''}><span></span></span></label>
           <label class="item"><span class="lb">Kompakt<small>kleinere Datei zum Mailen (Fotos 900 px)</small></span><span class="switch"><input type="checkbox" data-c="compact" ${o.compact ? 'checked' : ''}><span></span></span></label></div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary big" style="flex:1" data-go="share">${I('share')} Teilen</button><button class="btn big" style="flex:1" data-go="dl">${I('download')} Herunterladen</button></div>`;
+        <button class="btn primary big block" data-go="build">${I('pdf')} PDF erstellen</button>`;
     };
     draw();
     sh.body.addEventListener('click', async e => {
@@ -3636,8 +3797,8 @@ const App = {
         const blob = await Pdf.build(id, o, (i, n) => bz.set(`PDF wird erstellt … Seite ${i} / ${n}`));
         bz.close();
         const name = `DokuVT_${Utils.safeName(s.f.titel)}${o.kat !== 'all' ? '_' + KAT[o.kat].name : ''}_${Utils.stamp()}.pdf`;
-        if (b.dataset.go === 'dl') { Utils.download(blob, name); Ui.toast(`PDF gespeichert (${Utils.fmtBytes(blob.size)})`); }
-        else { const r = await Utils.shareFile(blob, name, s.f.titel); Ui.toast(r === 'shared' ? 'PDF geteilt' : r === 'abort' ? 'Teilen abgebrochen' : `Teilen nicht verfügbar – PDF heruntergeladen (${Utils.fmtBytes(blob.size)})`, r === 'abort' ? 'warn' : ''); }
+        const r = await Utils.offerFile(blob, name, 'PDF ist fertig', `${Pdf.lastPages} Seiten`);
+        if (r === 'shared') Ui.toast('PDF geteilt'); else if (r === 'download') Ui.toast(`PDF gespeichert (${Utils.fmtBytes(blob.size)})`);
       } catch (err) { bz.close(); this.error(err); }
     });
     sh.body.addEventListener('change', e => { if (e.target.dataset.c) o[e.target.dataset.c] = e.target.checked; });
@@ -3648,7 +3809,7 @@ const App = {
       const { blob, counts } = await Sync.buildPackage({ type: 'backup', since: 0, showIds }, (i, n) => bz.set(`Fotos werden gesichert … ${i}/${n}`));
       bz.close();
       const nm = showIds && showIds.length === 1 ? Utils.safeName(Repo.show(showIds[0]).f.titel) : 'Alle';
-      const r = await Utils.shareFile(blob, `DokuVT_Backup_${nm}_${Utils.stamp()}.json`, 'Doku VT Backup');
+      const r = await Utils.offerFile(blob, `DokuVT_Backup_${nm}_${Utils.stamp()}.json`, 'Backup ist fertig', `${counts.entries} Einträge, ${counts.blobs} Bilder`);
       if (r !== 'abort') { await Sync.log(`Backup erstellt: ${counts.entries} Einträge, ${counts.blobs} Bilder`, 'ok'); Ui.toast(`Backup ${r === 'shared' ? 'geteilt' : 'gespeichert'} (${Utils.fmtBytes(blob.size)})`); }
       else Ui.toast('Backup abgebrochen', 'warn');
     } catch (err) { bz.close(); this.error(err); }
