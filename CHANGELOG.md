@@ -1,5 +1,10 @@
 # Änderungsprotokoll – Doku VT
 
+## 1.3.1 – 14.10.2026
+
+- **Kamera-Auswahl nur Rückseite:** Zur Wahl stehen die Objektive auf der Rückseite: „0,5× Weitwinkel“, „1× Normal“ und „Tele“. Die Selfie-Kamera ist ausgeblendet, ebenso die virtuellen Kombi-Kameras von iOS („Dual“/„Triple“), die selbst das Objektiv wechseln. Die Kamera startet auf „1× Normal“ oder dem zuletzt gewählten Objektiv. Die Wechseltaste schaltet reihum durch die Rückkameras.
+- **Android (z. B. Pixel 8):** Meldet der Browser nur eine Rückkamera, erscheinen stattdessen Zoomstufen (z. B. 0,5× / 1× / 2× / 5×), soweit das Gerät sie anbietet. Darüber wechselt das Telefon selbst das Objektiv.
+
 ## 1.3.0 – 14.10.2026
 
 - **PDF-Export repariert:** Die Bezeichnungen in Listen (PDF-Fenster, Einstellungen, Diagnose) hatten dieselbe CSS-Klasse wie die Vollbild-Fotoansicht. Jede Zeile wurde dadurch zu einer schwarzen, bildschirmfüllenden Fläche, und die Knöpfe ließen sich nicht mehr antippen. Die Fotoansicht hat jetzt eine eigene Klasse.

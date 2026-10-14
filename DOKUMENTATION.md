@@ -1,4 +1,4 @@
-# Doku VT 1.3.0 – Dokumentation
+# Doku VT 1.3.1 – Dokumentation
 
 Die App ist eine Datei (`index.html`, ca. 245 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
 
@@ -14,7 +14,7 @@ Die App ist eine Datei (`index.html`, ca. 245 KB), keine Abhängigkeiten, kein C
 | `Repo` | Datenzugriff mit RAM-Cache aller Metadaten, Index Eintrag → Fotos, `saveDraft` (inkl. automatischem Zusammenführen gleicher Kreise), `applyRemote` (Import/Sync), Aufräumen |
 | `Settings` | Geräte-Einstellungen (werden nicht synchronisiert): Theme, Dimmer, Fotoauflösung … |
 | `Photo`, `Thumbs` | 1:1-Zuschnitt, JPEG-Kompression (Standard 1600 px / 0,82), Vorschau 360 px; LRU-Cache für Object-URLs (max. 500, alte werden freigegeben), Lazy Loading per IntersectionObserver |
-| `Camera` | Live-Vorschau 1:1, Auswahl aller Gerätekameras (gemerkt in `Settings.cameraId`), Serienaufnahme, Umschalter Aufbau/Einleuchten mit farbigem Sucherrand, Taschenlampe, Fallback auf Mediathek/System-Kamera |
+| `Camera` | Live-Vorschau 1:1, Auswahl der Rückkamera-Objektive 0,5×/1×/Tele ohne Selfie- und Kombi-Kameras, bei nur einer Rückkamera Zoomstufen (gemerkt in `Settings.cameraId`), Serienaufnahme, Umschalter Aufbau/Einleuchten mit farbigem Sucherrand, Taschenlampe, Fallback auf Mediathek/System-Kamera |
 | `Annotator` | Pfeil, Kreis oder Freihand auf ein Foto zeichnen. Das Ergebnis wird als **neues** Foto gespeichert (Bilddaten bleiben unveränderlich und damit sync-sicher). |
 | `Lightbox` | Vollbild: Pinch-Zoom, Doppeltipp, Wischen links/rechts (blättert über alle sichtbaren Karten), hoch/runter schließt, große Info-Einblendung |
 | `QR`, `QrScan` | Eigener QR-**Generator** (Version 1–40, L/M) und eigener **Decoder** (Finder-Suche, perspektivische Entzerrung, Reed-Solomon-Korrektur). Der Scanner nutzt `BarcodeDetector`, wo vorhanden, sonst den eigenen Decoder. Auf iPad/iPhone gibt es keinen BarcodeDetector, dort ist der eigene Decoder also nötig. |
@@ -52,7 +52,7 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 - [ ] Serienaufnahme: mehrere Fotos, dann „Fertig“. Speichern ist gesperrt, bis „Fotos werden verarbeitet“ verschwindet.
 - [ ] Kamera verweigern → Hinweis plus System-Kamera/Mediathek funktioniert.
 - [ ] Taschenlampe (falls angeboten), Umschalter Aufbau/Einleuchten: Sucherrand wechselt Blau/Gelb.
-- [ ] Kameraleiste zeigt alle Kameras (iPhone: Weitwinkel/Ultraweitwinkel/Tele/Vorne); Auswahl bleibt beim nächsten Öffnen erhalten.
+- [ ] Kameraleiste zeigt nur die Rückseite (iPhone: 0,5× Weitwinkel / 1× Normal / Tele, keine Selfie-Kamera); Pixel: Zoomstufen. Auswahl bleibt beim nächsten Öffnen erhalten.
 - [ ] Filter-Schnelltasten: setzen, entfernen, kombinieren (L201+nc).
 - [ ] Foto: markieren (Pfeil/Kreis), ersetzen, nach vorn/hinten, in andere Kategorie verschieben, entfernen.
 

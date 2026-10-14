@@ -514,7 +514,7 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '1.3.0';
+const APP_VERSION = '1.3.1';
 const DB_NAME = 'lichtdoku';
 const DB_VERSION = 1;
 const FORMAT_VERSION = 1;              // Format von Backup-/Sync-Paketen
@@ -1227,24 +1227,31 @@ const Thumbs = {
 const Camera = {
   stream: null,
   supported() { return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) && window.isSecureContext !== false; },
-  /** Alle Kameras des Geräts (Bezeichnungen gibt der Browser erst nach erteilter Erlaubnis heraus) */
-  async list() {
-    try {
-      const all = await navigator.mediaDevices.enumerateDevices();
-      return all.filter(d => d.kind === 'videoinput' && d.deviceId);
-    } catch (e) { return []; }
+  /** Objektiv einer Kamera aus ihrer Bezeichnung bestimmen.
+      iOS: „Back Ultra Wide Camera“, „Back Camera“, „Back Telephoto Camera“, dazu virtuelle
+      „Back Dual/Triple Camera“ (wechseln selbst das Objektiv) und „Front Camera“.
+      Android: „camera2 0, facing back“ … */
+  lens(d) {
+    const l = d.label || '';
+    if (/front|user|facetime|vorder|selfie/i.test(l)) return { kind: 'front' };
+    if (/ultra ?wide|ultraweit/i.test(l)) return { kind: 'lens', ord: 0, name: '0,5× Weitwinkel' };
+    if (/tele/i.test(l)) return { kind: 'lens', ord: 2, name: 'Tele' };
+    if (/dual|triple/i.test(l)) return { kind: 'virtual' };
+    if (/back|rear|environment|rück/i.test(l)) return { kind: 'lens', ord: 1, name: '1× Normal' };
+    return { kind: 'lens', ord: 3, name: '' };
   },
-  /** Kamera-Bezeichnung lesbar machen (iOS/Android liefern englische Namen) */
-  label(d, i) {
-    let l = (d.label || '').replace(/\s*\([^)]*\)\s*$/, '').trim();
-    const map = [[/ultra ?wide/i, 'Ultraweitwinkel'], [/tele(photo)?/i, 'Tele'], [/dual wide/i, 'Dual-Weitwinkel'], [/triple/i, 'Triple'], [/dual/i, 'Dual'], [/wide/i, 'Weitwinkel']];
-    if (!l) return `Kamera ${i + 1}`;
-    const front = /front|user|facetime|vorder/i.test(l), back = /back|rear|environment|rück/i.test(l);
-    for (const [re, de] of map) if (re.test(l)) return (front ? 'Vorne · ' : back ? 'Hinten · ' : '') + de;
-    if (/^camera\s*\d+,\s*facing back/i.test(l)) return 'Hinten ' + (l.match(/\d+/) || [''])[0];
-    if (/^camera\s*\d+,\s*facing front/i.test(l)) return 'Vorne ' + (l.match(/\d+/) || [''])[0];
-    if (front) return 'Vorne'; if (back) return 'Hinten';
-    return l.length > 28 ? l.slice(0, 27) + '…' : l;
+  /** Nur die Kameras auf der Rückseite, als einzelne Objektive (Selfie-Kamera und virtuelle Kombi-Kameras ausgeblendet) */
+  async list() {
+    let all = [];
+    try { all = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'videoinput' && d.deviceId); } catch (e) { return []; }
+    const backs = all.map(d => ({ d, ...this.lens(d) })).filter(x => x.kind === 'lens');
+    backs.sort((a, b) => a.ord - b.ord);
+    // gleich benannte (z. B. mehrere „facing back“ unter Android) durchnummerieren
+    const seen = {};
+    backs.forEach(x => { const n = x.name || 'Rückkamera'; seen[n] = (seen[n] || 0) + 1; x.name = n; });
+    const cnt = {};
+    backs.forEach(x => { if (seen[x.name] > 1) { cnt[x.name] = (cnt[x.name] || 0) + 1; x.name += ' ' + cnt[x.name]; } });
+    return backs.map(x => ({ deviceId: x.d.deviceId, name: x.name }));
   },
   /** opts: {kat, startIndex, title, onShot(promise, kat), allowKatSwitch} → Promise(void) beim Schließen */
   open(opts) {
@@ -1268,7 +1275,7 @@ const Camera = {
           <button class="shutter" data-a="shot" aria-label="Auslösen"></button>
           <div style="display:flex;gap:10px">
             <button class="cbtn hidden" data-a="torch" aria-label="Taschenlampe" aria-pressed="false">${I('torch')}</button>
-            <button class="cbtn" data-a="flip" aria-label="Nächste Kamera">${I('flip')}</button>
+            <button class="cbtn" data-a="flip" aria-label="Nächstes Objektiv">${I('flip')}</button>
           </div>
         </div>
         <div class="strip" aria-label="Aufgenommene Fotos"></div>
@@ -1282,9 +1289,16 @@ const Camera = {
         hint.style.background = kat === 'A' ? 'rgba(30,90,200,.85)' : 'rgba(200,150,0,.9)';
         vf.dataset.k = kat;
       };
+      let zoom = null, zoomCur = 1;     // Android: eine logische Rückkamera, Objektivwechsel über Zoom
       const renderCams = () => {
-        camlist.classList.toggle('hidden', devices.length < 2);
-        camlist.innerHTML = devices.map((d, i) => `<button data-cam="${Utils.esc(d.deviceId)}" aria-pressed="${d.deviceId === curId}">${Utils.esc(this.label(d, i))}</button>`).join('');
+        let html = '';
+        if (devices.length > 1) html = devices.map(d => `<button data-cam="${Utils.esc(d.deviceId)}" aria-pressed="${d.deviceId === curId}">${Utils.esc(d.name)}</button>`).join('');
+        else if (zoom) {
+          const steps = [zoom.min < 1 ? zoom.min : null, 1, 2, 3, 5].filter(z => z != null && z >= zoom.min - 1e-6 && z <= zoom.max + 1e-6);
+          if (steps.length > 1) html = steps.map(z => `<button data-zoom="${z}" aria-pressed="${Math.abs(z - zoomCur) < 0.01}">${String(Math.round(z * 10) / 10).replace('.', ',')}×</button>`).join('');
+        }
+        camlist.innerHTML = html;
+        camlist.classList.toggle('hidden', !html);
         el.querySelector('[data-a=flip]').classList.toggle('hidden', devices.length < 2);
       };
       const stop = () => { if (this.stream) { this.stream.getTracks().forEach(t => t.stop()); this.stream = null; } video.srcObject = null; };
@@ -1309,7 +1323,17 @@ const Camera = {
           const caps = tr && tr.getCapabilities ? tr.getCapabilities() : {};
           torch = false; el.querySelector('[data-a=torch]').setAttribute('aria-pressed', 'false');
           el.querySelector('[data-a=torch]').classList.toggle('hidden', !caps.torch);
-          devices = await this.list(); renderCams();
+          devices = await this.list();
+          // läuft gerade eine Kamera, die nicht in der Auswahl steht (Selfie, virtuelle Kombi-Kamera),
+          // einmalig auf das normale Objektiv wechseln
+          if (devices.length && !devices.some(d => d.deviceId === curId) && !this._switched) {
+            this._switched = true;
+            curId = (devices.find(d => d.name.startsWith('1×')) || devices[0]).deviceId;
+            return start();
+          }
+          zoom = caps.zoom && caps.zoom.max > caps.zoom.min ? caps.zoom : null;
+          zoomCur = st.zoom || 1;
+          renderCams();
           if (curId && curId !== Settings.v.cameraId) Settings.set({ cameraId: curId }).catch(() => {});
         } catch (e) {
           fail(e && e.name === 'NotAllowedError' ? 'Der Kamerazugriff wurde verweigert. Du kannst ihn in den Browser-Einstellungen erlauben – oder Fotos über die System-Kamera aufnehmen.' :
@@ -1350,6 +1374,11 @@ const Camera = {
         const a = b.dataset.a;
         if (b.dataset.k) { kat = b.dataset.k; el.querySelectorAll('.katsw button').forEach(x => x.setAttribute('aria-pressed', x.dataset.k === kat)); setHint(); return; }
         if (b.dataset.cam) { if (b.dataset.cam !== curId) { curId = b.dataset.cam; start(); } return; }
+        if (b.dataset.zoom) {
+          const z = +b.dataset.zoom, tr = this.stream && this.stream.getVideoTracks()[0];
+          if (tr) tr.applyConstraints({ advanced: [{ zoom: z }] }).then(() => { zoomCur = z; renderCams(); }).catch(() => Ui.toast('Zoom nicht verfügbar', 'warn'));
+          return;
+        }
         if (a === 'close' || a === 'done') close();
         else if (a === 'shot') shoot();
         else if (a === 'file' || a === 'file2') { fileIn.value = ''; fileIn.click(); }
@@ -1367,6 +1396,7 @@ const Camera = {
       el.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { if (e.target.tagName !== 'BUTTON') { e.preventDefault(); shoot(); } } });
       document.addEventListener('visibilitychange', vis);
       layer = Ui.layer(el, { onBack: () => { stop(); document.removeEventListener('visibilitychange', vis); resolve(); return true; } });
+      this._switched = false;
       setHint(); start();
       el.querySelector('.shutter').focus();
     });
