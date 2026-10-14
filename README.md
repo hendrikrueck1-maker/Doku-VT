@@ -1,11 +1,11 @@
 # Doku VT – Beleuchtungsdokumentation
 
-**Version 1.2.0** · Web-App für die Beleuchtungsdokumentation im Theater: Kreise mit Fotos (Aufbau/Einleuchten), PDF-Export, Checkliste und Geräte-Abgleich. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
+**Version 1.2.1** · Web-App für die Beleuchtungsdokumentation im Theater: Kreise mit Fotos (Aufbau/Einleuchten), PDF-Export, Checkliste und Geräte-Abgleich. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
 
 ## Auf GitHub veröffentlichen
 
 1. Neues Repository auf GitHub anlegen, z. B. `doku-vt`.
-2. Den **Inhalt** dieser ZIP-Datei in das Repository hochladen, also `index.html`, `manifest.json`, `sw.js`, `version.json`, den Ordner `icons/` und die Datei `.nojekyll` direkt ins Hauptverzeichnis, nicht in einen Unterordner. Im Browser: *Add file → Upload files*, Dateien hineinziehen, *Commit changes*.
+2. Den **Inhalt** dieser ZIP-Datei in das Repository hochladen, also alle Dateien direkt ins Hauptverzeichnis. Es gibt keine Unterordner, deshalb klappt das auch vom Handy aus. Im Browser: *Add file → Upload files*, Dateien hineinziehen, *Commit changes*.
    - Hinweis: `.nojekyll` ist eine versteckte Datei und wird beim Entpacken auf Mac oder iPad oft nicht angezeigt. Sie ist nicht zwingend nötig.
 3. *Settings → Pages → Build and deployment*: Source **Deploy from a branch**, Branch **main**, Ordner **/ (root)**, *Save*.
 4. Nach etwa einer Minute ist die App erreichbar unter `https://<benutzername>.github.io/doku-vt/`.
@@ -34,7 +34,7 @@ Die Daten liegen **nur lokal auf dem jeweiligen Gerät** (IndexedDB). Das Reposi
 | `manifest.json` | App-Name, Icons, Vollbildmodus für die Installation |
 | `sw.js` | Service Worker: Offline-Start und Aktualisierung |
 | `version.json` | Aktuelle Versionsnummer für den Update-Hinweis |
-| `icons/` | App-Icons (192, 512, maskable, Apple-Touch) |
+| `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png` | App-Icons |
 | `DOKUMENTATION.md` | Architektur, Testcheckliste, Designentscheidungen, Ausblick |
 | `CHANGELOG.md` | Änderungen je Version |
 

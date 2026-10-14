@@ -2,12 +2,16 @@
    Offline-Start: Die App-Dateien kommen aus dem Cache, im Hintergrund wird
    die neue Fassung geholt (stale-while-revalidate). Bei jeder neuen Version
    VERSION erhöhen – dann wird der alte Cache entfernt.                       */
-const VERSION = '1.2.0';
+const VERSION = '1.2.1';
 const CACHE = 'dokuvt-' + VERSION;
-const ASSETS = ['./', './index.html', './manifest.json', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];
+const CORE = ['./', './index.html', './manifest.json'];                       // muss vorhanden sein
+const EXTRA = ['./icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png'];  // fehlertolerant
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  e.waitUntil(caches.open(CACHE).then(async c => {
+    await c.addAll(CORE);
+    await Promise.all(EXTRA.map(u => c.add(u).catch(() => null)));   // fehlendes Icon verhindert die Installation nicht
+  }));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith('dokuvt-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
