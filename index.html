@@ -2,7 +2,7 @@
 <html lang="de" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>Doku VT</title>
 <meta name="description" content="Beleuchtungsdokumentation für den Theaterbetrieb – offline, mit Fotos, PDF-Export und Geräte-Abgleich.">
 <meta name="theme-color" content="#0b0d10">
@@ -74,6 +74,7 @@ html[data-theme="red"]{
   --photo-filter:grayscale(1) sepia(1) hue-rotate(-40deg) saturate(4) brightness(.62);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{touch-action:pan-x pan-y}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.4;
   -webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior-y:none}
 body{min-height:calc(var(--vh)*100);min-height:100dvh;overflow-x:hidden}
@@ -275,7 +276,7 @@ html[data-theme="red"] .tag{color:#000}
 /* Großbild-Ansicht: alle Fotos groß; Kreis-Kopfzeile bleibt beim Scrollen oben stehen */
 .cards.big{gap:34px}
 /* Rahmen links/rechts/unten in Kategoriefarbe; oben schließt die Kopfzeile bündig ab */
-.cards.big .card{overflow:visible;border:2px solid color-mix(in srgb,var(--k) 50%,var(--bg));border-top:0;border-radius:0 0 var(--r) var(--r);flex-direction:column}
+.cards.big .card{overflow:visible;border:2px solid color-mix(in srgb,var(--k) 50%,transparent);border-top:0;border-radius:var(--r);flex-direction:column;background:var(--surf)}
 .cards.big .card .hit{width:100%;box-sizing:border-box;min-width:0}
 .cards.big .card .thumbs{min-width:0;width:100%}
 .cards.big .card .th{min-width:0;overflow:hidden}
@@ -287,7 +288,8 @@ html[data-theme="red"] .tag{color:#000}
 .bighead{position:sticky;top:calc(var(--stickytop, 120px) - 1px);z-index:5;display:flex;align-items:center;gap:12px;
   width:calc(100% + 4px);margin:0 -2px;box-sizing:border-box;
   min-height:58px;padding:6px 16px;border:0;border-radius:0;
-  background:color-mix(in srgb,var(--k) 50%,var(--bg));color:var(--text);text-align:left;box-shadow:0 6px 14px -8px rgba(0,0,0,.7);border-radius:var(--r) var(--r) 0 0}
+  background:color-mix(in srgb,var(--k) 50%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);
+  color:var(--text);text-align:left;box-shadow:0 6px 14px -8px rgba(0,0,0,.7);border-radius:var(--r) var(--r) 0 0}
 .bighead .tag{background:rgba(0,0,0,.22);color:inherit;border:0}
 .bighead .bk{flex:1;min-width:0;font-family:var(--mono);font-weight:800;font-size:clamp(24px,6.5vw,34px);line-height:1.05;overflow-wrap:anywhere;display:flex;align-items:baseline;gap:8px}
 .bighead .bk small{font-family:var(--font);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
@@ -618,7 +620,7 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '1.8.0';
+const APP_VERSION = '1.8.1';
 const DB_NAME = 'lichtdoku';
 const DB_VERSION = 1;
 const FORMAT_VERSION = 1;              // Format von Backup-/Sync-Paketen
@@ -3235,18 +3237,6 @@ const Ui = {
       <div class="sheet-b"></div><div class="sheet-f hidden"></div></div>`;
     const sh = scrim.querySelector('.sheet');
     scrim.addEventListener('click', e => { if (e.target === scrim && !full) history.back(); if (e.target.closest('[data-close]')) history.back(); });
-    // iPad/iPhone: Bei offener Tastatur das Blatt auf den sichtbaren Bereich verkleinern,
-    // damit Kopfzeile mit „Speichern“ erreichbar bleibt
-    if (full && window.visualViewport) {
-      const vv = window.visualViewport;
-      const fit = () => {
-        if (!scrim.isConnected) { vv.removeEventListener('resize', fit); vv.removeEventListener('scroll', fit); return; }
-        const kb = window.innerHeight - vv.height > 80;
-        scrim.style.top = kb ? vv.offsetTop + 'px' : ''; scrim.style.bottom = kb ? 'auto' : ''; scrim.style.height = kb ? vv.height + 'px' : '';
-        sh.style.height = kb ? vv.height + 'px' : ''; sh.style.maxHeight = kb ? vv.height + 'px' : '';
-      };
-      vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit);
-    }
     const L = this.layer(scrim, { onBack });
     return { el: sh, scrim, body: sh.querySelector('.sheet-b'), foot: sh.querySelector('.sheet-f'), head: sh.querySelector('.sheet-h'), close: L.close, layer: L };
   }
@@ -4078,6 +4068,17 @@ const App = {
     Sync.on(() => this.updatePill());
     window.addEventListener('hashchange', () => this.route());
     window.addEventListener('focusout', () => setTimeout(() => { if (this.state.renderPending && !this.inputFocused()) this.render(); }, 50));
+    // iPadOS/iOS: Nach dem Schließen der Tastatur bleiben feste Elemente (Rahmen, „+ Eintrag“, Kopfzeilen)
+    // manchmal an der alten Stelle hängen. Ansicht einmal neu ausrichten, sobald kein Feld mehr aktiv ist.
+    const realign = () => {
+      if (Utils.isEditable(document.activeElement)) return;
+      setVh();
+      const x = window.scrollX, y = window.scrollY;
+      window.scrollTo(x, y > 0 ? y - 1 : y + 1);
+      requestAnimationFrame(() => { window.scrollTo(x, y); this.stickyTop(); });
+    };
+    window.addEventListener('focusout', () => setTimeout(realign, 300));
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', Utils.debounce(realign, 250));
     document.addEventListener('keydown', e => this.keys(e));
     window.addEventListener('unhandledrejection', e => { console.error(e.reason); e.preventDefault(); Ui.toast('Fehler: ' + (e.reason && e.reason.message || e.reason), 'err'); });
     window.addEventListener('beforeunload', e => { if (document.querySelector('[data-editor]')) { e.preventDefault(); e.returnValue = ''; } });

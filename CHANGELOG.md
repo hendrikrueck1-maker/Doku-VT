@@ -1,5 +1,11 @@
 # Änderungsprotokoll – Doku VT
 
+## 1.8.1 – 15.10.2026
+
+- **Einrichtung & Züge repariert:** Die Tastatur-Anpassung aus 1.8.0 hat das Blatt auf dem iPad zusammengeschoben, sodass sich keine Felder mehr antippen ließen. Sie ist wieder entfernt. Speichern geht bei offener Tastatur über den großen Knopf unten im Formular.
+- **Rahmen, „+ Eintrag“ und Kreis-Kopfzeilen bleiben an ihrem Platz:** Nach dem Schließen der Tastatur richtet die App die Ansicht neu aus (iPadOS ließ feste Elemente sonst an der alten Stelle hängen). Die Seite lässt sich nicht mehr versehentlich mit zwei Fingern zoomen; Zoomen in der Bildansicht geht weiterhin.
+- **Großbild-Ansicht:** Ecke oben links an jeder Karte sauber (kein Absatz mehr zwischen Rahmen und Kopfzeile). Kopfzeile jetzt wirklich halbtransparent mit Unschärfe dahinter, bleibt beim Scrollen oben stehen.
+
 ## 1.8.0 – 15.10.2026
 
 - **PDF-Inhaltsverzeichnis:** zeigt jetzt Kreis, Kategorie, Gruppe und Filter je Zeile. Bis 100 Einträge steht die Liste auf einer Seite (bei vielen Einträgen zweispaltig mit kleinerer Schrift), erst ab 101 Einträgen geht es auf einer zweiten Seite weiter.
