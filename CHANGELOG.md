@@ -1,5 +1,10 @@
 # Änderungsprotokoll – Doku VT
 
+## 1.7.1 – 15.10.2026
+
+- **Großbild-Ansicht:** Fotos ragten rechts über den Rahmen hinaus – sie sitzen jetzt mit gleichem Abstand innerhalb der Karte. Die Kreis-Kopfzeile ist eckig und deckt beim Anpinnen die ganze Kartenbreite ab (keine durchscheinenden Ecken mehr).
+- **Großbild-Ansicht auf dem Smartphone:** Es wurde nur das erste Foto eines Kreises gezeigt (eine Platzspar-Regel der Listenansicht griff auch hier). Jetzt erscheinen alle Fotos.
+
 ## 1.7.0 – 15.10.2026
 
 - **Leiste immer zweizeilig:** Zeile 1 Alle/Aufbau/Einleuchten + Checkliste, Zeile 2 Darstellung + Schalter Ansicht/Bearbeiten – auf jeder Bildschirmbreite und auch bei vergrößerter Systemschrift (z. B. Pixel).
