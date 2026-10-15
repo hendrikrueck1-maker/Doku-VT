@@ -179,8 +179,27 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .seg button[data-k="A"][aria-pressed="true"]{background:var(--blue);color:var(--blue-ink)}
 .seg button[data-k="E"][aria-pressed="true"]{background:var(--yellow);color:var(--yellow-ink)}
 .seg .cnt{font-family:var(--mono);font-size:12px;opacity:.8}
-.modebtn{min-width:132px}
-.modebtn[aria-pressed="true"]{background:var(--edit);border-color:var(--edit);color:#1a0a00}
+/* Kategorie-Knöpfe, farbig umrandet */
+.katbar{display:flex;gap:8px;flex-wrap:wrap}
+.katbtn{--kc:var(--text2);--ki:var(--bg);min-height:46px;padding:0 16px;border-radius:var(--r-sm);border:2px solid var(--kc);background:transparent;color:var(--text);
+  font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:8px}
+.katbtn[data-k="A"]{--kc:var(--blue);--ki:var(--blue-ink)} .katbtn[data-k="E"]{--kc:var(--yellow);--ki:var(--yellow-ink)}
+.katbtn[aria-pressed="true"]{background:var(--kc);color:var(--ki)}
+.katbtn .cnt{font-family:var(--mono);font-size:12px;opacity:.8}
+.chkbtn[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:#002b14}
+@media (max-width:560px){.chkbtn .cl{display:none}.chkbtn{padding:0;width:var(--tap);min-width:var(--tap)}
+  .toolbar .row{gap:6px}.katbar{gap:6px;flex-wrap:nowrap}.katbtn{padding:0 9px;font-size:14px;gap:5px;min-height:44px}}
+/* Schalter Ansicht | Bearbeiten */
+.modesw{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 14px;border-radius:999px;border:1px solid var(--line2);background:var(--surf);color:var(--text);font-weight:700;font-size:14px;margin-left:auto}
+.modesw .lab{display:inline-flex;align-items:center;gap:6px;color:var(--muted);transition:color .15s}
+.modesw .trk{position:relative;width:56px;height:32px;border-radius:16px;background:var(--surf3);border:1px solid var(--line2);flex:none;transition:background .2s}
+.modesw .knob{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:var(--text);transition:transform .2s}
+.modesw[aria-checked="false"] .l0{color:var(--text)}
+.modesw[aria-checked="true"] .l1{color:var(--edit)}
+.modesw[aria-checked="true"] .trk{background:var(--edit);border-color:var(--edit)}
+.modesw[aria-checked="true"] .knob{transform:translateX(24px);background:#fff}
+.modesw[aria-checked="true"]{border-color:var(--edit)}
+@media (max-width:420px){.modesw{gap:6px;padding:0 10px}.modesw .lab svg{display:none}}
 .progress-strip{display:flex;gap:14px;align-items:center;font-size:13px;color:var(--text2);flex-wrap:wrap}
 .progress-strip .pb{display:flex;align-items:center;gap:8px;min-width:160px;flex:1}
 .progress-strip .pb .bar{flex:1;height:8px;background:var(--surf3);border-radius:4px;overflow:hidden}
@@ -242,6 +261,15 @@ html[data-theme="red"] .tag{color:#000}
 @media (max-width:520px){.cards:not(.grid) .card .th:nth-child(2){display:none}.cards:not(.grid) .card .th{width:64px;height:64px}}
 .card.done .info,.card.done .kcol{opacity:.55}
 .card .dup{position:absolute;top:8px;right:8px;font-size:11px;font-weight:700;color:var(--edit);background:var(--edit-soft);padding:2px 6px;border-radius:5px}
+/* Großbild-Ansicht: alle Fotos groß, Infos darunter, Kreis rechts */
+.cards.big{gap:16px}
+.cards.big .card .hit{flex-wrap:wrap;padding:12px;gap:12px}
+.cards.big .card .thumbs{flex:1 1 100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
+.cards.big .card .th{width:100%;height:auto;aspect-ratio:1;border-radius:12px}
+.cards.big .card .th .plbl{position:absolute;left:8px;top:8px;background:rgba(0,0,0,.72);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:6px}
+.cards.big .card .note{-webkit-line-clamp:unset;font-size:15px}
+.cards.big .card .kcol .kreis{font-size:clamp(26px,6vw,40px)}
+.cards.big .card .chk{width:76px}
 /* Kachelansicht */
 .cards.grid .card{flex-direction:column;min-height:0}
 .cards.grid .card .strip{width:auto;height:6px}
@@ -478,7 +506,9 @@ button.item:hover{background:var(--surf2)}
 .lbx .infos .note{max-height:22vh}
 .lbx .nav{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center}
 .lbx .nav.prev{left:calc(var(--sal) + 10px)} .lbx .nav.next{right:calc(var(--sar) + 10px)}
-@media (hover:none){.lbx .nav{display:none}}
+.lbx .nav{width:64px;height:64px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.35);z-index:2}
+.lbx .nav svg{width:30px;height:30px}
+.lbx .nav:disabled{opacity:.25}
 
 /* Annotation */
 .ann{position:fixed;inset:0;z-index:260;background:#000;display:flex;flex-direction:column;color:#fff}
@@ -545,7 +575,7 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '1.4.0';
+const APP_VERSION = '1.5.0';
 const DB_NAME = 'lichtdoku';
 const DB_VERSION = 1;
 const FORMAT_VERSION = 1;              // Format von Backup-/Sync-Paketen
@@ -1261,6 +1291,23 @@ const Thumbs = {
     img.onload = () => img.classList.add('ok');
     img.src = u;
     if (img.complete && img.naturalWidth) img.classList.add('ok');
+    if (img.dataset.hq) this.loadFull(img);
+  },
+  /* Volle Auflösung für die Großbild-Ansicht – eigener kleiner LRU-Cache (max. 40 Bilder) */
+  fullMap: new Map(), FULL_MAX: 40,
+  async loadFull(img) {
+    const b = img.dataset.b; let e = this.fullMap.get(b);
+    if (e) { this.fullMap.delete(b); this.fullMap.set(b, e); }
+    else {
+      e = { url: null }; this.fullMap.set(b, e);
+      e.p = Repo.full(b).then(d => { if (d) e.url = URL.createObjectURL(new Blob([d], { type: 'image/jpeg' })); return e.url; });
+      while (this.fullMap.size > this.FULL_MAX) {
+        const [k, old] = this.fullMap.entries().next().value; this.fullMap.delete(k);
+        old.p.then(() => old.url && setTimeout(() => URL.revokeObjectURL(old.url), 4000));
+      }
+    }
+    const u = await e.p;
+    if (u && img.isConnected) { const pre = new Image(); pre.onload = () => { if (img.isConnected) img.src = u; }; pre.src = u; }
   },
   /** Vorschaubild für eine im Editor neu aufgenommene, noch nicht gespeicherte Aufnahme */
   local(thumbBuf) { return URL.createObjectURL(new Blob([thumbBuf], { type: 'image/jpeg' })); }
@@ -1575,6 +1622,8 @@ const Lightbox = {
     const show = async () => {
       const it = items[i]; reset(false);
       pos.textContent = `${i + 1} / ${items.length}`;
+      el.querySelector('.nav.prev').disabled = i === 0; el.querySelector('.nav.next').disabled = i === items.length - 1;
+      el.querySelectorAll('.nav').forEach(n => n.classList.toggle('hidden', items.length < 2));
       const e = it.draftF ? { f: it.draftF } : (Repo.entries.get(it.entryId) || { f: {} });
       const chips = ['gruppe', 'filter', 'adresse', 'geraet', 'dmx', 'position', 'farbe'].filter(k => e.f[k])
         .map(k => `<span class="chip"><b>${FIELD_LABEL[k]}</b><span>${Utils.esc(e.f[k])}</span></span>`).join('');
@@ -1598,7 +1647,11 @@ const Lightbox = {
     let layer;
     const close = () => { if (fullUrl) URL.revokeObjectURL(fullUrl); layer.close(); };
     /* Informationen sind immer eingeblendet; das Foto wird zwischen Kopfleiste und Infoblock eingepasst */
-    const fitStage = () => { stage.style.top = el.querySelector('.bar').offsetHeight + 'px'; stage.style.bottom = infos.offsetHeight + 'px'; };
+    const fitStage = () => {
+      const t = el.querySelector('.bar').offsetHeight, bt = infos.offsetHeight;
+      stage.style.top = t + 'px'; stage.style.bottom = bt + 'px';
+      el.querySelectorAll('.nav').forEach(n => { n.style.top = (t + (el.clientHeight - t - bt) / 2) + 'px'; });   // Pfeile mittig neben dem Foto
+    };
     // ---- Gesten ----
     const ptrs = new Map(); let g = null, lastTap = 0;
     const base = () => ({ x: img.offsetLeft + stage.offsetLeft, y: img.offsetTop + stage.offsetTop });
@@ -2983,10 +3036,12 @@ const Views = {
   chips(e, keys = ['gruppe', 'filter', 'adresse']) {
     return keys.filter(k => e.f[k]).map(k => `<span class="chip"><b>${FIELD_LABEL[k]}</b><span>${Utils.esc(e.f[k])}</span></span>`).join('');
   },
-  cardHtml(it, { sel, checklist, dupKeys }) {
+  cardHtml(it, { sel, checklist, dupKeys, big = false }) {
     const e = it.entry, ph = it.kat === 'N' ? [] : Repo.photosOf(e.id, it.kat);
     const chkKey = it.kat === 'E' ? 'chkE' : 'chkA', checked = !!e.f[chkKey];
-    const thumbs = ph.slice(0, 2).map((p, i) => `<span class="th" data-act="lb" data-i="${i}">${this.thumbImg(p.b)}${i === 1 && ph.length > 2 ? `<span class="more">+${ph.length - 2}</span>` : ''}</span>`).join('');
+    const thumbs = big
+      ? ph.map((p, i) => `<span class="th" data-act="lb" data-i="${i}">${this.thumbImg(p.b).replace('<img ', '<img data-hq="1" ').replace(' data-l="1"', '')}<span class="plbl">${i + 1}${i === 0 ? ' · Nah' : i === 1 ? ' · Totale' : ''}</span></span>`).join('')
+      : ph.slice(0, 2).map((p, i) => `<span class="th" data-act="lb" data-i="${i}">${this.thumbImg(p.b)}${i === 1 && ph.length > 2 ? `<span class="more">+${ph.length - 2}</span>` : ''}</span>`).join('');
     const dup = dupKeys.has(Utils.kreisTokens(e.f.kreis).sort().join('+'));
     return `<article class="card ${sel ? 'sel' : ''} ${checklist && checked ? 'done' : ''}" data-k="${it.kat}" data-key="${it.key}">
       <div class="strip"></div>
@@ -3828,14 +3883,14 @@ const App = {
     if (full || !main.querySelector('.toolbar')) {
       main.innerHTML = `<div class="toolbar"><div class="row">
           <div class="search">${I('search', 'si')}<input type="search" data-search placeholder="Suche: Kreis, Gruppe, Filter, Adresse, Bemerkung" value="${Utils.esc(st.q)}" aria-label="Suche" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="clear ${st.q ? '' : 'hidden'}" data-act="clearq" aria-label="Suche leeren">${I('close', 'sm')}</button></div>
-          <div class="seg" role="group" aria-label="Kategorie">
-            <button data-kat="all">Alle <span class="cnt" data-cnt="all"></span></button><button data-kat="A" data-k="A">Aufbau <span class="cnt" data-cnt="A"></span></button><button data-kat="E" data-k="E">Einleuchten <span class="cnt" data-cnt="E"></span></button></div>
+        </div><div class="row">
+          <div class="katbar" role="group" aria-label="Kategorie">
+            <button class="katbtn" data-kat="all">Alle <span class="cnt" data-cnt="all"></span></button><button class="katbtn" data-kat="A" data-k="A">Aufbau <span class="cnt" data-cnt="A"></span></button><button class="katbtn" data-kat="E" data-k="E">Einleuchten <span class="cnt" data-cnt="E"></span></button></div>
+          <button class="btn chkbtn" data-act="checklist" aria-pressed="false">${I('checklist', 'sm')}<span class="cl">Checkliste</span></button>
         </div><div class="row">
           <div class="seg" role="group" aria-label="Sortierung"><button data-sort="kreis">${I('sort', 'sm')} Kreis</button><button data-sort="gruppe">Gruppe</button></div>
-          <div class="seg" role="group" aria-label="Darstellung"><button data-view="list" aria-label="Liste">${I('list', 'sm')}</button><button data-view="grid" aria-label="Kacheln">${I('grid', 'sm')}</button></div>
-          <button class="btn" data-act="checklist" aria-pressed="false">${I('checklist', 'sm')} Checkliste</button>
-          <span style="flex:1"></span>
-          <button class="btn modebtn" data-act="mode" aria-pressed="false"></button>
+          <div class="seg" role="group" aria-label="Darstellung"><button data-view="list" aria-label="Liste">${I('list', 'sm')}</button><button data-view="grid" aria-label="Kacheln">${I('grid', 'sm')}</button><button data-view="big" aria-label="Große Bilder">${I('image', 'sm')}</button></div>
+          <button class="modesw" data-act="mode" role="switch" aria-checked="false" aria-pressed="false"><span class="lab l0">${I('lock', 'sm')} Ansicht</span><span class="trk"><span class="knob"></span></span><span class="lab l1">Bearbeiten ${I('edit', 'sm')}</span></button>
         </div><div class="row progress-strip hidden" data-prog></div></div>
         <div class="split"><div class="listpane"><div data-setup></div><div data-list></div></div><aside class="detailpane" aria-label="Details" data-detail></aside></div>
         <div class="fabbar" data-fab></div>`;
@@ -3852,9 +3907,8 @@ const App = {
     main.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', b.dataset.view === Settings.v.view));
     main.querySelector('[data-act=checklist]').setAttribute('aria-pressed', st.checklist);
     const mb = main.querySelector('[data-act=mode]');
-    mb.setAttribute('aria-pressed', st.edit);
-    mb.innerHTML = st.edit ? `${I('edit')} Bearbeiten` : `${I('lock')} Ansicht`;
-    mb.setAttribute('aria-label', st.edit ? 'Bearbeitungsmodus aktiv – tippen für Ansicht' : 'Ansichtsmodus – tippen zum Bearbeiten');
+    mb.setAttribute('aria-pressed', st.edit); mb.setAttribute('aria-checked', st.edit);
+    mb.setAttribute('aria-label', st.edit ? 'Bearbeitungsmodus aktiv – umschalten auf Ansicht' : 'Ansichtsmodus – umschalten auf Bearbeiten');
     const fab = main.querySelector('[data-fab]');
     fab.innerHTML = st.edit ? `<button class="fab cam" data-act="quick" aria-label="Schnell erfassen mit Kamera">${I('camera', 'lg')}</button><button class="fab" data-act="new">${I('plus')} Eintrag</button>` : '';
     const pr = main.querySelector('[data-prog]');
@@ -3878,7 +3932,7 @@ const App = {
     const dupKeys = new Set(Repo.duplicatesOf(st.showId).map(g => Utils.kreisTokens(g[0].f.kreis).sort().join('+')));
     this._items = items;
     const split = main.querySelector('.split');
-    split.classList.toggle('has-detail', !!st.sel && !!Repo.entry(st.sel.split(':')[0]) && window.innerWidth >= 900);
+    split.classList.toggle('has-detail', !!st.sel && !!Repo.entry(st.sel.split(':')[0]) && this.sidePane());
     if (!items.length) {
       const anyEntries = Repo.entriesOf(st.showId).length;
       list.innerHTML = `<div class="empty"><div class="ico">${I(st.q ? 'search' : 'camera', 'lg')}</div>
@@ -3889,7 +3943,8 @@ const App = {
     }
     // Inkrementell zeichnen: je 60 Karten, weitere beim Scrollen
     const CH = 60; let shown = 0, lastSect = null;
-    const grid = Settings.v.view === 'grid';
+    const grid = Settings.v.view === 'grid', big = Settings.v.view === 'big';
+    const ccls = grid ? 'grid' : big ? 'big' : '';
     list.innerHTML = '';
     const appendChunk = () => {
       let html = '', open = shown > 0;
@@ -3899,10 +3954,10 @@ const App = {
         if (sec.key !== lastSect && (st.kat === 'all' || sort === 'gruppe')) {
           if (open) html += '</div>';
           const n = items.filter(x => Views.sectionOf(x, sort).key === sec.key).length;
-          html += `<div class="sect">${sec.k ? `<span class="sw" style="background:var(--${sec.k === 'A' ? 'blue' : sec.k === 'E' ? 'yellow' : 'neutral'})"></span>` : ''}${Utils.esc(sec.label)} <span class="n">${n}</span></div><div class="cards ${grid ? 'grid' : ''}">`;
+          html += `<div class="sect">${sec.k ? `<span class="sw" style="background:var(--${sec.k === 'A' ? 'blue' : sec.k === 'E' ? 'yellow' : 'neutral'})"></span>` : ''}${Utils.esc(sec.label)} <span class="n">${n}</span></div><div class="cards ${ccls}">`;
           open = true; lastSect = sec.key;
-        } else if (!open) { html += `<div class="cards ${grid ? 'grid' : ''}">`; open = true; }
-        html += Views.cardHtml(it, { sel: st.sel === it.key, checklist: st.checklist, dupKeys });
+        } else if (!open) { html += `<div class="cards ${ccls}">`; open = true; }
+        html += Views.cardHtml(it, { sel: st.sel === it.key, checklist: st.checklist, dupKeys, big });
       }
       if (open) html += '</div>';
       // Fortsetzung in den letzten Karten-Container einfügen, wenn kein neuer Abschnitt beginnt
@@ -3929,7 +3984,7 @@ const App = {
   renderDetail() {
     const st = this.state, pane = document.querySelector('[data-detail]'); if (!pane) return;
     const id = st.sel && st.sel.split(':')[0], e = id && Repo.entry(id);
-    if (!e || window.innerWidth < 900) { pane.innerHTML = ''; return; }
+    if (!e || !this.sidePane()) { pane.innerHTML = ''; return; }
     pane.innerHTML = Views.detailHtml(e, st.edit, st.checklist);
     Thumbs.observe(pane);
   },
@@ -3938,9 +3993,11 @@ const App = {
     const e = Repo.entry(entryId); if (!e) return;
     const k = kat || Repo.catsOf(entryId)[0];
     this.state.sel = entryId + ':' + k;
-    if (window.innerWidth >= 900) { this.renderList(); this.renderDetail(); return; }
+    if (this.sidePane()) { this.renderList(); this.renderDetail(); return; }
     this.renderList();
   },
+  /** Detail rechts neben der Liste nur auf breiten Bildschirmen und nicht in der Großbild-Ansicht */
+  sidePane() { return window.innerWidth >= 900 && Settings.v.view !== 'big'; },
   openDetailSheet(entryId) {
     const e = Repo.entry(entryId); if (!e) return;
     const sh = Ui.sheet({ title: e.f.kreis ? 'Kreis ' + e.f.kreis : 'Eintrag', full: true });
@@ -4103,7 +4160,7 @@ const App = {
       if (thumb && !st.edit) { this.state.sel = card.dataset.key; this.openLightbox(entryId, kat, +thumb.dataset.i); return; }
       if (st.edit) { Editor.open({ showId: st.showId, entryId }); return; }
       st.sel = card.dataset.key;
-      if (window.innerWidth >= 900) { this.renderList(); this.renderDetail(); }
+      if (this.sidePane()) { this.renderList(); this.renderDetail(); }
       else { document.querySelectorAll('.card.sel').forEach(c => c.classList.remove('sel')); card.classList.add('sel'); this.openDetailSheet(entryId); }
       return;
     }

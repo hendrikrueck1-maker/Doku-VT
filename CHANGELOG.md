@@ -1,5 +1,12 @@
 # Änderungsprotokoll – Doku VT
 
+## 1.5.0 – 14.10.2026
+
+- **Pfeile in der Bildansicht:** Große Pfeile links und rechts zum Blättern, auch auf iPad und Smartphone (bisher nur am Computer). Am Anfang bzw. Ende ist der jeweilige Pfeil ausgegraut. Wischen funktioniert weiterhin.
+- **Großbild-Ansicht:** Dritte Darstellung neben Liste und Kacheln. Alle Fotos einer Karte werden groß nebeneinander gezeigt (in voller Auflösung), Infos darunter, Kreis-Nummer rechts. Antippen eines Fotos öffnet die Bildansicht, Antippen der Infos das Detail.
+- **Schalter Ansicht ⇄ Bearbeiten:** statt eines Knopfs ein Schiebeschalter; im Bearbeitungsmodus orange.
+- **Neue Werkzeugleiste:** Zeile 1 Suche · Zeile 2 Alle / Aufbau / Einleuchten (farbig umrandet: grau, blau, gelb; gewählt = gefüllt) und daneben Checkliste · Zeile 3 Kreis/Gruppe, Darstellung und der Schalter Ansicht/Bearbeiten.
+
 ## 1.4.0 – 14.10.2026
 
 - **Einrichtung & Züge** je Veranstaltung: ein Feld „Allgemeine Einrichtung“ und Basisinformationen für OLZ 1, OLZ 2, BGZ 1, BGZ 2 (Höhe/Marke, Bestückung, Bemerkung). Weitere Züge lassen sich hinzufügen und wieder entfernen. Der Bereich steht aufklappbar über der Kreisliste und bekommt im PDF eine eigene Seite (mit Eintrag im Inhaltsverzeichnis). Jeder Zug wird beim Abgleich einzeln zusammengeführt; Duplizieren übernimmt alles.
