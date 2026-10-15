@@ -1,5 +1,16 @@
 # Änderungsprotokoll – Doku VT
 
+## 1.8.0 – 15.10.2026
+
+- **PDF-Inhaltsverzeichnis:** zeigt jetzt Kreis, Kategorie, Gruppe und Filter je Zeile. Bis 100 Einträge steht die Liste auf einer Seite (bei vielen Einträgen zweispaltig mit kleinerer Schrift), erst ab 101 Einträgen geht es auf einer zweiten Seite weiter.
+- **PDF-Dateiname:** nur noch Veranstaltung und Datum, z. B. `Der_Haifisch_2026-10-15.pdf`.
+- **Foto-Beschriftung:** Die Zusätze „Nah“/„Nahaufnahme“ und „Totale“ sind überall entfernt (Liste, Detail, Eintrag, Kamera, PDF). Fotos sind nur noch durchnummeriert.
+- **Einrichtung & Züge:** Bei offener Tastatur bleibt die Kopfzeile mit „Speichern“ sichtbar (das Blatt passt sich dem sichtbaren Bereich an). Zusätzlich gibt es unten im Formular einen großen Speichern-Knopf. Ein neu hinzugefügter Zug wird direkt ins Bild gescrollt.
+- **Einrichtung & Züge rot umrandet,** sobald unter „Allgemeine Einrichtung“ etwas eingetragen ist.
+- **Großbild-Ansicht:** Die blauen/gelben Kopfzeilen und Rahmen sind auf 50 % abgeschwächt und oben abgerundet; Kreis-Nummer in heller Schrift.
+- **Bearbeitungsmodus:** farbiger Rahmen um den ganzen Bildschirm statt nur der Linie oben.
+- **Bildansicht:** Die Pfeile stehen an fester Stelle und springen nicht mehr je nach Länge der Bemerkung. Beim Blättern gleitet das alte Bild hinaus und das neue – erst wenn es fertig geladen ist – sauber herein; die Nachbarbilder werden vorgeladen. Neuer, leicht transparenter Knopf **„Nächster Kreis“** unten rechts springt direkt zum ersten Foto des nächsten Kreises.
+
 ## 1.7.2 – 15.10.2026
 
 - **Live-Abgleich: Diagnose bei Fehlschlag.** Klappt die Verbindung nicht, zeigt die App jetzt, woran es liegt: verschiedene Netze (mit den Adressen beider Geräte), Mobilfunk/VPN, fehlende Adressen, nur verschlüsselte Adressen (…local) oder „selbe Netz, aber blockiert“ (Fritzbox lässt WLAN-Geräte nicht untereinander sprechen). Unter „Technische Details“ steht ein vollständiger Bericht, den man teilen kann. Der erste Hinweis landet auch im Protokoll der Diagnose.

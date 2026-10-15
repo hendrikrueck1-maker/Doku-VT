@@ -1,4 +1,4 @@
-# Doku VT 1.7.2 – Dokumentation
+# Doku VT 1.8.0 – Dokumentation
 
 Die App ist eine Datei (`index.html`, ca. 245 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
 
@@ -50,7 +50,7 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 - [ ] Während des Tippens erscheinen Änderungen (z. B. Live-Sync): Die Tastatur bleibt offen, nichts flackert.
 
 **Kamera & Fotos**
-- [ ] Kamera öffnet die Rückkamera mit quadratischer Vorschau. Raster und Hinweis „Nahaufnahme/Totale“ sind sichtbar.
+- [ ] Kamera öffnet die Rückkamera mit quadratischer Vorschau. Raster und Foto-Nummer sind sichtbar.
 - [ ] Serienaufnahme: mehrere Fotos, dann „Fertig“. Speichern ist gesperrt, bis „Fotos werden verarbeitet“ verschwindet.
 - [ ] Kamera verweigern → Hinweis plus System-Kamera/Mediathek funktioniert.
 - [ ] Taschenlampe (falls angeboten), Umschalter Aufbau/Einleuchten: Sucherrand wechselt Blau/Gelb.
@@ -63,7 +63,7 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 - [ ] iPad quer: Liste links, Detail rechts. iPad hoch und iPhone: Detail als eigene Seite, Zurück-Geste schließt sie.
 - [ ] Lightbox: Pinch-Zoom, Doppeltipp, Wischen zum nächsten Kreis, nach unten wischen schließt.
 - [ ] Großbild-Ansicht: Fotos groß und scharf; Kreis-Kopfzeile bleibt beim Scrollen oben stehen; Detail öffnet als eigene Seite.
-- [ ] Bildansicht: Pfeile links/rechts blättern, auch über Kreise hinweg.
+- [ ] Bildansicht: Pfeile links/rechts blättern (Pfeile bleiben an derselben Stelle), auch über Kreise hinweg; „Nächster Kreis“ springt zum nächsten Kreis.
 - [ ] Filter Alle/Aufbau/Einleuchten bleibt beim Scrollen sichtbar. Sortierung immer Kreis aufsteigend.
 - [ ] Lichtdoku-Datei (alte App) importieren: eigene Veranstaltung, Fotos vollständig; zweiter Import legt nichts doppelt an.
 - [ ] Checkliste: abhaken, Fortschritt erscheint, Zurücksetzen funktioniert.
@@ -99,10 +99,10 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 2. **Fotos als eigene Datensätze** statt als Listen im Eintrag. Reihenfolge, Kategorie und Löschung sind einzeln zusammenführbar. Bilddaten sind unveränderlich, deshalb erzeugen Markieren und Ersetzen ein neues Foto. Beim Duplizieren einer Veranstaltung teilen sich die Fotos die Bilddaten und belegen keinen doppelten Speicher.
 3. **Einträge ohne Fotos** erscheinen als graue Karte „Ohne Foto“ (die Vorgabe sah nur Karten je Kategorie mit Fotos vor). Sonst wären reine Text-Einträge unsichtbar.
 4. **Rotlicht-Modus**: Kategorien sind dort zusätzlich durch Text-Tags und ein Streifenmuster unterscheidbar, weil Blau und Gelb im Rotlicht nicht mehr erkennbar sind. Fotos werden standardmäßig rot getönt (abschaltbar).
-5. **Bearbeitungsmodus** ist durch einen orangen Rand unter der Kopfleiste deutlich erkennbar. Im Ansichtsmodus sind Anlegen-Knöpfe ausgeblendet, das Abhaken in der Checkliste ist aber erlaubt.
+5. **Bearbeitungsmodus** ist durch einen orangen Rahmen um den ganzen Bildschirm deutlich erkennbar. Im Ansichtsmodus sind Anlegen-Knöpfe ausgeblendet, das Abhaken in der Checkliste ist aber erlaubt.
 6. **Schnell-Erfassung**: Kamera-Knopf → Fotos (Kategorie direkt in der Kamera wählbar) → Kreis eintippen → Speichern.
 7. **Zusammenführen gleicher Kreise** gilt für „123+124“ und „124+123“ gleichermaßen. Bei abweichenden Feldern gewinnt der neue Wert, alte Werte werden im Hinweis genannt, Bemerkungen werden verbunden. Doppelte Kreise, die erst beim Abgleich entstehen, werden markiert und lassen sich über „⋯ → zusammenführen“ bereinigen.
-8. **PDF**: 1–2 Fotos groß untereinander, 3–4 Fotos im 2×2-Raster, mehr als 4 auf Fortsetzungsseiten. Fotos sind mit „Nah/Totale“ beschriftet.
+8. **PDF**: 1–2 Fotos groß untereinander, 3–4 Fotos im 2×2-Raster, mehr als 4 auf Fortsetzungsseiten. Fotos sind durchnummeriert (ohne Zusatz „Nah/Totale“). Das Inhaltsverzeichnis zeigt Kreis, Kategorie, Gruppe und Filter und fasst bis 100 Einträge auf einer Seite. Dateiname: Veranstaltung_Datum.pdf.
 9. **PWA** (seit 1.2.0 aktiv): Manifest und Apple-Touch-Icon sind fest eingebunden. Der Service Worker liefert die App aus dem Cache und lädt neue Fassungen im Hintergrund nach (stale-while-revalidate). `version.json` wird immer frisch vom Server geholt.
 10. **Kreis-Feld nutzt `inputmode="tel"`**, weil das die Zahlentastatur mit „+“ liefert. Zusätzlich gibt es eine große „+“-Taste (handschuhtauglich). Leerzeichen und Komma werden automatisch zu „+“.
 11. **Demo**: Jedes Gerät legt beim ersten Start seine eigene Demo an. Nach einem Abgleich gibt es sie daher zweimal. Einfach eine löschen, oder in den Einstellungen „Demo beim ersten Start“ ausschalten.
