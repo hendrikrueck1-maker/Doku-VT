@@ -1,4 +1,4 @@
-# Doku VT 1.5.0 – Dokumentation
+# Doku VT 1.6.0 – Dokumentation
 
 Die App ist eine Datei (`index.html`, ca. 245 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
 
@@ -19,6 +19,7 @@ Die App ist eine Datei (`index.html`, ca. 245 KB), keine Abhängigkeiten, kein C
 | `Lightbox` | Vollbild: Pinch-Zoom, Doppeltipp, Wischen links/rechts (blättert über alle sichtbaren Karten), hoch/runter schließt, große Info-Einblendung |
 | `QR`, `QrScan` | Eigener QR-**Generator** (Version 1–40, L/M) und eigener **Decoder** (Finder-Suche, perspektivische Entzerrung, Reed-Solomon-Korrektur). Der Scanner nutzt `BarcodeDetector`, wo vorhanden, sonst den eigenen Decoder. Auf iPad/iPhone gibt es keinen BarcodeDetector, dort ist der eigene Decoder also nötig. |
 | `Pdf` | Eigener PDF-1.4-Generator: Helvetica mit WinAnsiEncoding (Umlaute), JPEG per DCTDecode, Deckblatt mit Inhaltsverzeichnis und Seitenzahlen |
+| `Legacy` | Import von JSON-Dateien der früheren Lichtdoku-App (`{show, entries}` mit `bilderAufbau`/`bilderEinleuchten` als Data-URLs). Feste IDs aus alten IDs (`lgs-`, `lge-`) und Bildinhalt (`lgb-` + Hash) → wiederholter Import idempotent. Original-JPEGs werden unverändert gespeichert, nur das Vorschaubild wird erzeugt. |
 | `Sync` + Adapter | Kern: Pakete bauen und einspielen, Status, Protokoll. Adapter mit gleichem Interface (`id, name, available(), push(), pull()`): `FileAdapter`, `PeerAdapter`/`PeerSession` (WebRTC), `ServerAdapter` (vorbereitet für eine spätere Version) |
 | `Ui` | Ebenen mit History-Eintrag (Android-Zurück, Wischgeste und Esc schließen die oberste Ebene), eigene Dialoge, Toasts, Busy-Anzeige |
 | `SetupView` | „Einrichtung & Züge“: Anzeige über der Liste, Bearbeitungsblatt. Daten im Show-Datensatz: `einrichtung` und je Zug ein Feld `z:<id>` (OLZ 1/2, BGZ 1/2 fest, weitere frei) → feldweiser Merge je Zug |
@@ -63,7 +64,8 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 - [ ] Lightbox: Pinch-Zoom, Doppeltipp, Wischen zum nächsten Kreis, nach unten wischen schließt.
 - [ ] Großbild-Ansicht: Fotos groß und scharf, Detail öffnet als eigene Seite.
 - [ ] Bildansicht: Pfeile links/rechts blättern, auch über Kreise hinweg.
-- [ ] Filter Alle/Aufbau/Einleuchten bleibt beim Scrollen sichtbar. Sortierung Kreis/Gruppe. Suche über alle Felder.
+- [ ] Filter Alle/Aufbau/Einleuchten bleibt beim Scrollen sichtbar. Sortierung immer Kreis aufsteigend.
+- [ ] Lichtdoku-Datei (alte App) importieren: eigene Veranstaltung, Fotos vollständig; zweiter Import legt nichts doppelt an.
 - [ ] Checkliste: abhaken, Fortschritt erscheint, Zurücksetzen funktioniert.
 - [ ] Rotlicht, Hell, Dimmer im dunklen Saal ausprobieren.
 
@@ -90,7 +92,7 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 
 ## 3. Bewusste Designentscheidungen und Abweichungen
 
-0. **Automatischer Test (ab 1.3.0, erweitert in 1.4.0):** 108 Prüfungen in Chromium mit simulierter Kamera – Start, Liste, Filter, Suche, Sortierung, Lightbox, Checkliste, Editor mit Kamera und Schnelltasten, Zusammenführen, Markieren, PDF (qpdf-Prüfung, Umlaute, Seitenzahl), Backup-Import auf zweitem Gerät, Sync-Paket, QR (auch gedreht), WebRTC-Live-Abgleich zwischen zwei Geräten, Einstellungen, iPad hoch und iPhone. Echte Geräte ersetzt das nicht: Safari-Teilen, mehrere Kameras und Taschenlampe bitte auf iPad/iPhone/Pixel prüfen.
+0. **Automatischer Test (ab 1.3.0, erweitert in 1.4.0):** 115 Prüfungen (inkl. Import der echten Garland-Datei) in Chromium mit simulierter Kamera – Start, Liste, Filter, Suche, Sortierung, Lightbox, Checkliste, Editor mit Kamera und Schnelltasten, Zusammenführen, Markieren, PDF (qpdf-Prüfung, Umlaute, Seitenzahl), Backup-Import auf zweitem Gerät, Sync-Paket, QR (auch gedreht), WebRTC-Live-Abgleich zwischen zwei Geräten, Einstellungen, iPad hoch und iPhone. Echte Geräte ersetzt das nicht: Safari-Teilen, mehrere Kameras und Taschenlampe bitte auf iPad/iPhone/Pixel prüfen.
 12. **Farbiger Rand nur in der Anzeige**, nicht ins Foto eingebrannt. So bleibt ein Foto korrekt, wenn es später in die andere Kategorie verschoben wird, und das PDF zeigt saubere Bilder.
 
 1. **Feld-Zeitstempel statt Eintrags-Zeitstempel.** Wenn zwei Leute denselben Eintrag ändern (einer die Bemerkung, einer den Filter), bleiben beide Änderungen erhalten. Das geht über die Vorgabe „Merge pro Eintrag“ hinaus.

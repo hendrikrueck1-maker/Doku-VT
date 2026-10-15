@@ -1,5 +1,11 @@
 # Änderungsprotokoll – Doku VT
 
+## 1.6.0 – 15.10.2026
+
+- **Import aus der früheren Lichtdoku-App:** Über „Importieren“ lassen sich jetzt auch JSON-Dateien der alten Lichtdoku-App (bis 1.8.x) einlesen. Jede Datei wird zu einer eigenen Veranstaltung. Die Fotos werden verlustfrei übernommen (Original-JPEGs, keine neue Kompression), Bemerkungen und Zeitstempel vollständig, Aufbau-/Einleuchten-Zuordnung 1:1. Kreis-Bereiche wie „531-535“ bleiben unverändert; Filter wie „501 + R119“ werden zu „501+R119“. Ein erneuter Import derselben Datei legt nichts doppelt an. Auch die ältere Fassung (kategorie + bild1/bild2) wird erkannt.
+- **Werkzeugleiste aufgeräumt:** Suchleiste und Sortierung nach Gruppe entfernt; sortiert wird immer nach Kreis aufsteigend (Aufbau vor Einleuchten). Zwei Zeilen: Alle/Aufbau/Einleuchten + Checkliste · Darstellung + Schalter Ansicht/Bearbeiten – auch auf dem Smartphone.
+- **Bildansicht:** Pfeile sitzen jetzt im unteren Drittel des Fotos (Daumenhöhe).
+
 ## 1.5.0 – 14.10.2026
 
 - **Pfeile in der Bildansicht:** Große Pfeile links und rechts zum Blättern, auch auf iPad und Smartphone (bisher nur am Computer). Am Anfang bzw. Ende ist der jeweilige Pfeil ausgegraut. Wischen funktioniert weiterhin.
