@@ -1,5 +1,10 @@
 # Änderungsprotokoll – Doku VT
 
+## 1.7.2 – 15.10.2026
+
+- **Live-Abgleich: Diagnose bei Fehlschlag.** Klappt die Verbindung nicht, zeigt die App jetzt, woran es liegt: verschiedene Netze (mit den Adressen beider Geräte), Mobilfunk/VPN, fehlende Adressen, nur verschlüsselte Adressen (…local) oder „selbe Netz, aber blockiert“ (Fritzbox lässt WLAN-Geräte nicht untereinander sprechen). Unter „Technische Details“ steht ein vollständiger Bericht, den man teilen kann. Der erste Hinweis landet auch im Protokoll der Diagnose.
+- **Live-Abgleich robuster:** Die Kamera läuft nach dem Scannen weiter, bis die Verbindung steht (Safari gibt die lokalen Netzadressen nur bei aktiver Kamera frei). Beim Anbieten wartet die App, bis die Kamera wirklich läuft, statt pauschal 0,4 s. Ein Abbruch der Verbindungsprüfung wird jetzt auch über den ICE-Status erkannt; Wartezeit 40 s.
+
 ## 1.7.1 – 15.10.2026
 
 - **Großbild-Ansicht:** Fotos ragten rechts über den Rahmen hinaus – sie sitzen jetzt mit gleichem Abstand innerhalb der Karte. Die Kreis-Kopfzeile ist eckig und deckt beim Anpinnen die ganze Kartenbreite ab (keine durchscheinenden Ecken mehr).

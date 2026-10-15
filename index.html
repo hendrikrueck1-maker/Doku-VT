@@ -610,7 +610,7 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '1.7.1';
+const APP_VERSION = '1.7.2';
 const DB_NAME = 'lichtdoku';
 const DB_VERSION = 1;
 const FORMAT_VERSION = 1;              // Format von Backup-/Sync-Paketen
@@ -2312,13 +2312,13 @@ const QrScan = {
             ctx.drawImage(video, 0, 0, c.width, c.height);
             txt = QR.decodeImage(ctx.getImageData(0, 0, c.width, c.height));
           }
-          if (txt && !stopped) { const keep = await onText(txt); if (!keep) { stop(); return; } }
+          if (txt && !stopped) { const keep = await onText(txt); if (keep === 'hold') { stopped = true; return; } if (!keep) { stop(); return; } }
         } catch (e) { /* weiter scannen */ }
         busy = false;
       }
       setTimeout(tick, 180);
     };
-    const stop = () => { stopped = true; stream.getTracks().forEach(t => t.stop()); video.srcObject = null; };
+    const stop = () => { stopped = true; stream.getTracks().forEach(t => t.stop()); if (video) video.srcObject = null; };
     tick();
     return { stop, native: !!detector };
   }
@@ -2876,11 +2876,74 @@ class PeerSession {
     this.dc = null; this.open = false; this.peerName = ''; this.peerId = '';
     this.frag = new Map(); this.need = new Set(); this.gotMeta = false; this.unsub = null; this.onstate = () => {};
     this.stats = { recv: 0, sent: 0 };
+    // Diagnose: Ablauf, eigene und fremde Verbindungsangebote, Verbindungsversuche
+    this.t0 = Date.now(); this.events = []; this.localSdp = ''; this.remoteSdp = ''; this.pairs = null; this.role = '';
     this.pc.onconnectionstatechange = () => {
-      const s = this.pc.connectionState;
-      if (s === 'failed') this._fail('Die direkte Verbindung kam nicht zustande. Sind beide Geräte im selben WLAN (nicht Gast-WLAN)?');
+      const s = this.pc.connectionState; this._ev('Verbindung: ' + s);
+      if (s === 'failed') this._failIce();
       if (s === 'disconnected' || s === 'closed') this._closed();
     };
+    this.pc.oniceconnectionstatechange = () => {
+      const s = this.pc.iceConnectionState; this._ev('ICE: ' + s);
+      if (s === 'failed') this._failIce();
+    };
+    this.pc.onicegatheringstatechange = () => this._ev('Adressen sammeln: ' + this.pc.iceGatheringState);
+  }
+  _ev(m) { this.events.push(`${((Date.now() - this.t0) / 1000).toFixed(1).padStart(5)} s  ${m}`); }
+  /** ICE gescheitert: erst die Verbindungsversuche auslesen, dann melden */
+  async _failIce() {
+    if (this.failing) return; this.failing = true;
+    await this.collectStats();
+    this._fail('Die direkte Verbindung kam nicht zustande.');
+  }
+  async collectStats() {
+    if (this.pairs || this.closedOnce) return;
+    try {
+      const st = await this.pc.getStats(), all = new Map(); st.forEach(r => all.set(r.id, r));
+      const adr = c => c ? `${c.address || c.ip || '?'}:${c.port || '?'} (${c.candidateType || '?'})` : '?';
+      this.pairs = [];
+      all.forEach(r => {
+        if (r.type !== 'candidate-pair') return;
+        this.pairs.push(`${adr(all.get(r.localCandidateId))} → ${adr(all.get(r.remoteCandidateId))}: ${r.state || '?'}, Anfragen ${r.requestsSent ?? '?'}, Antworten ${r.responsesReceived ?? '?'}`);
+      });
+    } catch (e) { this.pairs = ['getStats nicht verfügbar: ' + e.message]; }
+  }
+  static parseCands(sdp) {
+    return String(sdp || '').split(/\r?\n/).filter(l => l.startsWith('a=candidate:')).map(l => {
+      const p = l.slice(12).split(' ');
+      return { proto: (p[2] || '').toLowerCase(), addr: p[4] || '', port: p[5] || '', type: p[7] || '' };
+    });
+  }
+  /** Verständliche Hinweise aus den ausgetauschten Adressen ableiten */
+  analyse() {
+    const L = PeerSession.parseCands(this.localSdp), R = PeerSession.parseCands(this.remoteSdp);
+    const me = Sync.deviceName(), other = this.peerName || 'Das andere Gerät';
+    const v4 = c => /^\d+\.\d+\.\d+\.\d+$/.test(c.addr), mdns = c => /\.local$/i.test(c.addr);
+    const priv = a => /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(a), net = a => a.split('.').slice(0, 3).join('.');
+    const hints = [];
+    if (!this.remoteSdp) { hints.push('Der Code des anderen Geräts ist auf diesem Gerät nicht angekommen. Auf dem anbietenden Gerät muss zum Schluss der Antwort-Code gescannt werden.'); return hints; }
+    if (!L.length) hints.push(`${me} hat keine eigene Netzwerkadresse gefunden. WLAN eingeschaltet? VPN oder Werbeblocker-App aus?`);
+    if (!R.length) hints.push(`${other} hat keine Netzwerkadresse gemeldet. WLAN eingeschaltet? VPN aus?`);
+    if (L.length && L.every(mdns)) hints.push(`${me} hat seine Adresse nur verschlüsselt (…local) gemeldet. Das klappt nicht in jedem Netz. Ursache: Die Kamera lief beim Erstellen des Codes nicht – Kamerazugriff erlauben.`);
+    if (R.length && R.every(mdns)) hints.push(`${other} hat seine Adresse nur verschlüsselt (…local) gemeldet. Ursache: Die Kamera lief dort beim Erstellen des Codes nicht – Kamerazugriff erlauben.`);
+    const lv = [...new Set(L.filter(v4).map(c => c.addr))], rv = [...new Set(R.filter(v4).map(c => c.addr))];
+    const odd = [...lv.map(a => [me, a]), ...rv.map(a => [other, a])].filter(([, a]) => !priv(a));
+    odd.forEach(([d, a]) => hints.push(`${d} nutzt die Adresse ${a} – das sieht nach Mobilfunk oder VPN aus, nicht nach dem Theater-WLAN.`));
+    const lp = lv.filter(priv), rp = rv.filter(priv);
+    if (lp.length && rp.length) {
+      if (!lp.some(a => rp.some(b => net(a) === net(b)))) hints.push(`Die Geräte sind in verschiedenen Netzen: ${me} ${lp.join(', ')} · ${other} ${rp.join(', ')}. Eines hängt in einem anderen WLAN, im Gastnetz oder hinter einem Repeater mit eigenem Netz.`);
+      else hints.push(`Beide Geräte sind im selben Netz (${me} ${lp.join(', ')} · ${other} ${rp.join(', ')}), die Verbindung zwischen ihnen wird aber blockiert. Typische Ursache: Die Fritzbox lässt WLAN-Geräte nicht untereinander sprechen. In der Fritzbox unter „WLAN“ (je nach FRITZ!OS bei „Funknetz“ oder „Sicherheit“) einschalten, dass WLAN-Geräte untereinander kommunizieren dürfen. Im Gastnetz geht das meist gar nicht.`);
+    }
+    return hints;
+  }
+  /** Vollständiger Bericht zum Teilen */
+  report(msg) {
+    const fmt = sdp => { const c = PeerSession.parseCands(sdp); return c.length ? c.map(x => `  ${x.addr}:${x.port} ${x.proto} ${x.type}`).join('\n') : '  (keine)'; };
+    return [`Doku VT ${APP_VERSION} – Live-Diagnose`, `Gerät: ${Sync.deviceName()} · Rolle: ${this.role || '?'} · ${Utils.fmtDate(Date.now())}`,
+      `Browser: ${navigator.userAgent}`, `Meldung: ${msg || '-'}`, '',
+      'Eigene Adressen:', fmt(this.localSdp), `Adressen von ${this.peerName || 'Gegenstelle'}:`, this.remoteSdp ? fmt(this.remoteSdp) : '  (Code nicht angekommen)', '',
+      'Verbindungsversuche:', ...(this.pairs && this.pairs.length ? this.pairs.map(p => '  ' + p) : ['  (keine)']), '',
+      'Ablauf:', ...this.events.map(e => '  ' + e), '', 'Hinweise:', ...this.analyse().map(h => '  - ' + h)].join('\n');
   }
   _fail(msg) { Sync.log(msg, 'error'); this.onstate('error', msg); this.close(); }
   _closed() {
@@ -2906,22 +2969,26 @@ class PeerSession {
   }
   async createOffer() {
     this._bind(this.pc.createDataChannel('lichtdoku', { ordered: true }));
+    this.role = 'anbieten';
     await this.pc.setLocalDescription(await this.pc.createOffer());
     await this._gather();
+    this.localSdp = this.pc.localDescription.sdp;
     return PeerAdapter.encodeSignal({ r: 'o', id: Sync.deviceId, n: Sync.deviceName(), sdp: this.pc.localDescription.sdp });
   }
   async acceptOffer(sig) {
     if (sig.r !== 'o') throw new Error('Das ist ein Antwort-Code – bitte den Code des anderen Geräts nach „Verbindung anbieten“ scannen.');
     this.pc.ondatachannel = ev => this._bind(ev.channel);
+    this.role = 'antworten'; this.remoteSdp = sig.sdp; this.peerName = sig.n;
     await this.pc.setRemoteDescription({ type: 'offer', sdp: sig.sdp });
     await this.pc.setLocalDescription(await this.pc.createAnswer());
     await this._gather();
+    this.localSdp = this.pc.localDescription.sdp;
     this.peerName = sig.n;
     return PeerAdapter.encodeSignal({ r: 'a', id: Sync.deviceId, n: Sync.deviceName(), sdp: this.pc.localDescription.sdp });
   }
   async acceptAnswer(sig) {
     if (sig.r !== 'a') throw new Error('Das ist ein Angebots-Code – bitte den ANTWORT-Code des anderen Geräts scannen.');
-    this.peerName = sig.n;
+    this.peerName = sig.n; this.remoteSdp = sig.sdp; this._ev('Antwort-Code übernommen');
     await this.pc.setRemoteDescription({ type: 'answer', sdp: sig.sdp });
   }
   /* ---- Nachrichten (gestückelt, mit Gegendruck) ---- */
@@ -3609,16 +3676,19 @@ const PeerView = {
           <button class="btn" data-act="sharecode">${I('share')} Code als Text teilen</button></div>`, canvas };
     };
     const startScan = async (onCode) => {
+      if (scanner) { scanner.stop(); scanner = null; }
       const v = sh.body.querySelector('video');
       try {
+        // Nach dem Scannen läuft die Kamera weiter ('hold'): Safari gibt die lokalen
+        // Netzadressen nur frei, solange die Kamera aktiv ist. cleanup() beendet sie.
         scanner = await QrScan.start(v, async txt => {
           if (!/^LD1[zp]:/.test(txt)) return true;
-          await onCode(txt); return false;
+          await onCode(txt); return 'hold';
         });
         const m = sh.body.querySelector('.scanmode'); if (m) m.textContent = scanner.native ? 'Scanner: System (BarcodeDetector)' : 'Scanner: integrierter Doku VT-Decoder';
       } catch (err) { const m = sh.body.querySelector('.scanmode'); if (m) m.textContent = err.message; sh.body.querySelector('details.more').open = true; }
       const ok = sh.body.querySelector('[data-act=pasteok]');
-      if (ok) ok.onclick = async () => { const t = sh.body.querySelector('[data-in]').value.trim(); if (t) { if (scanner) { scanner.stop(); scanner = null; } await onCode(t); } };
+      if (ok) ok.onclick = async () => { const t = sh.body.querySelector('[data-in]').value.trim(); if (t) await onCode(t); };
     };
     const shareCode = code => {
       if (navigator.share) navigator.share({ text: code }).catch(() => {});
@@ -3639,10 +3709,23 @@ const PeerView = {
     const connected = () => { cleanup(); step(`<div class="bigstatus" data-state="live"><span class="dot"></span><div><h3>Verbunden</h3><p data-msg>Daten werden abgeglichen …</p></div></div><div class="pbar"><i></i></div>`); };
     const done = () => step(`<div class="bigstatus" data-state="ok"><span class="dot"></span><div><h3>Abgleich abgeschlossen</h3><p data-msg>Beide Geräte haben jetzt denselben Stand. Die Verbindung bleibt offen: Änderungen werden sofort übertragen, solange Doku VT auf beiden Geräten geöffnet ist.</p></div></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary big" data-close>Fertig</button><button class="btn big" data-act="disconnect">Trennen</button></div>`);
-    const failed = msg => { cleanup(false); step(`<div class="bigstatus" data-state="error"><span class="dot"></span><div><h3>Keine Verbindung</h3><p>${Utils.esc(msg)}</p></div></div>
-      <ul class="muted" style="font-size:14px;padding-left:20px"><li>Beide Geräte im selben WLAN? (kein Gast-WLAN, kein Mobilfunk)</li><li>Doku VT auf beiden Geräten im Vordergrund lassen.</li><li>Alternativ: Sync-Paket per AirDrop/Nearby Share.</li></ul>
-      <button class="btn big block" data-act="restart">Erneut versuchen</button>`); };
-    const waitConnect = () => { timer = setTimeout(() => { if (session && !session.open) failed('Zeitüberschreitung – die Geräte haben sich nicht gefunden.'); }, 30000); };
+    const failed = async msg => {
+      const s = session;
+      if (s) { if (s.shownFail) return; s.shownFail = true; await s.collectStats(); }
+      const hints = s ? s.analyse() : [], rep = s ? s.report(msg) : '';
+      cleanup(false);
+      if (sh.layer.closed) return;
+      step(`<div class="bigstatus" data-state="error"><span class="dot"></span><div><h3>Keine Verbindung</h3><p>${Utils.esc(msg)}</p></div></div>
+      ${hints.length ? `<div class="group"><h3>Was die Diagnose zeigt</h3>${hints.map(h => `<div class="item"><span class="lb">${Utils.esc(h)}</span></div>`).join('')}</div>` : ''}
+      <ul class="muted" style="font-size:14px;padding-left:20px"><li>Beide Geräte im selben WLAN? (kein Gast-WLAN, kein Mobilfunk, kein VPN)</li><li>Kamerazugriff auf beiden Geräten erlauben.</li><li>Doku VT auf beiden Geräten im Vordergrund lassen.</li><li>Alternativ: Sync-Paket per AirDrop/Nearby Share.</li></ul>
+      ${rep ? `<details class="more" style="margin-bottom:12px"><summary>${I('info', 'sm')} Technische Details ${I('arrowR', 'sm chev')}</summary>
+        <div class="inner" style="grid-template-columns:1fr"><textarea class="code" readonly style="min-height:220px">${Utils.esc(rep)}</textarea>
+        <button class="btn" data-act="sharerep">${I('share')} Diagnose teilen</button></div></details>` : ''}
+      <button class="btn big block" data-act="restart">Erneut versuchen</button>`);
+      const sb = sh.body.querySelector('[data-act=sharerep]'); if (sb) sb.onclick = () => shareCode(rep);
+      if (hints.length) Sync.log('Live-Diagnose: ' + hints[0], 'error');
+    };
+    const waitConnect = () => { timer = setTimeout(() => { if (session && !session.open) failed('Zeitüberschreitung – die Geräte haben sich nicht gefunden.'); }, 40000); };
 
     const offer = async () => {
       session = new PeerSession(); watch(session);
@@ -3653,8 +3736,9 @@ const PeerView = {
         try { await session.acceptAnswer(await PeerAdapter.decodeSignal(txt)); setMsgQr('Antwort erhalten – Verbindung wird aufgebaut …'); waitConnect(); }
         catch (err) { Ui.toast(err.message, 'err'); setTimeout(() => startScan(onAnswer), 0); }
       };
-      const scanP = startScan(onAnswer);
-      await Utils.sleep(400);
+      // erst warten, bis die Kamera wirklich läuft (oder abgelehnt wurde) – sonst fehlen die Adressen
+      await startScan(onAnswer);
+      if (sh.layer.closed) return;
       try {
         const code = await session.createOffer();
         const q = qrBox(code, '1. Diesen Code mit dem anderen Gerät scannen („Code scannen“):');
@@ -3662,7 +3746,6 @@ const PeerView = {
         if (q.canvas) w.querySelector('[data-qr]').appendChild(q.canvas); else w.querySelector('[data-qr]').textContent = 'Code zu groß – bitte als Text teilen.';
         w.querySelector('[data-act=sharecode]').onclick = () => shareCode(code);
       } catch (err) { failed('Verbindung konnte nicht vorbereitet werden: ' + err.message); }
-      await scanP;
     };
     const setMsgQr = t => { const w = sh.body.querySelector('[data-qrwrap]'); if (w) w.innerHTML = `<div class="bigstatus" data-state="pending"><span class="dot"></span><div><h3>Bitte warten</h3><p data-msg>${Utils.esc(t)}</p></div></div>`; const sb = sh.body.querySelector('.scanbox'); if (sb) sb.remove(); };
     const answer = () => {

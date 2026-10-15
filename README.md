@@ -1,6 +1,6 @@
 # Doku VT – Beleuchtungsdokumentation
 
-**Version 1.7.1** · Web-App für die Beleuchtungsdokumentation im Theater: Kreise mit Fotos (Aufbau/Einleuchten), PDF-Export, Checkliste und Geräte-Abgleich. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
+**Version 1.7.2** · Web-App für die Beleuchtungsdokumentation im Theater: Kreise mit Fotos (Aufbau/Einleuchten), PDF-Export, Checkliste und Geräte-Abgleich. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
 
 ## Auf GitHub veröffentlichen
 
