@@ -1,5 +1,12 @@
 # Änderungsprotokoll – Doku VT
 
+## 1.7.0 – 15.10.2026
+
+- **Leiste immer zweizeilig:** Zeile 1 Alle/Aufbau/Einleuchten + Checkliste, Zeile 2 Darstellung + Schalter Ansicht/Bearbeiten – auf jeder Bildschirmbreite und auch bei vergrößerter Systemschrift (z. B. Pixel).
+- **Eintrag neu angeordnet:** Kreis und Adresse nebeneinander · Gruppe und Filter nebeneinander, die Filter-Schnelltasten direkt darunter · Bemerkung · Fotos Aufbau/Einleuchten · „Weitere Angaben“ unter den Fotos. Lange Kreise werden im Feld automatisch kleiner geschrieben.
+- **Großbild-Ansicht: Kreis immer sichtbar.** Jede Karte hat eine farbige Kopfzeile (Kategorie, Kreis, Anzahl Fotos), die beim Scrollen oben unter der Leiste stehen bleibt, bis der nächste Kreis sie ablöst. Antippen öffnet das Detail.
+- **Klarere Trennung zwischen Kreisen** in der Großbild-Ansicht: farbiger Rahmen um jede Karte und deutlich größerer Abstand.
+
 ## 1.6.0 – 15.10.2026
 
 - **Import aus der früheren Lichtdoku-App:** Über „Importieren“ lassen sich jetzt auch JSON-Dateien der alten Lichtdoku-App (bis 1.8.x) einlesen. Jede Datei wird zu einer eigenen Veranstaltung. Die Fotos werden verlustfrei übernommen (Original-JPEGs, keine neue Kompression), Bemerkungen und Zeitstempel vollständig, Aufbau-/Einleuchten-Zuordnung 1:1. Kreis-Bereiche wie „531-535“ bleiben unverändert; Filter wie „501 + R119“ werden zu „501+R119“. Ein erneuter Import derselben Datei legt nichts doppelt an. Auch die ältere Fassung (kategorie + bild1/bild2) wird erkannt.

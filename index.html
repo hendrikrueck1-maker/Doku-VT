@@ -166,7 +166,11 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 /* ---------- Show-Ansicht ---------- */
 .toolbar{position:sticky;z-index:30;background:var(--bg);padding:10px calc(var(--sar) + var(--gut)) 10px calc(var(--sal) + var(--gut));
   border-bottom:1px solid var(--line);box-shadow:0 8px 16px -12px rgba(0,0,0,.6)}
-.toolbar .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.toolbar .row{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;min-width:0}
+.toolbar .katbtn{flex:0 1 auto;min-width:0;white-space:nowrap}
+.toolbar .seg{flex:none}
+.modesw{flex:0 1 auto;min-width:0}
+.modesw .lab{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .toolbar .row + .row{margin-top:8px}
 .search{position:relative;flex:1 1 220px;min-width:160px}
 .search input{width:100%;height:var(--tap);border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surf);padding:0 42px 0 42px;font-size:16px;outline:none}
@@ -199,12 +203,12 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .modesw[aria-checked="true"] .trk{background:var(--edit);border-color:var(--edit)}
 .modesw[aria-checked="true"] .knob{transform:translateX(24px);background:#fff}
 .modesw[aria-checked="true"]{border-color:var(--edit)}
-@media (max-width:440px){
-  .toolbar .row:nth-child(2){flex-wrap:nowrap}
+@media (max-width:620px){
   .toolbar .seg button{min-width:40px;padding:0 8px}
-  .modesw{gap:6px;padding:0 10px;font-size:13px;min-width:0}
+  .modesw{gap:6px;padding:0 10px;font-size:13px}
   .modesw .lab svg{display:none}
   .modesw .trk{width:46px}.modesw[aria-checked="true"] .knob{transform:translateX(14px)}}
+@media (max-width:360px){.toolbar .katbtn .cnt{display:none}}
 .progress-strip{display:flex;gap:14px;align-items:center;font-size:13px;color:var(--text2);flex-wrap:wrap}
 .progress-strip .pb{display:flex;align-items:center;gap:8px;min-width:160px;flex:1}
 .progress-strip .pb .bar{flex:1;height:8px;background:var(--surf3);border-radius:4px;overflow:hidden}
@@ -266,8 +270,24 @@ html[data-theme="red"] .tag{color:#000}
 @media (max-width:520px){.cards:not(.grid) .card .th:nth-child(2){display:none}.cards:not(.grid) .card .th{width:64px;height:64px}}
 .card.done .info,.card.done .kcol{opacity:.55}
 .card .dup{position:absolute;top:8px;right:8px;font-size:11px;font-weight:700;color:var(--edit);background:var(--edit-soft);padding:2px 6px;border-radius:5px}
-/* Großbild-Ansicht: alle Fotos groß, Infos darunter, Kreis rechts */
-.cards.big{gap:16px}
+/* Großbild-Ansicht: alle Fotos groß; Kreis-Kopfzeile bleibt beim Scrollen oben stehen */
+.cards.big{gap:34px}
+.cards.big .card{overflow:visible;border:2px solid var(--k);border-radius:var(--r);flex-direction:column}
+.cards.big .card .hit{width:100%}
+.cards.big .card .strip{display:none}
+.cards.big .card .kcol{display:none}
+.cards.big .card .info .tag{display:none}
+.cards.big .card .info:not(:has(.chips)):not(:has(.note)){display:none}
+.bighead{position:sticky;top:calc(var(--stickytop, 120px) - 1px);z-index:5;display:flex;align-items:center;gap:12px;width:100%;
+  min-height:58px;padding:6px 14px;border:0;border-radius:calc(var(--r) - 2px) calc(var(--r) - 2px) 0 0;
+  background:var(--k);color:var(--bg);text-align:left;box-shadow:0 6px 14px -8px rgba(0,0,0,.7)}
+.bighead .tag{background:rgba(0,0,0,.22);color:inherit;border:0}
+.bighead .bk{flex:1;min-width:0;font-family:var(--mono);font-weight:800;font-size:clamp(24px,6.5vw,34px);line-height:1.05;overflow-wrap:anywhere;display:flex;align-items:baseline;gap:8px}
+.bighead .bk small{font-family:var(--font);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.bighead .bn{font-family:var(--mono);font-size:13px;font-weight:700;opacity:.75;white-space:nowrap}
+.card[data-k="A"] .bighead{color:var(--blue-ink)} .card[data-k="E"] .bighead{color:var(--yellow-ink)}
+.card[data-k="N"] .bighead{color:var(--text)}
+html[data-theme="red"] .bighead{background:var(--surf3);color:var(--text)}
 .cards.big .card .hit{flex-wrap:wrap;padding:12px;gap:12px}
 .cards.big .card .thumbs{flex:1 1 100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
 .cards.big .card .th{width:100%;height:auto;aspect-ratio:1;border-radius:12px}
@@ -386,7 +406,12 @@ html[data-theme="red"] .toast{background:#2a0606;color:var(--text);border:1px so
 /* Formular (Editor) */
 .form{display:grid;gap:14px}
 .f-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-@media (max-width:600px){.f-row{grid-template-columns:1fr 1fr}.f-row .f.kreisf{grid-column:1/-1}}
+.f-row.ka{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.f-row.gf{grid-template-columns:1fr 1fr}
+.f-row.ka .f.kreisf{grid-column:auto}
+.f-row.ka #ed-adresse{height:60px;font-size:18px}
+.f-row.gf + .qkeys{margin-top:-6px}
+@media (max-width:600px){.f-row{grid-template-columns:1fr 1fr}.f-row.ka{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:8px}.f-row.ka .plusbtn{width:52px}}
 .f label{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px 2px}
 .f input,.f textarea,.f select{width:100%;border:1px solid var(--line2);background:var(--surf);border-radius:var(--r-sm);padding:0 14px;height:52px;font-size:17px;outline:none;transition:border-color .15s}
 .f textarea{height:auto;min-height:96px;padding:12px 14px;resize:vertical;line-height:1.45}
@@ -580,7 +605,7 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '1.6.0';
+const APP_VERSION = '1.7.0';
 const DB_NAME = 'lichtdoku';
 const DB_VERSION = 1;
 const FORMAT_VERSION = 1;              // Format von Backup-/Sync-Paketen
@@ -3142,6 +3167,9 @@ const Views = {
       : ph.slice(0, 2).map((p, i) => `<span class="th" data-act="lb" data-i="${i}">${this.thumbImg(p.b)}${i === 1 && ph.length > 2 ? `<span class="more">+${ph.length - 2}</span>` : ''}</span>`).join('');
     const dup = dupKeys.has(Utils.kreisTokens(e.f.kreis).sort().join('+'));
     return `<article class="card ${sel ? 'sel' : ''} ${checklist && checked ? 'done' : ''}" data-k="${it.kat}" data-key="${it.key}">
+      ${big ? `<button class="bighead" data-act="open" aria-label="Kreis ${Utils.esc(e.f.kreis || 'ohne Nummer')} öffnen"><span class="tag ${it.kat}">${it.kat === 'N' ? 'Ohne Foto' : KAT[it.kat].name}</span>
+        <span class="bk"><small>Kreis</small>${e.f.kreis ? Utils.esc(e.f.kreis) : '<span class="muted">ohne</span>'}</span>
+        <span class="bn">${ph.length} Foto${ph.length === 1 ? '' : 's'}</span></button>` : ''}
       <div class="strip"></div>
       <button class="hit" data-act="open" aria-label="${Utils.esc(`Kreis ${e.f.kreis || 'ohne Nummer'}, ${KAT[it.kat].name}`)}">
         ${thumbs ? `<span class="thumbs">${thumbs}</span>` : ''}
@@ -3202,17 +3230,21 @@ const Editor = {
     sh.el.dataset.editor = '1';
     const extraOpen = ['geraet', 'dmx', 'position', 'farbe'].some(k => f0[k]);
     sh.body.innerHTML = `<form class="form" autocomplete="off" onsubmit="return false">
-      <div class="f kreisf"><label for="ed-kreis">Kreis</label>
-        <div class="inwrap"><input id="ed-kreis" name="kreis" inputmode="tel" enterkeyhint="next" placeholder="z. B. 123+124" value="${Utils.esc(f0.kreis)}" autocapitalize="off" spellcheck="false">
-        <button type="button" class="plusbtn" data-act="plus" aria-label="Plus-Zeichen einfügen">+</button></div></div>
-      <div class="f-row">
+      <div class="f-row ka">
+        <div class="f kreisf"><label for="ed-kreis">Kreis</label>
+          <div class="inwrap"><input id="ed-kreis" name="kreis" inputmode="tel" enterkeyhint="next" placeholder="z. B. 123+124" value="${Utils.esc(f0.kreis)}" autocapitalize="off" spellcheck="false">
+          <button type="button" class="plusbtn" data-act="plus" aria-label="Plus-Zeichen einfügen">+</button></div></div>
+        <div class="f mono"><label for="ed-adresse">Adresse</label><input id="ed-adresse" name="adresse" enterkeyhint="next" placeholder="12/301" value="${Utils.esc(f0.adresse)}" autocapitalize="off" spellcheck="false"></div>
+      </div>
+      <div class="f-row gf">
         <div class="f mono"><label for="ed-gruppe">Gruppe</label><input id="ed-gruppe" name="gruppe" inputmode="tel" enterkeyhint="next" value="${Utils.esc(f0.gruppe)}" spellcheck="false"></div>
         <div class="f mono"><label for="ed-filter">Filter</label><input id="ed-filter" name="filter" enterkeyhint="next" placeholder="z. B. L201, nc" value="${Utils.esc(f0.filter)}" autocapitalize="off" spellcheck="false"></div>
-        <div class="f mono"><label for="ed-adresse">Adresse</label><input id="ed-adresse" name="adresse" enterkeyhint="next" placeholder="z. B. 12/301" value="${Utils.esc(f0.adresse)}" autocapitalize="off" spellcheck="false"></div>
       </div>
-      <div class="f"><label>Filter-Schnelltasten <span style="text-transform:none;letter-spacing:0;font-weight:500">· Antippen setzt, nochmal antippen entfernt</span></label>
-        <div class="qkeys" data-qkeys role="group" aria-label="Filter-Schnelltasten"></div></div>
+      <div class="qkeys" data-qkeys role="group" aria-label="Filter-Schnelltasten: antippen setzt, nochmal antippen entfernt"></div>
       <div class="f"><label for="ed-bem">Bemerkung</label><textarea id="ed-bem" name="bemerkung" rows="3" placeholder="Wo steckt es, was ist zu beachten?">${Utils.esc(f0.bemerkung)}</textarea></div>
+      ${['A', 'E'].map(k => `<section class="pk" data-k="${k}"><div class="ph"><span class="tag ${k}">${KAT[k].name}</span><h3></h3><span class="n"></span>
+          <button type="button" class="btn ${k === 'A' ? 'blue' : 'yellow'}" data-act="cam" data-k="${k}">${I('camera')} Foto</button></div>
+          <div class="pgrid" data-k="${k}"></div></section>`).join('')}
       <details class="more" ${extraOpen ? 'open' : ''}><summary>${I('layers', 'sm')} Weitere Angaben <span class="muted" style="font-weight:400">Gerät, DMX, Position, Farbe</span>${I('arrowR', 'sm chev')}</summary>
         <div class="inner">
           <div class="f"><label for="ed-geraet">Gerät / Scheinwerfer</label><input id="ed-geraet" name="geraet" value="${Utils.esc(f0.geraet)}" placeholder="z. B. ETC Source Four 26°"></div>
@@ -3220,9 +3252,6 @@ const Editor = {
           <div class="f"><label for="ed-pos">Position / Zug</label><input id="ed-pos" name="position" value="${Utils.esc(f0.position)}" placeholder="z. B. 3. Zug, Portal rechts"></div>
           <div class="f"><label for="ed-farbe">Farbe / Gobo</label><input id="ed-farbe" name="farbe" value="${Utils.esc(f0.farbe)}" placeholder="z. B. L201, Gobo Wald"></div>
         </div></details>
-      ${['A', 'E'].map(k => `<section class="pk" data-k="${k}"><div class="ph"><span class="tag ${k}">${KAT[k].name}</span><h3></h3><span class="n"></span>
-          <button type="button" class="btn ${k === 'A' ? 'blue' : 'yellow'}" data-act="cam" data-k="${k}">${I('camera')} Foto</button></div>
-          <div class="pgrid" data-k="${k}"></div></section>`).join('')}
       ${ex ? `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
         <button type="button" class="btn danger" data-act="del">${I('trash')} Eintrag löschen</button></div>` : ''}
     </form>`;
@@ -3254,7 +3283,10 @@ const Editor = {
     filterIn.addEventListener('input', renderQ);
     renderQ();
     form.addEventListener('input', markDirty);
-    kreisIn.addEventListener('blur', () => { const n = Utils.normKreis(kreisIn.value); if (n !== kreisIn.value) kreisIn.value = n; });
+    kreisIn.addEventListener('blur', () => { const n = Utils.normKreis(kreisIn.value); if (n !== kreisIn.value) kreisIn.value = n; fitKreis(); });
+    // lange Kreise (z. B. 12+17+103+113+628) kleiner schreiben, damit alles sichtbar bleibt
+    const fitKreis = () => { const n = kreisIn.value.length; kreisIn.style.fontSize = n > 14 ? '16px' : n > 10 ? '19px' : n > 7 ? '22px' : ''; };
+    kreisIn.addEventListener('input', fitKreis); fitKreis();
     // Eingabe-Navigation: „Weiter“ springt ins nächste Feld
     form.addEventListener('keydown', e => {
       if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
@@ -3993,6 +4025,9 @@ const App = {
     }
     this.renderToolbar(); this.renderList(); this.renderDetail();
     this.updatePill();
+    const tb = main.querySelector('.toolbar');
+    if (tb && !tb._ro) { tb._ro = new ResizeObserver(() => this.stickyTop()); tb._ro.observe(tb); }
+    this.stickyTop();
   },
   renderToolbar() {
     const st = this.state, main = document.getElementById('main');
