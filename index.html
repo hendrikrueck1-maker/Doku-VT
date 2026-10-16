@@ -741,8 +741,20 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
 <body>
 <div id="app">
   <header class="appbar" id="appbar"><div class="appbar-row" id="appbarRow"></div></header>
-  <main id="main"></main>
+  <main id="main"><div id="boot" style="padding:48px 24px;text-align:center;color:#9aa4b2;font:16px/1.5 system-ui,-apple-system,sans-serif">Doku VT wird gestartet …</div></main>
 </div>
+<script>
+/* Startschutz: Fehler beim Start sichtbar anzeigen statt eines schwarzen Bildes */
+window.Boot = {
+  started: false,
+  show(html) { var m = document.getElementById('main'); if (m) m.innerHTML = '<div style="padding:40px 22px;max-width:560px;margin:0 auto;color:#e6e9ee;font:16px/1.5 system-ui,-apple-system,sans-serif">' + html +
+    '<p><button onclick="location.reload()" style="font:inherit;font-weight:700;min-height:48px;padding:0 22px;border-radius:12px;border:0;background:#e6e9ee;color:#111;margin-top:8px">Neu laden</button></p></div>'; },
+  wait() { if (!this.started) this.show('<h3 style="margin:0 0 8px">Der Datenspeicher antwortet noch nicht</h3><p>Ist Doku VT noch in einem anderen Fenster offen (z. B. in Safari <b>und</b> auf dem Home-Bildschirm, oder in einem zweiten Tab)? Dort bitte schließen – der Start geht dann von selbst weiter. Sonst „Neu laden“ tippen.</p><p style="color:#9aa4b2;font-size:14px">Deine Daten sind davon nicht betroffen.</p>'); },
+  fail(msg) { if (!this.started) this.show('<h3 style="margin:0 0 8px">Doku VT konnte nicht starten</h3><p>Bitte „Neu laden“ tippen. Hilft das nicht, diese Meldung (Bildschirmfoto) weitergeben:</p><pre style="white-space:pre-wrap;background:#1a1f27;padding:12px;border-radius:10px;font-size:13px">' + String(msg).replace(/[<>&]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]; }) + '</pre><p style="color:#9aa4b2;font-size:14px">Deine Daten sind davon nicht betroffen.</p>'); }
+};
+window.addEventListener('error', function (e) { Boot.fail((e.message || 'Fehler') + (e.filename ? '\n' + e.filename.split('/').pop() + ':' + e.lineno : '')); });
+window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason && (e.reason.stack || e.reason.message) || e.reason); });
+</script>
 <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 <div id="dimmer" aria-hidden="true"></div>
 <noscript><p style="padding:20px">Doku VT benötigt JavaScript.</p></noscript>
@@ -756,9 +768,13 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.4.0';
+const APP_VERSION = '2.4.1';
 const DB_NAME = 'lichtdoku';
-const DB_VERSION = 2;                  // 2: Store „runs“ (Vorstellungs-Durchgänge); bestehende Stores unverändert
+/* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
+   bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
+   aber eingefroren und gibt sie nie frei → der Start hing (schwarzes Bild). Deshalb: nie wieder ein Update.
+   Neue Datensatzarten kommen in den vorhandenen Speicher „meta“ (Durchgänge: Schlüssel „run:<id>“). */
+const DB_STORES = ['shows', 'entries', 'photos', 'fulls', 'thumbs', 'meta'];
 const FORMAT_VERSION = 2;              // Format von Backup-/Sync-Paketen (2: Abteilungen, Filter je Abteilung)
 
 /* =====================================================================
@@ -1150,8 +1166,12 @@ const Store = {
     return new Promise((resolve, reject) => {
       if (!globalThis.indexedDB) { reject(new StoreError('Dieser Browser bietet keinen lokalen Datenspeicher (IndexedDB). Privater Modus?')); return; }
       let req;
-      try { req = indexedDB.open(DB_NAME, DB_VERSION); } catch (e) { reject(new StoreError('Datenspeicher konnte nicht geöffnet werden.', e)); return; }
-      req.onupgradeneeded = () => {
+      let settled = false;
+      const done = fn => v => { settled = true; clearTimeout(slow); fn(v); };
+      // antwortet der Speicher nicht, nach 5 s einen sichtbaren Hinweis zeigen (Start läuft weiter, sobald er frei ist)
+      const slow = setTimeout(() => { if (!settled) Boot.wait(); }, 5000);
+      try { req = indexedDB.open(DB_NAME); } catch (e) { done(reject)(new StoreError('Datenspeicher konnte nicht geöffnet werden.', e)); return; }
+      req.onupgradeneeded = () => {           // nur beim allerersten Start (Datenbank existiert noch nicht)
         const db = req.result;
         // Metadaten (klein, werden komplett in den Speicher geladen)
         if (!db.objectStoreNames.contains('shows')) db.createObjectStore('shows', { keyPath: 'id' });
@@ -1161,16 +1181,26 @@ const Store = {
         if (!db.objectStoreNames.contains('fulls')) db.createObjectStore('fulls', { keyPath: 'id' });
         if (!db.objectStoreNames.contains('thumbs')) db.createObjectStore('thumbs', { keyPath: 'id' });
         if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta', { keyPath: 'k' });
-        // ab 2.3.0: Durchgänge der Vorstellungs-Checkliste (je Haken ein Feld „h:<Punkt>“ → feldweise zusammenführbar)
-        if (!db.objectStoreNames.contains('runs')) db.createObjectStore('runs', { keyPath: 'id' }).createIndex('showId', 'showId');
       };
       req.onsuccess = () => {
-        this.db = req.result;
+        const db = req.result;
+        // fehlt ein Grund-Speicher (sollte nie vorkommen): einmalig gezielt anlegen
+        const missing = DB_STORES.filter(n => !db.objectStoreNames.contains(n));
+        if (missing.length) {
+          const v = db.version + 1; db.close();
+          const r2 = indexedDB.open(DB_NAME, v);
+          r2.onupgradeneeded = () => { const d = r2.result; missing.forEach(n => { if (!d.objectStoreNames.contains(n)) d.createObjectStore(n, { keyPath: n === 'meta' ? 'k' : 'id' }); }); };
+          r2.onsuccess = () => { this.db = r2.result; this.db.onversionchange = () => this.db.close(); done(resolve)(this.db); };
+          r2.onerror = () => done(reject)(new StoreError('Datenspeicher konnte nicht eingerichtet werden.', r2.error));
+          r2.onblocked = () => Boot.wait();
+          return;
+        }
+        this.db = db;
         this.db.onversionchange = () => { this.db.close(); Ui && Ui.toast('Doku VT wurde in einem anderen Tab aktualisiert – bitte neu laden.', 'warn'); };
-        resolve(this.db);
+        done(resolve)(this.db);
       };
-      req.onerror = () => reject(new StoreError('Datenspeicher konnte nicht geöffnet werden.', req.error));
-      req.onblocked = () => reject(new StoreError('Datenspeicher ist blockiert – bitte andere Doku VT-Tabs schließen.'));
+      req.onerror = () => done(reject)(new StoreError('Datenspeicher konnte nicht geöffnet werden.', req.error));
+      req.onblocked = () => Boot.wait();
     });
   },
   /** Transaktion: fn(stores) darf Requests absetzen; Promise erfüllt sich erst bei „complete“ (atomar). */
@@ -1258,8 +1288,11 @@ const Repo = {
   listeners: new Set(),
 
   async load() {
-    const [s, e, p, u] = await Promise.all([Store.getAll('shows'), Store.getAll('entries'), Store.getAll('photos'), Store.getAll('runs')]);
-    s.forEach(r => this.shows.set(r.id, r)); e.forEach(r => this.entries.set(r.id, r)); p.forEach(r => this.photos.set(r.id, r)); u.forEach(r => this.runs.set(r.id, r));
+    const hasRunStore = Store.db.objectStoreNames.contains('runs');      // nur Datenbanken aus 2.3.0/2.4.0
+    const [s, e, p, m, u0] = await Promise.all([Store.getAll('shows'), Store.getAll('entries'), Store.getAll('photos'), Store.getAll('meta'), hasRunStore ? Store.getAll('runs') : []]);
+    s.forEach(r => this.shows.set(r.id, r)); e.forEach(r => this.entries.set(r.id, r)); p.forEach(r => this.photos.set(r.id, r));
+    const u = m.filter(x => typeof x.k === 'string' && x.k.startsWith('run:') && x.v && x.v.id).map(x => x.v);
+    for (const r of [...u0, ...u]) { const cur = this.runs.get(r.id); this.runs.set(r.id, cur ? Rec.merge(cur, r).rec : r); }
     [...s, ...e, ...p, ...u].forEach(r => Clock.observe(r.mod || 0));
     this._byEntry = null;
   },
@@ -1331,9 +1364,9 @@ const Repo = {
 
   /* ---------- Schreiben (jeweils eine atomare Transaktion) ---------- */
   async _write({ shows = [], entries = [], photos = [], fulls = [], thumbs = [], runs = [] }, local = true) {
-    const names = ['shows', 'entries', 'photos', 'fulls', 'thumbs', 'runs'];
+    const names = ['shows', 'entries', 'photos', 'fulls', 'thumbs', 'meta'];
     await Store.tx(names, 'readwrite', s => {
-      shows.forEach(r => s.shows.put(r)); entries.forEach(r => s.entries.put(r)); photos.forEach(r => s.photos.put(r)); runs.forEach(r => s.runs.put(r));
+      shows.forEach(r => s.shows.put(r)); entries.forEach(r => s.entries.put(r)); photos.forEach(r => s.photos.put(r)); runs.forEach(r => s.meta.put({ k: 'run:' + r.id, v: r }));
       fulls.forEach(r => s.fulls.put(r)); thumbs.forEach(r => s.thumbs.put(r));
     });
     this._cache('shows', shows); this._cache('entries', entries); this._cache('photos', photos); this._cache('runs', runs);
@@ -5273,7 +5306,8 @@ const SettingsView = {
         if (!await Ui.confirm('Wirklich ALLES löschen?', 'Alle Veranstaltungen, Einträge und Fotos auf diesem Gerät werden endgültig entfernt. Auf anderen Geräten bleiben die Daten erhalten. Vorher ein Backup erstellen!', 'Weiter', true)) return;
         const t = await Ui.prompt('Zur Bestätigung LÖSCHEN eintippen', '', 'LÖSCHEN');
         if (t !== 'LÖSCHEN') { Ui.toast('Abgebrochen'); return; }
-        await Store.tx(['shows', 'entries', 'photos', 'fulls', 'thumbs', 'runs', 'meta'], 'readwrite', s => { ['shows', 'entries', 'photos', 'fulls', 'thumbs', 'runs'].forEach(n => s[n].clear()); s.meta.delete('syncState'); s.meta.delete('demoDone'); });
+        const rs = Store.db.objectStoreNames.contains('runs') ? ['runs'] : [], runIds = [...Repo.runs.keys()];
+        await Store.tx(['shows', 'entries', 'photos', 'fulls', 'thumbs', ...rs, 'meta'], 'readwrite', s => { ['shows', 'entries', 'photos', 'fulls', 'thumbs', ...rs].forEach(n => s[n].clear()); s.meta.delete('syncState'); s.meta.delete('demoDone'); runIds.forEach(id => s.meta.delete('run:' + id)); });
         location.hash = ''; location.reload();
       }
     });
@@ -5427,7 +5461,7 @@ const App = {
       await Settings.load();
       await Sync.init();
       await Repo.load();
-    } catch (err) { this.fatal(err); return; }
+    } catch (err) { Boot.started = true; this.fatal(err); return; }
     if (!Repo.shows.size && Settings.v.demoOnFirstStart && !(await Store.metaGet('demoDone', false))) {
       try { await Demo.create(); } catch (e) { console.warn('Demo nicht angelegt', e); }
     }
@@ -5451,6 +5485,7 @@ const App = {
     window.addEventListener('beforeunload', e => { if (document.querySelector('[data-editor]')) { e.preventDefault(); e.returnValue = ''; } });
     new ResizeObserver(() => this.stickyTop()).observe(document.getElementById('appbar'));
     this.route();
+    Boot.started = true;            // ab hier meldet die App Fehler selbst (Toast/Dialog)
     Pwa.init();
   },
   fatal(err) {

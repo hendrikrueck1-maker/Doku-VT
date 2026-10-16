@@ -1,5 +1,13 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.4.1 – 16.10.2026
+
+Fehlerbehebung: Die App blieb beim Start in einem schwarzen Bild hängen.
+
+- **Ursache:** 2.3.0 hat die Datenbank auf Version 2 erweitert. Ein solches Datenbank-Update muss warten, bis jede andere offene Doku VT-Instanz die Datenbank freigibt. Auf iPad/iPhone (und teils Android) wird eine App im Hintergrund aber eingefroren und gibt sie nie frei – der Start wartete endlos, ohne Meldung.
+- **Behebung:** Die Datenbank wird jetzt **ohne Versionsnummer** geöffnet, es gibt kein Datenbank-Update mehr. Durchgänge der Vorstellungs-Checkliste liegen im vorhandenen Speicher „meta“ (Schlüssel „run:<id>“). Datenbanken aus 2.3.0/2.4.0 (mit eigenem Speicher „runs“) werden weiter gelesen – nichts geht verloren.
+- **Nie mehr schwarz:** Beim Start steht sofort „Doku VT wird gestartet …“. Antwortet der Datenspeicher nach 5 Sekunden nicht, erscheint ein Hinweis (anderes Fenster schließen) mit „Neu laden“. Ein Fehler beim Start wird mit Meldung angezeigt.
+
 ## 2.4.0 – 16.10.2026
 
 Überarbeitung nach der ersten Durchsicht: übersichtlicher, leichter lesbar, in allen Abteilungen gleich aufgebaut.
