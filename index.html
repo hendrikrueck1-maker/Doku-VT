@@ -369,12 +369,22 @@ html[data-theme="red"] .bighead{background:var(--surf3);color:var(--text)}
 .cards.grid .card .note{-webkit-line-clamp:1;font-size:13px}
 .cards.grid .card .chk{width:auto;height:52px;border-left:0;border-top:1px solid var(--line)}
 .sentinel{height:40px}
+.bhint{display:flex;align-items:center;gap:8px;margin:18px 2px -6px;padding:8px 12px;border-radius:var(--r-sm);background:var(--surf);border:1px solid var(--line);color:var(--text2);font-size:13px;font-weight:600}
 .listfoot{text-align:center;color:var(--muted);font-size:13px;padding:24px 0}
 
 /* Einrichtung & Züge */
 .setup{margin:4px 0 6px;border:1px solid var(--line);border-radius:var(--r);background:var(--surf);overflow:hidden}
 .setup.has-allg{border:2px solid var(--pink);box-shadow:0 0 0 3px var(--pink-soft)}
 .setup .hint{color:var(--pink);display:inline-flex}
+.setup + .setup{margin-top:10px}
+.setup>summary [data-setup-edit] + [data-setup-edit]{margin-left:-2px}
+.ablsec{display:grid;gap:6px}.ablsec.ed{gap:10px;border:1px solid var(--line);border-radius:var(--r);padding:12px;background:var(--surf)}
+.ablh{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--da)}
+ol.abl{margin:0;padding-left:24px;display:grid;gap:6px}ol.abl li{white-space:pre-wrap;color:var(--text)}
+.alink{display:inline-flex;align-items:center;gap:4px;margin-left:8px;min-height:32px;padding:0 8px;border-radius:8px;border:1px solid var(--line2);background:var(--surf2);color:var(--text2);font-size:13px;font-weight:600}
+.astep .arow{display:flex;gap:8px;align-items:center}
+.poseb{grid-column:1/-1;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.zcard .zn .tag{margin-left:4px}
 .setup>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:52px;padding:0 10px 0 14px}
 .setup>summary::-webkit-details-marker{display:none}
 .setup>summary h3{margin:0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);flex:1}
@@ -387,7 +397,7 @@ html[data-theme="red"] .bighead{background:var(--surf3);color:var(--text)}
 .setup .allg.empty{color:var(--muted);border-left-color:var(--line2)}
 .zgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .zcard{background:var(--surf2);border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;min-height:72px}
-.zcard .zn{font-family:var(--mono);font-weight:800;font-size:20px;display:flex;align-items:baseline;gap:8px}
+.zcard .zn{font-family:var(--mono);font-weight:800;font-size:20px;display:flex;align-items:baseline;gap:4px 8px;flex-wrap:wrap;overflow-wrap:anywhere}
 .zcard .zn small{font-family:var(--font);font-size:12px;font-weight:600;color:var(--muted)}
 .zcard .zl{font-size:14px;color:var(--text2);margin-top:4px;white-space:pre-wrap}
 .zcard .zl b{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-right:6px}
@@ -487,6 +497,12 @@ html[data-theme="red"] .toast{background:#2a0606;color:var(--text);border:1px so
 .f.invalid .req{display:block}.f.invalid input{border-color:var(--pink);box-shadow:0 0 0 3px var(--pink-soft)}
 .f .fh{font-size:12px;color:var(--muted);margin:4px 2px 0}
 .f .swrow{display:flex;align-items:center;gap:12px;min-height:52px}
+.f-row.one{grid-template-columns:1fr}
+.f select{-webkit-appearance:none;appearance:none;padding-right:40px!important;
+  background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 22px) 50%,calc(100% - 16px) 50%;background-size:6px 6px;background-repeat:no-repeat}
+.f .zugsel{font-family:var(--mono);font-size:20px;font-weight:800;height:60px}
+.zuginfo{font-size:13px;margin:6px 2px 0;min-height:4px}
 .f-row.gf + .qkeys{margin-top:-6px}
 @media (max-width:600px){.f-row{grid-template-columns:1fr 1fr}.f-row.ka{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:8px}.f-row.ka .plusbtn{width:52px}}
 .f label{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px 2px}
@@ -529,6 +545,10 @@ details.more .inner{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:
 .slot.add .plus{width:46px;height:46px;border-radius:50%;background:var(--k);color:var(--ki);display:grid;place-items:center}
 /* Editor-Kopf in Abteilungsfarbe */
 .sheet[data-abt] > .sheet-h{border-bottom:3px solid var(--da)}
+.sheet-h [data-x=cancel] svg,.sheet-h [data-act=cancel] svg{display:none}
+@media (max-width:480px){.sheet-h [data-x=cancel] .cl,.sheet-h [data-act=cancel] .cl{display:none}.sheet-h [data-x=cancel] svg,.sheet-h [data-act=cancel] svg{display:block}
+  .sheet-h [data-x=cancel],.sheet-h [data-act=cancel]{padding:0;width:var(--tap)}
+  .sheet[data-abt] .sheet-h h2{font-size:15px}.sheet[data-abt] .sheet-h{gap:6px}.sheet[data-abt] .sheet-h .savebtn{padding:0 12px}}
 .spinner{width:26px;height:26px;border-radius:50%;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .savebtn .spinner{width:18px;height:18px;border-color:rgba(0,0,0,.25);border-top-color:currentColor}
@@ -686,7 +706,7 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.1.0';
+const APP_VERSION = '2.2.0';
 const DB_NAME = 'lichtdoku';
 const DB_VERSION = 1;
 const FORMAT_VERSION = 2;              // Format von Backup-/Sync-Paketen (2: Abteilungen, Filter je Abteilung)
@@ -753,9 +773,12 @@ const DEPT = {
     key: 'B', name: 'Bühnentechnik', short: 'Bühne', abbr: 'B',
     phases: { A: 'Aufbau', E: 'Einrichten' }, done: { A: 'Aufgebaut', E: 'Eingerichtet' }, photoKats: ['A'],
     main: 'zug', mainLabel: 'Zug', mergeMain: false,          // mehrere Elemente am selben Zug sind normal
-    chips: ['element', 'hoehe', 'reihenfolge'],
+    chips: ['ort', 'element', 'hoehe', 'reihenfolge'],
     fields: [
-      { k: 'zug', label: 'Zug / Position', main: true, req: true, ph: 'z. B. Zug 14, OLZ 1, Boden links' },
+      { k: 'zug', label: 'Zug / Position', main: true, req: true, picker: true, ph: 'z. B. Boden links, Podest 2' },
+      { k: 'zugId', label: 'Zug', hidden: true },              // Verweis in die Zugliste (zug = Name als Kopie)
+      { k: 'ebene', label: 'Ebene', hidden: true },            // nur bei freier Position
+      { k: 'bereich', label: 'Bereich', hidden: true },        // nur bei freier Position
       { k: 'element', label: 'Element / Bezeichnung', ph: 'z. B. Rückprospekt Hafen' },
       { k: 'hoehe', label: 'Höhe / Spielmarke', mono: true, ph: 'z. B. 8,20 m, Marke rot' },
       { k: 'reihenfolge', label: 'Reihenfolge Umbau', mono: true, mode: 'num', ph: 'z. B. 4' },
@@ -768,11 +791,22 @@ const DEPT = {
       { k: 'lagerort', label: 'Lagerort', extra: true, ph: 'z. B. Seitenbühne rechts' }
     ],
     extraHint: 'Szene, Zuständig, Last, Sicherung, Brandschutz, Lagerort',
-    pdf: [['ZUG', 'zug'], ['ELEMENT', 'element'], ['HÖHE', 'hoehe'], ['REIHENF.', 'reihenfolge']],
+    pdf: [['ZUG / POSITION', 'zug'], ['ELEMENT', 'element'], ['HÖHE', 'hoehe'], ['REIHENF.', 'reihenfolge']],
     toc: ['element', 'hoehe'],
     col: { A: '#6b7480', E: '#b9c1cc' }
   }
 };
+
+/* Bühne: Einrichte-Reihenfolge „erst unten, dann oben – jeweils von vorne nach hinten“.
+   Jede Position (Zug aus der Zugliste oder freie Position) hat eine Ebene und einen Bereich.
+   Innerhalb gleicher Ebene und gleichen Bereichs zählt die Reihenfolge der Zugliste (vorne → hinten). */
+const EBENEN = [['unter', 'Unterbühne'], ['boden', 'Boden / Podium'], ['oben', 'Oben / Züge']];
+const BEREICHE = [['vor', 'Vorbühne'], ['portal', 'Portal'], ['haupt', 'Hauptbühne'], ['seite', 'Seitenbühne'], ['hinter', 'Hinterbühne']];
+const EBENE_RANK = { unter: 0, boden: 1, oben: 2 }, BEREICH_RANK = { vor: 0, portal: 1, haupt: 2, seite: 2, hinter: 3 };
+const EBENE_NAME = Object.fromEntries(EBENEN), BEREICH_NAME = Object.fromEntries(BEREICHE);
+const EINRICHT_REGEL = 'Einrichten: erst unten, dann oben – jeweils von vorne nach hinten.';
+/** Bühnen-Ablauf: feste Abschnitte (Schritte als Felder „b:<id>“ im Veranstaltungs-Datensatz) */
+const ABLAUF = [['grund', 'Grundeinrichtung'], ['pause', 'Pausenumbau'], ['ende', 'Ende / Abbau']];
 
 /** Kategorien (intern): A = Aufbau, E = 2. Phase, N = Eintrag ohne Fotos. Namen je Abteilung über katName(). */
 const KAT = { A: { key: 'A' }, E: { key: 'E' }, N: { key: 'N' } };
@@ -789,14 +823,24 @@ function hexRgb(h) { return [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) /
 function katHex(abt, kat) { const d = DEPT[abt] || DEPT.L; return kat === 'E' ? d.col.E : d.col.A; }
 function katRgb(abt, kat) { return hexRgb(katHex(abt, kat)); }
 function deptField(abt, k) { return (DEPT[abt] || DEPT.L).fields.find(x => x.k === k); }
-function fieldLabel(abt, k) { const f = deptField(abt, k); return f ? f.label : (FIELD_LABEL[k] || k); }
-/** Wert des Hauptfelds (Kreis / Kanal / Zug) */
-function mainVal(e) { return (e && e.f && e.f[DEPT[abtOf(e)].main]) || ''; }
+function fieldLabel(abt, k) { if (k === 'ort') return 'Ort'; const f = deptField(abt, k); return f ? f.label : (FIELD_LABEL[k] || k); }
+/** Wert des Hauptfelds (Kreis / Kanal / Zug). Bühne: aktueller Name des Zugs aus der Zugliste. */
+function mainVal(e) {
+  if (!e || !e.f) return '';
+  if (abtOf(e) === 'B' && e.showId) return Repo.bposOf(e).name || '';
+  return e.f[DEPT[abtOf(e)].main] || '';
+}
+/** Anzeigewert eines Eintragsfelds, inkl. abgeleiteter Felder (Bühne „Ort“ = Ebene · Bereich) */
+function entryVal(e, k) {
+  if (k === 'zug' && abtOf(e) === 'B') return mainVal(e);
+  if (k === 'ort') { if (abtOf(e) !== 'B' || !e.showId) return ''; const p = Repo.bposOf(e); return `${EBENE_NAME[p.ebene]} · ${BEREICH_NAME[p.bereich]}${p.removed ? ' · Zug entfernt' : ''}`; }
+  return fieldVal(abtOf(e), k, e.f[k]);
+}
 /** Anzeigewert eines Feldes ('' = nicht anzeigen); Schalter erscheinen als „an“ */
 function fieldVal(abt, k, v) { const fd = deptField(abt, k); if (fd && fd.bool) return v ? 'an' : ''; return v == null ? '' : String(v); }
 /** Felder für Info-Chips: zuerst die Chips der Abteilung, dann alle weiteren ausgefüllten (ohne Hauptfeld/Bemerkung) */
 function infoKeys(abt, all = false) {
-  const D = DEPT[abt]; const rest = D.fields.map(x => x.k).filter(k => k !== D.main && k !== 'bemerkung' && !D.chips.includes(k));
+  const D = DEPT[abt]; const rest = D.fields.filter(x => !x.hidden).map(x => x.k).filter(k => k !== D.main && k !== 'bemerkung' && !D.chips.includes(k));
   return all ? D.chips.concat(rest) : D.chips;
 }
 /** Tag „LICHT · AUFBAU“ (bei schmalem Bildschirm „L · AUFBAU“) */
@@ -1249,30 +1293,77 @@ const Repo = {
     const src = this.shows.get(id);
     const sf = { titel: src.f.titel + ' (Kopie)', spielstaette: src.f.spielstaette || '', notiz: src.f.notiz || '', einrichtung: src.f.einrichtung || '', abteilungen: this.showDepts(id), del: false };
     Object.keys(src.f).forEach(k => { if (k.startsWith('z:') && src.f[k] && !src.f[k].del) sf[k] = Utils.clone(src.f[k]); });   // Züge mitnehmen
+    if (src.f.einrichtungT) sf.einrichtungT = src.f.einrichtungT;
+    // Bühnen-Ablauf mitnehmen; verknüpfte Einträge zeigen auf die Kopien
+    const idMap = new Map(this.entriesOf(id).map(e => [e.id, Utils.uuid()]));
+    Object.keys(src.f).forEach(k => { const v = src.f[k]; if (k.startsWith('b:') && v && !v.del) sf['b:' + Utils.uuid()] = Object.assign(Utils.clone(v), { entryId: idMap.get(v.entryId) || '' }); });
     const s = Rec.create({}, sf);
     const entries = [], photos = [];
     for (const e of this.entriesOf(id)) {
       // nur vorhandene Felder kopieren (keine leeren Felder fremder Abteilungen anlegen)
       const f = Utils.clone(e.f); f.abt = abtOf(e); f.chkA = !!f.chkA; f.chkE = !!f.chkE; f.del = false;
-      const ne = Rec.create({ showId: s.id }, f); entries.push(ne);
+      const ne = Rec.create({ id: idMap.get(e.id), showId: s.id }, f); entries.push(ne);
       for (const p of this.photosOf(e.id)) photos.push(Rec.create({ showId: s.id, b: p.b, w: p.w, h: p.h }, { entryId: ne.id, kat: p.f.kat, ord: p.f.ord, label: p.f.label || '', del: false }));
     }
     await this._write({ shows: [s], entries, photos }); return s;
   },
   /* ---------- Einrichtung & Züge (je Veranstaltung) ----------
-     Jeder Zug ist ein eigenes Feld „z:<id>“ = {name, hoehe, bestueckung, bemerkung, ord, del}
-     → beim Abgleich wird jeder Zug für sich zusammengeführt. OLZ 1/2 und BGZ 1/2 sind immer da. */
+     Gemeinsame Zugliste: jeder Zug ist ein eigenes Feld „z:<id>“ =
+       {name, typ:'licht'|'buehne', ebene, bereich, hoehe, bestueckung, last, bemerkung, ord, del}
+     → beim Abgleich wird jeder Zug für sich zusammengeführt. OLZ 1/2 und BGZ 1/2 sind immer da.
+     Fehlt „typ“ (bis 2.1.0), ist es ein Beleuchterzug. Reihenfolge (ord) = von vorne nach hinten.
+     Gespeichert wird immer als Ergänzung des alten Werts (fremde Felder anderer Abteilungen bleiben). */
   ZUG_DEFAULT: [['olz1', 'OLZ 1'], ['olz2', 'OLZ 2'], ['bgz1', 'BGZ 1'], ['bgz2', 'BGZ 2']],
   zuegeOf(showId) {
     const s = this.shows.get(showId); const f = (s && s.f) || {};
-    const out = this.ZUG_DEFAULT.map(([id, name], i) => Object.assign({ id, name, hoehe: '', bestueckung: '', bemerkung: '', ord: i, fixed: true }, f['z:' + id] || {}, { name, fixed: true }));
+    // kleiner Zwischenspeicher (Sortieren ruft das sehr oft auf); gilt bis zur nächsten Änderung der Veranstaltung
+    if (this._zc && this._zc.id === showId && this._zc.mod === (s && s.mod) && this._zc.s === s) return this._zc.val;
+    const val = this._zuege(f); this._zc = { id: showId, mod: s && s.mod, s, val }; return val;
+  },
+  _zuege(f) {
+    const base = { hoehe: '', bestueckung: '', last: '', bemerkung: '', typ: 'licht', ebene: 'oben', bereich: 'haupt' };
+    const out = this.ZUG_DEFAULT.map(([id, name], i) => Object.assign({ id, ord: i }, base, f['z:' + id] || {}, { name, fixed: true, typ: 'licht' }));
     Object.keys(f).filter(k => k.startsWith('z:') && !this.ZUG_DEFAULT.some(d => 'z:' + d[0] === k)).forEach(k => {
-      const z = f[k]; if (z && !z.del) out.push(Object.assign({ hoehe: '', bestueckung: '', bemerkung: '', ord: 100 }, z, { id: k.slice(2), fixed: false }));
+      const z = f[k]; if (z && !z.del) out.push(Object.assign({ ord: 100 }, base, z, { id: k.slice(2), fixed: false }));
     });
+    out.forEach(z => { if (!EBENE_RANK.hasOwnProperty(z.ebene)) z.ebene = 'oben'; if (!BEREICH_RANK.hasOwnProperty(z.bereich)) z.bereich = 'haupt'; if (z.typ !== 'buehne') z.typ = 'licht'; });
     return out.sort((a, b) => (a.ord - b.ord) || String(a.name).localeCompare(String(b.name), 'de', { numeric: true }));
   },
-  zugFilled(z) { return !!(z.hoehe || z.bestueckung || z.bemerkung); },
-  hasSetup(showId) { const s = this.show(showId); return !!(s && (s.f.einrichtung || this.zuegeOf(showId).some(z => this.zugFilled(z) || !z.fixed))); },
+  zugFilled(z) { return !!(z.hoehe || z.bestueckung || z.bemerkung || z.last); },
+  /** Position eines Bühnen-Eintrags: Zug aus der Zugliste oder freie Position. zs = vorab geladene Zugliste (Sortieren). */
+  bposOf(e, zs = null) {
+    const f = e.f; zs = zs || this.zuegeOf(e.showId);
+    const i = f.zugId ? zs.findIndex(z => z.id === f.zugId) : -1;
+    if (i >= 0) { const z = zs[i]; return { name: z.name, ebene: z.ebene, bereich: z.bereich, idx: i, zug: z }; }
+    const t = String(f.zug || '');
+    // freie Position; bis 2.1.0 gab es nur Text → Ebene schätzen („Zug …“ hängt oben), nur beim Lesen
+    const eb = EBENE_RANK.hasOwnProperty(f.ebene) ? f.ebene : (/\b(zug|olz|bgz|bzg|pz|prospekt|brücke)/i.test(t) ? 'oben' : 'boden');
+    return { name: t, ebene: eb, bereich: BEREICH_RANK.hasOwnProperty(f.bereich) ? f.bereich : 'haupt', idx: 9999, removed: !!f.zugId };
+  },
+  /** Sortierschlüssel Bühne: Ebene (unten → oben), Bereich (vorne → hinten), Zugliste, Reihenfolge, Name */
+  bcmp(a, b, zs) {
+    const pa = this.bposOf(a, zs), pb = this.bposOf(b, zs);
+    return (EBENE_RANK[pa.ebene] - EBENE_RANK[pb.ebene]) || (BEREICH_RANK[pa.bereich] - BEREICH_RANK[pb.bereich]) || (pa.idx - pb.idx)
+      || (Utils.numKey(a.f.reihenfolge) - Utils.numKey(b.f.reihenfolge) || 0) || String(pa.name).localeCompare(String(pb.name), 'de', { numeric: true }) || (a.c - b.c);
+  },
+  /** Bühnen-Ablauf: Schritte je Abschnitt, sortiert */
+  ablaufOf(showId) {
+    const s = this.shows.get(showId); const f = (s && s.f) || {};
+    const out = Object.keys(f).filter(k => k.startsWith('b:')).map(k => Object.assign({ abschnitt: 'grund', text: '', entryId: '', ord: 0 }, f[k], { id: k.slice(2) })).filter(x => !x.del);
+    return out.sort((a, b) => (ABLAUF.findIndex(x => x[0] === a.abschnitt) - ABLAUF.findIndex(x => x[0] === b.abschnitt)) || (a.ord - b.ord));
+  },
+  /** Gibt es Einrichtungs-Angaben für die Abteilung? (Licht: Einrichtung/Beleuchterzüge, Ton: Text, Bühne: Ablauf/Bühnenzüge) */
+  hasSetup(showId, abt = 'L') {
+    const s = this.show(showId); if (!s) return false;
+    if (abt === 'T') return !!s.f.einrichtungT;
+    if (abt === 'B') return this.ablaufOf(showId).length > 0 || this.zuegeOf(showId).some(z => z.typ === 'buehne');
+    return !!(s.f.einrichtung || this.zuegeOf(showId).some(z => z.typ === 'licht' && (this.zugFilled(z) || !z.fixed)));
+  },
+  /** Zug anlegen bzw. ändern – immer als Ergänzung des bestehenden Werts (Felder anderer Abteilungen bleiben) */
+  zugValue(showId, id, patch) {
+    const s = this.shows.get(showId); const old = (s && s.f['z:' + id]) || {};
+    return Object.assign({}, old, patch);
+  },
   async deleteEntry(id) {
     const out = { entries: [], photos: [] };
     const e = Rec.patch(this.entries.get(id), { del: true }); if (e) out.entries.push(e);
@@ -1893,10 +1984,10 @@ const Lightbox = {
       el.querySelectorAll('.nav').forEach(n => n.classList.toggle('hidden', items.length < 2));
       el.querySelector('.nextk').classList.toggle('hidden', nextKreisIdx() < 0);
       const e = it.draftF ? { f: Object.assign({ abt: it.draftAbt }, it.draftF) } : (Repo.entries.get(it.entryId) || { f: {} });
-      const abt = abtOf(e), D = DEPT[abt], mv = e.f[D.main];
+      const abt = abtOf(e), D = DEPT[abt], mv = mainVal(e);
       el.dataset.abt = abt;
-      const chips = infoKeys(abt, true).filter(k => fieldVal(abt, k, e.f[k]))
-        .map(k => `<span class="chip"><b>${Utils.esc(fieldLabel(abt, k))}</b><span>${Utils.esc(fieldVal(abt, k, e.f[k]))}</span></span>`).join('');
+      const chips = infoKeys(abt, true).filter(k => entryVal(e, k))
+        .map(k => `<span class="chip"><b>${Utils.esc(fieldLabel(abt, k))}</b><span>${Utils.esc(entryVal(e, k))}</span></span>`).join('');
       infos.innerHTML = `<div class="row1">${tagHtml(abt, it.kat)}
           <span class="kreis"><small style="color:#bbb">${Utils.esc(D.mainLabel)}</small>${mv ? Utils.esc(mv) : '<span class="muted">ohne</span>'}</span>
           <span class="muted mono">Foto ${it.idx + 1}/${it.n}</span></div>
@@ -2590,6 +2681,7 @@ const Pdf = {
   },
   WIN: { '€': 0x80, '‚': 0x82, '„': 0x84, '…': 0x85, '‘': 0x91, '’': 0x92, '“': 0x93, '”': 0x94, '•': 0x95, '–': 0x96, '—': 0x97, '™': 0x99 },
   /** Unicode → WinAnsi-Bytes (als „Binär-String“, ein Zeichen = ein Byte) */
+  ALT: { '→': '->', '←': '<-', '⇒': '=>', '⇐': '<=', '↔': '<->', '↑': '^', '↓': 'v', '≥': '>=', '≤': '<=', '≈': '~', '≠': '!=', '−': '-', '‑': '-', '✓': 'x', '✔': 'x', '✗': 'x', '·': '·', '\u202f': ' ', '\u2009': ' ' },
   win(str) {
     let out = '';
     for (const ch of String(str ?? '')) {
@@ -2598,6 +2690,7 @@ const Pdf = {
       else if (this.WIN[ch]) out += String.fromCharCode(this.WIN[ch]);
       else if (c >= 0xA0 && c <= 0xFF) out += ch;
       else if (ch === '\t') out += ' ';
+      else if (this.ALT[ch]) out += this.ALT[ch];         // Zeichen ohne WinAnsi-Entsprechung lesbar ersetzen (statt „?“)
       else if (c >= 32) {
         const base = ch.normalize('NFD')[0];
         out += base.charCodeAt(0) < 127 ? base : '?';
@@ -2676,39 +2769,72 @@ const Pdf = {
       const chunks = []; for (let i = 0; i < Math.max(1, ph.length); i += 4) chunks.push(ph.slice(i, i + 4));
       chunks.forEach((c, ci) => pages.push({ it, photos: c, cont: ci > 0, first: ci === 0, from: ci * 4 }));
     }
-    // ---- Einrichtung & Züge: Blöcke bauen und auf Seiten verteilen ----
-    const setupBlocks = [], innerW = W - 2 * M - 24;
-    const withLicht = (opts.depts || App.visibleDepts(showId)).includes('L');   // „Einrichtung & Züge“ gehört (noch) zu Licht
-    if (withLicht && Repo.hasSetup(showId)) {
-      const allg = this.wrap(show.f.einrichtung || '—', 'F1', 11, W - 2 * M);
-      // Allgemeine Einrichtung darf über Seiten laufen: in Abschnitte zu je höchstens 40 Zeilen teilen
-      for (let i = 0; i < allg.length; i += 40) setupBlocks.push({ type: 'allg', lines: allg.slice(i, i + 40), first: i === 0, h: (i === 0 ? 18 : 0) + Math.min(40, allg.length - i) * 14 + 14 });
-      for (const z of Repo.zuegeOf(showId)) {
-        const rows = [['HÖHE / MARKE', z.hoehe], ['BESTÜCKUNG', z.bestueckung], ['BEMERKUNG', z.bemerkung]].filter(r => r[1]).map(([l, v]) => [l, this.wrap(v, 'F1', 10.5, innerW - 92).slice(0, 18)]);
-        const h = 34 + (rows.length ? rows.reduce((n, r) => n + r[1].length * 13 + 4, 0) : 14) + 6;
-        setupBlocks.push({ type: 'zug', z, rows, h });
+    // ---- Einrichtung je Abteilung: Blöcke bauen und auf Seiten verteilen ----
+    //   Licht: allgemeine Einrichtung + Beleuchterzüge · Ton: Freitext · Bühne: Ablauf + Züge & Positionen
+    const innerW = W - 2 * M - 24, inDepts = opts.depts || App.visibleDepts(showId);
+    const SETUP_PILL = { L: 'EINRICHTUNG & ZÜGE', T: 'EINRICHTUNG TON', B: 'ABLAUF & POSITIONEN' };
+    const SETUP_TOC = { L: 'Einrichtung & Züge', T: 'Einrichtung Ton', B: 'Ablauf & Positionen' };
+    const textBlocks = (label, txt, out) => {
+      const ls = this.wrap(txt || '—', 'F1', 11, W - 2 * M);
+      // langer Text darf über Seiten laufen: Abschnitte zu je höchstens 40 Zeilen
+      for (let i = 0; i < ls.length; i += 40) out.push({ type: 'allg', label, lines: ls.slice(i, i + 40), first: i === 0, h: (i === 0 ? 18 : 0) + Math.min(40, ls.length - i) * 14 + 14 });
+    };
+    const zugBlock = (z, rowsIn, tag) => {
+      const rows = rowsIn.filter(r => r[1]).map(([l, v]) => [l, this.wrap(v, 'F1', 10.5, innerW - 92).slice(0, 18)]);
+      return { type: 'zug', z, tag, rows, h: 34 + (rows.length ? rows.reduce((n, r) => n + r[1].length * 13 + 4, 0) : 14) + 6 };
+    };
+    const buildSetup = d => {
+      const out = [];
+      if (d === 'L') {
+        textBlocks('ALLGEMEINE EINRICHTUNG', show.f.einrichtung, out);
+        Repo.zuegeOf(showId).filter(z => z.typ === 'licht').forEach(z => out.push(zugBlock(z, [['HÖHE / MARKE', z.hoehe], ['BESTÜCKUNG', z.bestueckung], ['BEMERKUNG', z.bemerkung]])));
+      } else if (d === 'T') textBlocks('EINRICHTUNG TON', show.f.einrichtungT, out);
+      else if (d === 'B') {
+        out.push({ type: 'note', lines: this.wrap(EINRICHT_REGEL, 'F2', 10.5, W - 2 * M - 24), h: 26, gap: 14 });
+        const steps = Repo.ablaufOf(showId);
+        ABLAUF.forEach(([k, n]) => {
+          const list = steps.filter(x => x.abschnitt === k); if (!list.length) return;
+          out.push({ type: 'head', text: n.toUpperCase(), h: 16, gap: 8 });
+          list.forEach((st, i) => {
+            const ls = this.wrap(st.text, 'F1', 11, W - 2 * M - 26).slice(0, 30);
+            const e = st.entryId && Repo.entry(st.entryId);
+            out.push({ type: 'step', n: i + 1, lines: ls, entry: e || null, h: ls.length * 14 + (e ? 13 : 0), gap: 8 });
+          });
+          out.push({ type: 'gap', h: 0, gap: 12 });
+        });
+        out.push({ type: 'head', text: 'ZÜGE & POSITIONEN (UNTEN NACH OBEN, VORNE NACH HINTEN)', h: 16, gap: 10 });
+        SetupView.posSorted(showId).forEach(z => out.push(zugBlock(z, [['ORT', `${EBENE_NAME[z.ebene]} · ${BEREICH_NAME[z.bereich]}`], ['HÖHE / MARKE', z.hoehe], ['LAST', z.last],
+          ['BESTÜCKUNG', z.typ === 'licht' ? z.bestueckung : ''], ['BEMERKUNG', z.bemerkung]], z.typ === 'licht' ? 'LICHT' : '')));
       }
-    }
-    const setupPageList = []; { let cur = [], room = 0; const AV = H - 100 - 50;
-      for (const b of setupBlocks) { if (!cur.length || b.h > room) { if (cur.length) setupPageList.push(cur); cur = []; room = AV; } cur.push(b); room -= b.h + 20; }
-      if (cur.length) setupPageList.push(cur); }
-    const setupPages = setupPageList.length;
-    // Einrichtungsseiten: am Anfang bzw. direkt nach der Trennseite „Beleuchtung“
-    if (setupPages) {
-      const at = multi ? pages.findIndex(p => p.divider === 'L') + 1 : 0;
-      pages.splice(Math.max(0, at), 0, ...setupPageList.map(b => ({ setup: b })));
-    }
+      return out;
+    };
+    const paginate = blocks => {
+      const list = []; let cur = [], room = 0; const AV = H - 100 - 50;
+      for (const b of blocks) { const g = b.gap ?? 20; if (!cur.length || b.h > room) { if (cur.length) list.push(cur); cur = []; room = AV; } cur.push(b); room -= b.h + g; }
+      if (cur.length) list.push(cur);
+      return list;
+    };
+    const setupGroups = DEPT_ORDER.filter(d => inDepts.includes(d) && Repo.hasSetup(showId, d)).map(d => ({ abt: d, pages: paginate(buildSetup(d)) }));
+    const setupPages = setupGroups.reduce((n, g) => n + g.pages.length, 0);
+    // Einrichtungsseiten: direkt nach der Trennseite der Abteilung, sonst am Anfang (in Abteilungsreihenfolge)
+    let front = 0;
+    setupGroups.forEach(g => {
+      const dv = multi ? pages.findIndex(p => p.divider === g.abt) : -1;
+      const at = dv >= 0 ? dv + 1 : front;
+      pages.splice(at, 0, ...g.pages.map(b => ({ setup: b, abt: g.abt })));
+      if (dv < 0) front += g.pages.length;
+    });
     const TOC_PER = 100;                        // bis 100 Einträge passt das Inhaltsverzeichnis auf eine Seite
     const tocPages = opts.cover ? Math.max(1, Math.ceil(items.length / TOC_PER)) : 0;
     const tocDense = items.length > 34;         // viele Einträge: Kopf des Deckblatts kompakter
     const total = tocPages + pages.length;
     // Seitenzahlen fürs Inhaltsverzeichnis: je Eintrag-Kategorie, je Trennseite, erste Einrichtungsseite
-    const firstPage = new Map(), divPage = {}; let setupFirst = 0;
+    const firstPage = new Map(), divPage = {}, setupFirst = {}, entryPage = new Map();
     pages.forEach((p, i) => {
       const n = tocPages + i + 1;
-      if (p.first) firstPage.set(p.it, n);
+      if (p.first) { firstPage.set(p.it, n); if (!entryPage.has(p.it.entry.id)) entryPage.set(p.it.entry.id, n); }
       if (p.divider) divPage[p.divider] = n;
-      if (p.setup && !setupFirst) setupFirst = n;
+      if (p.setup && !setupFirst[p.abt]) setupFirst[p.abt] = n;
     });
 
     // ---- Schreiber ----
@@ -2766,11 +2892,12 @@ const Pdf = {
           y -= 14; c.rgb(0.8, 0.82, 0.85, true).line(M, y, W - M, y, 1); y -= 26;
           c.rgb(0.07, 0.08, 0.1).text(M, y, 'Inhalt', 'F2', 16); y -= 22;
         } else { c.rgb(0.07, 0.08, 0.1).text(M, y, 'Inhalt (Fortsetzung)', 'F2', 16); y -= 26; }
-        if (tp === 0 && setupPages) {
-          c.rgb(0.35, 0.37, 0.42).rect(M, y - 2, 6, 12);
-          c.rgb(0.07, 0.08, 0.1).text(M + 14, y, multi ? 'Beleuchtung: Einrichtung & Züge' : 'Einrichtung & Züge', 'F2', 11).textR(W - M, y, `S. ${setupFirst}`, 'F1', 11);
+        if (tp === 0 && setupPages) setupGroups.forEach(g => {
+          c.rgb(...katRgb(g.abt, 'A')).rect(M, y - 2, 6, 12);
+          const t = setupGroups.length === 1 && !multi && g.abt === 'L' ? SETUP_TOC.L : `${DEPT[g.abt].name}: ${SETUP_TOC[g.abt]}`;
+          c.rgb(0.07, 0.08, 0.1).text(M + 14, y, t, 'F2', 11).textR(W - M, y, `S. ${setupFirst[g.abt]}`, 'F1', 11);
           c.rgb(0.88, 0.89, 0.91, true).line(M + 14, y - 5, W - M, y - 5, 0.4); y -= 18;
-        }
+        });
         // Zeilen dieser Seite: Kreis | Kategorie | Gruppe | Filter | Seite – bei vielen Einträgen zweispaltig
         const rows = items.slice(idx, idx + TOC_PER); idx += rows.length;
         // Folge der Zeilen: bei mehreren Abteilungen vor jeder Abteilung eine Kopfzeile (Name, Spalten, Seite der Trennseite)
@@ -2818,7 +2945,7 @@ const Pdf = {
           if (rr % 2 === 0) c.rgb(0.95, 0.955, 0.965).rect(x0, yy - rh, colW, rh);
           const ab = abtOf(it.entry), RD = DEPT[ab];
           c.rgb(...katRgb(ab, it.kat)).rect(x0, yy - rh + 1, two ? 4 : 6, rh - 2);
-          const f = it.entry.f, mv = f[RD.main] || '—', t1 = fieldVal(ab, RD.toc[0], f[RD.toc[0]]), t2 = fieldVal(ab, RD.toc[1], f[RD.toc[1]]);
+          const mv = mainVal(it.entry) || '—', t1 = entryVal(it.entry, RD.toc[0]), t2 = entryVal(it.entry, RD.toc[1]);
           const ph = katName(ab, it.kat);
           const vals = two ? [mv, t1, t2] : [mv, ph, t1, t2];
           vals.forEach((v, k) => {
@@ -2833,25 +2960,42 @@ const Pdf = {
     }
 
     // ---- Einrichtung & Züge (wird aus der Seitenfolge heraus aufgerufen) ----
-    const drawSetup = blocks => {
+    const drawSetup = (blocks, abt) => {
       const c = C(); pageNo++;
-      c.rgb(0.35, 0.37, 0.42).rect(0, H - 14, W, 14);
-      c.rgb(0.07, 0.08, 0.1).text(M, H - 52, this.fit(show.f.titel, 'F2', 20, W - 2 * M - 190), 'F2', 20);
-      const lbl = 'EINRICHTUNG & ZÜGE', pw = this.width(lbl, 'F2', 12) + 24;
-      c.rgb(0.35, 0.37, 0.42).rect(W - M - pw, H - 58, pw, 24); c.rgb(1, 1, 1).text(W - M - pw + 12, H - 50, lbl, 'F2', 12);
+      const dk = katRgb(abt, 'A');
+      c.rgb(...dk).rect(0, H - 14, W, 14);
+      const lbl = (multi ? DEPT[abt].short.toUpperCase() + ' · ' : '') + SETUP_PILL[abt], pw = this.width(lbl, 'F2', 12) + 24;
+      c.rgb(0.07, 0.08, 0.1).text(M, H - 52, this.fit(show.f.titel, 'F2', 20, W - 2 * M - pw - 14), 'F2', 20);
+      c.rgb(...dk).rect(W - M - pw, H - 58, pw, 24); c.rgb(1, 1, 1).text(W - M - pw + 12, H - 50, lbl, 'F2', 12);
       c.rgb(0.85, 0.86, 0.88, true).line(M, H - 70, W - M, H - 70, 0.8);
       let y = H - 96;
       for (const b of blocks) {
+        const g = b.gap ?? 20;
         if (b.type === 'allg') {
-          if (b.first) { c.rgb(0.45, 0.48, 0.53).text(M, y, 'ALLGEMEINE EINRICHTUNG', 'F2', 8.5); y -= 18; }
+          if (b.first) { c.rgb(0.45, 0.48, 0.53).text(M, y, b.label || 'ALLGEMEINE EINRICHTUNG', 'F2', 8.5); y -= 18; }
           b.lines.forEach(ln => { c.rgb(0.1, 0.11, 0.13).text(M, y, ln, 'F1', 11); y -= 14; });
           y -= 24;
+        } else if (b.type === 'note') {                 // Einrichte-Regel, hervorgehoben
+          c.rgb(0.95, 0.955, 0.965).rect(M, y - 10, W - 2 * M, 24); c.rgb(...dk).rect(M, y - 10, 4, 24);
+          c.rgb(0.1, 0.11, 0.13).text(M + 14, y - 2, b.lines[0] || '', 'F2', 10.5);
+          y -= b.h + g;
+        } else if (b.type === 'head') {
+          c.rgb(...dk).text(M, y, b.text, 'F2', 10); c.rgb(...dk, true).line(M, y - 5, W - M, y - 5, 0.8);
+          y -= b.h + g;
+        } else if (b.type === 'step') {
+          c.rgb(...dk).text(M, y, b.n + '.', 'F2', 11);
+          let yy = y;
+          b.lines.forEach(ln => { c.rgb(0.1, 0.11, 0.13).text(M + 26, yy, ln, 'F1', 11); yy -= 14; });
+          if (b.entry) { const pn = entryPage.get(b.entry.id); c.rgb(0.35, 0.37, 0.42).text(M + 26, yy + 1, this.fit(`Eintrag: ${[mainVal(b.entry), b.entry.f.element].filter(Boolean).join(' · ')}${pn ? `  (S. ${pn})` : ''}`, 'F1', 9.5, W - 2 * M - 30), 'F1', 9.5); }
+          y -= b.h + g;
+        } else if (b.type === 'gap') { y -= g;
         } else {
           const top = y + 10, bh = b.h;
           c.rgb(0.97, 0.97, 0.98).rect(M, top - bh, W - 2 * M, bh);
           c.rgb(0.75, 0.77, 0.8, true); c.rect(M, top - bh, W - 2 * M, bh, 'S');
-          c.rgb(0.35, 0.37, 0.42).rect(M, top - bh, 4, bh);
+          c.rgb(...(b.tag ? katRgb('L', 'A') : dk)).rect(M, top - bh, 4, bh);
           c.rgb(0.07, 0.08, 0.1).text(M + 14, y - 8, b.z.name, 'F2', 15);
+          if (b.tag) { const tw = this.width(b.tag, 'F2', 7.5) + 10, tx = M + 22 + this.width(b.z.name, 'F2', 15); c.rgb(...katRgb('L', 'A')).rect(tx, y - 11, tw, 13); c.rgb(1, 1, 1).text(tx + 5, y - 7.5, b.tag, 'F2', 7.5); }
           let yy = y - 30;
           if (!b.rows.length) { c.rgb(0.6, 0.62, 0.66).text(M + 14, yy, '—', 'F1', 10.5); }
           for (const [l, lines] of b.rows) {
@@ -2880,7 +3024,7 @@ const Pdf = {
       [...D.photoKats, 'N'].forEach(k => { const n = cnt(k); if (!n) return;
         c.rgb(...katRgb(ab, k)).rect(M, y - 3, 10, 14);
         c.rgb(0.25, 0.28, 0.33).text(M + 20, y, `${k === 'N' ? 'Ohne Fotos' : D.phases[k]}: ${n} Seite${n === 1 ? '' : 'n'}`, 'F1', 12); y -= 22; });
-      if (ab === 'L' && setupPages) { c.rgb(0.25, 0.28, 0.33).text(M + 20, y, `Einrichtung & Züge: ab Seite ${setupFirst}`, 'F1', 12); y -= 22; }
+      if (setupFirst[ab]) { c.rgb(0.25, 0.28, 0.33).text(M + 20, y, `${SETUP_TOC[ab]}: ab Seite ${setupFirst[ab]}`, 'F1', 12); y -= 22; }
       footer(c, pageNo, 'A', ab);
       writePage(c.get(), {});
     };
@@ -2889,7 +3033,7 @@ const Pdf = {
     let done = 0;
     const nContent = pages.filter(p => p.it).length;
     for (const pg of pages) {
-      if (pg.setup) { drawSetup(pg.setup); continue; }
+      if (pg.setup) { drawSetup(pg.setup, pg.abt); continue; }
       if (pg.divider) { drawDivider(pg); continue; }
       pageNo++;
       const { it } = pg, e = it.entry, ab = abtOf(e), D = DEPT[ab], col = katRgb(ab, it.kat);
@@ -2901,7 +3045,7 @@ const Pdf = {
       c.rgb(it.kat === 'E' ? 0.15 : 1, it.kat === 'E' ? 0.12 : 1, it.kat === 'E' ? 0 : 1).text(W - M - pw + 12, H - 50, pill, 'F2', 12);
       c.rgb(0.07, 0.08, 0.1).text(M, H - 52, this.fit(show.f.titel, 'F2', 20, W - 2 * M - pw - 14), 'F2', 20);
       c.rgb(0.85, 0.86, 0.88, true).line(M, H - 70, W - M, H - 70, 0.8);
-      const kreisTxt = e.f[D.main] || '—', ml = D.mainLabel.toUpperCase(), mw = this.width(ml, 'F2', 9) + 12;
+      const kreisTxt = mainVal(e) || '—', ml = D.mainLabel.toUpperCase(), mw = this.width(ml, 'F2', 9) + 12;
       c.rgb(0.45, 0.48, 0.53).text(M, H - 96, ml, 'F2', 9);
       let ks = 30; while (ks > 14 && this.width(kreisTxt, 'F2', ks) > W - 2 * M - 150) ks -= 2;
       c.rgb(0.07, 0.08, 0.1).text(M + Math.max(44, mw), H - 100, kreisTxt, 'F2', ks);
@@ -2910,7 +3054,7 @@ const Pdf = {
       // Infoblock (unten, gerahmt): Kreis | Filter | Gruppe | Adresse, darunter Bemerkung
       const innerW = W - 2 * M - 20;
       const pdfKeys = D.pdf.map(x => x[1]);
-      const extras = infoKeys(ab, true).filter(k => !pdfKeys.includes(k) && fieldVal(ab, k, e.f[k])).map(k => `${fieldLabel(ab, k)}: ${fieldVal(ab, k, e.f[k])}`).join('   ·   ');
+      const extras = infoKeys(ab, true).filter(k => !pdfKeys.includes(k) && entryVal(e, k)).map(k => `${fieldLabel(ab, k)}: ${entryVal(e, k)}`).join('   ·   ');
       let bem = this.wrap(e.f.bemerkung || '—', 'F1', 11, innerW);
       const exl = extras ? this.wrap(extras, 'F1', 9.5, innerW) : [];
       if (bem.length > 14) bem = bem.slice(0, 13).concat(['… (gekürzt)']);
@@ -2919,7 +3063,7 @@ const Pdf = {
       c.rgb(0.97, 0.97, 0.98).rect(M, boxY, W - 2 * M, boxH);
       c.rgb(0.55, 0.58, 0.63, true); c.rect(M, boxY, W - 2 * M, boxH, 'S');
       c.rgb(...col).rect(M, boxY + boxH - 4, W - 2 * M, 4);
-      const cols = D.pdf.map(([lab, k]) => [lab, fieldVal(ab, k, e.f[k])]);
+      const cols = D.pdf.map(([lab, k]) => [lab, entryVal(e, k)]);
       const cw = (W - 2 * M) / 4, rowTop = boxY + boxH - 4;
       cols.forEach(([lab, val], k) => {
         const x = M + k * cw;
@@ -3667,8 +3811,10 @@ const Views = {
       }
     }
     const ko = { A: 0, E: 1, N: 2 };
+    const zs = Repo.zuegeOf(showId);
     items.sort((a, b) => {
       const da = DEPT_ORDER.indexOf(a.abt) - DEPT_ORDER.indexOf(b.abt); if (da) return da;
+      if (a.abt === 'B') return Repo.bcmp(a.entry, b.entry, zs) || (ko[a.kat] - ko[b.kat]);   // Bühne: Einrichte-Reihenfolge
       if (sort === 'gruppe') {
         const ga = a.entry.f.gruppe || '', gb = b.entry.f.gruppe || '';
         if (!ga !== !gb) return ga ? -1 : 1;
@@ -3681,6 +3827,10 @@ const Views = {
   /** Abschnitt einer Karte. multi = mehrere Abteilungen in der Liste → „Licht · Aufbau“ */
   sectionOf(item, sort, multi = false) {
     if (sort === 'gruppe') return item.entry.f.gruppe ? { key: 'g' + item.entry.f.gruppe, label: 'Gruppe ' + item.entry.f.gruppe, k: null } : { key: 'g-', label: 'Ohne Gruppe', k: null };
+    if (item.abt === 'B') {                         // Bühne: Abschnitte nach Ebene (unten → oben)
+      const p = Repo.bposOf(item.entry);
+      return { key: 'B' + p.ebene, label: (multi ? 'Bühne · ' : '') + EBENE_NAME[p.ebene], k: 'A', abt: 'B' };
+    }
     const label = multi ? `${DEPT[item.abt].short} · ${katName(item.abt, item.kat)}` : katName(item.abt, item.kat);
     return { key: item.abt + item.kat, label, k: item.kat, abt: item.abt };
   },
@@ -3691,8 +3841,8 @@ const Views = {
   },
   chips(e, keys = null) {
     const abt = abtOf(e);
-    return (keys || DEPT[abt].chips).filter(k => fieldVal(abt, k, e.f[k]))
-      .map(k => `<span class="chip"><b>${Utils.esc(fieldLabel(abt, k))}</b><span>${Utils.esc(fieldVal(abt, k, e.f[k]))}</span></span>`).join('');
+    return (keys || DEPT[abt].chips).filter(k => entryVal(e, k))
+      .map(k => `<span class="chip"><b>${Utils.esc(fieldLabel(abt, k))}</b><span>${Utils.esc(entryVal(e, k))}</span></span>`).join('');
   },
   /** Haken für die Eintrags-Checkliste. Bühne (nur Aufbau-Fotos): zwei Haken auf einer Karte. */
   chkHtml(e, kat) {
@@ -3707,7 +3857,7 @@ const Views = {
     return !!e.f[kat === 'E' ? 'chkE' : 'chkA'];
   },
   cardHtml(it, { sel, checklist, dupKeys, big = false }) {
-    const e = it.entry, abt = it.abt, D = DEPT[abt], mv = e.f[D.main];
+    const e = it.entry, abt = it.abt, D = DEPT[abt], mv = mainVal(e);
     const ph = it.kat === 'N' ? [] : Repo.photosOf(e.id, it.kat);
     const thumbs = big
       ? ph.map((p, i) => `<span class="th" data-act="lb" data-i="${i}">${this.thumbImg(p.b).replace('<img ', '<img data-hq="1" ').replace(' data-l="1"', '')}<span class="plbl">${i + 1}</span></span>`).join('')
@@ -3734,10 +3884,10 @@ const Views = {
     </article>`;
   },
   detailHtml(e, editMode, checklist) {
-    const f = e.f, abt = abtOf(e), D = DEPT[abt], mv = f[D.main];
-    const fieldBox = (k, wide) => { const v = fieldVal(abt, k, f[k]);
+    const f = e.f, abt = abtOf(e), D = DEPT[abt], mv = mainVal(e);
+    const fieldBox = (k, wide) => { const v = entryVal(e, k);
       return `<div class="fieldbox ${wide ? 'wide' : ''}"><b>${Utils.esc(fieldLabel(abt, k))}</b><span>${v ? Utils.esc(v) : '<span class="muted">—</span>'}</span></div>`; };
-    const rest = infoKeys(abt, true).filter(k => !D.chips.includes(k) && fieldVal(abt, k, f[k]));
+    const rest = infoKeys(abt, true).filter(k => !D.chips.includes(k) && entryVal(e, k));
     const chkBtn = k => { const on = !!f[k === 'E' ? 'chkE' : 'chkA'];
       return `<button class="btn ${on ? 'kfill' : 'kline'}" data-k="${k}" data-act="dchk" aria-pressed="${on}">${I('check')} ${Utils.esc(D.done[k])}</button>`; };
     const kat = k => {
@@ -3778,16 +3928,25 @@ const Editor = {
       if (fd.area) return `<div class="f"><label for="${fid(fd.k)}">${Utils.esc(fd.label)}</label><textarea id="${fid(fd.k)}" name="${fd.k}" rows="3" placeholder="${Utils.esc(fd.ph || '')}">${Utils.esc(v || '')}</textarea></div>`;
       const im = fd.mode === 'tel' ? 'inputmode="tel"' : fd.mode === 'num' ? 'inputmode="numeric"' : '';
       const attrs = `id="${fid(fd.k)}" name="${fd.k}" ${im} enterkeyhint="next" placeholder="${Utils.esc(fd.ph || '')}" value="${Utils.esc(v || '')}" ${fd.mono || fd.plus ? 'autocapitalize="off" spellcheck="false"' : ''}`;
+      if (fd.picker) return `<div class="f kreisf zugf"><label for="ed-zugsel">${Utils.esc(fd.label)}</label>
+          <select id="ed-zugsel" class="zugsel" aria-label="Zug oder Position wählen"></select>
+          <div class="zuginfo muted"></div>
+          <div class="freepos hidden"><input ${attrs}>
+            <div class="f-row gf" style="margin-top:8px"><div class="f"><label for="ed-ebene">Ebene</label><select id="ed-ebene" name="ebene">${EBENEN.map(([k, n]) => `<option value="${k}" ${(f0.ebene || 'boden') === k ? 'selected' : ''}>${n}</option>`).join('')}</select></div>
+              <div class="f"><label for="ed-bereich">Bereich</label><select id="ed-bereich" name="bereich">${BEREICHE.map(([k, n]) => `<option value="${k}" ${(f0.bereich || 'haupt') === k ? 'selected' : ''}>${n}</option>`).join('')}</select></div></div></div>
+          <input type="hidden" name="zugId" value="${Utils.esc(f0.zugId || '')}">
+          ${fd.req ? `<div class="req">${Utils.esc(fd.label)} fehlt – bitte wählen oder eintragen.</div>` : ''}</div>`;
       if (fd.main) return `<div class="f kreisf"><label for="${fid(fd.k)}">${Utils.esc(fd.label)}</label>
           <div class="inwrap"><input ${attrs}>${fd.plus ? `<button type="button" class="plusbtn" data-act="plus" aria-label="Plus-Zeichen einfügen">+</button>` : ''}</div>
           ${fd.req ? `<div class="req">${Utils.esc(fd.label)} fehlt – bitte eintragen.</div>` : ''}</div>`;
       return `<div class="f ${fd.mono ? 'mono' : ''}"><label for="${fid(fd.k)}">${Utils.esc(fd.label)}</label><input ${attrs}>${fd.hint ? `<div class="fh">${Utils.esc(fd.hint)}</div>` : ''}</div>`;
     };
-    const base = D.fields.filter(x => !x.extra && x.k !== 'bemerkung'), extra = D.fields.filter(x => x.extra);
+    const base = D.fields.filter(x => !x.extra && !x.hidden && x.k !== 'bemerkung'), extra = D.fields.filter(x => x.extra);
     let html = '';
+    if (base[0] && base[0].picker) { html += `<div class="f-row one">${input(base.shift())}</div>`; }
     for (let i = 0; i < base.length; i += 2) {
       const pair = base.slice(i, i + 2);
-      html += `<div class="f-row ${i === 0 ? 'ka' : 'gf'}">${pair.map(input).join('')}</div>`;
+      html += `<div class="f-row ${i === 0 && !D.fields[0].picker ? 'ka' : 'gf'}">${pair.map(input).join('')}</div>`;
       pair.filter(x => x.qkeys).forEach(x => { html += `<div class="qkeys" data-qkeys="${x.k}" role="group" aria-label="${Utils.esc(x.label)}-Schnelltasten: antippen setzt, nochmal antippen entfernt"></div>`; });
     }
     const bem = D.fields.find(x => x.k === 'bemerkung');
@@ -3811,7 +3970,7 @@ const Editor = {
     const markDirty = () => { dirty = true; };
     const sh = Ui.sheet({
       title: ex ? `${D.mainLabel} ${ex.f[MAIN] || '(ohne Nummer)'}` : 'Neuer Eintrag', full: true,      // Abteilung steht im Tag davor
-      headLeft: `<button class="btn ghost" data-act="cancel">Abbrechen</button>`,
+      headLeft: `<button class="btn ghost" data-act="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
       headRight: `<button class="btn edit savebtn" data-act="save">${I('check')}<span class="sl">Speichern</span></button>`,
       onBack: () => this._confirmLeave(dirty || pending)
     });
@@ -3855,6 +4014,49 @@ const Editor = {
       renderQ();
     });
     form.addEventListener('input', () => { markDirty(); const fm = kreisIn.closest('.f'); if (fm.classList.contains('invalid') && kreisIn.value.trim()) fm.classList.remove('invalid'); });
+    /* ---- Bühne: Zug-Auswahl aus der gemeinsamen Zugliste, „Freie Position“, „+ Neuer Zug“ ---- */
+    if (mainFd.picker) {
+      const sel = form.querySelector('#ed-zugsel'), free = form.querySelector('.freepos'), info = form.querySelector('.zuginfo');
+      const idIn = form.elements.zugId;
+      const fill = () => {
+        const zs = Repo.zuegeOf(showId), cur = idIn.value;
+        const opt = z => `<option value="${Utils.esc(z.id)}" ${z.id === cur ? 'selected' : ''}>${Utils.esc(z.name)}${z.typ === 'licht' ? '  · Licht' : ''}</option>`;
+        const gone = cur && !zs.some(z => z.id === cur);
+        sel.innerHTML = `<option value="">– Zug oder Position wählen –</option>
+          <optgroup label="Bühnenzüge und Positionen">${zs.filter(z => z.typ === 'buehne').map(opt).join('')}</optgroup>
+          <optgroup label="Beleuchterzüge">${zs.filter(z => z.typ === 'licht').map(opt).join('')}</optgroup>
+          ${gone ? `<option value="${Utils.esc(cur)}" selected>${Utils.esc(kreisIn.value || 'Zug')} (Zug entfernt)</option>` : ''}
+          <option value="__free" ${!cur && kreisIn.value ? 'selected' : ''}>Freie Position …</option>
+          <option value="__new">+ Neuer Zug …</option>`;
+        show();
+      };
+      const show = () => {
+        const v = sel.value, z = Repo.zuegeOf(showId).find(x => x.id === v);
+        free.classList.toggle('hidden', v !== '__free');
+        info.textContent = z ? [EBENE_NAME[z.ebene], BEREICH_NAME[z.bereich], z.hoehe, z.last].filter(Boolean).join(' · ') : (v && v !== '__free' && v !== '__new' ? 'Dieser Zug wurde aus der Zugliste entfernt.' : '');
+      };
+      sel.addEventListener('change', async () => {
+        markDirty();
+        const v = sel.value;
+        if (v === '__new') {
+          const n = await Ui.prompt('Neuer Bühnenzug', '', 'z. B. Zug 14, PZ 8, Podium 2', 'Wird in die gemeinsame Zugliste der Veranstaltung aufgenommen (Ebene „Oben / Züge“, änderbar unter „Züge & Positionen“).');
+          if (n && n.trim()) {
+            const id = Utils.uuid(), zs = Repo.zuegeOf(showId);
+            const ord = Math.max(100, ...zs.map(z => z.ord || 0)) + 10;
+            try { await Repo.patchShow(showId, { ['z:' + id]: { name: n.trim(), typ: 'buehne', ebene: 'oben', bereich: 'haupt', hoehe: '', last: '', bemerkung: '', ord, del: false } }); }
+            catch (err) { App.error(err); return; }
+            idIn.value = id; kreisIn.value = n.trim(); Ui.toast(`„${n.trim()}“ in die Zugliste aufgenommen`);
+          } else { idIn.value = idIn.value || ''; }
+          fill(); return;
+        }
+        if (v === '__free') { idIn.value = ''; if (Repo.zuegeOf(showId).some(z => z.name === kreisIn.value)) kreisIn.value = ''; show(); setTimeout(() => kreisIn.focus(), 30); return; }
+        const z = Repo.zuegeOf(showId).find(x => x.id === v);
+        idIn.value = v; kreisIn.value = z ? z.name : '';
+        if (z) kreisIn.closest('.f').classList.remove('invalid');
+        show();
+      });
+      fill();
+    }
     form.addEventListener('change', markDirty);
     if (mainFd.plus) kreisIn.addEventListener('blur', () => { const n = Utils.normKreis(kreisIn.value); if (n !== kreisIn.value) kreisIn.value = n; fitKreis(); });
     // lange Hauptfelder (z. B. 12+17+103+113+628) kleiner schreiben, damit alles sichtbar bleibt
@@ -3960,6 +4162,7 @@ const Editor = {
     const readForm = () => {
       const f = {};
       D.fields.forEach(fd => { const el = form.elements[fd.k]; if (el) f[fd.k] = fd.bool ? el.checked : el.value; });
+      if (mainFd.picker && f.zugId) { f.ebene = ''; f.bereich = ''; }          // bei Zug aus der Liste gelten dessen Ebene/Bereich
       return f;
     };
 
@@ -4014,7 +4217,7 @@ const Editor = {
           if (!slots.A.length && !slots.E.length) { dirty = false; sh.close(); return; }
           setTimeout(() => kreisIn.focus(), 60);
         });
-    } else if (!ex) setTimeout(() => kreisIn.focus(), 80);
+    } else if (!ex && !mainFd.picker) setTimeout(() => kreisIn.focus(), 80);
   },
   async _confirmLeave(changed) {
     if (!changed) return true;
@@ -4023,63 +4226,111 @@ const Editor = {
 };
 
 /* =====================================================================
-   SetupView – „Einrichtung & Züge“: allgemeine Einrichtung der Produktion
-   und Basisinformationen je Zug (OLZ 1/2, BGZ 1/2, weitere Züge)
+   SetupView – Einrichtung je Abteilung über der Liste:
+     Licht: „Einrichtung & Züge“ (allgemeine Einrichtung + Beleuchterzüge)
+     Ton:   „Einrichtung Ton“ (Freitext: Pult, Show-Datei, Grundpegel …)
+     Bühne: „Ablauf & Positionen“ – Ablauf in Abschnitten (Grundeinrichtung,
+            Pausenumbau, Ende) und die gemeinsame Zugliste mit Ebene/Bereich.
+   Daten im Show-Datensatz (feldweise zusammenführbar):
+     einrichtung · einrichtungT · z:<id> (Zug) · b:<id> (Ablauf-Schritt)
    ===================================================================== */
 const SetupView = {
-  open: false,                     // aufgeklappt? (gilt für die laufende Sitzung)
-  render(box, showId, edit) {
+  open: {},                        // aufgeklappt je Abteilung (gilt für die laufende Sitzung)
+  render(box, showId, edit, depts = ['L']) {
     if (!box) return;
-    const s = Repo.show(showId); if (!s) { box.innerHTML = ''; return; }
-    const zs = Repo.zuegeOf(showId), filled = zs.filter(z => Repo.zugFilled(z)).length;
-    const sum = [s.f.einrichtung ? 'Einrichtung' : '', `${filled}/${zs.length} Züge ausgefüllt`].filter(Boolean).join(' · ');
-    const line = (lab, v) => v ? `<div class="zl"><b>${lab}</b>${Utils.esc(v)}</div>` : '';
-    const wasOpen = this.open;
-    box.innerHTML = `<details class="setup ${s.f.einrichtung ? 'has-allg' : ''}" ${wasOpen ? 'open' : ''}>
-      <summary>${s.f.einrichtung ? `<span class="hint" title="Allgemeine Einrichtung beachten">${I('info')}</span>` : ''}<h3>Einrichtung &amp; Züge${App.visibleDepts(showId).length > 1 ? ' · Licht' : ''}<span class="sum">${Utils.esc(sum)}</span></h3>
-        ${edit ? `<button class="btn" data-setup-edit aria-label="Einrichtung bearbeiten">${I('edit', 'sm')}<span class="bl"> Bearbeiten</span></button>` : ''}${I('arrowR', 'sm chev')}</summary>
-      <div class="sbody">
-        <div><div class="muted" style="font-size:11px;font-weight:700;letter-spacing:.1em;margin-bottom:6px">ALLGEMEINE EINRICHTUNG</div>
-          <div class="allg ${s.f.einrichtung ? '' : 'empty'}">${s.f.einrichtung ? Utils.esc(s.f.einrichtung) : 'Noch nichts eingetragen.' + (edit ? '' : ' Zum Eintragen in den Bearbeitungsmodus wechseln.')}</div></div>
-        <div class="zgrid">${zs.map(z => `<div class="zcard ${Repo.zugFilled(z) ? '' : 'empty'}"><div class="zn">${Utils.esc(z.name)}${Repo.zugFilled(z) ? '' : '<small>leer</small>'}</div>
-          ${line('Höhe', z.hoehe)}${line('Bestückung', z.bestueckung)}${line('Bemerkung', z.bemerkung)}</div>`).join('')}</div>
-      </div></details>`;
-    const d = box.querySelector('details');
-    d.addEventListener('toggle', () => { this.open = d.open; });
-    const eb = box.querySelector('[data-setup-edit]');
-    if (eb) eb.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); this.edit(showId); });
+    const s = Repo.show(showId); if (!s || !depts.length) { box.innerHTML = ''; return; }
+    const multi = App.visibleDepts(showId).length > 1;
+    box.innerHTML = depts.map(d => this['html' + d](s, edit, multi)).join('');
+    box.querySelectorAll('details.setup').forEach(dt => dt.addEventListener('toggle', () => { this.open[dt.dataset.abt] = dt.open; }));
+    box.querySelectorAll('[data-setup-edit]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); this['edit' + b.dataset.setupEdit](showId); }));
+    box.querySelectorAll('[data-open-entry]').forEach(b => b.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation(); const id = b.dataset.openEntry;
+      if (App.sidePane()) App.selectEntry(id); else App.openDetailSheet(id);
+    }));
   },
-  /** Bearbeiten: allgemeine Einrichtung + alle Züge in einem Blatt, ein Speichervorgang */
-  edit(showId) {
+  /** Rahmen eines Blocks. pink = Allgemeine Einrichtung ausgefüllt (Hinweis-Symbol) */
+  frame(abt, title, sum, pink, edit, btns, body) {
+    return `<details class="setup ${pink ? 'has-allg' : ''}" data-abt="${abt}" ${this.open[abt] ? 'open' : ''}>
+      <summary>${pink ? `<span class="hint" title="Einrichtung beachten">${I('info')}</span>` : ''}<h3>${title}<span class="sum">${Utils.esc(sum)}</span></h3>
+        ${edit ? btns.map(([k, l, ic]) => `<button class="btn" data-setup-edit="${k}" aria-label="${Utils.esc(l)} bearbeiten">${I(ic || 'edit', 'sm')}<span class="bl"> ${Utils.esc(l)}</span></button>`).join('') : ''}${I('arrowR', 'sm chev')}</summary>
+      <div class="sbody">${body}</div></details>`;
+  },
+  textBox(label, v, edit) {
+    return `<div><div class="muted" style="font-size:11px;font-weight:700;letter-spacing:.1em;margin-bottom:6px">${label}</div>
+      <div class="allg ${v ? '' : 'empty'}">${v ? Utils.esc(v) : 'Noch nichts eingetragen.' + (edit ? '' : ' Zum Eintragen in den Bearbeitungsmodus wechseln.')}</div></div>`;
+  },
+  line(lab, v) { return v ? `<div class="zl"><b>${lab}</b>${Utils.esc(v)}</div>` : ''; },
+  /* ---------- Licht ---------- */
+  htmlL(s, edit, multi) {
+    const zs = Repo.zuegeOf(s.id).filter(z => z.typ === 'licht'), filled = zs.filter(z => Repo.zugFilled(z)).length;
+    const sum = [s.f.einrichtung ? 'Einrichtung' : '', `${filled}/${zs.length} Züge ausgefüllt`].filter(Boolean).join(' · ');
+    return this.frame('L', `Einrichtung &amp; Züge${multi ? ' · Licht' : ''}`, sum, !!s.f.einrichtung, edit, [['L', 'Bearbeiten']],
+      this.textBox('ALLGEMEINE EINRICHTUNG', s.f.einrichtung, edit) +
+      `<div class="zgrid">${zs.map(z => `<div class="zcard ${Repo.zugFilled(z) ? '' : 'empty'}"><div class="zn">${Utils.esc(z.name)}${Repo.zugFilled(z) ? '' : '<small>leer</small>'}</div>
+        ${this.line('Höhe', z.hoehe)}${this.line('Bestückung', z.bestueckung)}${this.line('Bemerkung', z.bemerkung)}</div>`).join('')}</div>`);
+  },
+  /* ---------- Ton ---------- */
+  htmlT(s, edit, multi) {
+    return this.frame('T', `Einrichtung Ton`, s.f.einrichtungT ? 'Einrichtung' : 'leer', !!s.f.einrichtungT, edit, [['T', 'Bearbeiten']],
+      this.textBox('PULT · SHOW-DATEI · GRUNDPEGEL · BESONDERHEITEN', s.f.einrichtungT, edit));
+  },
+  /* ---------- Bühne ---------- */
+  posSorted(showId) {
+    return Repo.zuegeOf(showId).slice().sort((a, b) => (EBENE_RANK[a.ebene] - EBENE_RANK[b.ebene]) || (BEREICH_RANK[a.bereich] - BEREICH_RANK[b.bereich]) || (a.ord - b.ord));
+  },
+  htmlB(s, edit, multi) {
+    const steps = Repo.ablaufOf(s.id), zs = this.posSorted(s.id);
+    const bz = zs.filter(z => z.typ === 'buehne').length;
+    const sum = [steps.length ? `${steps.length} Schritte` : 'kein Ablauf', `${bz} Bühnenzüge/Positionen`].join(' · ');
+    const entries = Repo.entriesOf(s.id);
+    const link = st => { const e = st.entryId && Repo.entry(st.entryId); if (!e) return '';
+      return `<button class="alink" data-open-entry="${e.id}">${I('arrowR', 'sm')} ${Utils.esc([mainVal(e), e.f.element].filter(Boolean).join(' · '))}</button>`; };
+    const abl = ABLAUF.map(([k, n]) => { const list = steps.filter(x => x.abschnitt === k); if (!list.length) return '';
+      return `<div class="ablsec"><div class="ablh">${n}</div><ol class="abl">${list.map(st => `<li><span class="at">${Utils.esc(st.text)}</span>${link(st)}</li>`).join('')}</ol></div>`; }).join('');
+    const cnt = id => entries.filter(e => abtOf(e) === 'B' && e.f.zugId === id).length;
+    let lastEb = '';
+    const pos = zs.map(z => { const head = z.ebene !== lastEb ? `<div class="poseb">${EBENE_NAME[z.ebene]}</div>` : ''; lastEb = z.ebene;
+      return head + `<div class="zcard ${Repo.zugFilled(z) || z.typ === 'buehne' ? '' : 'empty'}"><div class="zn">${Utils.esc(z.name)}${z.typ === 'licht' ? ' <span class="tag A" data-abt="L">Licht</span>' : ''}<small>${BEREICH_NAME[z.bereich]}${cnt(z.id) ? ` · ${cnt(z.id)} Eintr.` : ''}</small></div>
+        ${this.line('Höhe', z.hoehe)}${this.line('Last', z.last)}${z.typ === 'licht' ? this.line('Bestückung', z.bestueckung) : ''}${this.line('Bemerkung', z.bemerkung)}</div>`; }).join('');
+    return this.frame('B', `Ablauf &amp; Positionen${multi ? ' · Bühne' : ''}`, sum, steps.length > 0, edit, [['B', 'Ablauf', 'checklist'], ['P', 'Positionen', 'layers']],
+      `<div class="bhint" style="margin:0">${I('info', 'sm')}<span>${Utils.esc(EINRICHT_REGEL)}</span></div>
+      ${abl || `<div class="allg empty">Noch kein Ablauf.${edit ? ' Über „Ablauf“ Schritte für Grundeinrichtung, Pausenumbau und Ende anlegen.' : ''}</div>`}
+      <div class="muted" style="font-size:11px;font-weight:700;letter-spacing:.1em">ZÜGE &amp; POSITIONEN (UNTEN → OBEN, VORNE → HINTEN)</div>
+      <div class="zgrid">${pos}</div>`);
+  },
+
+  /* ---------- Bearbeiten: Licht (allgemeine Einrichtung + Beleuchterzüge) ---------- */
+  editL(showId) {
     const s = Repo.show(showId); if (!s) return;
-    let zs = Repo.zuegeOf(showId).map(z => Object.assign({}, z)), removed = [], dirty = false;
+    let zs = Repo.zuegeOf(showId).filter(z => z.typ === 'licht').map(z => Object.assign({}, z)), removed = [], dirty = false;
     const sh = Ui.sheet({
       title: 'Einrichtung & Züge', full: true,
-      headLeft: `<button class="btn ghost" data-x="cancel">Abbrechen</button>`,
+      headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
       headRight: `<button class="btn edit" data-x="save">${I('check')} Speichern</button>`,
       onBack: () => Editor._confirmLeave(dirty)
     });
-    sh.el.dataset.editor = '1';
+    sh.el.dataset.editor = '1'; sh.el.dataset.abt = 'L';
     const zedHtml = (z, i) => `<div class="zed" data-i="${i}">
         <div class="zh">${z.fixed ? `<span class="zname">${Utils.esc(z.name)}</span>` : `<input class="zname" data-f="name" value="${Utils.esc(z.name)}" aria-label="Name des Zugs">`}
           ${z.fixed ? '' : `<button type="button" class="btn icon danger" data-x="rm" aria-label="Zug entfernen">${I('trash')}</button>`}</div>
         <div class="zrow"><div class="f mono"><label>Höhe / Marke</label><input data-f="hoehe" value="${Utils.esc(z.hoehe)}" placeholder="z. B. 8,50 m"></div>
           <div class="f"><label>Bestückung</label><input data-f="bestueckung" value="${Utils.esc(z.bestueckung)}" placeholder="z. B. 6× PC 2 kW, 2× Profiler"></div></div>
         <div class="f"><label>Bemerkung</label><textarea data-f="bemerkung" rows="2" placeholder="Was ist zu beachten?">${Utils.esc(z.bemerkung)}</textarea></div></div>`;
+    let allg = null;
     const draw = () => {
       sh.body.innerHTML = `<form class="form" onsubmit="return false">
         <div class="f"><label for="se-allg">Allgemeine Einrichtung</label>
-          <textarea id="se-allg" rows="5" placeholder="z. B. Bühnenbild, Grundlicht, Saallicht, Besonderheiten der Produktion">${Utils.esc(this._allg ?? s.f.einrichtung ?? '')}</textarea></div>
-        <h3 style="margin:8px 0 0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Züge</h3>
+          <textarea id="se-allg" rows="5" placeholder="z. B. Bühnenbild, Grundlicht, Saallicht, Besonderheiten der Produktion">${Utils.esc(allg ?? s.f.einrichtung ?? '')}</textarea></div>
+        <h3 style="margin:8px 0 0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Beleuchterzüge</h3>
         ${zs.map(zedHtml).join('')}
         <button type="button" class="btn big" data-x="add">${I('plus')} Weiteren Zug hinzufügen</button>
         <button type="button" class="btn edit big block" data-x="save">${I('check')} Einrichtung &amp; Züge speichern</button></form>`;
     };
     const readBack = () => {
-      this._allg = sh.body.querySelector('#se-allg').value;
+      allg = sh.body.querySelector('#se-allg').value;
       sh.body.querySelectorAll('.zed').forEach(el => { const z = zs[+el.dataset.i]; el.querySelectorAll('[data-f]').forEach(inp => { z[inp.dataset.f] = inp.value; }); });
     };
-    this._allg = null; draw();
+    draw();
     sh.body.addEventListener('input', () => { dirty = true; });
     sh.el.addEventListener('click', async e => {
       const b = e.target.closest('[data-x]'); if (!b) return;
@@ -4088,7 +4339,7 @@ const SetupView = {
       else if (x === 'add') {
         readBack();
         const n = await Ui.prompt('Neuer Zug', '', 'z. B. OLZ 3, Portalbrücke, Seitenturm links');
-        if (n && n.trim()) { zs.push({ id: Utils.uuid(), name: n.trim(), hoehe: '', bestueckung: '', bemerkung: '', ord: 100 + zs.length, fixed: false }); dirty = true; draw();
+        if (n && n.trim()) { zs.push({ id: Utils.uuid(), name: n.trim(), hoehe: '', bestueckung: '', bemerkung: '', ord: null, fixed: false, isNew: true }); dirty = true; draw();
           const all = sh.body.querySelectorAll('.zed'), el = all[all.length - 1]; if (el) el.scrollIntoView({ block: 'center' }); }
       } else if (x === 'rm') {
         readBack();
@@ -4096,19 +4347,185 @@ const SetupView = {
         if (await Ui.confirm(`„${z.name}“ entfernen?`, 'Der Zug und seine Angaben werden aus dieser Veranstaltung entfernt.', 'Entfernen', true)) { removed.push(z.id); zs.splice(i, 1); dirty = true; draw(); }
       } else if (x === 'save') {
         readBack();
-        const patch = { einrichtung: (this._allg || '').trim() };
-        zs.forEach((z, i) => {
-          const v = { name: String(z.name || '').trim() || 'Zug', hoehe: z.hoehe.trim(), bestueckung: z.bestueckung.trim(), bemerkung: z.bemerkung.trim(), ord: z.fixed ? z.ord : 100 + i, del: false };
+        const patch = { einrichtung: (allg || '').trim() };
+        let next = Math.max(100, ...Repo.zuegeOf(showId).map(z => z.ord || 0)) + 10;
+        zs.forEach(z => {
           const old = s.f['z:' + z.id];
+          const p = { name: String(z.name || '').trim() || 'Zug', hoehe: z.hoehe.trim(), bestueckung: z.bestueckung.trim(), bemerkung: z.bemerkung.trim(), del: false };
+          if (z.isNew) { p.typ = 'licht'; p.ord = (next += 10); }      // bestehende Züge behalten Typ, Ebene, Bereich und Platz in der Liste
+          const v = Repo.zugValue(showId, z.id, p);
           if (z.fixed && !old && !Repo.zugFilled(v)) return;          // leerer Standardzug: nichts speichern
+          if (old && SetupView.same(old, v)) return;
           patch['z:' + z.id] = v;
         });
         removed.forEach(id => { const old = s.f['z:' + id]; if (old) patch['z:' + id] = Object.assign({}, old, { del: true }); });
-        try { await Repo.patchShow(showId, patch); dirty = false; this.open = true; sh.close(); Ui.toast('Einrichtung & Züge gespeichert'); }
+        if (patch.einrichtung === (s.f.einrichtung || '')) delete patch.einrichtung;
+        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open.L = true; sh.close(); Ui.toast('Einrichtung & Züge gespeichert'); }
         catch (err) { App.error(err); }
       }
     });
-  }
+  },
+
+  /* ---------- Bearbeiten: Ton (Freitext) ---------- */
+  editT(showId) {
+    const s = Repo.show(showId); if (!s) return;
+    let dirty = false;
+    const sh = Ui.sheet({ title: 'Einrichtung Ton', full: true,
+      headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
+      headRight: `<button class="btn edit" data-x="save">${I('check')} Speichern</button>`,
+      onBack: () => Editor._confirmLeave(dirty) });
+    sh.el.dataset.editor = '1'; sh.el.dataset.abt = 'T';
+    sh.body.innerHTML = `<form class="form" onsubmit="return false">
+      <div class="f"><label for="se-ton">Einrichtung Ton</label>
+        <textarea id="se-ton" rows="8" placeholder="z. B. Pult, Show-Datei, Grundpegel, Funkstrecken, Besonderheiten">${Utils.esc(s.f.einrichtungT || '')}</textarea></div>
+      <button type="button" class="btn edit big block" data-x="save">${I('check')} Einrichtung Ton speichern</button></form>`;
+    sh.body.addEventListener('input', () => { dirty = true; });
+    sh.el.addEventListener('click', async e => {
+      const b = e.target.closest('[data-x]'); if (!b) return;
+      if (b.dataset.x === 'cancel') { history.back(); return; }
+      const v = sh.body.querySelector('#se-ton').value.trim();
+      try { if (v !== (s.f.einrichtungT || '')) await Repo.patchShow(showId, { einrichtungT: v }); dirty = false; this.open.T = true; sh.close(); Ui.toast('Einrichtung Ton gespeichert'); }
+      catch (err) { App.error(err); }
+    });
+  },
+
+  /* ---------- Bearbeiten: Bühnen-Ablauf (Schritte je Abschnitt) ---------- */
+  editB(showId) {
+    const s = Repo.show(showId); if (!s) return;
+    let steps = Repo.ablaufOf(showId).map(x => Object.assign({}, x)), removed = [], dirty = false;
+    const sh = Ui.sheet({ title: 'Ablauf Bühne', full: true,
+      headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
+      headRight: `<button class="btn edit" data-x="save">${I('check')} Speichern</button>`,
+      onBack: () => Editor._confirmLeave(dirty) });
+    sh.el.dataset.editor = '1'; sh.el.dataset.abt = 'B';
+    const zs = Repo.zuegeOf(showId);
+    const bEntries = Repo.entriesOf(showId).filter(e => abtOf(e) === 'B').sort((a, b) => Repo.bcmp(a, b, zs));
+    const opts = cur => `<option value="">– kein Eintrag verknüpft –</option>` + bEntries.map(e => `<option value="${e.id}" ${e.id === cur ? 'selected' : ''}>${Utils.esc([mainVal(e), e.f.element].filter(Boolean).join(' · '))}</option>`).join('');
+    const draw = () => {
+      sh.body.innerHTML = `<form class="form" onsubmit="return false">
+        <div class="bhint" style="margin:0">${I('info', 'sm')}<span>${Utils.esc(EINRICHT_REGEL)}</span></div>
+        ${ABLAUF.map(([k, n]) => { const list = steps.filter(x => x.abschnitt === k);
+          return `<section class="ablsec ed"><div class="ablh">${n}</div>
+          ${list.map((st, i) => { const gi = steps.indexOf(st);
+            return `<div class="zed astep" data-gi="${gi}"><div class="f"><label>Schritt ${i + 1}</label><textarea data-f="text" rows="2" placeholder="z. B. Beide Zuschauertreppen einsetzen">${Utils.esc(st.text)}</textarea></div>
+              <div class="arow"><div class="f" style="flex:1;min-width:0"><select data-f="entryId" aria-label="Eintrag verknüpfen (Fotos)">${opts(st.entryId)}</select></div>
+                <button type="button" class="btn icon" data-x="up" aria-label="Nach oben" ${i === 0 ? 'disabled' : ''}>${I('arrowL', 'sm').replace('<svg', '<svg style="transform:rotate(90deg)"')}</button>
+                <button type="button" class="btn icon" data-x="down" aria-label="Nach unten" ${i === list.length - 1 ? 'disabled' : ''}>${I('arrowR', 'sm').replace('<svg', '<svg style="transform:rotate(90deg)"')}</button>
+                <button type="button" class="btn icon danger" data-x="rm" aria-label="Schritt entfernen">${I('trash')}</button></div></div>`; }).join('')}
+          <button type="button" class="btn" data-x="add" data-ab="${k}">${I('plus')} Schritt</button></section>`; }).join('')}
+        <button type="button" class="btn edit big block" data-x="save">${I('check')} Ablauf speichern</button></form>`;
+    };
+    const readBack = () => sh.body.querySelectorAll('.astep').forEach(el => { const st = steps[+el.dataset.gi]; el.querySelectorAll('[data-f]').forEach(inp => { st[inp.dataset.f] = inp.value; }); });
+    draw();
+    sh.body.addEventListener('input', () => { dirty = true; });
+    sh.body.addEventListener('change', () => { dirty = true; });
+    sh.el.addEventListener('click', async e => {
+      const b = e.target.closest('[data-x]'); if (!b) return;
+      const x = b.dataset.x;
+      if (x === 'cancel') { history.back(); return; }
+      readBack();
+      if (x === 'add') {
+        const ab = b.dataset.ab; steps.push({ id: Utils.uuid(), abschnitt: ab, text: '', entryId: '', ord: 1e9, isNew: true }); dirty = true; draw();
+        const all = sh.body.querySelectorAll(`.astep`); const el = [...all].find(n => steps[+n.dataset.gi].isNew && steps[+n.dataset.gi] === steps[steps.length - 1]);
+        if (el) { el.scrollIntoView({ block: 'center' }); el.querySelector('textarea').focus(); }
+      } else if (x === 'rm' || x === 'up' || x === 'down') {
+        const st = steps[+b.closest('.astep').dataset.gi], same = steps.filter(y => y.abschnitt === st.abschnitt), i = same.indexOf(st);
+        if (x === 'rm') { if (st.text.trim() && !await Ui.confirm('Schritt entfernen?', st.text.slice(0, 120), 'Entfernen', true)) return; if (!st.isNew) removed.push(st.id); steps.splice(steps.indexOf(st), 1); }
+        else { const j = x === 'up' ? i - 1 : i + 1; if (j < 0 || j >= same.length) return; const o = same[j]; const a1 = steps.indexOf(st), a2 = steps.indexOf(o); steps[a1] = o; steps[a2] = st; }
+        dirty = true; draw();
+      } else if (x === 'save') {
+        const patch = {};
+        ABLAUF.forEach(([k]) => steps.filter(y => y.abschnitt === k).forEach((st, i) => {
+          const old = s.f['b:' + st.id], text = st.text.trim();
+          if (!text) { if (old) patch['b:' + st.id] = Object.assign({}, old, { del: true }); return; }
+          const v = Object.assign({}, old || {}, { abschnitt: k, text, entryId: st.entryId || '', ord: (i + 1) * 10, del: false });
+          if (!old || JSON.stringify(old) !== JSON.stringify(v)) patch['b:' + st.id] = v;
+        }));
+        removed.forEach(id => { const old = s.f['b:' + id]; if (old) patch['b:' + id] = Object.assign({}, old, { del: true }); });
+        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open.B = true; sh.close(); Ui.toast('Ablauf gespeichert'); }
+        catch (err) { App.error(err); }
+      }
+    });
+  },
+
+  /* ---------- Bearbeiten: Züge & Positionen (gemeinsame Zugliste, beide Abteilungen) ---------- */
+  editP(showId) {
+    const s = Repo.show(showId); if (!s) return;
+    let zs = Repo.zuegeOf(showId).map(z => Object.assign({}, z)), removed = [], dirty = false, moved = false;
+    const sh = Ui.sheet({ title: 'Züge & Positionen', full: true,
+      headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
+      headRight: `<button class="btn edit" data-x="save">${I('check')} Speichern</button>`,
+      onBack: () => Editor._confirmLeave(dirty) });
+    sh.el.dataset.editor = '1'; sh.el.dataset.abt = 'B';
+    const sel = (f, list, v) => `<select data-f="${f}">${list.map(([k, n]) => `<option value="${k}" ${k === v ? 'selected' : ''}>${n}</option>`).join('')}</select>`;
+    const draw = () => {
+      sh.body.innerHTML = `<form class="form" onsubmit="return false">
+        <div class="bhint" style="margin:0">${I('info', 'sm')}<span>Reihenfolge der Liste = von vorne nach hinten. Sortiert wird erst nach Ebene (unten → oben), dann nach Bereich und Liste.</span></div>
+        ${zs.map((z, i) => `<div class="zed" data-i="${i}">
+          <div class="zh">${z.fixed ? `<span class="zname">${Utils.esc(z.name)}</span>` : `<input class="zname" data-f="name" value="${Utils.esc(z.name)}" aria-label="Name">`}
+            <span class="tag ${z.typ === 'licht' ? 'A' : 'E'}" data-abt="${z.typ === 'licht' ? 'L' : 'B'}">${z.typ === 'licht' ? 'Licht' : 'Bühne'}</span>
+            <button type="button" class="btn icon" data-x="up" aria-label="Nach vorne" ${i === 0 ? 'disabled' : ''}>${I('arrowL', 'sm').replace('<svg', '<svg style="transform:rotate(90deg)"')}</button>
+            <button type="button" class="btn icon" data-x="down" aria-label="Nach hinten" ${i === zs.length - 1 ? 'disabled' : ''}>${I('arrowR', 'sm').replace('<svg', '<svg style="transform:rotate(90deg)"')}</button>
+            ${z.fixed ? '' : `<button type="button" class="btn icon danger" data-x="rm" aria-label="Entfernen">${I('trash')}</button>`}</div>
+          <div class="zrow"><div class="f"><label>Ebene</label>${sel('ebene', EBENEN, z.ebene)}</div><div class="f"><label>Bereich</label>${sel('bereich', BEREICHE, z.bereich)}</div></div>
+          <div class="zrow"><div class="f mono"><label>Höhe / Marke</label><input data-f="hoehe" value="${Utils.esc(z.hoehe)}" placeholder="z. B. 8,20 m"></div>
+            <div class="f mono"><label>Last</label><input data-f="last" value="${Utils.esc(z.last || '')}" placeholder="z. B. 180 kg"></div></div>
+          ${z.typ === 'licht' ? `<div class="f"><label>Bestückung (Licht)</label><input data-f="bestueckung" value="${Utils.esc(z.bestueckung)}"></div>` : ''}
+          <div class="f"><label>Bemerkung</label><textarea data-f="bemerkung" rows="2">${Utils.esc(z.bemerkung)}</textarea></div></div>`).join('')}
+        <button type="button" class="btn big" data-x="add">${I('plus')} Zug / Position hinzufügen</button>
+        <button type="button" class="btn edit big block" data-x="save">${I('check')} Züge &amp; Positionen speichern</button></form>`;
+    };
+    const readBack = () => sh.body.querySelectorAll('.zed').forEach(el => { const z = zs[+el.dataset.i]; el.querySelectorAll('[data-f]').forEach(inp => { z[inp.dataset.f] = inp.value; }); });
+    draw();
+    sh.body.addEventListener('input', () => { dirty = true; });
+    sh.body.addEventListener('change', () => { dirty = true; });
+    sh.el.addEventListener('click', async e => {
+      const b = e.target.closest('[data-x]'); if (!b) return;
+      const x = b.dataset.x;
+      if (x === 'cancel') { history.back(); return; }
+      readBack();
+      if (x === 'add') {
+        const n = await Ui.prompt('Neuer Zug / neue Position', '', 'z. B. Zug 14, PZ 8, Podium 2, Unterbühne Mitte');
+        if (n && n.trim()) { zs.push({ id: Utils.uuid(), name: n.trim(), typ: 'buehne', ebene: 'oben', bereich: 'haupt', hoehe: '', last: '', bestueckung: '', bemerkung: '', fixed: false, isNew: true }); dirty = true; draw();
+          const all = sh.body.querySelectorAll('.zed'); all[all.length - 1].scrollIntoView({ block: 'center' }); }
+      } else if (x === 'up' || x === 'down') {
+        const i = +b.closest('.zed').dataset.i, j = x === 'up' ? i - 1 : i + 1; if (j < 0 || j >= zs.length) return;
+        [zs[i], zs[j]] = [zs[j], zs[i]]; moved = true; dirty = true; draw();
+      } else if (x === 'rm') {
+        const i = +b.closest('.zed').dataset.i, z = zs[i];
+        const n = Repo.entriesOf(showId).filter(en => en.f.zugId === z.id).length;
+        if (await Ui.confirm(`„${z.name}“ entfernen?`, (z.typ === 'licht' ? 'Das ist ein Beleuchterzug. ' : '') + (n ? `${n} Einträge behalten den Namen und zeigen „Zug entfernt“.` : 'Der Zug wird aus der Zugliste entfernt.'), 'Entfernen', true)) {
+          if (!z.isNew) removed.push(z.id); zs.splice(i, 1); dirty = true; draw();
+        }
+      } else if (x === 'save') {
+        const patch = {};
+        let next = Math.max(100, ...Repo.zuegeOf(showId).map(z => z.ord || 0)) + 10;
+        zs.forEach((z, i) => {
+          const old = s.f['z:' + z.id];
+          const p = { name: String(z.name || '').trim() || 'Zug', typ: z.typ, ebene: z.ebene, bereich: z.bereich, hoehe: String(z.hoehe || '').trim(), last: String(z.last || '').trim(),
+            bemerkung: String(z.bemerkung || '').trim(), del: false };
+          if (moved) p.ord = (i + 1) * 10; else if (z.isNew) p.ord = (next += 10);
+          if (z.typ === 'licht') p.bestueckung = String(z.bestueckung || '').trim();
+          const v = Repo.zugValue(showId, z.id, p);
+          if (z.fixed && !old && !Repo.zugFilled(v) && v.ebene === 'oben' && v.bereich === 'haupt' && !moved) return;   // unberührter Standardzug
+          if (old && SetupView.same(old, v)) return;
+          if (!old && z.fixed) v.ord = v.ord ?? z.ord;
+          patch['z:' + z.id] = v;
+        });
+        removed.forEach(id => { const old = s.f['z:' + id]; if (old) patch['z:' + id] = Object.assign({}, old, { del: true }); });
+        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open.B = true; sh.close(); Ui.toast('Züge & Positionen gespeichert'); }
+        catch (err) { App.error(err); }
+      }
+    });
+  },
+  /** gleicher Zug-Inhalt? (fehlende Felder = Standardwerte, damit Unverändertes nicht neu geschrieben wird) */
+  same(a, b) {
+    const n = o => JSON.stringify(Object.keys(Object.assign({ hoehe: '', bestueckung: '', last: '', bemerkung: '', typ: 'licht', ebene: 'oben', bereich: 'haupt', del: false }, a, b)).sort()
+      .map(k => [k, (o[k] ?? { hoehe: '', bestueckung: '', last: '', bemerkung: '', typ: 'licht', ebene: 'oben', bereich: 'haupt', del: false }[k]) ?? null]));
+    return n(a) === n(b);
+  },
+  /** bisheriger Einstieg (Licht) */
+  edit(showId) { this.editL(showId); }
 };
 
 /* =====================================================================
@@ -4458,7 +4875,15 @@ const Demo = {
       einrichtung: 'Grundlicht: Gruppe 1 auf 60 %. Saallicht über Pult, Stimmung 0.\nHaikopf-Requisite steht vor Vorstellung links in der Gasse 2, Lichterkette vorher prüfen.',
       'z:olz1': { name: 'OLZ 1', hoehe: '8,50 m', bestueckung: '6× PC 2 kW, 2× Profiler 26°', bemerkung: 'Torblenden oben leicht schließen', ord: 0, del: false },
       'z:bgz1': { name: 'BGZ 1', hoehe: '7,20 m', bestueckung: '4× Fresnel 1 kW', bemerkung: '', ord: 2, del: false },
-      'z:portal': { name: 'Portalbrücke', hoehe: 'Spielhöhe', bestueckung: '2× Verfolger', bemerkung: 'Verfolger nach Vorstellung abdecken', ord: 104, del: false } });
+      'z:portal': { name: 'Portalbrücke', hoehe: 'Spielhöhe', bestueckung: '2× Verfolger', bemerkung: 'Verfolger nach Vorstellung abdecken', ord: 104, del: false },
+      'z:pr11': { name: 'PR 11', typ: 'buehne', ebene: 'boden', bereich: 'vor', hoehe: '0,00', last: '', bemerkung: 'Vorgebaut; PR 9 und 10 gesperrt', ord: 110, del: false },
+      'z:zug14': { name: 'Zug 14', typ: 'buehne', ebene: 'oben', bereich: 'hinter', hoehe: '8,20 m', last: '120 kg', bemerkung: '', ord: 140, del: false },
+      einrichtungT: 'Pult: Show-Datei „Haifisch_2026“ laden, Szene 1.\nFunk: Akkus tauschen, Frequenzen prüfen, Soundcheck mit Mackie (Kanal 17).',
+      'b:d1': { abschnitt: 'grund', text: 'Beide Zuschauertreppen einsetzen, PR 11 vorgebaut.', entryId: '', ord: 10, del: false },
+      'b:d2': { abschnitt: 'grund', text: 'Podest Haifischbecken auf Boden links, Rollen feststellen.', entryId: '', ord: 20, del: false },
+      'b:d3': { abschnitt: 'grund', text: 'Rückprospekt Hafen auf Zug 14 einhängen und auf Spielhöhe fahren.', entryId: '', ord: 30, del: false },
+      'b:d4': { abschnitt: 'pause', text: 'Kamera weg, Farbeimer und Pinsel abnehmen.', entryId: '', ord: 10, del: false },
+      'b:d5': { abschnitt: 'ende', text: 'Becken leeren, Requisite absaugen.\nWand: absaugen → trocken abwischen → feucht abwischen.', entryId: '', ord: 10, del: false } });
     const data = [
       { f: { kreis: '361', bemerkung: 'Steckt in Podiumsklappe Li, Steckplatz 1' }, A: [['Kreis 361', 'Stecker', 210, 'nah'], ['Kreis 361', 'Podium links', 210, 'tot']] },
       { f: { kreis: '123+124', geraet: 'Lichterkette', bemerkung: '123 Rot und Blau, 124 Grün und Gelb, rote Lampe muss ins Maul (Haikopf-Requisite)' }, A: [['Kreis 123+124', 'Haikopf', 350, 'nah'], ['Kreis 123+124', 'Position', 350, 'tot']] },
@@ -4468,8 +4893,8 @@ const Demo = {
       { f: { kreis: '45', gruppe: '3', filter: 'L201', adresse: '12/301', position: '1. Portalbrücke', bemerkung: 'Seitenlicht links, Torblende oben leicht schließen' } },
       { abt: 'T', f: { kanal: '17', quelle: 'Funk Mackie', mikro: 'DPA 4061', stagebox: 'SB2-07', ausgang: 'PA', mikropos: 'Stirn', rolle: 'Mackie Messer', funk: 'TX 4 · 606,250 MHz', bemerkung: 'Kabel unter der Perücke, Akku vor jeder Vorstellung tauschen' },
         A: [['Kanal 17', 'Mikro Stirn', 205, 'nah']], E: [['Kanal 17', 'Pult-Kanal', 205, 'tot']] },
-      { abt: 'B', f: { zug: 'Zug 14', element: 'Rückprospekt Hafen', hoehe: '8,20 m', reihenfolge: '1', bemerkung: 'Erst nach dem Lichtwechsel fahren' }, A: [['Zug 14', 'Rückprospekt', 0, 'tot']] },
-      { abt: 'B', f: { zug: 'Boden links', element: 'Podest Haifischbecken', reihenfolge: '2', lagerort: 'Seitenbühne links', bemerkung: 'Rollen feststellen' } }
+      { abt: 'B', link: 'b:d3', f: { zug: 'Zug 14', zugId: 'zug14', element: 'Rückprospekt Hafen', hoehe: '8,20 m', reihenfolge: '1', bemerkung: 'Erst nach dem Lichtwechsel fahren' }, A: [['Zug 14', 'Rückprospekt', 0, 'tot']] },
+      { abt: 'B', link: 'b:d2', f: { zug: 'Boden links', ebene: 'boden', bereich: 'haupt', element: 'Podest Haifischbecken', reihenfolge: '2', lagerort: 'Seitenbühne links', bemerkung: 'Rollen feststellen' } }
     ];
     const entries = [], photos = [], fulls = [], thumbs = [];
     for (const d of data) {
@@ -4477,6 +4902,7 @@ const Demo = {
         : { abt: 'L', kreis: '', gruppe: '', filter: '', adresse: '', bemerkung: '', geraet: '', dmx: '', position: '', farbe: '', chkA: false, chkE: false, del: false };
       const e = Rec.create({ showId: show.id }, Object.assign(base, d.f));
       entries.push(e);
+      if (d.link) show.f[d.link].entryId = e.id;            // Ablauf-Schritt mit dem Eintrag verknüpfen
       for (const k of ['A', 'E']) for (const [i, args] of (d[k] || []).entries()) {
         const p = await this.photo(...args);
         fulls.push({ id: p.b, d: p.full }); thumbs.push({ id: p.b, d: p.thumb });
@@ -4773,7 +5199,7 @@ const App = {
     const list = main.querySelector('[data-list]'); if (!list) return;
     const vis = this.visibleDepts(st.showId), ca = this.curAbt();
     const setupBox = main.querySelector('[data-setup]');
-    if (vis.includes('L') && (st.abt === 'all' || st.abt === 'L')) SetupView.render(setupBox, st.showId, st.edit); else setupBox.innerHTML = '';
+    SetupView.render(setupBox, st.showId, st.edit, st.abt === 'all' ? vis : vis.filter(d => d === st.abt));
     const sort = 'kreis';                         // Sortierung immer: Abteilung → Phase → Hauptfeld aufsteigend
     const every = Views.sortedItems(st.showId, { kat: 'all', sort, q: st.q, depts: vis });
     const dc = { all: every.length }; vis.forEach(d => { dc[d] = 0; }); every.forEach(i => { dc[i.abt]++; });
@@ -4797,7 +5223,7 @@ const App = {
       return;
     }
     // Inkrementell zeichnen: je 60 Karten, weitere beim Scrollen
-    const CH = 60; let shown = 0, lastSect = null;
+    const CH = 60; let shown = 0, lastSect = null; this._bhint = false;
     const grid = Settings.v.view === 'grid', big = Settings.v.view === 'big';
     const ccls = grid ? 'grid' : big ? 'big' : '';
     list.innerHTML = '';
@@ -4806,8 +5232,9 @@ const App = {
       const end = Math.min(items.length, shown + CH);
       for (let i = shown; i < end; i++) {
         const it = items[i], sec = Views.sectionOf(it, sort, multi);
-        if (sec.key !== lastSect && (st.kat === 'all' || sort === 'gruppe' || multi)) {
+        if (sec.key !== lastSect && (st.kat === 'all' || sort === 'gruppe' || multi || sec.abt === 'B')) {
           if (open) html += '</div>';
+          if (sec.abt === 'B' && !this._bhint) { this._bhint = true; html += `<div class="bhint">${I('info', 'sm')}<span>${Utils.esc(EINRICHT_REGEL)}</span></div>`; }
           const n = items.filter(x => Views.sectionOf(x, sort, multi).key === sec.key).length;
           html += `<div class="sect" ${sec.abt ? `data-abt="${sec.abt}"` : ''}>${sec.k ? `<span class="sw" data-k="${sec.k}" style="background:var(--k)${sec.k === 'N' ? ';opacity:.5' : ''}"></span>` : ''}${Utils.esc(sec.label)} <span class="n">${n}</span></div><div class="cards ${ccls}">`;
           open = true; lastSect = sec.key;

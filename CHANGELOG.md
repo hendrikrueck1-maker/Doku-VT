@@ -1,5 +1,20 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.2.0 – 16.10.2026
+
+Etappe 3: gemeinsame Zugliste und Einrichtung je Abteilung – mit der Arbeitsweise der Bühnentechnik.
+
+- **Einrichte-Reihenfolge Bühne:** „Erst unten, dann oben – jeweils von vorne nach hinten.“ Jede Bühnen-Position hat eine **Ebene** (Unterbühne, Boden / Podium, Oben / Züge) und einen **Bereich** (Vorbühne, Portal, Hauptbühne, Seitenbühne, Hinterbühne). Liste, Checkliste und PDF folgen dieser Reihenfolge automatisch: Ebene, dann Bereich, dann Platz in der Zugliste, dann „Reihenfolge Umbau“. Die Bühnen-Liste ist nach Ebene gegliedert, die Regel steht darüber.
+- **Gemeinsame Zugliste:** Beleuchterzüge (OLZ, BGZ …) und Bühnenzüge/Positionen (frei benennbar, z. B. „Zug 14“, „PZ 8“, „PR 11“) in einer Liste, von vorne nach hinten sortierbar, mit Ebene, Bereich, Höhe/Marke, Last und Bemerkung. Beide Abteilungen sehen und bearbeiten alle Züge; jeder Zug wird beim Abgleich einzeln zusammengeführt. Licht- und Bühnen-Angaben desselben Zugs überschreiben sich nicht gegenseitig.
+- **Zug-Auswahl im Bühnen-Eintrag:** großes Auswahlfeld mit allen Zügen (Beleuchterzüge gekennzeichnet), „+ Neuer Zug …“ (wird sofort in die Zugliste aufgenommen und gewählt) und „Freie Position …“ mit Textfeld, Ebene und Bereich. Ohne Zug oder Position kein Speichern. Umbenannte Züge erscheinen überall mit neuem Namen; ein entfernter Zug behält den gespeicherten Namen und zeigt „Zug entfernt“.
+- **Bühnen-Ablauf** in drei Abschnitten **Grundeinrichtung · Pausenumbau · Ende / Abbau**: Schritte anlegen, umsortieren, entfernen und mit einem Bühnen-Eintrag verknüpfen (Fotos per Antippen). Pinker Rahmen, sobald ein Ablauf eingetragen ist.
+- **Einrichtung je Abteilung** über der Liste: Licht „Einrichtung & Züge“ (wie bisher, nur Beleuchterzüge), Ton „Einrichtung Ton“ (Freitext), Bühne „Ablauf & Positionen“. Bei „Alle“ untereinander.
+- **PDF:** Einrichtungsseiten je Abteilung im jeweiligen Kapitel (Bühne mit Regel, Ablauf je Abschnitt inkl. Seitenverweis auf verknüpfte Einträge und Zug-/Positionsliste unten → oben). Inhaltsverzeichnis mit allen Einrichtungsseiten. Pfeile und ähnliche Zeichen aus dem Text erscheinen lesbar (z. B. „->“) statt als „?“.
+- **Duplizieren** übernimmt Ton-Einrichtung und Bühnen-Ablauf (Verknüpfungen zeigen auf die kopierten Einträge).
+- **Bühnen-Einträge aus 2.0/2.1** (Zug nur als Text) bleiben unverändert; beim Lesen gilt „Zug …“ als oben, alles andere als Boden. Über die Zug-Auswahl lassen sie sich einem Zug zuordnen.
+- Smartphone: Im Editor-Kopf ist „Abbrechen“ ein ×, damit der Titel Platz hat.
+- Demo „Der Haifisch“ mit Bühnen-Ablauf, Bühnenzug, Podium und Ton-Einrichtung.
+
 ## 2.1.0 – 16.10.2026
 
 Etappe 2: Ton und Bühnentechnik vollständig im PDF, und die Tastatur verdeckt keine Eingabefelder mehr.

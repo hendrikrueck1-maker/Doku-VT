@@ -1,6 +1,6 @@
-# Doku VT 2.1.0 – Dokumentation
+# Doku VT 2.2.0 – Dokumentation
 
-Die App ist eine Datei (`index.html`, ca. 340 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
+Die App ist eine Datei (`index.html`, ca. 376 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
 
 ---
 
@@ -24,12 +24,14 @@ Die App ist eine Datei (`index.html`, ca. 340 KB), keine Abhängigkeiten, kein C
 | `Sync` + Adapter | Kern: Pakete bauen und einspielen, Status, Protokoll. `collect({since, showIds, depts})` und `filterRecs()` beschränken Einträge und Fotos auf Abteilungen; Veranstaltungen gehen immer mit. Paketformat 2 (Feld `depts` im Kopf). Adapter mit gleichem Interface (`id, name, available(), push(), pull()`): `FileAdapter`, `PeerAdapter`/`PeerSession` (WebRTC), `ServerAdapter` (vorbereitet für eine spätere Version) |
 | `Kb` | Bildschirmtastatur (ab 2.1.0): misst die Überdeckung über `visualViewport`, setzt `--kb` und `html.kb-open` (nur Innenabstand unten in `.sheet-b`, keine Größenänderung des Blatts), scrollt das aktive Feld samt Beschriftung in den sichtbaren Bereich, hebt kleine Blätter/Dialoge per `transform` an, lässt Textfelder mitwachsen. Android zusätzlich über `interactive-widget=resizes-content` im Viewport. |
 | `Ui` | Ebenen mit History-Eintrag (Android-Zurück, Wischgeste und Esc schließen die oberste Ebene), eigene Dialoge, Toasts, Busy-Anzeige |
-| `SetupView` | „Einrichtung & Züge“: Anzeige über der Liste, Bearbeitungsblatt. Daten im Show-Datensatz: `einrichtung` und je Zug ein Feld `z:<id>` (OLZ 1/2, BGZ 1/2 fest, weitere frei) → feldweiser Merge je Zug |
+| `SetupView` | Einrichtung je Abteilung über der Liste (ab 2.2.0): Licht „Einrichtung & Züge“, Ton „Einrichtung Ton“, Bühne „Ablauf & Positionen“. Bearbeitungsblätter `editL`, `editT`, `editB` (Ablauf), `editP` (Züge & Positionen). Daten im Show-Datensatz: `einrichtung`, `einrichtungT`, je Zug `z:<id>` = {name, typ licht/buehne, ebene, bereich, hoehe, bestueckung, last, bemerkung, ord, del}, je Ablauf-Schritt `b:<id>` = {abschnitt grund/pause/ende, text, entryId, ord, del} → feldweiser Merge je Zug und je Schritt. Gespeichert wird immer als Ergänzung des alten Werts (`Repo.zugValue`) und nur, was sich geändert hat. |
 | `Views`, `Editor`, `SyncView`, `PeerView`, `DiagView`, `SettingsView`, `App` | Oberfläche, Routing per Hash (`#/show/<id>`), Ereignis-Delegation |
 
 **Farbsystem (ab 2.0.0):** `[data-abt]` setzt `--da` (Aufbau, dunkel), `--de` (2. Phase, hell), `--dei`/`--dai` (Schrift darauf); `[data-k="A|E|N"]` wählt daraus `--k`, `--ks`, `--ki`. Komponenten benutzen nur `--k`/`--ks`/`--ki` und erben die Abteilung vom nächsten Vorfahren mit `data-abt`. Ohne Abteilung (Leiste bei „Alle“) sind die Werte neutral. Kamera und PDF nehmen die Hex-Werte aus `DEPT[abt].col`.
 
 **Migration (beim Lesen, nie als Massen-Schreibvorgang):** Eintrag ohne `abt` = Licht (`abtOf`). Veranstaltung ohne `abteilungen` = Licht + jede Abteilung, die Einträge hat (`Repo.showDepts`). Gerät ohne `depts` = Licht. Beim Speichern eines bestehenden Eintrags werden leere Felder, die es im Datensatz noch nicht gibt, nicht angelegt und `abt` wird nicht nachgetragen – ein unverändert gespeicherter 1.8.1-Eintrag bekommt keinen neuen Zeitstempel. `abteilungen` wird erst geschrieben, wenn jemand die Auswahl bewusst ändert.
+
+**Bühne – Einrichte-Reihenfolge (ab 2.2.0):** „Erst unten, dann oben – jeweils von vorne nach hinten.“ `Repo.bposOf(e)` liefert die Position eines Bühnen-Eintrags (Zug aus der Zugliste über `zugId`, sonst freie Position mit `ebene`/`bereich`). `Repo.bcmp` sortiert: Ebene (Unterbühne → Boden/Podium → Oben/Züge), Bereich (Vorbühne → Portal → Haupt-/Seitenbühne → Hinterbühne), Platz in der Zugliste (`ord`, vorne → hinten), „Reihenfolge Umbau“, Name. `mainVal` zeigt bei Bühne den aktuellen Zugnamen. Lese-Migration für 2.0/2.1-Einträge ohne `zugId`/`ebene`: „Zug …/OLZ/BGZ/PZ …“ = oben, sonst Boden.
 
 **Sichtbarkeit:** In einer Veranstaltung erscheinen nur die Abteilungen aus `Repo.showDepts(show) ∩ Settings.v.depts` (`App.visibleDepts`). `App.curAbt()` liefert die Abteilung, nach der sich Beschriftungen richten (gewählte, sonst die einzige sichtbare, sonst keine = „Alle“).
 
@@ -111,6 +113,15 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 - [ ] Alle Abteilungen: Trennseite je Abteilung, Inhaltsverzeichnis mit Kopfzeile und Spalten je Abteilung, Seitenzahlen stimmen.
 - [ ] „Einrichtung & Züge“ steht im Kapitel Beleuchtung; PDF „nur Ton“ ohne diese Seite.
 
+**Bühne (ab 2.2.0)**
+- [ ] Bühnen-Liste: Abschnitte Unterbühne → Boden / Podium → Oben / Züge, darin vorne → hinten; Hinweis „erst unten, dann oben“ steht über der Liste.
+- [ ] Bühnen-Eintrag: Zug aus der Auswahl wählen; „+ Neuer Zug …“ legt ihn in der Zugliste an; „Freie Position …“ mit Ebene und Bereich. Ohne Auswahl kein Speichern.
+- [ ] „Positionen“: Zug nach vorne/hinten schieben, Ebene/Bereich ändern → Reihenfolge der Bühnen-Karten passt sich an. Zug umbenennen → Karten zeigen den neuen Namen. Zug entfernen → „Zug entfernt“.
+- [ ] Beleuchterzug auf dem Bühnen-Gerät ändern (z. B. Last) und auf dem Licht-Gerät in „Einrichtung & Züge“ speichern: Die Bühnen-Angaben bleiben erhalten. Per Sync-Paket kommt der Zug auf dem anderen Gerät an, Einträge der fremden Abteilung nicht.
+- [ ] „Ablauf“: Schritte in Grundeinrichtung, Pausenumbau, Ende anlegen, verschieben, verknüpfen; Antippen der Verknüpfung öffnet den Eintrag mit Fotos.
+- [ ] Ton: „Einrichtung Ton“ eintragen → pinker Rahmen, eigene Seite im PDF.
+- [ ] PDF alle Abteilungen: Einrichtungsseiten im jeweiligen Kapitel, Inhaltsverzeichnis mit allen drei.
+
 **Backup & Sync**
 - [ ] Komplett-Backup erstellen, auf einem zweiten Gerät einspielen, dann ein zweites Mal einspielen: Es entsteht nichts doppelt.
 - [ ] Sync-Paket iPad → iPhone per AirDrop: Änderungen kommen an, der Status wird „Synchron“.
@@ -129,13 +140,16 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 
 ## 3. Bewusste Designentscheidungen und Abweichungen
 
-0a. **Automatischer Test (2.0.0, erweitert in 2.1.0):** `test/test_dokuvt.py` (Python + Playwright, Chromium headless mit simulierter Kamera, startet selbst einen lokalen Server). 93 Prüfungen zu Abteilungen, Tastatur (iOS-Verhalten über ein nachgebautes `visualViewport`: Feld unten im Editor, mitwachsende Bemerkung, Bottom-Sheet, Dialog, Blattgröße unverändert, Trefferflächen), PDF-Kapitel, Farben, Migration ohne Änderungsmarkierung, Leiste/Knöpfe, Ton-Zusammenführen, Bühne-Pflichtfeld, Kamera-Farben, Bildansicht, Paketformat 2 mit Abteilungsfilter (zwei Geräte), PDF (qpdf), Rotlicht und drei Smartphone-Breiten. Die frühere Testsuite (127 Prüfungen) lag dieser Lieferung nicht bei; sie wird in den folgenden Etappen mit diesem Test zusammengeführt.
+0a. **Automatischer Test (2.0.0, erweitert in 2.1.0 und 2.2.0):** `test/test_dokuvt.py` (Python + Playwright, Chromium headless mit simulierter Kamera, startet selbst einen lokalen Server). 119 Prüfungen zu Abteilungen, Bühnen-Reihenfolge (unten → oben, vorne → hinten), Zug-Auswahl (neuer Zug, freie Position, umbenannt, entfernt), Einrichtung je Abteilung, Ablauf, gemeinsamer Zugliste ohne gegenseitiges Überschreiben, Speichern ohne Änderung schreibt nichts, Duplizieren, Tastatur (iOS-Verhalten über ein nachgebautes `visualViewport`: Feld unten im Editor, mitwachsende Bemerkung, Bottom-Sheet, Dialog, Blattgröße unverändert, Trefferflächen), PDF-Kapitel, Farben, Migration ohne Änderungsmarkierung, Leiste/Knöpfe, Ton-Zusammenführen, Bühne-Pflichtfeld, Kamera-Farben, Bildansicht, Paketformat 2 mit Abteilungsfilter (zwei Geräte), PDF (qpdf), Rotlicht und drei Smartphone-Breiten. Die frühere Testsuite (127 Prüfungen) lag dieser Lieferung nicht bei; sie wird in den folgenden Etappen mit diesem Test zusammengeführt.
 13. **Abteilung bestimmt den Farbton, Phase die Darstellung** (Aufbau umrandet/dunkel, 2. Phase gefüllt/hell) – so bleibt alles auch ohne Farbsehen und im Rotlicht über Form und Tag unterscheidbar.
 14. **Rot = Licht, deshalb `--danger` Karminrosa** und der Einrichtungs-Rahmen pink mit Symbol. Gefahr ist zusätzlich immer über Symbol und Text erkennbar.
 15. **Ton/Bühne schon in 2.0.0 bedienbar:** Der Editor baut sich aus `DEPT`; Licht ergibt dabei exakt das Layout aus 1.7.0. Die Bühnen-Zugauswahl aus der Zugliste und die PDF-Kapitel je Abteilung kommen in den nächsten Etappen.
-16. **Bühne: Pflichtfeld Zug/Position vorerst als Textfeld.** Mit der gemeinsamen Zugliste (Etappe 3) wird daraus eine Auswahl mit „+ Neuer Zug“ und „Freie Position“.
+16. **Bühne: Zug/Position als Auswahl** (seit 2.2.0) mit „+ Neuer Zug“ und „Freie Position“; der Name wird als Kopie mitgespeichert, damit PDF und Abgleich auch ohne Zugliste lesbar bleiben.
+19. **Bühne nach Ebene statt nach Phase gegliedert:** Bühne hat nur Aufbau-Fotos; die Gliederung nach Ebene macht die Einrichte-Regel sichtbar. Vorrang hat „unten vor oben“ (Rückmeldung der Bühnentechnik), innerhalb der Ebene „vorne vor hinten“.
+20. **Ablauf statt Freitext für die Bühne:** Der Zettel der Bühnentechnik (Garland) beschreibt einen Ablauf in Abschnitten – deshalb Schritte statt eines Textfelds. Abhaken pro Vorstellung kommt mit der Vorstellungs-Checkliste (2.3.0), die die Ablauf-Schritte als Punkte nutzen kann.
+21. **Bereich als grobe Tiefe:** Für freie Positionen gibt es keinen Zug mit Listenplatz; der Bereich (Vorbühne … Hinterbühne) ordnet sie trotzdem richtig ein. Züge haben zusätzlich ihren Platz in der Liste.
 18. **Tastatur ohne Größenänderung des Blatts:** 1.8.0 hatte das Blatt auf die sichtbare Höhe verkleinert – auf dem iPad ließen sich danach keine Felder mehr antippen. Seit 2.1.0 bleibt die Geometrie des Blatts unverändert; nur Inhalt (Innenabstand, Scrollposition) und bei kleinen Blättern ein `transform` ändern sich. Die Gegenprobe im Test (ohne `Kb`) schlägt an, echte Geräte bitte trotzdem prüfen – die iOS-Tastatur lässt sich im Browser-Test nur nachbilden.
-17. **Versionierung:** Etappe 1 erscheint als 2.0.0 (statt 1.9.0), weil sich Farbsystem und Paketformat ändern. Die weiteren Etappen folgen als 2.1.0 (Ton/Bühne vollständig), 2.2.0 (Zugliste, Einrichtung je Abteilung) und 2.3.0 (Vorstellungs-Checkliste).
+17. **Versionierung:** Etappe 1 erscheint als 2.0.0 (statt 1.9.0), weil sich Farbsystem und Paketformat ändern. Die weiteren Etappen: 2.1.0 (Ton/Bühne vollständig, Tastatur), 2.2.0 (Zugliste, Einrichtung je Abteilung, Bühnen-Reihenfolge und -Ablauf), 2.3.0 (Vorstellungs-Checkliste).
 0. **Automatischer Test (ab 1.3.0, erweitert in 1.4.0):** 127 Prüfungen (inkl. Import der echten Garland-Datei) in Chromium mit simulierter Kamera – Start, Liste, Filter, Suche, Sortierung, Lightbox, Checkliste, Editor mit Kamera und Schnelltasten, Zusammenführen, Markieren, PDF (qpdf-Prüfung, Umlaute, Seitenzahl), Backup-Import auf zweitem Gerät, Sync-Paket, QR (auch gedreht), WebRTC-Live-Abgleich zwischen zwei Geräten, Einstellungen, iPad hoch und iPhone. Echte Geräte ersetzt das nicht: Safari-Teilen, mehrere Kameras und Taschenlampe bitte auf iPad/iPhone/Pixel prüfen.
 12. **Farbiger Rand nur in der Anzeige**, nicht ins Foto eingebrannt. So bleibt ein Foto korrekt, wenn es später in die andere Kategorie verschoben wird, und das PDF zeigt saubere Bilder.
 
