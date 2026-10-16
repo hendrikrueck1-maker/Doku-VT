@@ -2,7 +2,7 @@
 <html lang="de" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Doku VT</title>
 <meta name="description" content="Technikdokumentation (Licht, Ton, Bühne) für den Theaterbetrieb – offline, mit Fotos, PDF-Export und Geräte-Abgleich.">
 <meta name="theme-color" content="#0b0d10">
@@ -454,6 +454,10 @@ html[data-theme="red"] .bighead{background:var(--surf3);color:var(--text)}
 @media (min-width:900px){.sheet.full .sheet-h{padding-top:10px}}
 .sheet-h h2{flex:1;margin:0;font-size:18px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sheet-b{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:16px calc(var(--sar) + 18px) 16px calc(var(--sal) + 18px);overscroll-behavior:contain}
+/* Tastatur offen (iPad/iPhone): Das Blatt behält seine Größe. Nur der Inhalt bekommt unten Platz in Tastaturhöhe,
+   damit auch das letzte Feld über die Tastatur gescrollt werden kann (siehe Kb). */
+html.kb-open .sheet-b{padding-bottom:calc(var(--kb, 0px) + 32px)}
+.sheet-b textarea{overflow-y:hidden}
 .sheet-f{flex:none;display:flex;gap:10px;padding:12px calc(var(--sar) + 16px) calc(var(--sab) + 12px) calc(var(--sal) + 16px);border-top:1px solid var(--line);background:var(--bg2)}
 .dialog{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-lg);width:min(460px,calc(100% - 32px));margin:auto;padding:22px 20px 16px;box-shadow:var(--shadow);animation:pop .18s ease}
 .scrim.dlg{align-items:center;z-index:450}
@@ -682,7 +686,7 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.0.0';
+const APP_VERSION = '2.1.0';
 const DB_NAME = 'lichtdoku';
 const DB_VERSION = 1;
 const FORMAT_VERSION = 2;              // Format von Backup-/Sync-Paketen (2: Abteilungen, Filter je Abteilung)
@@ -2662,15 +2666,20 @@ const Pdf = {
     const items = Views.sortedItems(showId, { kat: opts.kat, sort: 'kreis', q: '', depts: opts.depts || App.visibleDepts(showId) });
     const abts = [...new Set(items.map(it => abtOf(it.entry)))];
     const tocAbt = abts.length <= 1 ? (abts[0] || (opts.depts || ['L'])[0]) : null;    // einheitliche Spalten, wenn nur eine Abteilung
+    const multi = abts.length > 1;                 // mehrere Abteilungen → je Abteilung ein Kapitel mit Trennseite
     const pages = [];
+    let lastAbt = null;
     for (const it of items) {
+      const ab = abtOf(it.entry);
+      if (multi && ab !== lastAbt) { pages.push({ divider: ab, n: items.filter(x => abtOf(x.entry) === ab) }); lastAbt = ab; }
       const ph = it.kat === 'N' ? [] : Repo.photosOf(it.entry.id, it.kat);
       const chunks = []; for (let i = 0; i < Math.max(1, ph.length); i += 4) chunks.push(ph.slice(i, i + 4));
       chunks.forEach((c, ci) => pages.push({ it, photos: c, cont: ci > 0, first: ci === 0, from: ci * 4 }));
     }
     // ---- Einrichtung & Züge: Blöcke bauen und auf Seiten verteilen ----
     const setupBlocks = [], innerW = W - 2 * M - 24;
-    if (Repo.hasSetup(showId)) {
+    const withLicht = (opts.depts || App.visibleDepts(showId)).includes('L');   // „Einrichtung & Züge“ gehört (noch) zu Licht
+    if (withLicht && Repo.hasSetup(showId)) {
       const allg = this.wrap(show.f.einrichtung || '—', 'F1', 11, W - 2 * M);
       // Allgemeine Einrichtung darf über Seiten laufen: in Abschnitte zu je höchstens 40 Zeilen teilen
       for (let i = 0; i < allg.length; i += 40) setupBlocks.push({ type: 'allg', lines: allg.slice(i, i + 40), first: i === 0, h: (i === 0 ? 18 : 0) + Math.min(40, allg.length - i) * 14 + 14 });
@@ -2684,12 +2693,23 @@ const Pdf = {
       for (const b of setupBlocks) { if (!cur.length || b.h > room) { if (cur.length) setupPageList.push(cur); cur = []; room = AV; } cur.push(b); room -= b.h + 20; }
       if (cur.length) setupPageList.push(cur); }
     const setupPages = setupPageList.length;
+    // Einrichtungsseiten: am Anfang bzw. direkt nach der Trennseite „Beleuchtung“
+    if (setupPages) {
+      const at = multi ? pages.findIndex(p => p.divider === 'L') + 1 : 0;
+      pages.splice(Math.max(0, at), 0, ...setupPageList.map(b => ({ setup: b })));
+    }
     const TOC_PER = 100;                        // bis 100 Einträge passt das Inhaltsverzeichnis auf eine Seite
     const tocPages = opts.cover ? Math.max(1, Math.ceil(items.length / TOC_PER)) : 0;
     const tocDense = items.length > 34;         // viele Einträge: Kopf des Deckblatts kompakter
-    const total = tocPages + setupPages + pages.length;
-    // Seitenzahl je Eintrag-Kategorie fürs Inhaltsverzeichnis
-    const firstPage = new Map(); pages.forEach((p, i) => { if (p.first) firstPage.set(p.it, tocPages + setupPages + i + 1); });
+    const total = tocPages + pages.length;
+    // Seitenzahlen fürs Inhaltsverzeichnis: je Eintrag-Kategorie, je Trennseite, erste Einrichtungsseite
+    const firstPage = new Map(), divPage = {}; let setupFirst = 0;
+    pages.forEach((p, i) => {
+      const n = tocPages + i + 1;
+      if (p.first) firstPage.set(p.it, n);
+      if (p.divider) divPage[p.divider] = n;
+      if (p.setup && !setupFirst) setupFirst = n;
+    });
 
     // ---- Schreiber ----
     const parts = []; let offset = 0; const xref = []; let nextId = 5; const pageIds = [];
@@ -2748,38 +2768,58 @@ const Pdf = {
         } else { c.rgb(0.07, 0.08, 0.1).text(M, y, 'Inhalt (Fortsetzung)', 'F2', 16); y -= 26; }
         if (tp === 0 && setupPages) {
           c.rgb(0.35, 0.37, 0.42).rect(M, y - 2, 6, 12);
-          c.rgb(0.07, 0.08, 0.1).text(M + 14, y, 'Einrichtung & Züge', 'F2', 11).textR(W - M, y, `S. ${tocPages + 1}`, 'F1', 11);
+          c.rgb(0.07, 0.08, 0.1).text(M + 14, y, multi ? 'Beleuchtung: Einrichtung & Züge' : 'Einrichtung & Züge', 'F2', 11).textR(W - M, y, `S. ${setupFirst}`, 'F1', 11);
           c.rgb(0.88, 0.89, 0.91, true).line(M + 14, y - 5, W - M, y - 5, 0.4); y -= 18;
         }
         // Zeilen dieser Seite: Kreis | Kategorie | Gruppe | Filter | Seite – bei vielen Einträgen zweispaltig
         const rows = items.slice(idx, idx + TOC_PER); idx += rows.length;
-        const avail = y - 46 - 14, n = rows.length;
-        const two = n * 16 > avail;
+        // Folge der Zeilen: bei mehreren Abteilungen vor jeder Abteilung eine Kopfzeile (Name, Spalten, Seite der Trennseite)
+        let seq = [];
+        rows.forEach(it => { const ab = abtOf(it.entry); if (multi && (!seq.length || seq[seq.length - 1].ab !== ab)) seq.push({ head: true, ab }); seq.push({ it, ab }); });
+        const avail = y - 46 - 14;
+        const two = seq.length * 16 > avail;
         const gap = 16, colW = two ? (W - 2 * M - gap) / 2 : W - 2 * M;
-        const perCol = two ? Math.ceil(n / 2) : n;
+        let colsSeq = [seq];
+        if (two) {
+          const half = Math.ceil(seq.length / 2), a = seq.slice(0, half), b = seq.slice(half);
+          if (multi && b.length && !b[0].head) b.unshift({ head: true, ab: b[0].ab, cont: true });   // Spalte 2 beginnt mitten in einer Abteilung
+          colsSeq = [a, b];
+        }
+        const perCol = Math.max(...colsSeq.map(x => x.length));
         const rh = Math.min(18, avail / Math.max(1, perCol)), fs = Math.min(10.5, Math.max(6, rh * 0.72));
         // Spaltenköpfe: bei einer Abteilung deren Felder (Licht wie bisher), gemischt allgemein
         const TD = tocAbt ? DEPT[tocAbt] : null, up = s => s.split(' / ')[0].toUpperCase();
         const hd = TD ? [TD.mainLabel.toUpperCase(), tocAbt === 'L' ? 'KATEGORIE' : 'PHASE', up(fieldLabel(tocAbt, TD.toc[0])), up(fieldLabel(tocAbt, TD.toc[1]))]
-          : ['EINTRAG', 'ABTEILUNG · PHASE', 'ANGABE', 'ANGABE'];
-        const hd2 = TD ? (tocAbt === 'L' ? 'GR.' : hd[2].slice(0, 4) + '.') : 'ANG.';
+          : ['', 'PHASE', '', ''];                  // mehrere Abteilungen: Spaltenköpfe stehen in den Abteilungs-Kopfzeilen
+        const hd2 = TD ? (tocAbt === 'L' ? 'GR.' : hd[2].slice(0, 4) + '.') : '';
         const cols = two
           ? [[hd[0], 9, 98], [hd2, 110, 34], [hd[3], 147, colW - 147 - 34]]
-          : [[hd[0], 14, 170], [hd[1], 190, TD ? 80 : 110], [hd[2], TD ? 276 : 306, TD ? 64 : 60], [hd[3], TD ? 346 : 372, W - 2 * M - (TD ? 346 : 372) - 50]];
+          : [[hd[0], 14, 170], [hd[1], 190, 80], [hd[2], 276, 64], [hd[3], 346, W - 2 * M - 346 - 50]];
         const head = x0 => {
           cols.forEach(([l, dx]) => c.rgb(0.45, 0.48, 0.53).text(x0 + dx, y, l, 'F2', 7));
           c.rgb(0.45, 0.48, 0.53).textR(x0 + colW, y, 'SEITE', 'F2', 7);
         };
-        head(M); if (two) head(M + colW + gap);
-        const y0 = y - 14;
-        rows.forEach((it, r) => {
-          const ci = two && r >= perCol ? 1 : 0, rr = ci ? r - perCol : r;
+        if (!multi) { head(M); if (two) head(M + colW + gap); }
+        const y0 = multi ? y + 4 : y - 14;
+        const rowsAt = []; colsSeq.forEach((cs, ci) => cs.forEach((s, rr) => rowsAt.push([s, ci, rr])));
+        rowsAt.forEach(([s, ci, rr]) => {
           const x0 = M + ci * (colW + gap), yy = y0 - rr * rh, base = yy - rh * 0.68;
+          if (s.head) {                               // Kopfzeile der Abteilung
+            const HD = DEPT[s.ab], hfs = Math.min(9, fs);
+            c.rgb(...katRgb(s.ab, 'A')).rect(x0, yy - rh + 1, colW, rh - 2);
+            c.rgb(1, 1, 1).text(x0 + 8, base, this.fit(`${HD.name.toUpperCase()} · ${HD.mainLabel.toUpperCase()}${s.cont ? ' (Forts.)' : ''}`, 'F2', hfs, (two ? 104 : 176) - 10), 'F2', hfs);
+            const lab = [two ? null : 'PHASE', ...HD.toc.map(k => fieldLabel(s.ab, k).split(' / ')[0].toUpperCase())];
+            const lx = two ? [null, 110, 147] : [190, 276, 346];
+            lab.forEach((l, k) => { if (l && lx[k] != null) c.rgb(1, 1, 1).text(x0 + lx[k], base, this.fit(l, 'F2', 6.5, two && k === 1 ? 34 : 120), 'F2', 6.5); });
+            if (!s.cont && divPage[s.ab]) c.rgb(1, 1, 1).textR(x0 + colW - 4, base, String(divPage[s.ab]), 'F2', hfs);
+            return;
+          }
+          const it = s.it;
           if (rr % 2 === 0) c.rgb(0.95, 0.955, 0.965).rect(x0, yy - rh, colW, rh);
           const ab = abtOf(it.entry), RD = DEPT[ab];
           c.rgb(...katRgb(ab, it.kat)).rect(x0, yy - rh + 1, two ? 4 : 6, rh - 2);
           const f = it.entry.f, mv = f[RD.main] || '—', t1 = fieldVal(ab, RD.toc[0], f[RD.toc[0]]), t2 = fieldVal(ab, RD.toc[1], f[RD.toc[1]]);
-          const ph = TD ? katName(ab, it.kat) : RD.short + ' · ' + katName(ab, it.kat);
+          const ph = katName(ab, it.kat);
           const vals = two ? [mv, t1, t2] : [mv, ph, t1, t2];
           vals.forEach((v, k) => {
             const [, dx, w] = cols[k], bold = k === 0;
@@ -2792,8 +2832,8 @@ const Pdf = {
       }
     }
 
-    // ---- Einrichtung & Züge ----
-    setupPageList.forEach((blocks, sp) => {
+    // ---- Einrichtung & Züge (wird aus der Seitenfolge heraus aufgerufen) ----
+    const drawSetup = blocks => {
       const c = C(); pageNo++;
       c.rgb(0.35, 0.37, 0.42).rect(0, H - 14, W, 14);
       c.rgb(0.07, 0.08, 0.1).text(M, H - 52, this.fit(show.f.titel, 'F2', 20, W - 2 * M - 190), 'F2', 20);
@@ -2824,11 +2864,33 @@ const Pdf = {
       }
       footer(c, pageNo, null);
       writePage(c.get(), {});
-    });
+    };
+    // ---- Trennseite eines Abteilungs-Kapitels ----
+    const drawDivider = pg => {
+      const c = C(); pageNo++;
+      const ab = pg.divider, D = DEPT[ab], dk = katRgb(ab, 'A'), lt = katRgb(ab, 'E');
+      c.rgb(...dk).rect(0, H - 300, W, 300);
+      c.rgb(...lt).rect(0, H - 312, W, 12);
+      c.rgb(1, 1, 1).text(M, H - 80, 'KAPITEL', 'F2', 11).text(M, H - 150, D.name, 'F2', 46);
+      c.text(M, H - 186, this.fit(show.f.titel, 'F1', 16, W - 2 * M), 'F1', 16);
+      let y = H - 370;
+      const cnt = k => pg.n.filter(x => x.kat === k).length;
+      const ents = new Set(pg.n.map(x => x.entry.id)).size;
+      c.rgb(0.07, 0.08, 0.1).text(M, y, `${ents} Einträge`, 'F2', 16); y -= 28;
+      [...D.photoKats, 'N'].forEach(k => { const n = cnt(k); if (!n) return;
+        c.rgb(...katRgb(ab, k)).rect(M, y - 3, 10, 14);
+        c.rgb(0.25, 0.28, 0.33).text(M + 20, y, `${k === 'N' ? 'Ohne Fotos' : D.phases[k]}: ${n} Seite${n === 1 ? '' : 'n'}`, 'F1', 12); y -= 22; });
+      if (ab === 'L' && setupPages) { c.rgb(0.25, 0.28, 0.33).text(M + 20, y, `Einrichtung & Züge: ab Seite ${setupFirst}`, 'F1', 12); y -= 22; }
+      footer(c, pageNo, 'A', ab);
+      writePage(c.get(), {});
+    };
 
     // ---- Inhaltsseiten ----
     let done = 0;
+    const nContent = pages.filter(p => p.it).length;
     for (const pg of pages) {
+      if (pg.setup) { drawSetup(pg.setup); continue; }
+      if (pg.divider) { drawDivider(pg); continue; }
       pageNo++;
       const { it } = pg, e = it.entry, ab = abtOf(e), D = DEPT[ab], col = katRgb(ab, it.kat);
       const c = C(), images = {};
@@ -2907,7 +2969,7 @@ const Pdf = {
       }
       footer(c, pageNo, it.kat, ab);
       writePage(c.get(), images);
-      done++; onProgress && onProgress(done, pages.length);
+      done++; onProgress && onProgress(done, nContent);
       if (done % 4 === 0) await Utils.frame();     // Oberfläche reaktionsfähig halten
     }
     if (!pageIds.length) {        // leere Show: eine Hinweisseite
@@ -3491,6 +3553,96 @@ const Ui = {
 };
 
 /* =====================================================================
+   Kb – Bildschirmtastatur. Ziel: Das Feld, in das getippt wird, ist immer
+   vollständig sichtbar – man sieht und korrigiert, was man schreibt.
+   • Android/Chrome: viewport „interactive-widget=resizes-content“ – die Seite
+     wird bei offener Tastatur kleiner, das Blatt scrollt von selbst richtig.
+   • iPad/iPhone: Die Tastatur verkleinert nur den sichtbaren Bereich
+     (visualViewport). Lehre aus 1.8.0: Blatt-HÖHE nicht anpassen (Felder waren
+     dann nicht mehr antippbar). Stattdessen:
+       1. Inhalt bekommt unten Platz in Tastaturhöhe (--kb, Klasse kb-open),
+       2. das aktive Feld wird innerhalb des Blatts über die Tastatur gescrollt,
+       3. kleine Blätter/Dialoge, die ganz unter der Tastatur lägen, werden
+          per transform angehoben (Größe und Trefferflächen bleiben gleich),
+       4. mehrzeilige Felder wachsen mit dem Text mit.
+   Nach dem Schließen der Tastatur ist alles wie vorher (plus realign in App).
+   ===================================================================== */
+const Kb = {
+  inset: 0, lifted: new Set(),
+  init() {
+    const vv = window.visualViewport;
+    const upd = () => {
+      const el = document.activeElement, typing = Utils.isEditable(el) && el.type !== 'checkbox';
+      let ins = 0;
+      if (vv && typing) ins = Math.max(0, Math.round(Math.max(window.innerHeight, document.documentElement.clientHeight) - vv.height - vv.offsetTop));
+      const on = ins > 60;                                   // kleine Abweichungen (Adressleiste) ignorieren
+      if (on !== (this.inset > 0) || (on && Math.abs(ins - this.inset) > 4)) {
+        this.inset = on ? ins : 0;
+        document.documentElement.style.setProperty('--kb', this.inset + 'px');
+        document.documentElement.classList.toggle('kb-open', on);
+      }
+      if (typing) this.reveal(el); else this.unlift();
+    };
+    this.update = Utils.debounce(upd, 50);
+    if (vv) { vv.addEventListener('resize', this.update); vv.addEventListener('scroll', this.update); }
+    window.addEventListener('resize', this.update);
+    document.addEventListener('focusin', e => {
+      if (!Utils.isEditable(e.target)) return;
+      if (e.target.tagName === 'TEXTAREA') this.grow(e.target);
+      // iOS fährt die Tastatur animiert aus: mehrfach nachmessen
+      [80, 320, 650].forEach(ms => setTimeout(this.update, ms));
+    });
+    document.addEventListener('focusout', () => setTimeout(this.update, 150));
+    document.addEventListener('input', e => {
+      if (e.target.tagName === 'TEXTAREA') { this.grow(e.target); this.reveal(e.target); }
+    });
+  },
+  /** mehrzeiliges Feld wächst mit dem Inhalt (höchstens ca. halbe Bildschirmhöhe, dann scrollt es intern) */
+  grow(ta) {
+    if (!ta.closest('.sheet,.dialog')) return;
+    const max = Math.round(window.innerHeight * 0.45);
+    ta.style.height = 'auto';
+    const h = Math.min(max, ta.scrollHeight + 2);
+    ta.style.height = Math.max(h, 96) + 'px';
+    ta.style.overflowY = ta.scrollHeight + 2 > max ? 'auto' : 'hidden';
+  },
+  /** sichtbarer Bereich in Seitenkoordinaten (getBoundingClientRect) */
+  visible() {
+    const vv = window.visualViewport;
+    return vv ? { top: vv.offsetTop, bottom: vv.offsetTop + vv.height } : { top: 0, bottom: window.innerHeight };
+  },
+  /** aktives Feld sichtbar machen */
+  reveal(el) {
+    if (!el || !el.isConnected) return;
+    const box = el.closest('.sheet, .dialog'); if (!box) return;
+    const vis = this.visible(), pad = 14;
+    // 3. kleine Blätter / Dialoge anheben, wenn ihr unterer Rand unter der Tastatur liegt
+    if (!box.classList.contains('full')) {
+      const cur = this.lift(box), r = box.getBoundingClientRect();
+      const baseBottom = r.bottom + cur, baseTop = r.top + cur;
+      const want = Math.max(0, Math.min(baseBottom - (vis.bottom - 8), baseTop - (vis.top + 8)));
+      if (Math.abs(want - cur) > 2) { box.style.transform = want ? `translateY(${-want}px)` : ''; box.dataset.lift = want; if (want) this.lifted.add(box); else this.lifted.delete(box); }
+    }
+    // 2. innerhalb des scrollbaren Inhalts so verschieben, dass das Feld ganz zu sehen ist
+    const sc = el.closest('.sheet-b'); if (!sc) return;
+    requestAnimationFrame(() => {
+      const r = el.getBoundingClientRect(), sr = sc.getBoundingClientRect();
+      const top = Math.max(sr.top, vis.top) + pad, bottom = Math.min(sr.bottom, vis.bottom) - pad;
+      if (bottom - top < 60) return;
+      const label = el.closest('.f'); const lr = label ? label.getBoundingClientRect() : r;   // Beschriftung mit anzeigen
+      const need = Math.min(r.height, bottom - top);                                         // hohe Felder: wenigstens der sichtbare Teil
+      if (r.top + need > bottom) sc.scrollTop += (r.top + need) - bottom;
+      else if (lr.top < top) sc.scrollTop -= top - lr.top;
+    });
+  },
+  lift(box) { return +(box.dataset.lift || 0); },
+  unlift() {
+    this.lifted.forEach(b => { b.style.transform = ''; b.dataset.lift = 0; });
+    this.lifted.clear();
+  }
+};
+
+/* =====================================================================
    Views – Startseite, Show-Liste, Detail
    ===================================================================== */
 const Views = {
@@ -3658,7 +3810,7 @@ const Editor = {
     let dirty = false, pending = 0, saving = false;
     const markDirty = () => { dirty = true; };
     const sh = Ui.sheet({
-      title: ex ? `${D.mainLabel} ${ex.f[MAIN] || '(ohne Nummer)'} bearbeiten` : `Neuer Eintrag ${D.short}`, full: true,
+      title: ex ? `${D.mainLabel} ${ex.f[MAIN] || '(ohne Nummer)'}` : 'Neuer Eintrag', full: true,      // Abteilung steht im Tag davor
       headLeft: `<button class="btn ghost" data-act="cancel">Abbrechen</button>`,
       headRight: `<button class="btn edit savebtn" data-act="save">${I('check')}<span class="sl">Speichern</span></button>`,
       onBack: () => this._confirmLeave(dirty || pending)
@@ -4393,7 +4545,7 @@ const App = {
   async start() {
     const setVh = () => document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
     setVh(); window.addEventListener('resize', setVh);
-    Ui.init();
+    Ui.init(); Kb.init();
     try {
       await Store.open();
       await Settings.load();

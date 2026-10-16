@@ -1,5 +1,17 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.1.0 – 16.10.2026
+
+Etappe 2: Ton und Bühnentechnik vollständig im PDF, und die Tastatur verdeckt keine Eingabefelder mehr.
+
+- **Tastatur verdeckt keine Felder mehr:** Das Feld, in das getippt wird, wird automatisch über die Tastatur geschoben – mit Beschriftung, damit man sieht und korrigieren kann, was man schreibt. Das gilt im Eintrag (auch für die Felder unter „Weitere Angaben“ ganz unten), in „Einrichtung & Züge“, beim Anlegen einer Veranstaltung und in Dialogen mit Eingabefeld.
+  - iPad/iPhone: Das Blatt behält seine Größe (Lehre aus 1.8.0). Der Inhalt bekommt nur unten Platz in Tastaturhöhe und wird gezielt gescrollt; kleine Blätter und Dialoge werden angehoben. Nach dem Schließen der Tastatur ist alles wieder wie vorher.
+  - Android (Pixel): Die Seite wird bei offener Tastatur kleiner (`interactive-widget=resizes-content`), dadurch scrollt das Blatt von selbst richtig.
+  - **Bemerkung und andere mehrzeilige Felder wachsen mit dem Text mit**, bis etwa zur halben Bildschirmhöhe – der ganze Text bleibt zum Gegenlesen sichtbar.
+- **PDF mit Kapiteln je Abteilung:** Bei mehreren Abteilungen beginnt jede mit einer Trennseite in Abteilungsfarbe (Name, Anzahl der Einträge und Seiten je Phase). Das Inhaltsverzeichnis ist nach Abteilung gegliedert, jede Abteilung mit eigener Kopfzeile und eigenen Spalten (Licht: Kreis, Phase, Gruppe, Filter · Ton: Kanal, Phase, Quelle, Mikrofon · Bühne: Zug, Phase, Element, Höhe) und der Seitenzahl ihrer Trennseite. Die Grenze von 100 Einträgen je Inhaltsseite und die zweispaltige Darstellung bleiben.
+- **„Einrichtung & Züge“ im PDF** steht im Kapitel Beleuchtung und fehlt in einem PDF ohne Licht (z. B. „nur Ton“).
+- Editor-Kopf auf dem Smartphone: kürzerer Titel, die Abteilung steht im Tag davor.
+
 ## 2.0.0 – 16.10.2026
 
 Erste Etappe der Erweiterung um **Ton** und **Bühnentechnik**. Ein Gerät, das nur Licht dokumentiert, sieht fast aus wie 1.8.1 – nur in Rot.

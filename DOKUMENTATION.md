@@ -1,6 +1,6 @@
-# Doku VT 2.0.0 – Dokumentation
+# Doku VT 2.1.0 – Dokumentation
 
-Die App ist eine Datei (`index.html`, ca. 331 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
+Die App ist eine Datei (`index.html`, ca. 340 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
 
 ---
 
@@ -19,9 +19,10 @@ Die App ist eine Datei (`index.html`, ca. 331 KB), keine Abhängigkeiten, kein C
 | `Annotator` | Pfeil, Kreis oder Freihand auf ein Foto zeichnen. Das Ergebnis wird als **neues** Foto gespeichert (Bilddaten bleiben unveränderlich und damit sync-sicher). |
 | `Lightbox` | Vollbild: Pinch-Zoom, Doppeltipp, Wischen links/rechts (blättert über alle sichtbaren Karten), hoch/runter schließt, große Info-Einblendung |
 | `QR`, `QrScan` | Eigener QR-**Generator** (Version 1–40, L/M) und eigener **Decoder** (Finder-Suche, perspektivische Entzerrung, Reed-Solomon-Korrektur). Der Scanner nutzt `BarcodeDetector`, wo vorhanden, sonst den eigenen Decoder. Auf iPad/iPhone gibt es keinen BarcodeDetector, dort ist der eigene Decoder also nötig. |
-| `Pdf` | Eigener PDF-1.4-Generator: Helvetica mit WinAnsiEncoding (Umlaute), JPEG per DCTDecode, Deckblatt mit Inhaltsverzeichnis und Seitenzahlen |
+| `Pdf` | Eigener PDF-1.4-Generator: Helvetica mit WinAnsiEncoding (Umlaute), JPEG per DCTDecode, Deckblatt mit Inhaltsverzeichnis und Seitenzahlen. Seitenfolge als eine Liste (`pages`: Trennseite, Einrichtung, Eintragsseite) – bei mehreren Abteilungen ein Kapitel je Abteilung mit Trennseite und gegliedertem Inhaltsverzeichnis. |
 | `Legacy` | Import von JSON-Dateien der früheren Lichtdoku-App (`{show, entries}` mit `bilderAufbau`/`bilderEinleuchten` als Data-URLs). Feste IDs aus alten IDs (`lgs-`, `lge-`) und Bildinhalt (`lgb-` + Hash) → wiederholter Import idempotent. Original-JPEGs werden unverändert gespeichert, nur das Vorschaubild wird erzeugt. |
 | `Sync` + Adapter | Kern: Pakete bauen und einspielen, Status, Protokoll. `collect({since, showIds, depts})` und `filterRecs()` beschränken Einträge und Fotos auf Abteilungen; Veranstaltungen gehen immer mit. Paketformat 2 (Feld `depts` im Kopf). Adapter mit gleichem Interface (`id, name, available(), push(), pull()`): `FileAdapter`, `PeerAdapter`/`PeerSession` (WebRTC), `ServerAdapter` (vorbereitet für eine spätere Version) |
+| `Kb` | Bildschirmtastatur (ab 2.1.0): misst die Überdeckung über `visualViewport`, setzt `--kb` und `html.kb-open` (nur Innenabstand unten in `.sheet-b`, keine Größenänderung des Blatts), scrollt das aktive Feld samt Beschriftung in den sichtbaren Bereich, hebt kleine Blätter/Dialoge per `transform` an, lässt Textfelder mitwachsen. Android zusätzlich über `interactive-widget=resizes-content` im Viewport. |
 | `Ui` | Ebenen mit History-Eintrag (Android-Zurück, Wischgeste und Esc schließen die oberste Ebene), eigene Dialoge, Toasts, Busy-Anzeige |
 | `SetupView` | „Einrichtung & Züge“: Anzeige über der Liste, Bearbeitungsblatt. Daten im Show-Datensatz: `einrichtung` und je Zug ein Feld `z:<id>` (OLZ 1/2, BGZ 1/2 fest, weitere frei) → feldweiser Merge je Zug |
 | `Views`, `Editor`, `SyncView`, `PeerView`, `DiagView`, `SettingsView`, `App` | Oberfläche, Routing per Hash (`#/show/<id>`), Ereignis-Delegation |
@@ -99,6 +100,17 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 - [ ] PDF „nur Ton“: nur Ton-Seiten, Spalten Kanal/Phase/Quelle/Mikrofon, Dateiname `…_Ton_Datum.pdf`.
 - [ ] iPad: Tastatur im Ton- und Bühnen-Editor öffnen und schließen; Felder bleiben antippbar, Speichern oben und unten funktioniert.
 
+**Tastatur (ab 2.1.0)**
+- [ ] iPad hoch und quer, iPhone, Pixel: Eintrag öffnen, „Weitere Angaben“ aufklappen, das unterste Feld antippen → Feld und Beschriftung stehen über der Tastatur, das Getippte ist lesbar.
+- [ ] Mit „Weiter“ durch alle Felder springen: jedes Feld wird sichtbar.
+- [ ] Bemerkung mit mehreren Zeilen: Das Feld wächst mit, der ganze Text bleibt sichtbar.
+- [ ] Neue Veranstaltung (Titel), Gerätename und Filter-Schnelltasten in den Einstellungen: Eingabefeld und Knöpfe über der Tastatur und antippbar.
+- [ ] Tastatur schließen: Blatt, Kopfzeile, Speichern-Knöpfe, „+ Eintrag“ und Rahmen stehen wieder an ihrem Platz.
+
+**PDF (ab 2.1.0)**
+- [ ] Alle Abteilungen: Trennseite je Abteilung, Inhaltsverzeichnis mit Kopfzeile und Spalten je Abteilung, Seitenzahlen stimmen.
+- [ ] „Einrichtung & Züge“ steht im Kapitel Beleuchtung; PDF „nur Ton“ ohne diese Seite.
+
 **Backup & Sync**
 - [ ] Komplett-Backup erstellen, auf einem zweiten Gerät einspielen, dann ein zweites Mal einspielen: Es entsteht nichts doppelt.
 - [ ] Sync-Paket iPad → iPhone per AirDrop: Änderungen kommen an, der Status wird „Synchron“.
@@ -117,11 +129,12 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 
 ## 3. Bewusste Designentscheidungen und Abweichungen
 
-0a. **Automatischer Test 2.0.0:** `test/test_dokuvt.py` (Python + Playwright, Chromium headless mit simulierter Kamera, startet selbst einen lokalen Server). 80 Prüfungen zu Abteilungen, Farben, Migration ohne Änderungsmarkierung, Leiste/Knöpfe, Ton-Zusammenführen, Bühne-Pflichtfeld, Kamera-Farben, Bildansicht, Paketformat 2 mit Abteilungsfilter (zwei Geräte), PDF (qpdf), Rotlicht und drei Smartphone-Breiten. Die frühere Testsuite (127 Prüfungen) lag dieser Lieferung nicht bei; sie wird in den folgenden Etappen mit diesem Test zusammengeführt.
+0a. **Automatischer Test (2.0.0, erweitert in 2.1.0):** `test/test_dokuvt.py` (Python + Playwright, Chromium headless mit simulierter Kamera, startet selbst einen lokalen Server). 93 Prüfungen zu Abteilungen, Tastatur (iOS-Verhalten über ein nachgebautes `visualViewport`: Feld unten im Editor, mitwachsende Bemerkung, Bottom-Sheet, Dialog, Blattgröße unverändert, Trefferflächen), PDF-Kapitel, Farben, Migration ohne Änderungsmarkierung, Leiste/Knöpfe, Ton-Zusammenführen, Bühne-Pflichtfeld, Kamera-Farben, Bildansicht, Paketformat 2 mit Abteilungsfilter (zwei Geräte), PDF (qpdf), Rotlicht und drei Smartphone-Breiten. Die frühere Testsuite (127 Prüfungen) lag dieser Lieferung nicht bei; sie wird in den folgenden Etappen mit diesem Test zusammengeführt.
 13. **Abteilung bestimmt den Farbton, Phase die Darstellung** (Aufbau umrandet/dunkel, 2. Phase gefüllt/hell) – so bleibt alles auch ohne Farbsehen und im Rotlicht über Form und Tag unterscheidbar.
 14. **Rot = Licht, deshalb `--danger` Karminrosa** und der Einrichtungs-Rahmen pink mit Symbol. Gefahr ist zusätzlich immer über Symbol und Text erkennbar.
 15. **Ton/Bühne schon in 2.0.0 bedienbar:** Der Editor baut sich aus `DEPT`; Licht ergibt dabei exakt das Layout aus 1.7.0. Die Bühnen-Zugauswahl aus der Zugliste und die PDF-Kapitel je Abteilung kommen in den nächsten Etappen.
 16. **Bühne: Pflichtfeld Zug/Position vorerst als Textfeld.** Mit der gemeinsamen Zugliste (Etappe 3) wird daraus eine Auswahl mit „+ Neuer Zug“ und „Freie Position“.
+18. **Tastatur ohne Größenänderung des Blatts:** 1.8.0 hatte das Blatt auf die sichtbare Höhe verkleinert – auf dem iPad ließen sich danach keine Felder mehr antippen. Seit 2.1.0 bleibt die Geometrie des Blatts unverändert; nur Inhalt (Innenabstand, Scrollposition) und bei kleinen Blättern ein `transform` ändern sich. Die Gegenprobe im Test (ohne `Kb`) schlägt an, echte Geräte bitte trotzdem prüfen – die iOS-Tastatur lässt sich im Browser-Test nur nachbilden.
 17. **Versionierung:** Etappe 1 erscheint als 2.0.0 (statt 1.9.0), weil sich Farbsystem und Paketformat ändern. Die weiteren Etappen folgen als 2.1.0 (Ton/Bühne vollständig), 2.2.0 (Zugliste, Einrichtung je Abteilung) und 2.3.0 (Vorstellungs-Checkliste).
 0. **Automatischer Test (ab 1.3.0, erweitert in 1.4.0):** 127 Prüfungen (inkl. Import der echten Garland-Datei) in Chromium mit simulierter Kamera – Start, Liste, Filter, Suche, Sortierung, Lightbox, Checkliste, Editor mit Kamera und Schnelltasten, Zusammenführen, Markieren, PDF (qpdf-Prüfung, Umlaute, Seitenzahl), Backup-Import auf zweitem Gerät, Sync-Paket, QR (auch gedreht), WebRTC-Live-Abgleich zwischen zwei Geräten, Einstellungen, iPad hoch und iPhone. Echte Geräte ersetzt das nicht: Safari-Teilen, mehrere Kameras und Taschenlampe bitte auf iPad/iPhone/Pixel prüfen.
 12. **Farbiger Rand nur in der Anzeige**, nicht ins Foto eingebrannt. So bleibt ein Foto korrekt, wenn es später in die andere Kategorie verschoben wird, und das PDF zeigt saubere Bilder.
