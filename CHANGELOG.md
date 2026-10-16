@@ -1,5 +1,33 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.4.0 – 16.10.2026
+
+Überarbeitung nach der ersten Durchsicht: übersichtlicher, leichter lesbar, in allen Abteilungen gleich aufgebaut.
+
+- **PDF ohne leere Seiten:** Einträge ohne Fotos (oft Ton und Bühne) stehen jetzt zu mehreren auf einer Seite, im selben Infoblock wie auf den Foto-Seiten. Die Reihenfolge bleibt erhalten. Beispiel Garland: 60 statt 76 Seiten.
+- **PDF-Inhaltsverzeichnis lesbar:** einspaltig über die volle Breite, je Abteilung eine Kopfzeile mit Spaltennamen und Kapitelseite. Bühne zeigt Position, Element und Ort, Ton Kanal, Quelle und Mikrofon – nichts mehr abgeschnitten.
+- **PDF-Kapitel je Abteilung gleich:** Kapitelseite mit „Allgemein“, „Vor der Vorstellung“ (Kästchen zum Abhaken auf Papier) und – je nach Abteilung – Beleuchterzüge bzw. Bühnen-Ablauf (mit Kästchen und Seitenverweis) und Positionen als Tabelle. Die bisher fast leere Trennseite entfällt.
+- **Bühne: Reihenfolge „von vorne nach hinten und von unten nach oben“.** Liste, Checkliste und PDF sortieren zuerst nach Bereich (Vorbühne → Portal → Haupt-/Seitenbühne → Hinterbühne), darin nach Ebene (Unterbühne → Boden → Oben). Die Bühnen-Liste ist nach Bereich gegliedert. Der Merksatz ist entfallen.
+- **Einrichtung einheitlich:** „Einrichtung · Licht“, „Einrichtung · Ton“, „Einrichtung · Bühne“ – jeweils mit „Allgemein“ (neu auch für Bühne). Ablauf ruhiger (Foto-Knopf rechts statt Textverweis), Positionen als kompakte Tabelle, eingeklappt; leere Beleuchterzüge erscheinen bei Bühne nicht mehr.
+- **„Vor der Vorstellung“ direkt in der Veranstaltung:** oben über der Liste, bei Ton und Bühne von selbst aufgeklappt. „Vorstellung heute beginnen“ und gleich abhaken – auch im Ansichtsmodus. Alle Durchgänge und das PDF-Protokoll wie bisher.
+- **Klare Namen:** Die Aufbau-Haken an den Einträgen heißen jetzt „Abhaken“ (vorher ebenfalls „Checkliste“).
+- **Rotlicht lesbar:** In der Ansicht „Große Bilder“ liegt keine Schraffur mehr hinter Kreis/Kanal/Position (Aufbau nur noch als schraffierte Linie). Graue und gedimmte Texte sind heller (Kontrast mindestens 4:1).
+- **Eingabefelder einheitlich:** Feldnamen überall in derselben Schrift, kürzere Namen (Ton: „Kanal“, „Quelle“; Bühne: „Position“, „Element“, „Höhe / Marke“), Platzhalter werden nicht mehr abgeschnitten.
+- **Sortierung Hauptfeld:** erst Nummern, dann Namen (Ton: 1, 2, 11 … Aux 1, Aux 2 … Video 1).
+
+## 2.3.0 – 16.10.2026
+
+Etappe 4: Vorstellungs-Checkliste – vor jeder Vorstellung abhaken, mit Protokoll.
+
+- **Vorstellungs-Checkliste** je Veranstaltung (Knopf mit Haken-Symbol in der Kopfzeile, auch im Menü der Veranstaltung): Punkte je Abteilung, z. B. „Funkakkus voll“, „Notbeleuchtung geprüft“. Bei Bühne erscheinen zusätzlich die Schritte aus dem **Ablauf** (Grundeinrichtung, Pausenumbau, Ende) automatisch als Punkte.
+- **„Neue Vorstellung“** legt einen Durchgang mit Datum an. Abhaken geht **auch im Ansichtsmodus** (großer Haken, 48 px); jeder Haken zeigt Uhrzeit und Gerät. Fortschritt je Abteilung und gesamt; offene Punkte sind pink markiert. Frühere Durchgänge bleiben zum Nachschlagen erhalten. Löschen und Punkte bearbeiten nur im Bearbeitungsmodus.
+- **Abgleich ohne Verlust:** Jeder Haken ist ein eigenes Feld mit Zeitstempel. Haken von mehreren Geräten (z. B. Licht auf dem iPad, Ton auf dem Pixel) werden zusammengeführt. Ein Gerät schickt nur die Haken seiner Abteilungen.
+- **Punkte bearbeiten:** je Abteilung anlegen, umsortieren, entfernen; „Als Hausvorlage speichern“ – neue Veranstaltungen bekommen diese Punkte automatisch (nur für die gewählten Abteilungen). Ohne Hausvorlage gibt es sinnvolle Beispielpunkte. Duplizieren übernimmt die Punkte.
+- **PDF-Protokoll** eines Durchgangs (herunterladen/teilen): Zusammenfassung, Punkte je Abteilung mit Haken, Uhrzeit, Gerät, offene Punkte hervorgehoben und am Ende aufgelistet.
+- Datenbank Version 2 (neuer Speicher „runs“). Bestehende Daten bleiben unverändert; das Update läuft beim ersten Start automatisch.
+- PDF: Überschriften im Inhaltsverzeichnis werden nicht mehr abgeschnitten.
+- Demo „Der Haifisch“ mit Beispielpunkten der Vorstellungs-Checkliste.
+
 ## 2.2.0 – 16.10.2026
 
 Etappe 3: gemeinsame Zugliste und Einrichtung je Abteilung – mit der Arbeitsweise der Bühnentechnik.

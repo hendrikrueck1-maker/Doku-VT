@@ -73,9 +73,9 @@ html[data-theme="light"]{
 }
 /* Rotlicht: nur Rottöne, Kategorien zusätzlich über Muster/Tag unterscheidbar */
 html[data-theme="red"]{
-  --bg:#000; --bg2:#070000; --surf:#0e0202; --surf2:#150404; --surf3:#1d0606;
-  --line:#2c0a0a; --line2:#401010;
-  --text:#ff4a3d; --text2:#d23a30; --muted:#9a2a22;
+  --bg:#000; --bg2:#070000; --surf:#0e0202; --surf2:#160404; --surf3:#200707;
+  --line:#3a0e0e; --line2:#561616;
+  --text:#ff5a4a; --text2:#e8463a; --muted:#c43a2e;
   /* alle Abteilungen rot; Unterscheidung über Tag (Abteilungsname) und Schraffur (Aufbau) / Füllung (2. Phase) */
   --L-a:#ff4a3d; --L-e:#ff4a3d; --L-ei:#000; --T-a:#ff4a3d; --T-e:#ff4a3d; --T-ei:#000; --B-a:#ff4a3d; --B-e:#ff4a3d; --B-ei:#000;
   --ai:#000;
@@ -282,7 +282,10 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .card[data-k="N"]{border:2px dashed color-mix(in srgb,var(--da) 75%,transparent)}
 .card[data-k="N"] .strip{background:repeating-linear-gradient(180deg,var(--da) 0 6px,transparent 6px 12px)}
 /* Rotlicht: Aufbau schraffiert, 2. Phase gefüllt */
-html[data-theme="red"] [data-k="A"] .strip,html[data-theme="red"] .bighead[data-k="A"]{background:repeating-linear-gradient(45deg,var(--k) 0 4px,transparent 4px 8px)}
+html[data-theme="red"] [data-k="A"] .strip{background:repeating-linear-gradient(45deg,var(--k) 0 4px,transparent 4px 8px)}
+/* Rotlicht, große Bilder: Kopf ruhig und lesbar, Aufbau nur als schraffierte Linie unten */
+html[data-theme="red"] .bighead[data-k="A"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:repeating-linear-gradient(45deg,var(--k) 0 4px,transparent 4px 8px)}
+html[data-theme="red"] .bighead[data-k="E"]{box-shadow:inset 0 -6px 0 var(--k)}
 .card .hit{all:unset;cursor:pointer;display:flex;flex:1;min-width:0;gap:12px;padding:12px 12px 12px 12px}
 .card .hit:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
 .card.sel{border-color:var(--k);background:color-mix(in srgb,var(--k) 7%,var(--surf))}
@@ -347,7 +350,8 @@ html[data-theme="red"] [data-k="A"] .strip,html[data-theme="red"] .bighead[data-
 .bighead .bk small{font-family:var(--font);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
 .bighead .bn{font-family:var(--mono);font-size:13px;font-weight:700;opacity:.75;white-space:nowrap}
 .card[data-k] .bighead{color:var(--text)}
-html[data-theme="red"] .bighead{background:var(--surf3);color:var(--text)}
+html[data-theme="red"] .bighead{background:var(--surf3);color:var(--text);-webkit-backdrop-filter:none;backdrop-filter:none}
+html[data-theme="red"] .bighead .tag{border-color:var(--line2);background:transparent}
 .cards.big .card .hit{flex-wrap:wrap;padding:12px;gap:12px}
 .cards.big .card .thumbs{flex:1 1 100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
 .cards.big .card .th{width:100%;height:auto;aspect-ratio:1;border-radius:12px}
@@ -380,11 +384,36 @@ html[data-theme="red"] .bighead{background:var(--surf3);color:var(--text)}
 .setup>summary [data-setup-edit] + [data-setup-edit]{margin-left:-2px}
 .ablsec{display:grid;gap:6px}.ablsec.ed{gap:10px;border:1px solid var(--line);border-radius:var(--r);padding:12px;background:var(--surf)}
 .ablh{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--da)}
-ol.abl{margin:0;padding-left:24px;display:grid;gap:6px}ol.abl li{white-space:pre-wrap;color:var(--text)}
+ol.abl{margin:0;padding-left:26px;display:grid;gap:2px}
+ol.abl li{color:var(--text);font-size:15px;padding:4px 0}
+ol.abl li::marker{font-weight:800;color:var(--muted)}
+ol.abl li .ar{display:flex;align-items:center;gap:8px;min-height:var(--tap)}
+ol.abl li .at{white-space:pre-wrap;flex:1;min-width:0}
+ol.abl li .btn.icon{flex:none;width:var(--tap);height:var(--tap)}
+.ssubd>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;min-height:var(--tap);margin:0}
+.ssubd>summary::-webkit-details-marker{display:none}
+.ssubd>summary .chev{transition:transform .2s}
+.ssubd[open]>summary .chev{transform:rotate(90deg)}
+.ssubd>summary .n{font-family:var(--mono);color:var(--text2)}
 .alink{display:inline-flex;align-items:center;gap:4px;margin-left:8px;min-height:32px;padding:0 8px;border-radius:8px;border:1px solid var(--line2);background:var(--surf2);color:var(--text2);font-size:13px;font-weight:600}
 .astep .arow{display:flex;gap:8px;align-items:center}
 .poseb{grid-column:1/-1;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px}
 .zcard .zn .tag{margin-left:4px}
+/* Vorstellungs-Checkliste */
+.runhead{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.runtools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+.runall{display:flex;justify-content:space-between;gap:10px;align-items:baseline;margin-top:14px;font-size:16px}
+.runsec{margin-top:16px;border:1px solid var(--line);border-radius:var(--r);background:var(--surf);padding:10px 12px 12px;border-left:5px solid var(--da)}
+.runsh{display:flex;align-items:center;gap:10px}.runsh h3{margin:0;font-size:16px;flex:1}
+.rung{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 2px 4px}
+.runrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.runchk{flex:1 1 260px;display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 10px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surf2);text-align:left;margin-top:6px;flex-wrap:wrap}
+.runchk .box{width:34px;height:34px;flex:none;border-radius:9px;border:2.5px solid var(--da);display:grid;place-items:center}
+.runchk .rt{flex:1;min-width:0;font-size:16px;white-space:pre-wrap}
+.runchk .rm{font-family:var(--mono);font-size:12px;color:var(--muted);flex:none}
+.runrow.ok .runchk{background:color-mix(in srgb,var(--ok) 12%,var(--surf2));border-color:color-mix(in srgb,var(--ok) 45%,var(--line))}
+.runrow.ok .runchk .box{background:var(--ok);border-color:var(--ok);color:#002b14}
+.runrow.ok .rt{color:var(--text2)}
 .setup>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:52px;padding:0 10px 0 14px}
 .setup>summary::-webkit-details-marker{display:none}
 .setup>summary h3{margin:0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);flex:1}
@@ -393,6 +422,24 @@ ol.abl{margin:0;padding-left:24px;display:grid;gap:6px}ol.abl li{white-space:pre
 .setup[open]>summary .chev{transform:rotate(90deg)}
 .setup[open]>summary{border-bottom:1px solid var(--line)}
 .setup .sbody{padding:12px 14px 14px;display:grid;gap:12px}
+.ssub{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:6px 0 -4px}
+.ssub:first-child{margin-top:0}
+.setup.run{border:2px solid var(--line2)}
+.setup.run .hint.run{color:var(--text2)}
+.setup.run .runsec{margin-top:4px}
+.ztab{border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;background:var(--surf2)}
+.zr{display:grid;grid-template-columns:minmax(96px,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.6fr);gap:4px 14px;padding:9px 12px;align-items:baseline;font-size:15px}
+.zr + .zr{border-top:1px solid var(--line)}
+.zr.zhead{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:7px;padding-bottom:7px;background:var(--surf3)}
+.zr .zn{font-family:var(--mono);font-weight:800;font-size:17px;overflow-wrap:anywhere;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.zr .zb{white-space:pre-wrap;color:var(--text2)}
+@media (max-width:640px){
+  .zr{grid-template-columns:1fr 1fr}
+  .zr.zhead{display:none}
+  .zr .zn{grid-column:1/-1}
+  .zr .zb{grid-column:1/-1}
+  .zr>span[data-l]::before{content:attr(data-l);display:block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+}
 .setup .allg{white-space:pre-wrap;font-size:15px;color:var(--text);background:var(--surf2);border-radius:var(--r-sm);padding:10px 12px;border-left:4px solid var(--text2)}
 .setup .allg.empty{color:var(--muted);border-left-color:var(--line2)}
 .zgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
@@ -514,6 +561,9 @@ html[data-theme="red"] .toast{background:#2a0606;color:var(--text);border:1px so
 .inwrap input{flex:1}
 .plusbtn{flex:none;width:60px;height:60px;border-radius:var(--r-sm);border:1px solid var(--line2);background:var(--surf2);font-size:26px;font-weight:700;font-family:var(--mono)}
 .f.mono input{font-family:var(--mono);font-weight:700}
+/* Feldnamen und Platzhalter immer in der normalen Schrift – in allen Abteilungen gleich */
+.f.mono label{font-family:var(--font);letter-spacing:.08em}
+.f input::placeholder,.f textarea::placeholder{font-family:var(--font);font-weight:400;letter-spacing:0}
 /* Filter-Schnelltasten */
 .qkeys{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .qkeys button{min-height:44px;min-width:56px;padding:0 14px;border-radius:10px;border:1px solid var(--line2);background:var(--surf2);font-family:var(--mono);font-weight:700;font-size:15px}
@@ -706,9 +756,9 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.2.0';
+const APP_VERSION = '2.4.0';
 const DB_NAME = 'lichtdoku';
-const DB_VERSION = 1;
+const DB_VERSION = 2;                  // 2: Store „runs“ (Vorstellungs-Durchgänge); bestehende Stores unverändert
 const FORMAT_VERSION = 2;              // Format von Backup-/Sync-Paketen (2: Abteilungen, Filter je Abteilung)
 
 /* =====================================================================
@@ -729,7 +779,7 @@ const DEPT = {
     main: 'kreis', mainLabel: 'Kreis', mergeMain: true,
     chips: ['gruppe', 'filter', 'adresse'],
     fields: [
-      { k: 'kreis', label: 'Kreis', main: true, plus: true, mode: 'tel', ph: 'z. B. 123+124' },
+      { k: 'kreis', label: 'Kreis', main: true, plus: true, mode: 'tel', ph: '123+124' },
       { k: 'adresse', label: 'Adresse', mono: true, ph: '12/301' },
       { k: 'gruppe', label: 'Gruppe', mono: true, mode: 'tel' },
       { k: 'filter', label: 'Filter', mono: true, ph: 'z. B. L201, nc', qkeys: 'filterKeys' },
@@ -751,12 +801,12 @@ const DEPT = {
     main: 'kanal', mainLabel: 'Kanal', mergeMain: true,
     chips: ['quelle', 'mikro', 'stagebox'],
     fields: [
-      { k: 'kanal', label: 'Kanal / Input', main: true, plus: true, mode: 'tel', ph: 'z. B. 17' },
-      { k: 'quelle', label: 'Bezeichnung / Quelle', ph: 'z. B. Funk Mackie, Atmo L' },
+      { k: 'kanal', label: 'Kanal', main: true, plus: true, mode: 'tel', ph: '17' },
+      { k: 'quelle', label: 'Quelle', ph: 'z. B. Kick, Funk 1' },
       { k: 'mikro', label: 'Mikrofon / Gerät', ph: 'z. B. DPA 4061', qkeys: 'mikroKeys' },
       { k: 'stagebox', label: 'Stagebox / Patch', mono: true, ph: 'z. B. SB2-07' },
-      { k: 'ausgang', label: 'Ausgang / Weg', ph: 'z. B. PA, Monitor 3, Aux 5' },
-      { k: 'mikropos', label: 'Mikrofonposition', ph: 'z. B. Stirn, Haaransatz', hint: 'Fotos dazu unten unter „Aufbau“' },
+      { k: 'ausgang', label: 'Ausgang / Weg', ph: 'z. B. PA, Aux 3' },
+      { k: 'mikropos', label: 'Mikrofonposition', ph: 'z. B. Stirn', hint: 'Fotos dazu unten unter „Aufbau“' },
       { k: 'bemerkung', label: 'Bemerkung', area: true, ph: 'Was ist zu beachten?' },
       { k: 'funk', label: 'Funk: Sender-Nr. / Frequenz', extra: true, mono: true, ph: 'z. B. TX 4 · 606,250 MHz' },
       { k: 'akku', label: 'Akku-Wechsel', extra: true, ph: 'z. B. vor jeder Vorstellung' },
@@ -772,39 +822,44 @@ const DEPT = {
   B: {
     key: 'B', name: 'Bühnentechnik', short: 'Bühne', abbr: 'B',
     phases: { A: 'Aufbau', E: 'Einrichten' }, done: { A: 'Aufgebaut', E: 'Eingerichtet' }, photoKats: ['A'],
-    main: 'zug', mainLabel: 'Zug', mergeMain: false,          // mehrere Elemente am selben Zug sind normal
-    chips: ['ort', 'element', 'hoehe', 'reihenfolge'],
+    main: 'zug', mainLabel: 'Position', mergeMain: false,     // mehrere Elemente an derselben Position sind normal
+    chips: ['element', 'ort', 'hoehe', 'reihenfolge'],
     fields: [
-      { k: 'zug', label: 'Zug / Position', main: true, req: true, picker: true, ph: 'z. B. Boden links, Podest 2' },
+      { k: 'zug', label: 'Position', main: true, req: true, picker: true, ph: 'z. B. Boden links, Podest 2' },
       { k: 'zugId', label: 'Zug', hidden: true },              // Verweis in die Zugliste (zug = Name als Kopie)
       { k: 'ebene', label: 'Ebene', hidden: true },            // nur bei freier Position
       { k: 'bereich', label: 'Bereich', hidden: true },        // nur bei freier Position
-      { k: 'element', label: 'Element / Bezeichnung', ph: 'z. B. Rückprospekt Hafen' },
-      { k: 'hoehe', label: 'Höhe / Spielmarke', mono: true, ph: 'z. B. 8,20 m, Marke rot' },
+      { k: 'element', label: 'Element', ph: 'z. B. Rückprospekt' },
+      { k: 'hoehe', label: 'Höhe / Marke', mono: true, ph: 'z. B. 8,20 m' },
       { k: 'reihenfolge', label: 'Reihenfolge Umbau', mono: true, mode: 'num', ph: 'z. B. 4' },
       { k: 'bemerkung', label: 'Bemerkung', area: true, ph: 'Was ist zu beachten?' },
       { k: 'szene', label: 'Szene / Verwandlung', extra: true, ph: 'z. B. Bild 2 → 3' },
       { k: 'zustaendig', label: 'Zuständig', extra: true, ph: 'z. B. Seite links' },
       { k: 'last', label: 'Last / Gewicht', extra: true, mono: true, ph: 'z. B. 180 kg' },
       { k: 'sicherung', label: 'Befestigung / Sicherung', extra: true, ph: 'z. B. 2 Sicherungsseile' },
-      { k: 'brandschutz', label: 'Brandschutz', extra: true, ph: 'z. B. Dekomaterial B1, Nachweis liegt vor' },
+      { k: 'brandschutz', label: 'Brandschutz', extra: true, ph: 'z. B. B1, Nachweis liegt vor' },
       { k: 'lagerort', label: 'Lagerort', extra: true, ph: 'z. B. Seitenbühne rechts' }
     ],
     extraHint: 'Szene, Zuständig, Last, Sicherung, Brandschutz, Lagerort',
-    pdf: [['ZUG / POSITION', 'zug'], ['ELEMENT', 'element'], ['HÖHE', 'hoehe'], ['REIHENF.', 'reihenfolge']],
-    toc: ['element', 'hoehe'],
+    pdf: [['POSITION', 'zug'], ['ELEMENT', 'element'], ['ORT', 'ort'], ['HÖHE', 'hoehe']],
+    toc: ['element', 'ort'],
     col: { A: '#6b7480', E: '#b9c1cc' }
   }
 };
 
-/* Bühne: Einrichte-Reihenfolge „erst unten, dann oben – jeweils von vorne nach hinten“.
-   Jede Position (Zug aus der Zugliste oder freie Position) hat eine Ebene und einen Bereich.
-   Innerhalb gleicher Ebene und gleichen Bereichs zählt die Reihenfolge der Zugliste (vorne → hinten). */
+/* Bühne: Einrichte-Reihenfolge „von vorne nach hinten und von unten nach oben“ (ab 2.4.0).
+   Jede Position (Zug aus der Zugliste oder freie Position) hat einen Bereich und eine Ebene.
+   Sortiert wird nach Bereich (vorne → hinten), darin nach Ebene (unten → oben),
+   dann nach der Reihenfolge der Zugliste. */
 const EBENEN = [['unter', 'Unterbühne'], ['boden', 'Boden / Podium'], ['oben', 'Oben / Züge']];
 const BEREICHE = [['vor', 'Vorbühne'], ['portal', 'Portal'], ['haupt', 'Hauptbühne'], ['seite', 'Seitenbühne'], ['hinter', 'Hinterbühne']];
 const EBENE_RANK = { unter: 0, boden: 1, oben: 2 }, BEREICH_RANK = { vor: 0, portal: 1, haupt: 2, seite: 2, hinter: 3 };
 const EBENE_NAME = Object.fromEntries(EBENEN), BEREICH_NAME = Object.fromEntries(BEREICHE);
-const EINRICHT_REGEL = 'Einrichten: erst unten, dann oben – jeweils von vorne nach hinten.';
+const EBENE_KURZ = { unter: 'Unterbühne', boden: 'Boden', oben: 'Oben' };
+/** Abschnitte der Bühnen-Liste (Haupt- und Seitenbühne liegen auf gleicher Tiefe) */
+const BEREICH_ABSCHNITT = ['Vorbühne', 'Portal', 'Haupt- / Seitenbühne', 'Hinterbühne'];
+/** Ort einer Position als Text, z. B. „Vorbühne · Boden“ */
+function ortText(p) { return `${BEREICH_NAME[p.bereich] || 'Hauptbühne'} · ${EBENE_KURZ[p.ebene] || 'Boden'}`; }
 /** Bühnen-Ablauf: feste Abschnitte (Schritte als Felder „b:<id>“ im Veranstaltungs-Datensatz) */
 const ABLAUF = [['grund', 'Grundeinrichtung'], ['pause', 'Pausenumbau'], ['ende', 'Ende / Abbau']];
 
@@ -830,10 +885,20 @@ function mainVal(e) {
   if (abtOf(e) === 'B' && e.showId) return Repo.bposOf(e).name || '';
   return e.f[DEPT[abtOf(e)].main] || '';
 }
+/** Hauptfeld vergleichen: erst reine Nummern (numerisch, „123+124“ nach 123), dann Namen nach Wort und Nummer
+    (Ton: 1, 2, 11 … dann Aux 1, Aux 2 … dann Video 1 …), leere zuletzt */
+function mainCmp(a, b) {
+  a = String(a || '').trim(); b = String(b || '').trim();
+  if (!a !== !b) return a ? -1 : 1;
+  const da = /^\d/.test(a), db = /^\d/.test(b);
+  if (da !== db) return da ? -1 : 1;
+  if (!da) { const pa = a.replace(/[\s\d].*$/, '').toLowerCase(), pb = b.replace(/[\s\d].*$/, '').toLowerCase(); if (pa !== pb) return pa.localeCompare(pb, 'de'); }
+  return Utils.cmpKreis(a, b);
+}
 /** Anzeigewert eines Eintragsfelds, inkl. abgeleiteter Felder (Bühne „Ort“ = Ebene · Bereich) */
 function entryVal(e, k) {
   if (k === 'zug' && abtOf(e) === 'B') return mainVal(e);
-  if (k === 'ort') { if (abtOf(e) !== 'B' || !e.showId) return ''; const p = Repo.bposOf(e); return `${EBENE_NAME[p.ebene]} · ${BEREICH_NAME[p.bereich]}${p.removed ? ' · Zug entfernt' : ''}`; }
+  if (k === 'ort') { if (abtOf(e) !== 'B' || !e.showId) return ''; const p = Repo.bposOf(e); return ortText(p) + (p.removed ? ' · Zug entfernt' : ''); }
   return fieldVal(abtOf(e), k, e.f[k]);
 }
 /** Anzeigewert eines Feldes ('' = nicht anzeigen); Schalter erscheinen als „an“ */
@@ -1096,6 +1161,8 @@ const Store = {
         if (!db.objectStoreNames.contains('fulls')) db.createObjectStore('fulls', { keyPath: 'id' });
         if (!db.objectStoreNames.contains('thumbs')) db.createObjectStore('thumbs', { keyPath: 'id' });
         if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta', { keyPath: 'k' });
+        // ab 2.3.0: Durchgänge der Vorstellungs-Checkliste (je Haken ein Feld „h:<Punkt>“ → feldweise zusammenführbar)
+        if (!db.objectStoreNames.contains('runs')) db.createObjectStore('runs', { keyPath: 'id' }).createIndex('showId', 'showId');
       };
       req.onsuccess = () => {
         this.db = req.result;
@@ -1176,7 +1243,7 @@ const Rec = {
   },
   valid(r, type) {
     return r && typeof r.id === 'string' && r.f && typeof r.f === 'object' && r.t && typeof r.t === 'object' &&
-      (type !== 'entry' || typeof r.showId === 'string') && (type !== 'photo' || (typeof r.showId === 'string' && typeof r.b === 'string'));
+      ((type !== 'entry' && type !== 'run') || typeof r.showId === 'string') && (type !== 'photo' || (typeof r.showId === 'string' && typeof r.b === 'string'));
   }
 };
 
@@ -1186,14 +1253,14 @@ const Rec = {
    200+ Einträgen/500+ Fotos nur wenige hundert KB. Bilddaten bleiben in IDB.
    ===================================================================== */
 const Repo = {
-  shows: new Map(), entries: new Map(), photos: new Map(),
+  shows: new Map(), entries: new Map(), photos: new Map(), runs: new Map(),
   _byEntry: null,         // Index: entryId → [photo]
   listeners: new Set(),
 
   async load() {
-    const [s, e, p] = await Promise.all([Store.getAll('shows'), Store.getAll('entries'), Store.getAll('photos')]);
-    s.forEach(r => this.shows.set(r.id, r)); e.forEach(r => this.entries.set(r.id, r)); p.forEach(r => this.photos.set(r.id, r));
-    [...s, ...e, ...p].forEach(r => Clock.observe(r.mod || 0));
+    const [s, e, p, u] = await Promise.all([Store.getAll('shows'), Store.getAll('entries'), Store.getAll('photos'), Store.getAll('runs')]);
+    s.forEach(r => this.shows.set(r.id, r)); e.forEach(r => this.entries.set(r.id, r)); p.forEach(r => this.photos.set(r.id, r)); u.forEach(r => this.runs.set(r.id, r));
+    [...s, ...e, ...p, ...u].forEach(r => Clock.observe(r.mod || 0));
     this._byEntry = null;
   },
   on(fn) { this.listeners.add(fn); return () => this.listeners.delete(fn); },
@@ -1263,26 +1330,30 @@ const Repo = {
   },
 
   /* ---------- Schreiben (jeweils eine atomare Transaktion) ---------- */
-  async _write({ shows = [], entries = [], photos = [], fulls = [], thumbs = [] }, local = true) {
-    const names = ['shows', 'entries', 'photos', 'fulls', 'thumbs'];
+  async _write({ shows = [], entries = [], photos = [], fulls = [], thumbs = [], runs = [] }, local = true) {
+    const names = ['shows', 'entries', 'photos', 'fulls', 'thumbs', 'runs'];
     await Store.tx(names, 'readwrite', s => {
-      shows.forEach(r => s.shows.put(r)); entries.forEach(r => s.entries.put(r)); photos.forEach(r => s.photos.put(r));
+      shows.forEach(r => s.shows.put(r)); entries.forEach(r => s.entries.put(r)); photos.forEach(r => s.photos.put(r)); runs.forEach(r => s.runs.put(r));
       fulls.forEach(r => s.fulls.put(r)); thumbs.forEach(r => s.thumbs.put(r));
     });
-    this._cache('shows', shows); this._cache('entries', entries); this._cache('photos', photos);
+    this._cache('shows', shows); this._cache('entries', entries); this._cache('photos', photos); this._cache('runs', runs);
     if (local) Sync.noteLocalChange();
-    this.emit({ local, records: { shows, entries, photos }, blobIds: fulls.map(f => f.id) });
+    this.emit({ local, records: { shows, entries, photos, runs }, blobIds: fulls.map(f => f.id) });
     App.ensurePersist();
   },
   async createShow(titel, abteilungen = null) {
     const f = { titel: titel || 'Neue Veranstaltung', spielstaette: '', notiz: '', del: false };
     if (abteilungen && abteilungen.length) f.abteilungen = DEPT_ORDER.filter(d => abteilungen.includes(d));
+    // Vorstellungs-Checkliste: Punkte der Hausvorlage (bzw. Beispiele) für die gewählten Abteilungen
+    const deps = f.abteilungen || ['L'];
+    RunList.template().filter(x => deps.includes(x.abt)).forEach((x, i) => { f['ci:' + Utils.uuid()] = { abt: x.abt, text: x.text, ord: (i + 1) * 10, del: false }; });
     const s = Rec.create({}, f);
     await this._write({ shows: [s] }); return s;
   },
   async patchShow(id, patch) { const r = Rec.patch(this.shows.get(id), patch); if (r) await this._write({ shows: [r] }); return r; },
   async deleteShow(id) {
-    const out = { shows: [], entries: [], photos: [] };
+    const out = { shows: [], entries: [], photos: [], runs: [] };
+    for (const r of this.runs.values()) if (r.showId === id && !r.f.del) out.runs.push(Rec.patch(r, { del: true }));
     const s = Rec.patch(this.shows.get(id), { del: true }); if (s) out.shows.push(s);
     for (const e of this.entries.values()) if (e.showId === id && !e.f.del) out.entries.push(Rec.patch(e, { del: true }));
     for (const p of this.photos.values()) if (p.showId === id && !p.f.del) out.photos.push(Rec.patch(p, { del: true }));
@@ -1294,6 +1365,8 @@ const Repo = {
     const sf = { titel: src.f.titel + ' (Kopie)', spielstaette: src.f.spielstaette || '', notiz: src.f.notiz || '', einrichtung: src.f.einrichtung || '', abteilungen: this.showDepts(id), del: false };
     Object.keys(src.f).forEach(k => { if (k.startsWith('z:') && src.f[k] && !src.f[k].del) sf[k] = Utils.clone(src.f[k]); });   // Züge mitnehmen
     if (src.f.einrichtungT) sf.einrichtungT = src.f.einrichtungT;
+    if (src.f.einrichtungB) sf.einrichtungB = src.f.einrichtungB;
+    Object.keys(src.f).forEach(k => { const v = src.f[k]; if (k.startsWith('ci:') && v && !v.del) sf['ci:' + Utils.uuid()] = Utils.clone(v); });   // Checklisten-Punkte (ohne Durchgänge)
     // Bühnen-Ablauf mitnehmen; verknüpfte Einträge zeigen auf die Kopien
     const idMap = new Map(this.entriesOf(id).map(e => [e.id, Utils.uuid()]));
     Object.keys(src.f).forEach(k => { const v = src.f[k]; if (k.startsWith('b:') && v && !v.del) sf['b:' + Utils.uuid()] = Object.assign(Utils.clone(v), { entryId: idMap.get(v.entryId) || '' }); });
@@ -1340,10 +1413,10 @@ const Repo = {
     const eb = EBENE_RANK.hasOwnProperty(f.ebene) ? f.ebene : (/\b(zug|olz|bgz|bzg|pz|prospekt|brücke)/i.test(t) ? 'oben' : 'boden');
     return { name: t, ebene: eb, bereich: BEREICH_RANK.hasOwnProperty(f.bereich) ? f.bereich : 'haupt', idx: 9999, removed: !!f.zugId };
   },
-  /** Sortierschlüssel Bühne: Ebene (unten → oben), Bereich (vorne → hinten), Zugliste, Reihenfolge, Name */
+  /** Sortierschlüssel Bühne: Bereich (vorne → hinten), Ebene (unten → oben), Zugliste, Reihenfolge, Name */
   bcmp(a, b, zs) {
     const pa = this.bposOf(a, zs), pb = this.bposOf(b, zs);
-    return (EBENE_RANK[pa.ebene] - EBENE_RANK[pb.ebene]) || (BEREICH_RANK[pa.bereich] - BEREICH_RANK[pb.bereich]) || (pa.idx - pb.idx)
+    return (BEREICH_RANK[pa.bereich] - BEREICH_RANK[pb.bereich]) || (EBENE_RANK[pa.ebene] - EBENE_RANK[pb.ebene]) || (pa.idx - pb.idx)
       || (Utils.numKey(a.f.reihenfolge) - Utils.numKey(b.f.reihenfolge) || 0) || String(pa.name).localeCompare(String(pb.name), 'de', { numeric: true }) || (a.c - b.c);
   },
   /** Bühnen-Ablauf: Schritte je Abschnitt, sortiert */
@@ -1356,7 +1429,7 @@ const Repo = {
   hasSetup(showId, abt = 'L') {
     const s = this.show(showId); if (!s) return false;
     if (abt === 'T') return !!s.f.einrichtungT;
-    if (abt === 'B') return this.ablaufOf(showId).length > 0 || this.zuegeOf(showId).some(z => z.typ === 'buehne');
+    if (abt === 'B') return !!s.f.einrichtungB || this.ablaufOf(showId).length > 0 || this.zuegeOf(showId).some(z => z.typ === 'buehne');
     return !!(s.f.einrichtung || this.zuegeOf(showId).some(z => z.typ === 'licht' && (this.zugFilled(z) || !z.fixed)));
   },
   /** Zug anlegen bzw. ändern – immer als Ergänzung des bestehenden Werts (Felder anderer Abteilungen bleiben) */
@@ -1491,9 +1564,9 @@ const Repo = {
    * Es wird nie blind überschrieben – jedes Feld wird einzeln per Zeitstempel zusammengeführt.
    */
   async applyRemote(data, blobs = []) {
-    const out = { shows: [], entries: [], photos: [], fulls: [], thumbs: [] };
+    const out = { shows: [], entries: [], photos: [], fulls: [], thumbs: [], runs: [] };
     const stat = { neu: 0, geaendert: 0, unveraendert: 0, bilder: 0 };
-    for (const [name, type] of [['shows', 'show'], ['entries', 'entry'], ['photos', 'photo']]) {
+    for (const [name, type] of [['shows', 'show'], ['entries', 'entry'], ['photos', 'photo'], ['runs', 'run']]) {
       for (const r of (data[name] || [])) {
         if (!Rec.valid(r, type)) continue;
         const local = this[name].get(r.id);
@@ -1508,7 +1581,7 @@ const Repo = {
         out.fulls.push({ id: bl.id, d: bl.full }); out.thumbs.push({ id: bl.id, d: bl.thumb || bl.full }); stat.bilder++;
       }
     }
-    if (out.shows.length + out.entries.length + out.photos.length + out.fulls.length) await this._write(out, false);
+    if (out.shows.length + out.entries.length + out.photos.length + out.fulls.length + out.runs.length) await this._write(out, false);
     return stat;
   },
   /** Fotos, deren Bilddaten lokal fehlen (z. B. nach inkrementellem Paket) */
@@ -1530,6 +1603,7 @@ const Settings = {
     camMode: 'app',                                 // 'app' = Doku-VT-Kamera, 'system' = Kamera-App des Geräts (alle Objektive)
     filterKeys: ['nc', 'L201', 'L202', 'L203', 'L204', 'L205', 'L216', 'L250', 'L132'],  // Filter-Schnelltasten (Licht)
     mikroKeys: ['DPA 4061', 'DPA 4066', 'SM58', 'Beta 91', 'e604', 'MKE 2'],              // Mikrofon-Schnelltasten (Ton)
+    ciTemplate: null,                               // Hausvorlage der Vorstellungs-Checkliste [{abt, text}] (null = Beispiele)
     depts: ['L']                                    // Abteilungen, die DIESES Gerät dokumentiert (bestehende Installationen: nur Licht)
   },
   async load() {
@@ -2749,92 +2823,149 @@ const Pdf = {
   },
 
   /**
-   * PDF für eine Veranstaltung erzeugen.
+   * PDF für eine Veranstaltung erzeugen (Aufbau ab 2.4.0, in jeder Abteilung gleich):
+   *   Deckblatt mit Inhaltsverzeichnis →
+   *   je Abteilung: Kapitelseite (Allgemein · Vor der Vorstellung · Ablauf/Züge/Positionen) →
+   *   Einträge mit Fotos (eine Seite je Eintrag und Phase) und Einträge ohne Fotos
+   *   (mehrere kompakt auf einer Seite, Reihenfolge bleibt erhalten).
    * opts: { kat:'all'|'A'|'E', depts:['L','T',…], cover:boolean, compact:boolean }, onProgress(done,total)
    */
   async build(showId, opts, onProgress) {
     const show = Repo.show(showId); if (!show) throw new Error('Veranstaltung nicht gefunden');
-    const { W, H, M } = this;
-    // ---- Seiten planen ----
-    const items = Views.sortedItems(showId, { kat: opts.kat, sort: 'kreis', q: '', depts: opts.depts || App.visibleDepts(showId) });
+    const { W, H, M } = this, CW = W - 2 * M;
+    const inDepts = opts.depts || App.visibleDepts(showId);
+    const items = Views.sortedItems(showId, { kat: opts.kat, sort: 'kreis', q: '', depts: inDepts });
     const abts = [...new Set(items.map(it => abtOf(it.entry)))];
-    const tocAbt = abts.length <= 1 ? (abts[0] || (opts.depts || ['L'])[0]) : null;    // einheitliche Spalten, wenn nur eine Abteilung
-    const multi = abts.length > 1;                 // mehrere Abteilungen → je Abteilung ein Kapitel mit Trennseite
-    const pages = [];
-    let lastAbt = null;
-    for (const it of items) {
-      const ab = abtOf(it.entry);
-      if (multi && ab !== lastAbt) { pages.push({ divider: ab, n: items.filter(x => abtOf(x.entry) === ab) }); lastAbt = ab; }
-      const ph = it.kat === 'N' ? [] : Repo.photosOf(it.entry.id, it.kat);
-      const chunks = []; for (let i = 0; i < Math.max(1, ph.length); i += 4) chunks.push(ph.slice(i, i + 4));
-      chunks.forEach((c, ci) => pages.push({ it, photos: c, cont: ci > 0, first: ci === 0, from: ci * 4 }));
-    }
-    // ---- Einrichtung je Abteilung: Blöcke bauen und auf Seiten verteilen ----
-    //   Licht: allgemeine Einrichtung + Beleuchterzüge · Ton: Freitext · Bühne: Ablauf + Züge & Positionen
-    const innerW = W - 2 * M - 24, inDepts = opts.depts || App.visibleDepts(showId);
-    const SETUP_PILL = { L: 'EINRICHTUNG & ZÜGE', T: 'EINRICHTUNG TON', B: 'ABLAUF & POSITIONEN' };
-    const SETUP_TOC = { L: 'Einrichtung & Züge', T: 'Einrichtung Ton', B: 'Ablauf & Positionen' };
-    const textBlocks = (label, txt, out) => {
-      const ls = this.wrap(txt || '—', 'F1', 11, W - 2 * M);
-      // langer Text darf über Seiten laufen: Abschnitte zu je höchstens 40 Zeilen
-      for (let i = 0; i < ls.length; i += 40) out.push({ type: 'allg', label, lines: ls.slice(i, i + 40), first: i === 0, h: (i === 0 ? 18 : 0) + Math.min(40, ls.length - i) * 14 + 14 });
+    const tocAbt = abts.length <= 1 ? (abts[0] || inDepts[0] || 'L') : null;
+
+    // ---- Kapitel-Inhalt je Abteilung (Blöcke) ----
+    const head = text => ({ t: 'head', text, h: 30, keep: true });
+    const sub = text => ({ t: 'sub', text, h: 20, keep: true });
+    const textBlocks = (txt, out) => {
+      const ls = this.wrap(txt, 'F1', 11, CW);
+      for (let i = 0; i < ls.length; i += 12) out.push({ t: 'text', lines: ls.slice(i, i + 12), h: Math.min(12, ls.length - i) * 14 + 6 });
+      out.push({ t: 'gap', h: 8 });
     };
-    const zugBlock = (z, rowsIn, tag) => {
-      const rows = rowsIn.filter(r => r[1]).map(([l, v]) => [l, this.wrap(v, 'F1', 10.5, innerW - 92).slice(0, 18)]);
-      return { type: 'zug', z, tag, rows, h: 34 + (rows.length ? rows.reduce((n, r) => n + r[1].length * 13 + 4, 0) : 14) + 6 };
+    const chk = (text, n, entry) => { const ls = this.wrap(text, 'F1', 11, CW - (n ? 44 : 24)).slice(0, 20); return { t: 'chk', n, lines: ls, entry, h: ls.length * 14 + (entry ? 12 : 0) + 8 }; };
+    const table = (cols, rows, out) => {
+      const thead = { t: 'thead', cols, h: 18 };
+      out.push(thead);
+      rows.forEach(r => {
+        const cells = r.map((v, i) => this.wrap(v || '—', i === 0 ? 'F2' : 'F1', i === 0 ? 11 : 10, cols[i][2] - 8).slice(0, 6));
+        out.push({ t: 'trow', cols, cells, thead, h: Math.max(...cells.map(x => x.length)) * 13 + 10 });
+      });
+      out.push({ t: 'gap', h: 10 });
     };
-    const buildSetup = d => {
+    const ALLG = { L: show.f.einrichtung, T: show.f.einrichtungT, B: show.f.einrichtungB };
+    const blocksOf = d => {
       const out = [];
-      if (d === 'L') {
-        textBlocks('ALLGEMEINE EINRICHTUNG', show.f.einrichtung, out);
-        Repo.zuegeOf(showId).filter(z => z.typ === 'licht').forEach(z => out.push(zugBlock(z, [['HÖHE / MARKE', z.hoehe], ['BESTÜCKUNG', z.bestueckung], ['BEMERKUNG', z.bemerkung]])));
-      } else if (d === 'T') textBlocks('EINRICHTUNG TON', show.f.einrichtungT, out);
-      else if (d === 'B') {
-        out.push({ type: 'note', lines: this.wrap(EINRICHT_REGEL, 'F2', 10.5, W - 2 * M - 24), h: 26, gap: 14 });
+      if (ALLG[d]) { out.push(head('ALLGEMEIN')); textBlocks(ALLG[d], out); }
+      const own = RunList.ownOf(showId).filter(x => x.abt === d);
+      if (own.length) { out.push(head('VOR DER VORSTELLUNG')); own.forEach(x => out.push(chk(x.text, 0, null))); out.push({ t: 'gap', h: 8 }); }
+      if (d === 'B') {
         const steps = Repo.ablaufOf(showId);
-        ABLAUF.forEach(([k, n]) => {
-          const list = steps.filter(x => x.abschnitt === k); if (!list.length) return;
-          out.push({ type: 'head', text: n.toUpperCase(), h: 16, gap: 8 });
-          list.forEach((st, i) => {
-            const ls = this.wrap(st.text, 'F1', 11, W - 2 * M - 26).slice(0, 30);
-            const e = st.entryId && Repo.entry(st.entryId);
-            out.push({ type: 'step', n: i + 1, lines: ls, entry: e || null, h: ls.length * 14 + (e ? 13 : 0), gap: 8 });
-          });
-          out.push({ type: 'gap', h: 0, gap: 12 });
-        });
-        out.push({ type: 'head', text: 'ZÜGE & POSITIONEN (UNTEN NACH OBEN, VORNE NACH HINTEN)', h: 16, gap: 10 });
-        SetupView.posSorted(showId).forEach(z => out.push(zugBlock(z, [['ORT', `${EBENE_NAME[z.ebene]} · ${BEREICH_NAME[z.bereich]}`], ['HÖHE / MARKE', z.hoehe], ['LAST', z.last],
-          ['BESTÜCKUNG', z.typ === 'licht' ? z.bestueckung : ''], ['BEMERKUNG', z.bemerkung]], z.typ === 'licht' ? 'LICHT' : '')));
+        if (steps.length) {
+          out.push(head('ABLAUF'));
+          ABLAUF.forEach(([k, n]) => { const list = steps.filter(x => x.abschnitt === k); if (!list.length) return;
+            out.push(sub(n.toUpperCase())); list.forEach((st, i) => out.push(chk(st.text, i + 1, st.entryId && Repo.entry(st.entryId) || null))); out.push({ t: 'gap', h: 6 }); });
+        }
+        const zs = SetupView.posSorted(showId).filter(z => z.typ === 'buehne' || Repo.zugFilled(z));
+        if (zs.length) { out.push(head('POSITIONEN · VORNE NACH HINTEN, UNTEN NACH OBEN'));
+          table([['POSITION', 0, 104], ['ORT', 104, 112], ['HÖHE / MARKE', 216, 92], ['BEMERKUNG', 308, CW - 308]],
+            zs.map(z => [z.name + (z.typ === 'licht' ? ' (Licht)' : ''), ortText(z), z.hoehe, [z.bemerkung, z.last ? 'Last ' + z.last : ''].filter(Boolean).join(' · ')]), out); }
       }
+      if (d === 'L') {
+        const zs = Repo.zuegeOf(showId).filter(z => z.typ === 'licht' && Repo.zugFilled(z));
+        if (zs.length) { out.push(head('BELEUCHTERZÜGE'));
+          table([['ZUG', 0, 96], ['HÖHE / MARKE', 96, 96], ['BESTÜCKUNG', 192, 150], ['BEMERKUNG', 342, CW - 342]], zs.map(z => [z.name, z.hoehe, z.bestueckung, z.bemerkung]), out); }
+      }
+      while (out.length && out[out.length - 1].t === 'gap') out.pop();
       return out;
     };
-    const paginate = blocks => {
-      const list = []; let cur = [], room = 0; const AV = H - 100 - 50;
-      for (const b of blocks) { const g = b.gap ?? 20; if (!cur.length || b.h > room) { if (cur.length) list.push(cur); cur = []; room = AV; } cur.push(b); room -= b.h + g; }
-      if (cur.length) list.push(cur);
-      return list;
+    const blocks = {}; DEPT_ORDER.forEach(d => { if (inDepts.includes(d)) blocks[d] = blocksOf(d); });
+    const chapters = DEPT_ORDER.filter(d => inDepts.includes(d) && (abts.includes(d) || blocks[d].length));
+    const multi = chapters.length > 1;             // mehrere Abteilungen → Kapitelseite mit Farbband
+
+    // Blöcke auf Seiten verteilen; Überschriften bleiben beim folgenden Block, Tabellenkopf wird wiederholt
+    const AV_BAND = H - 176 - 50, AV = H - 96 - 50;
+    const paginate = (list, firstAv) => {
+      const out = []; let cur = [], room = firstAv;
+      list.forEach((b, i) => {
+        const need = b.h + (b.keep && list[i + 1] ? list[i + 1].h : 0);
+        if (cur.length && need > room) { out.push(cur); cur = []; room = AV; if (b.t === 'trow') { cur.push(b.thead); room -= b.thead.h; } }
+        if (!cur.length && b.t === 'gap') return;
+        cur.push(b); room -= b.h;
+      });
+      if (cur.length || !out.length) out.push(cur);
+      return out;
     };
-    const setupGroups = DEPT_ORDER.filter(d => inDepts.includes(d) && Repo.hasSetup(showId, d)).map(d => ({ abt: d, pages: paginate(buildSetup(d)) }));
-    const setupPages = setupGroups.reduce((n, g) => n + g.pages.length, 0);
-    // Einrichtungsseiten: direkt nach der Trennseite der Abteilung, sonst am Anfang (in Abteilungsreihenfolge)
-    let front = 0;
-    setupGroups.forEach(g => {
-      const dv = multi ? pages.findIndex(p => p.divider === g.abt) : -1;
-      const at = dv >= 0 ? dv + 1 : front;
-      pages.splice(at, 0, ...g.pages.map(b => ({ setup: b, abt: g.abt })));
-      if (dv < 0) front += g.pages.length;
+
+    // ---- Infoblock eines Eintrags (gleich auf Foto-Seiten und Sammelseiten) ----
+    const innerW = CW - 20;
+    const measure = e => {
+      const ab = abtOf(e), D = DEPT[ab], pdfKeys = D.pdf.map(x => x[1]);
+      const extras = infoKeys(ab, true).filter(k => !pdfKeys.includes(k) && entryVal(e, k)).map(k => `${fieldLabel(ab, k)}: ${entryVal(e, k)}`).join('   ·   ');
+      let bem = e.f.bemerkung ? this.wrap(e.f.bemerkung, 'F1', 11, innerW) : [];
+      if (bem.length > 14) bem = bem.slice(0, 13).concat(['… (gekürzt)']);
+      const exl = extras ? this.wrap(extras, 'F1', 9.5, innerW) : [];
+      return { bem, exl, h: 56 + (bem.length ? 22 + bem.length * 14 : 0) + (exl.length ? exl.length * 12 + (bem.length ? 6 : 14) : 0) + 6 };
+    };
+
+    // ---- Seiten planen ----
+    const pages = [];
+    chapters.forEach(d => {
+      if (multi || blocks[d].length) paginate(blocks[d], multi ? AV_BAND : AV).forEach((b, i) => pages.push({ chapter: d, band: multi && i === 0, blocks: b, cont: i > 0 }));
+      let pack = null;
+      items.filter(it => abtOf(it.entry) === d).forEach(it => {
+        if (it.kat === 'N') {
+          const m = measure(it.entry);
+          if (!pack || m.h > pack.room) { pack = { pack: [], abt: d, room: H - 84 - 40 }; pages.push(pack); }
+          pack.pack.push({ it, m }); pack.room -= m.h + 14;
+          return;
+        }
+        pack = null;
+        const ph = Repo.photosOf(it.entry.id, it.kat);
+        for (let i = 0; i < Math.max(1, ph.length); i += 4) pages.push({ it, photos: ph.slice(i, i + 4), cont: i > 0, first: i === 0, from: i });
+      });
     });
-    const TOC_PER = 100;                        // bis 100 Einträge passt das Inhaltsverzeichnis auf eine Seite
-    const tocPages = opts.cover ? Math.max(1, Math.ceil(items.length / TOC_PER)) : 0;
-    const tocDense = items.length > 34;         // viele Einträge: Kopf des Deckblatts kompakter
+
+    // ---- Inhaltsverzeichnis: Zeilen (Kopfzeile je Abteilung + Einträge) und Seitenzahl ----
+    const toc = [];
+    chapters.forEach(d => { const its = items.filter(it => abtOf(it.entry) === d); toc.push({ head: true, ab: d }); its.forEach(it => toc.push({ it, ab: d })); });
+    const RH = 14.5;
+    const st0 = Repo.stats(showId, inDepts);
+    const dateStr = Utils.fmtDate(Date.now());
+    const coverHead = c => {          // zeichnet den Kopf des Deckblatts, gibt die y-Position für das Verzeichnis zurück
+      let y = H - 60;
+      const docName = multi ? 'TECHNIKDOKUMENTATION' : (DEPT[tocAbt] || DEPT.L).name.toUpperCase() + ' – DOKUMENTATION';
+      c.rgb(0.45, 0.48, 0.53).text(M, y, docName, 'F2', 10); y -= 34;
+      for (const ln of this.wrap(show.f.titel, 'F2', 30, CW).slice(0, 2)) { c.rgb(0.07, 0.08, 0.1).text(M, y, ln, 'F2', 30); y -= 34; }
+      if (show.f.spielstaette) { c.rgb(0.25, 0.28, 0.33).text(M, y, show.f.spielstaette, 'F1', 14); y -= 22; }
+      c.rgb(0.45, 0.48, 0.53).text(M, y, `Stand ${dateStr}  ·  ${st0.entries} Einträge  ·  ${st0.photos} Fotos` + (opts.kat !== 'all' ? `  ·  nur ${katName(tocAbt, opts.kat)}` : ''), 'F1', 10); y -= 18;
+      if (show.f.notiz) { for (const ln of this.wrap(show.f.notiz, 'F1', 10, CW).slice(0, 4)) { c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 10); y -= 13; } }
+      y -= 12; c.rgb(0.8, 0.82, 0.85, true).line(M, y, W - M, y, 1); y -= 26;
+      c.rgb(0.07, 0.08, 0.1).text(M, y, 'Inhalt', 'F2', 16); y -= 14;
+      return y;
+    };
+    const tocPagesRows = [];
+    if (opts.cover) {
+      let cap = Math.floor((coverHead(this._nullC()) - 46) / RH), cur = [];
+      toc.forEach(r => {
+        if (cur.length >= cap) { tocPagesRows.push(cur); cur = []; cap = Math.floor((H - 86 - 46) / RH); if (!r.head) cur.push({ head: true, ab: r.ab, cont: true }); }
+        if (r.head && cur.length >= cap - 1) { tocPagesRows.push(cur); cur = []; cap = Math.floor((H - 86 - 46) / RH); }
+        cur.push(r);
+      });
+      tocPagesRows.push(cur);
+    }
+    const tocPages = tocPagesRows.length;
     const total = tocPages + pages.length;
-    // Seitenzahlen fürs Inhaltsverzeichnis: je Eintrag-Kategorie, je Trennseite, erste Einrichtungsseite
-    const firstPage = new Map(), divPage = {}, setupFirst = {}, entryPage = new Map();
+    // Seitenzahlen: je Eintrag-Phase, je Kapitel
+    const firstPage = new Map(), chapPage = {}, entryPage = new Map();
     pages.forEach((p, i) => {
       const n = tocPages + i + 1;
-      if (p.first) { firstPage.set(p.it, n); if (!entryPage.has(p.it.entry.id)) entryPage.set(p.it.entry.id, n); }
-      if (p.divider) divPage[p.divider] = n;
-      if (p.setup && !setupFirst[p.abt]) setupFirst[p.abt] = n;
+      if (p.chapter && !chapPage[p.chapter]) chapPage[p.chapter] = n;
+      const its = p.pack ? p.pack.map(x => x.it) : p.first ? [p.it] : [];
+      its.forEach(it => { firstPage.set(it, n); if (!entryPage.has(it.entry.id)) entryPage.set(it.entry.id, n); });
     });
 
     // ---- Schreiber ----
@@ -2843,21 +2974,7 @@ const Pdf = {
     const put = d => { const u = typeof d === 'string' ? enc(d) : new Uint8Array(d); parts.push(u); offset += u.length; };
     const obj = (id, body) => { xref[id] = offset; put(`${id} 0 obj\n`); if (typeof body === 'string') put(body); else body(); put('\nendobj\n'); };
     put('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
-
-    // ---- Zeichenhelfer (Content-Stream als Binär-String) ----
-    const C = () => {
-      let s = '';
-      const api = {
-        rgb: (r, g, b, stroke) => { s += `${r.toFixed(3)} ${g.toFixed(3)} ${b.toFixed(3)} ${stroke ? 'RG' : 'rg'}\n`; return api; },
-        rect: (x, y, w, h, mode = 'f') => { s += `${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re ${mode}\n`; return api; },
-        line: (x1, y1, x2, y2, lw = 0.6) => { s += `${lw} w ${x1.toFixed(2)} ${y1.toFixed(2)} m ${x2.toFixed(2)} ${y2.toFixed(2)} l S\n`; return api; },
-        text: (x, y, str, font = 'F1', size = 11) => { s += `BT /${font} ${size} Tf ${x.toFixed(2)} ${y.toFixed(2)} Td (${this.esc(this.win(str))}) Tj ET\n`; return api; },
-        textR: (xr, y, str, font, size) => api.text(xr - this.width(str, font, size), y, str, font, size),
-        img: (name, x, y, w, h) => { s += `q ${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)} cm /${name} Do Q\n`; return api; },
-        get: () => s
-      };
-      return api;
-    };
+    const C = () => this._canvas();
     const writePage = (content, images) => {
       const cid = nextId++, pid = nextId++;
       obj(cid, () => { put(`<< /Length ${content.length} >>\nstream\n`); put(content); put('\nendstream'); });
@@ -2865,222 +2982,151 @@ const Pdf = {
       obj(pid, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Contents ${cid} 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R >>${xo ? ` /XObject << ${xo} >>` : ''} >> >>`);
       pageIds.push(pid);
     };
-    const dateStr = Utils.fmtDate(Date.now());
     const footer = (c, n, kat, abt) => {
       const col = kat ? katRgb(abt, kat) : [0.55, 0.58, 0.63];
       c.rgb(...col).rect(0, 0, W, 14);
-      c.rgb(0.45, 0.48, 0.53).text(M, 24, this.fit(`Doku VT ${APP_VERSION}  ·  ${show.f.titel}  ·  Stand ${dateStr}`, 'F1', 8, W - 2 * M - 70), 'F1', 8)
+      c.rgb(0.45, 0.48, 0.53).text(M, 24, this.fit(`Doku VT ${APP_VERSION}  ·  ${show.f.titel}  ·  Stand ${dateStr}`, 'F1', 8, CW - 70), 'F1', 8)
         .textR(W - M, 24, `Seite ${n} / ${total}`, 'F1', 8);
+    };
+    /** Seitenkopf: Farbbalken, Titel, Plakette rechts (gleich für alle Seiten außer Deckblatt/Kapitelband) */
+    const pageHead = (c, ab, kat, pill) => {
+      const col = katRgb(ab, kat), pw = this.width(pill, 'F2', 12) + 24, dark = kat === 'E';
+      c.rgb(...col).rect(0, H - 14, W, 14);
+      c.rgb(...col).rect(W - M - pw, H - 58, pw, 24);
+      c.rgb(dark ? 0.15 : 1, dark ? 0.12 : 1, dark ? 0 : 1).text(W - M - pw + 12, H - 50, pill, 'F2', 12);
+      c.rgb(0.07, 0.08, 0.1).text(M, H - 52, this.fit(show.f.titel, 'F2', 20, CW - pw - 14), 'F2', 20);
+      c.rgb(0.85, 0.86, 0.88, true).line(M, H - 70, W - M, H - 70, 0.8);
+    };
+    /** Infoblock: Raster mit 4 Feldern (Hauptfeld zuerst), darunter Bemerkung und weitere Angaben */
+    const drawBox = (c, e, kat, boxY, m) => {
+      const ab = abtOf(e), D = DEPT[ab], col = katRgb(ab, kat), boxH = m.h;
+      c.rgb(0.97, 0.97, 0.98).rect(M, boxY, CW, boxH);
+      c.rgb(0.55, 0.58, 0.63, true); c.rect(M, boxY, CW, boxH, 'S');
+      c.rgb(...col).rect(M, boxY + boxH - 4, CW, 4);
+      const cw = CW / 4, rowTop = boxY + boxH - 4;
+      D.pdf.forEach(([lab, k], i) => {
+        const x = M + i * cw, val = entryVal(e, k) || '—';
+        if (i) c.rgb(0.75, 0.77, 0.8, true).line(x, rowTop - 50, x, rowTop, 0.6);
+        c.rgb(0.45, 0.48, 0.53).text(x + 10, rowTop - 16, lab, 'F2', 7.5);
+        // lange Werte: erst etwas verkleinern, dann zweizeilig, erst ganz zuletzt kürzen
+        let fs = i === 0 ? 18 : 13; while (fs > 11 && this.width(val, 'F2', fs) > cw - 18) fs -= 0.5;
+        if (this.width(val, 'F2', fs) <= cw - 18) c.rgb(0.07, 0.08, 0.1).text(x + 10, rowTop - 38, val, 'F2', fs);
+        else { const ls = this.wrap(val, 'F2', 10.5, cw - 18); c.rgb(0.07, 0.08, 0.1).text(x + 10, rowTop - 31, ls[0], 'F2', 10.5);
+          if (ls[1]) c.text(x + 10, rowTop - 44, this.fit(ls.slice(1).join(' '), 'F2', 10.5, cw - 18), 'F2', 10.5); }
+      });
+      let y = rowTop - 50;
+      if (m.bem.length || m.exl.length) c.rgb(0.75, 0.77, 0.8, true).line(M, y, W - M, y, 0.6);
+      y -= 16;
+      if (m.bem.length) { c.rgb(0.45, 0.48, 0.53).text(M + 10, y, 'BEMERKUNG', 'F2', 7.5); y -= 16;
+        m.bem.forEach(ln => { c.rgb(0.1, 0.11, 0.13).text(M + 10, y, ln, 'F1', 11); y -= 14; }); y -= 4; }
+      m.exl.forEach(ln => { c.rgb(0.3, 0.33, 0.38).text(M + 10, y, ln, 'F1', 9.5); y -= 12; });
     };
 
     // ---- Deckblatt / Inhaltsverzeichnis ----
     let pageNo = 0;
-    if (opts.cover) {
-      const st = Repo.stats(showId);
-      let idx = 0;
-      for (let tp = 0; tp < tocPages; tp++) {
-        const c = C(); pageNo++;
-        c.rgb(0.1, 0.12, 0.15).rect(0, H - 14, W, 14);
-        let y = H - 60;
-        if (tp === 0) {
-          const docName = tocAbt === 'L' || !tocAbt ? (abts.length > 1 ? 'TECHNIKDOKUMENTATION' : 'BELEUCHTUNGSDOKUMENTATION') : DEPT[tocAbt].name.toUpperCase() + ' – DOKUMENTATION';
-          c.rgb(0.45, 0.48, 0.53).text(M, y, docName, 'F2', 10); y -= 34;
-          for (const ln of this.wrap(show.f.titel, 'F2', 30, W - 2 * M).slice(0, tocDense ? 2 : 3)) { c.rgb(0.07, 0.08, 0.1).text(M, y, ln, 'F2', 30); y -= 34; }
-          if (show.f.spielstaette) { c.rgb(0.25, 0.28, 0.33).text(M, y, show.f.spielstaette, 'F1', 14); y -= 22; }
-          c.rgb(0.45, 0.48, 0.53).text(M, y, `Stand ${dateStr}  ·  ${st.entries} Einträge  ·  ${st.photos} Fotos` + (opts.kat !== 'all' ? `  ·  nur ${katName(tocAbt, opts.kat)}` : ''), 'F1', 10); y -= 18;
-          if (show.f.notiz) { for (const ln of this.wrap(show.f.notiz, 'F1', 10, W - 2 * M).slice(0, tocDense ? 3 : 6)) { c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 10); y -= 13; } }
-          y -= 14; c.rgb(0.8, 0.82, 0.85, true).line(M, y, W - M, y, 1); y -= 26;
-          c.rgb(0.07, 0.08, 0.1).text(M, y, 'Inhalt', 'F2', 16); y -= 22;
-        } else { c.rgb(0.07, 0.08, 0.1).text(M, y, 'Inhalt (Fortsetzung)', 'F2', 16); y -= 26; }
-        if (tp === 0 && setupPages) setupGroups.forEach(g => {
-          c.rgb(...katRgb(g.abt, 'A')).rect(M, y - 2, 6, 12);
-          const t = setupGroups.length === 1 && !multi && g.abt === 'L' ? SETUP_TOC.L : `${DEPT[g.abt].name}: ${SETUP_TOC[g.abt]}`;
-          c.rgb(0.07, 0.08, 0.1).text(M + 14, y, t, 'F2', 11).textR(W - M, y, `S. ${setupFirst[g.abt]}`, 'F1', 11);
-          c.rgb(0.88, 0.89, 0.91, true).line(M + 14, y - 5, W - M, y - 5, 0.4); y -= 18;
-        });
-        // Zeilen dieser Seite: Kreis | Kategorie | Gruppe | Filter | Seite – bei vielen Einträgen zweispaltig
-        const rows = items.slice(idx, idx + TOC_PER); idx += rows.length;
-        // Folge der Zeilen: bei mehreren Abteilungen vor jeder Abteilung eine Kopfzeile (Name, Spalten, Seite der Trennseite)
-        let seq = [];
-        rows.forEach(it => { const ab = abtOf(it.entry); if (multi && (!seq.length || seq[seq.length - 1].ab !== ab)) seq.push({ head: true, ab }); seq.push({ it, ab }); });
-        const avail = y - 46 - 14;
-        const two = seq.length * 16 > avail;
-        const gap = 16, colW = two ? (W - 2 * M - gap) / 2 : W - 2 * M;
-        let colsSeq = [seq];
-        if (two) {
-          const half = Math.ceil(seq.length / 2), a = seq.slice(0, half), b = seq.slice(half);
-          if (multi && b.length && !b[0].head) b.unshift({ head: true, ab: b[0].ab, cont: true });   // Spalte 2 beginnt mitten in einer Abteilung
-          colsSeq = [a, b];
-        }
-        const perCol = Math.max(...colsSeq.map(x => x.length));
-        const rh = Math.min(18, avail / Math.max(1, perCol)), fs = Math.min(10.5, Math.max(6, rh * 0.72));
-        // Spaltenköpfe: bei einer Abteilung deren Felder (Licht wie bisher), gemischt allgemein
-        const TD = tocAbt ? DEPT[tocAbt] : null, up = s => s.split(' / ')[0].toUpperCase();
-        const hd = TD ? [TD.mainLabel.toUpperCase(), tocAbt === 'L' ? 'KATEGORIE' : 'PHASE', up(fieldLabel(tocAbt, TD.toc[0])), up(fieldLabel(tocAbt, TD.toc[1]))]
-          : ['', 'PHASE', '', ''];                  // mehrere Abteilungen: Spaltenköpfe stehen in den Abteilungs-Kopfzeilen
-        const hd2 = TD ? (tocAbt === 'L' ? 'GR.' : hd[2].slice(0, 4) + '.') : '';
-        const cols = two
-          ? [[hd[0], 9, 98], [hd2, 110, 34], [hd[3], 147, colW - 147 - 34]]
-          : [[hd[0], 14, 170], [hd[1], 190, 80], [hd[2], 276, 64], [hd[3], 346, W - 2 * M - 346 - 50]];
-        const head = x0 => {
-          cols.forEach(([l, dx]) => c.rgb(0.45, 0.48, 0.53).text(x0 + dx, y, l, 'F2', 7));
-          c.rgb(0.45, 0.48, 0.53).textR(x0 + colW, y, 'SEITE', 'F2', 7);
-        };
-        if (!multi) { head(M); if (two) head(M + colW + gap); }
-        const y0 = multi ? y + 4 : y - 14;
-        const rowsAt = []; colsSeq.forEach((cs, ci) => cs.forEach((s, rr) => rowsAt.push([s, ci, rr])));
-        rowsAt.forEach(([s, ci, rr]) => {
-          const x0 = M + ci * (colW + gap), yy = y0 - rr * rh, base = yy - rh * 0.68;
-          if (s.head) {                               // Kopfzeile der Abteilung
-            const HD = DEPT[s.ab], hfs = Math.min(9, fs);
-            c.rgb(...katRgb(s.ab, 'A')).rect(x0, yy - rh + 1, colW, rh - 2);
-            c.rgb(1, 1, 1).text(x0 + 8, base, this.fit(`${HD.name.toUpperCase()} · ${HD.mainLabel.toUpperCase()}${s.cont ? ' (Forts.)' : ''}`, 'F2', hfs, (two ? 104 : 176) - 10), 'F2', hfs);
-            const lab = [two ? null : 'PHASE', ...HD.toc.map(k => fieldLabel(s.ab, k).split(' / ')[0].toUpperCase())];
-            const lx = two ? [null, 110, 147] : [190, 276, 346];
-            lab.forEach((l, k) => { if (l && lx[k] != null) c.rgb(1, 1, 1).text(x0 + lx[k], base, this.fit(l, 'F2', 6.5, two && k === 1 ? 34 : 120), 'F2', 6.5); });
-            if (!s.cont && divPage[s.ab]) c.rgb(1, 1, 1).textR(x0 + colW - 4, base, String(divPage[s.ab]), 'F2', hfs);
-            return;
-          }
-          const it = s.it;
-          if (rr % 2 === 0) c.rgb(0.95, 0.955, 0.965).rect(x0, yy - rh, colW, rh);
-          const ab = abtOf(it.entry), RD = DEPT[ab];
-          c.rgb(...katRgb(ab, it.kat)).rect(x0, yy - rh + 1, two ? 4 : 6, rh - 2);
-          const mv = mainVal(it.entry) || '—', t1 = entryVal(it.entry, RD.toc[0]), t2 = entryVal(it.entry, RD.toc[1]);
-          const ph = katName(ab, it.kat);
-          const vals = two ? [mv, t1, t2] : [mv, ph, t1, t2];
-          vals.forEach((v, k) => {
-            const [, dx, w] = cols[k], bold = k === 0;
-            c.rgb(bold ? 0.07 : 0.25, bold ? 0.08 : 0.28, bold ? 0.1 : 0.33).text(x0 + dx, base, this.fit(v, bold ? 'F2' : 'F1', fs, w - 4), bold ? 'F2' : 'F1', fs);
-          });
-          c.rgb(0.07, 0.08, 0.1).textR(x0 + colW - 2, base, String(firstPage.get(it)), 'F1', fs);
-        });
-        footer(c, pageNo, null);
-        writePage(c.get(), {});
-      }
-    }
-
-    // ---- Einrichtung & Züge (wird aus der Seitenfolge heraus aufgerufen) ----
-    const drawSetup = (blocks, abt) => {
+    tocPagesRows.forEach((rows, tp) => {
       const c = C(); pageNo++;
-      const dk = katRgb(abt, 'A');
-      c.rgb(...dk).rect(0, H - 14, W, 14);
-      const lbl = (multi ? DEPT[abt].short.toUpperCase() + ' · ' : '') + SETUP_PILL[abt], pw = this.width(lbl, 'F2', 12) + 24;
-      c.rgb(0.07, 0.08, 0.1).text(M, H - 52, this.fit(show.f.titel, 'F2', 20, W - 2 * M - pw - 14), 'F2', 20);
-      c.rgb(...dk).rect(W - M - pw, H - 58, pw, 24); c.rgb(1, 1, 1).text(W - M - pw + 12, H - 50, lbl, 'F2', 12);
-      c.rgb(0.85, 0.86, 0.88, true).line(M, H - 70, W - M, H - 70, 0.8);
-      let y = H - 96;
-      for (const b of blocks) {
-        const g = b.gap ?? 20;
-        if (b.type === 'allg') {
-          if (b.first) { c.rgb(0.45, 0.48, 0.53).text(M, y, b.label || 'ALLGEMEINE EINRICHTUNG', 'F2', 8.5); y -= 18; }
-          b.lines.forEach(ln => { c.rgb(0.1, 0.11, 0.13).text(M, y, ln, 'F1', 11); y -= 14; });
-          y -= 24;
-        } else if (b.type === 'note') {                 // Einrichte-Regel, hervorgehoben
-          c.rgb(0.95, 0.955, 0.965).rect(M, y - 10, W - 2 * M, 24); c.rgb(...dk).rect(M, y - 10, 4, 24);
-          c.rgb(0.1, 0.11, 0.13).text(M + 14, y - 2, b.lines[0] || '', 'F2', 10.5);
-          y -= b.h + g;
-        } else if (b.type === 'head') {
-          c.rgb(...dk).text(M, y, b.text, 'F2', 10); c.rgb(...dk, true).line(M, y - 5, W - M, y - 5, 0.8);
-          y -= b.h + g;
-        } else if (b.type === 'step') {
-          c.rgb(...dk).text(M, y, b.n + '.', 'F2', 11);
-          let yy = y;
-          b.lines.forEach(ln => { c.rgb(0.1, 0.11, 0.13).text(M + 26, yy, ln, 'F1', 11); yy -= 14; });
-          if (b.entry) { const pn = entryPage.get(b.entry.id); c.rgb(0.35, 0.37, 0.42).text(M + 26, yy + 1, this.fit(`Eintrag: ${[mainVal(b.entry), b.entry.f.element].filter(Boolean).join(' · ')}${pn ? `  (S. ${pn})` : ''}`, 'F1', 9.5, W - 2 * M - 30), 'F1', 9.5); }
-          y -= b.h + g;
-        } else if (b.type === 'gap') { y -= g;
-        } else {
-          const top = y + 10, bh = b.h;
-          c.rgb(0.97, 0.97, 0.98).rect(M, top - bh, W - 2 * M, bh);
-          c.rgb(0.75, 0.77, 0.8, true); c.rect(M, top - bh, W - 2 * M, bh, 'S');
-          c.rgb(...(b.tag ? katRgb('L', 'A') : dk)).rect(M, top - bh, 4, bh);
-          c.rgb(0.07, 0.08, 0.1).text(M + 14, y - 8, b.z.name, 'F2', 15);
-          if (b.tag) { const tw = this.width(b.tag, 'F2', 7.5) + 10, tx = M + 22 + this.width(b.z.name, 'F2', 15); c.rgb(...katRgb('L', 'A')).rect(tx, y - 11, tw, 13); c.rgb(1, 1, 1).text(tx + 5, y - 7.5, b.tag, 'F2', 7.5); }
-          let yy = y - 30;
-          if (!b.rows.length) { c.rgb(0.6, 0.62, 0.66).text(M + 14, yy, '—', 'F1', 10.5); }
-          for (const [l, lines] of b.rows) {
-            c.rgb(0.45, 0.48, 0.53).text(M + 14, yy, l, 'F2', 7.5);
-            lines.forEach(ln => { c.rgb(0.1, 0.11, 0.13).text(M + 106, yy, ln, 'F1', 10.5); yy -= 13; });
-            yy -= 4;
-          }
-          y = top - bh - 10 - 10;
+      c.rgb(0.1, 0.12, 0.15).rect(0, H - 14, W, 14);
+      let y = tp === 0 ? coverHead(c) : (c.rgb(0.07, 0.08, 0.1).text(M, H - 60, 'Inhalt (Fortsetzung)', 'F2', 16), H - 74);
+      // Spalten (eine Spalte, volle Breite – nichts wird abgeschnitten): Hauptfeld | Phase | Feld 1 | Feld 2 | Seite
+      const X = [12, 150, 226, 372], WD = [134, 72, 142, CW - 372 - 34];
+      rows.forEach((r, k) => {
+        const yy = y - k * RH, base = yy - RH * 0.7;
+        if (r.head) {
+          const HD = DEPT[r.ab];
+          c.rgb(...katRgb(r.ab, 'A')).rect(M, yy - RH + 0.5, CW, RH - 1);
+          c.rgb(1, 1, 1).text(M + 8, base, HD.name.toUpperCase() + (r.cont ? ' (Fortsetzung)' : ''), 'F2', 8.5);
+          if (!r.cont && chapPage[r.ab]) c.rgb(1, 1, 1).textR(W - M - 4, base, 'Kapitel S. ' + chapPage[r.ab], 'F2', 8.5);
+          const lab = [HD.mainLabel, 'Phase', ...HD.toc.map(f => fieldLabel(r.ab, f).split(' / ')[0])].map(s => s.toUpperCase());
+          c.rgb(0.45, 0.48, 0.53);
+          // Spaltennamen in einer eigenen hellen Zeile wären eine Zeile mehr – sie stehen klein im Band
+          lab.forEach((l, i) => { if (i) c.rgb(1, 1, 1).text(M + X[i], base, l, 'F2', 6.5); });
+          return;
         }
-      }
+        const it = r.it, ab = abtOf(it.entry), RD = DEPT[ab];
+        if (k % 2 === 0) c.rgb(0.95, 0.955, 0.965).rect(M, yy - RH, CW, RH);
+        c.rgb(...katRgb(ab, it.kat)).rect(M, yy - RH + 1, 5, RH - 2);
+        const vals = [mainVal(it.entry) || '—', katName(ab, it.kat), entryVal(it.entry, RD.toc[0]), entryVal(it.entry, RD.toc[1])];
+        vals.forEach((v, i) => { const b = i === 0;
+          c.rgb(b ? 0.07 : 0.25, b ? 0.08 : 0.28, b ? 0.1 : 0.33).text(M + X[i], base, this.fit(v, b ? 'F2' : 'F1', 9.5, WD[i] - 4), b ? 'F2' : 'F1', 9.5); });
+        c.rgb(0.07, 0.08, 0.1).textR(W - M - 2, base, String(firstPage.get(it)), 'F1', 9.5);
+      });
       footer(c, pageNo, null);
       writePage(c.get(), {});
-    };
-    // ---- Trennseite eines Abteilungs-Kapitels ----
-    const drawDivider = pg => {
+    });
+
+    // ---- Kapitelseite: Band (bei mehreren Abteilungen) bzw. Kopf, dann die Blöcke ----
+    const drawChapter = pg => {
       const c = C(); pageNo++;
-      const ab = pg.divider, D = DEPT[ab], dk = katRgb(ab, 'A'), lt = katRgb(ab, 'E');
-      c.rgb(...dk).rect(0, H - 300, W, 300);
-      c.rgb(...lt).rect(0, H - 312, W, 12);
-      c.rgb(1, 1, 1).text(M, H - 80, 'KAPITEL', 'F2', 11).text(M, H - 150, D.name, 'F2', 46);
-      c.text(M, H - 186, this.fit(show.f.titel, 'F1', 16, W - 2 * M), 'F1', 16);
-      let y = H - 370;
-      const cnt = k => pg.n.filter(x => x.kat === k).length;
-      const ents = new Set(pg.n.map(x => x.entry.id)).size;
-      c.rgb(0.07, 0.08, 0.1).text(M, y, `${ents} Einträge`, 'F2', 16); y -= 28;
-      [...D.photoKats, 'N'].forEach(k => { const n = cnt(k); if (!n) return;
-        c.rgb(...katRgb(ab, k)).rect(M, y - 3, 10, 14);
-        c.rgb(0.25, 0.28, 0.33).text(M + 20, y, `${k === 'N' ? 'Ohne Fotos' : D.phases[k]}: ${n} Seite${n === 1 ? '' : 'n'}`, 'F1', 12); y -= 22; });
-      if (setupFirst[ab]) { c.rgb(0.25, 0.28, 0.33).text(M + 20, y, `${SETUP_TOC[ab]}: ab Seite ${setupFirst[ab]}`, 'F1', 12); y -= 22; }
-      footer(c, pageNo, 'A', ab);
+      const d = pg.chapter, D = DEPT[d], dk = katRgb(d, 'A'), lt = katRgb(d, 'E');
+      let y;
+      if (pg.band) {
+        c.rgb(...dk).rect(0, H - 128, W, 128); c.rgb(...lt).rect(0, H - 136, W, 8);
+        const n = new Set(items.filter(it => abtOf(it.entry) === d).map(it => it.entry.id)).size;
+        c.rgb(1, 1, 1).text(M, H - 44, 'KAPITEL', 'F2', 10).textR(W - M, H - 44, `${n} Einträge`, 'F2', 11)
+          .text(M, H - 86, D.name, 'F2', 34).text(M, H - 110, this.fit(show.f.titel, 'F1', 13, CW), 'F1', 13);
+        y = H - 166;
+      } else {
+        pageHead(c, d, 'A', (multi ? D.short.toUpperCase() + ' · ' : '') + 'EINRICHTUNG' + (pg.cont ? ' (F.)' : ''));
+        y = H - 96;
+      }
+      if (!pg.blocks.length && pg.band) c.rgb(0.45, 0.48, 0.53).text(M, y - 12, 'Keine Einrichtung und keine Punkte für vor der Vorstellung eingetragen.', 'F1', 10.5);
+      for (const b of pg.blocks) {
+        if (b.t === 'head') {
+          c.rgb(...dk).text(M, y - 12, b.text, 'F2', 10.5); c.rgb(...dk, true).line(M, y - 18, W - M, y - 18, 1);
+        } else if (b.t === 'sub') {
+          c.rgb(0.4, 0.43, 0.48).text(M, y - 12, b.text, 'F2', 8.5);
+        } else if (b.t === 'text') {
+          b.lines.forEach((ln, k) => c.rgb(0.1, 0.11, 0.13).text(M, y - 11 - k * 14, ln, 'F1', 11));
+        } else if (b.t === 'chk') {
+          c.rgb(0.3, 0.32, 0.36, true).rect(M + 1, y - 13, 11, 11, 'S');
+          const tx = M + (b.n ? 44 : 24);
+          if (b.n) c.rgb(...dk).text(M + 20, y - 11, b.n + '.', 'F2', 11);
+          b.lines.forEach((ln, k) => c.rgb(0.1, 0.11, 0.13).text(tx, y - 11 - k * 14, ln, 'F1', 11));
+          if (b.entry) { const pn = entryPage.get(b.entry.id); c.rgb(0.4, 0.43, 0.48).text(tx, y - 11 - b.lines.length * 14 + 1, this.fit(`-> ${[mainVal(b.entry), b.entry.f.element].filter(Boolean).join(' · ')}${pn ? `, Seite ${pn}` : ''}`, 'F1', 9, CW - (tx - M)), 'F1', 9); }
+        } else if (b.t === 'thead') {
+          c.rgb(0.93, 0.94, 0.95).rect(M, y - b.h, CW, b.h);
+          b.cols.forEach(([l, x]) => c.rgb(0.4, 0.43, 0.48).text(M + x + 6, y - 12, l, 'F2', 7));
+        } else if (b.t === 'trow') {
+          b.cells.forEach((ls, i) => { const x = M + b.cols[i][1] + 6;
+            ls.forEach((ln, k) => c.rgb(0.1, 0.11, 0.13).text(x, y - 13 - k * 13, ln, i === 0 ? 'F2' : 'F1', i === 0 ? 11 : 10)); });
+          c.rgb(0.82, 0.84, 0.87, true).line(M, y - b.h, W - M, y - b.h, 0.5);
+        }
+        y -= b.h;
+      }
+      footer(c, pageNo, 'A', d);
+      writePage(c.get(), {});
+    };
+    // ---- Sammelseite: Einträge ohne Fotos untereinander ----
+    const drawPack = pg => {
+      const c = C(); pageNo++;
+      const d = pg.abt, D = DEPT[d];
+      pageHead(c, d, 'N', `${D.short} · ohne Fotos`.toUpperCase());
+      let y = H - 84;
+      pg.pack.forEach(({ it, m }) => { drawBox(c, it.entry, 'N', y - m.h, m); y -= m.h + 14; });
+      footer(c, pageNo, 'A', d);
       writePage(c.get(), {});
     };
 
     // ---- Inhaltsseiten ----
     let done = 0;
-    const nContent = pages.filter(p => p.it).length;
+    const nContent = pages.filter(p => p.it || p.pack).length;
     for (const pg of pages) {
-      if (pg.setup) { drawSetup(pg.setup, pg.abt); continue; }
-      if (pg.divider) { drawDivider(pg); continue; }
+      if (pg.chapter) { drawChapter(pg); continue; }
+      if (pg.pack) { drawPack(pg); done++; onProgress && onProgress(done, nContent); continue; }
       pageNo++;
-      const { it } = pg, e = it.entry, ab = abtOf(e), D = DEPT[ab], col = katRgb(ab, it.kat);
+      const { it } = pg, e = it.entry, ab = abtOf(e), D = DEPT[ab];
       const c = C(), images = {};
-      // Kopf: Farbbalken, Titel fett, Kategorie-Plakette
-      c.rgb(...col).rect(0, H - 14, W, 14);
-      const pill = (D.short + ' · ' + (it.kat === 'N' ? 'Ohne Fotos' : D.phases[it.kat])).toUpperCase(), pw = this.width(pill, 'F2', 12) + 24;
-      c.rgb(...col).rect(W - M - pw, H - 58, pw, 24);
-      c.rgb(it.kat === 'E' ? 0.15 : 1, it.kat === 'E' ? 0.12 : 1, it.kat === 'E' ? 0 : 1).text(W - M - pw + 12, H - 50, pill, 'F2', 12);
-      c.rgb(0.07, 0.08, 0.1).text(M, H - 52, this.fit(show.f.titel, 'F2', 20, W - 2 * M - pw - 14), 'F2', 20);
-      c.rgb(0.85, 0.86, 0.88, true).line(M, H - 70, W - M, H - 70, 0.8);
+      pageHead(c, ab, it.kat, (D.short + ' · ' + D.phases[it.kat]).toUpperCase());
       const kreisTxt = mainVal(e) || '—', ml = D.mainLabel.toUpperCase(), mw = this.width(ml, 'F2', 9) + 12;
       c.rgb(0.45, 0.48, 0.53).text(M, H - 96, ml, 'F2', 9);
-      let ks = 30; while (ks > 14 && this.width(kreisTxt, 'F2', ks) > W - 2 * M - 150) ks -= 2;
+      let ks = 30; while (ks > 14 && this.width(kreisTxt, 'F2', ks) > CW - 150) ks -= 2;
       c.rgb(0.07, 0.08, 0.1).text(M + Math.max(44, mw), H - 100, kreisTxt, 'F2', ks);
       if (pg.cont) c.rgb(0.45, 0.48, 0.53).textR(W - M, H - 96, `Fortsetzung · Fotos ${pg.from + 1}–${pg.from + pg.photos.length}`, 'F1', 9);
-
-      // Infoblock (unten, gerahmt): Kreis | Filter | Gruppe | Adresse, darunter Bemerkung
-      const innerW = W - 2 * M - 20;
-      const pdfKeys = D.pdf.map(x => x[1]);
-      const extras = infoKeys(ab, true).filter(k => !pdfKeys.includes(k) && entryVal(e, k)).map(k => `${fieldLabel(ab, k)}: ${entryVal(e, k)}`).join('   ·   ');
-      let bem = this.wrap(e.f.bemerkung || '—', 'F1', 11, innerW);
-      const exl = extras ? this.wrap(extras, 'F1', 9.5, innerW) : [];
-      if (bem.length > 14) bem = bem.slice(0, 13).concat(['… (gekürzt)']);
-      const boxH = 52 + 22 + bem.length * 14 + (exl.length ? exl.length * 12 + 10 : 0) + 8;
-      const boxY = 40;
-      c.rgb(0.97, 0.97, 0.98).rect(M, boxY, W - 2 * M, boxH);
-      c.rgb(0.55, 0.58, 0.63, true); c.rect(M, boxY, W - 2 * M, boxH, 'S');
-      c.rgb(...col).rect(M, boxY + boxH - 4, W - 2 * M, 4);
-      const cols = D.pdf.map(([lab, k]) => [lab, entryVal(e, k)]);
-      const cw = (W - 2 * M) / 4, rowTop = boxY + boxH - 4;
-      cols.forEach(([lab, val], k) => {
-        const x = M + k * cw;
-        if (k) c.rgb(0.75, 0.77, 0.8, true).line(x, rowTop - 50, x, rowTop, 0.6);
-        c.rgb(0.45, 0.48, 0.53).text(x + 10, rowTop - 16, lab, 'F2', 7.5);
-        // lange Werte (z. B. Kreis „12+17+103+113+620“) erst verkleinern, erst ganz zuletzt kürzen
-        const v = val || '—'; let fs = 14; while (fs > 8 && this.width(v, 'F2', fs) > cw - 18) fs -= 0.5;
-        c.rgb(0.07, 0.08, 0.1).text(x + 10, rowTop - 38, this.fit(v, 'F2', fs, cw - 18), 'F2', fs);
-      });
-      c.rgb(0.75, 0.77, 0.8, true).line(M, rowTop - 50, W - M, rowTop - 50, 0.6);
-      let y = rowTop - 66;
-      c.rgb(0.45, 0.48, 0.53).text(M + 10, y, 'BEMERKUNG', 'F2', 7.5); y -= 16;
-      bem.forEach(ln => { c.rgb(0.1, 0.11, 0.13).text(M + 10, y, ln, 'F1', 11); y -= 14; });
-      if (exl.length) { y -= 4; exl.forEach(ln => { c.rgb(0.3, 0.33, 0.38).text(M + 10, y, ln, 'F1', 9.5); y -= 12; }); }
-
+      const m = measure(e), boxY = 40;
+      drawBox(c, e, it.kat, boxY, m);
       // Fotos: 1–2 groß untereinander, 3–4 im 2×2-Raster
-      const top = H - 116, bottom = boxY + boxH + 14, avH = top - bottom, avW = W - 2 * M;
+      const top = H - 116, bottom = boxY + m.h + 14, avH = top - bottom, avW = CW;
       const n = pg.photos.length;
       const slots = [];
       if (n === 1) { const s = Math.min(avW, avH); slots.push([M + (avW - s) / 2, bottom + (avH - s) / 2, s]); }
@@ -3088,18 +3134,17 @@ const Pdf = {
       else if (n > 2) {
         const s = Math.min((avW - 10) / 2, (avH - 10) / 2); const x0 = M + (avW - (2 * s + 10)) / 2, y0 = bottom + (avH - (2 * s + 10)) / 2;
         slots.push([x0, y0 + s + 10, s], [x0 + s + 10, y0 + s + 10, s], [x0, y0, s], [x0 + s + 10, y0, s]);
-      } else {
-        c.rgb(0.6, 0.62, 0.66).text(M, top - 30, 'Keine Fotos zu diesem Eintrag.', 'F1', 12);
       }
       for (let k = 0; k < n; k++) {
         const p = pg.photos[k];
-        let d = await Repo.full(p.b);
-        if (!d) { c.rgb(0.6, 0.62, 0.66).text(slots[k][0] + 8, slots[k][1] + slots[k][2] / 2, 'Bilddaten fehlen auf diesem Gerät', 'F1', 10); continue; }
-        if (opts.compact) d = (await Photo.recompress(d, 900, 0.7)).d;
-        const info = this.jpegInfo(d), iid = nextId++, name = 'Im' + iid;
+        let dta = await Repo.full(p.b);
+        if (!dta) { c.rgb(0.6, 0.62, 0.66).text(slots[k][0] + 8, slots[k][1] + slots[k][2] / 2, 'Bilddaten fehlen auf diesem Gerät', 'F1', 10); continue; }
+        if (opts.compact) dta = (await Photo.recompress(dta, 900, 0.7)).d;
+        const info = this.jpegInfo(dta), iid = nextId++, name = 'Im' + iid;
+        const buf = dta;
         obj(iid, () => {
-          put(`<< /Type /XObject /Subtype /Image /Width ${info.w} /Height ${info.h} /ColorSpace /${info.c === 1 ? 'DeviceGray' : 'DeviceRGB'} /BitsPerComponent 8 /Filter /DCTDecode /Length ${d.byteLength} >>\nstream\n`);
-          put(d); put('\nendstream');
+          put(`<< /Type /XObject /Subtype /Image /Width ${info.w} /Height ${info.h} /ColorSpace /${info.c === 1 ? 'DeviceGray' : 'DeviceRGB'} /BitsPerComponent 8 /Filter /DCTDecode /Length ${buf.byteLength} >>\nstream\n`);
+          put(buf); put('\nendstream');
         });
         images[name] = iid;
         const [x, yy, s] = slots[k];
@@ -3109,7 +3154,7 @@ const Pdf = {
         const lbl = `Foto ${pg.from + k + 1}`;
         c.rgb(0, 0, 0).rect(x + 6, yy + (s - ih) / 2 + ih - 20, this.width(lbl, 'F2', 8) + 10, 14);
         c.rgb(1, 1, 1).text(x + 11, yy + (s - ih) / 2 + ih - 16, lbl, 'F2', 8);
-        d = null;
+        dta = null;
       }
       footer(c, pageNo, it.kat, ab);
       writePage(c.get(), images);
@@ -3135,6 +3180,148 @@ const Pdf = {
     put(x);
     put(`trailer\n<< /Size ${nextId} /Root 1 0 R /Info ${infoId} 0 R >>\nstartxref\n${xrefPos}\n%%EOF\n`);
     return new Blob(parts, { type: 'application/pdf' });
+  },
+  /** Zeichenfläche (Content-Stream als Binär-String) – von build() und _writer() genutzt */
+  _canvas() {
+    let s = '';
+    const self = this;
+    const api = {
+      rgb: (r, g, b, stroke) => { s += `${r.toFixed(3)} ${g.toFixed(3)} ${b.toFixed(3)} ${stroke ? 'RG' : 'rg'}\n`; return api; },
+      rect: (x, y, w, h, mode = 'f') => { s += `${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re ${mode}\n`; return api; },
+      line: (x1, y1, x2, y2, lw = 0.6) => { s += `${lw} w ${x1.toFixed(2)} ${y1.toFixed(2)} m ${x2.toFixed(2)} ${y2.toFixed(2)} l S\n`; return api; },
+      text: (x, y, str, font = 'F1', size = 11) => { s += `BT /${font} ${size} Tf ${x.toFixed(2)} ${y.toFixed(2)} Td (${self.esc(self.win(str))}) Tj ET\n`; return api; },
+      textR: (xr, y, str, font, size) => api.text(xr - self.width(str, font, size), y, str, font, size),
+      img: (name, x, y, w, h) => { s += `q ${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)} cm /${name} Do Q\n`; return api; },
+      get: () => s
+    };
+    return api;
+  },
+  /** Zeichenfläche, die nichts aufzeichnet (nur zum Ausmessen) */
+  _nullC() { const api = new Proxy({}, { get: (t, k) => k === 'get' ? () => '' : () => api }); return api; },
+
+  /** kleiner Schreiber für Textseiten (Protokolle): Seiten zeichnen, dann finish() → Blob */
+  _writer(title) {
+    const { W, H } = this, self = this;
+    const parts = []; let offset = 0; const xref = []; let nextId = 5; const pageIds = [];
+    const enc = s => { const u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i) & 255; return u; };
+    const put = d => { const u = typeof d === 'string' ? enc(d) : new Uint8Array(d); parts.push(u); offset += u.length; };
+    const obj = (id, body) => { xref[id] = offset; put(`${id} 0 obj\n`); put(body); put('\nendobj\n'); };
+    put('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+    const C = () => {
+      let s = '';
+      const api = {
+        rgb: (r, g, b, stroke) => { s += `${r.toFixed(3)} ${g.toFixed(3)} ${b.toFixed(3)} ${stroke ? 'RG' : 'rg'}\n`; return api; },
+        rect: (x, y, w, h, mode = 'f') => { s += `${x.toFixed(2)} ${y.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re ${mode}\n`; return api; },
+        line: (x1, y1, x2, y2, lw = 0.6) => { s += `${lw} w ${x1.toFixed(2)} ${y1.toFixed(2)} m ${x2.toFixed(2)} ${y2.toFixed(2)} l S\n`; return api; },
+        text: (x, y, str, font = 'F1', size = 11) => { s += `BT /${font} ${size} Tf ${x.toFixed(2)} ${y.toFixed(2)} Td (${self.esc(self.win(str))}) Tj ET\n`; return api; },
+        textR: (xr, y, str, font, size) => api.text(xr - self.width(str, font, size), y, str, font, size),
+        get: () => s
+      };
+      return api;
+    };
+    return {
+      C,
+      page(content) { const cid = nextId++, pid = nextId++; obj(cid, `<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+        obj(pid, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Contents ${cid} 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> >>`); pageIds.push(pid); },
+      finish() {
+        obj(1, `<< /Type /Catalog /Pages 2 0 R /ViewerPreferences << /DisplayDocTitle true >> >>`);
+        obj(2, `<< /Type /Pages /Kids [${pageIds.map(id => id + ' 0 R').join(' ')}] /Count ${pageIds.length} >>`);
+        obj(3, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+        obj(4, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+        const infoId = nextId++, ps = v => '(' + self.esc(self.win(v)) + ')';
+        obj(infoId, `<< /Title ${ps(title)} /Producer ${ps('Doku VT ' + APP_VERSION)} /Creator ${ps('Doku VT')} >>`);
+        self.lastPages = pageIds.length;
+        const xrefPos = offset;
+        let x = `xref\n0 ${nextId}\n0000000000 65535 f \n`;
+        for (let i = 1; i < nextId; i++) x += (xref[i] != null ? String(xref[i]).padStart(10, '0') + ' 00000 n ' : '0000000000 65535 f ') + '\n';
+        put(x); put(`trailer\n<< /Size ${nextId} /Root 1 0 R /Info ${infoId} 0 R >>\nstartxref\n${xrefPos}\n%%EOF\n`);
+        return new Blob(parts, { type: 'application/pdf' });
+      }
+    };
+  },
+
+  /** PDF-Protokoll eines Durchgangs der Vorstellungs-Checkliste */
+  buildRun(showId, runId, depts) {
+    const show = Repo.show(showId), run = Repo.runs.get(runId);
+    if (!show || !run) throw new Error('Durchgang nicht gefunden');
+    const { W, H, M } = this;
+    const items = RunList.items(showId, depts);
+    const pr = RunList.progress(run, items);
+    const wr = this._writer(`${show.f.titel} – ${run.f.titel || 'Vorstellung'}`);
+    const dateStr = Utils.fmtDate(Date.now());
+    // Zeilen vorbereiten (Kopf je Abteilung, Gruppenzeile, Punkt)
+    const rows = [];
+    DEPT_ORDER.filter(d => depts.includes(d)).forEach(d => {
+      const its = items.filter(i => i.abt === d); if (!its.length) return;
+      const p = RunList.progress(run, its);
+      rows.push({ t: 'dept', d, label: `${DEPT[d].name}  ·  ${p.done} von ${p.all} erledigt`, h: 26 });
+      let lastG = '';
+      its.forEach(i => {
+        if (i.group !== lastG) { rows.push({ t: 'group', label: i.group, h: 18 }); lastG = i.group; }
+        const hk = run.f['h:' + i.key], bold = !(hk && hk.ok);                      // offene Punkte fett → mit fetter Schrift umbrechen
+        const lines = this.wrap(i.text, bold ? 'F2' : 'F1', 10.5, W - 2 * M - 170).slice(0, 8);
+        rows.push({ t: 'item', d, i, h: Math.max(18, lines.length * 13 + 6), lines });
+      });
+    });
+    const open = items.filter(i => { const h = run.f['h:' + i.key]; return !(h && h.ok); });
+    const pages = []; let cur = [], room = 0;
+    const AV1 = H - 170 - 60, AV = H - 100 - 60;
+    rows.forEach(r => { if (!cur.length && !pages.length) room = AV1; if (r.h > room) { pages.push(cur); cur = []; room = AV; } cur.push(r); room -= r.h; });
+    pages.push(cur);
+    const sumH = 60 + Math.min(open.length, 25) * 14;
+    const total = pages.length + (room < sumH ? 1 : 0);
+    pages.forEach((rs, pi) => {
+      const c = wr.C();
+      c.rgb(0.1, 0.12, 0.15).rect(0, H - 14, W, 14);
+      let y = H - 52;
+      if (pi === 0) {
+        c.rgb(0.45, 0.48, 0.53).text(M, y + 8, 'VORSTELLUNGS-CHECKLISTE · PROTOKOLL', 'F2', 9); y -= 22;
+        c.rgb(0.07, 0.08, 0.1).text(M, y, this.fit(show.f.titel, 'F2', 24, W - 2 * M), 'F2', 24); y -= 22;
+        c.rgb(0.25, 0.28, 0.33).text(M, y, [show.f.spielstaette, run.f.titel, run.f.datum && !String(run.f.titel || '').includes(Utils.fmtDate(new Date(run.f.datum + 'T12:00').getTime(), false)) ? Utils.fmtDate(new Date(run.f.datum + 'T12:00').getTime(), false) : ''].filter(Boolean).join('  ·  '), 'F1', 12); y -= 20;
+        c.rgb(0.07, 0.08, 0.1).text(M, y, `${pr.done} von ${pr.all} Punkten erledigt`, 'F2', 12);
+        c.rgb(0.88, 0.89, 0.91).rect(M + 200, y - 2, W - 2 * M - 200, 10); c.rgb(0.25, 0.65, 0.42).rect(M + 200, y - 2, (W - 2 * M - 200) * (pr.all ? pr.done / pr.all : 0), 10);
+        y -= 26;
+        c.rgb(0.45, 0.48, 0.53).text(M + 22, y, 'PUNKT', 'F2', 7).text(W - M - 132, y, 'UHRZEIT', 'F2', 7).text(W - M - 84, y, 'GERÄT', 'F2', 7); y -= 12;
+      } else { c.rgb(0.07, 0.08, 0.1).text(M, y, this.fit(`${show.f.titel} – ${run.f.titel} (Fortsetzung)`, 'F2', 14, W - 2 * M), 'F2', 14); y -= 30; }
+      rs.forEach(r => {
+        if (r.t === 'dept') {
+          c.rgb(...katRgb(r.d, 'A')).rect(M, y - 18, W - 2 * M, 20); c.rgb(1, 1, 1).text(M + 8, y - 12, r.label, 'F2', 11);
+        } else if (r.t === 'group') {
+          c.rgb(0.45, 0.48, 0.53).text(M + 4, y - 12, r.label.toUpperCase(), 'F2', 8);
+        } else {
+          const h = run.f['h:' + r.i.key], ok = h && h.ok;
+          if (!ok) c.rgb(1, 0.92, 0.95).rect(M, y - r.h + 2, W - 2 * M, r.h - 2);          // offene Punkte hervorheben
+          c.rgb(0.35, 0.37, 0.42, true).rect(M + 4, y - 14, 11, 11, 'S');
+          if (ok) { c.rgb(0.13, 0.55, 0.33, true).line(M + 6, y - 9, M + 9, y - 12.5, 1.6); c.line(M + 9, y - 12.5, M + 14, y - 5, 1.6); }
+          r.lines.forEach((ln, k) => c.rgb(0.1, 0.11, 0.13).text(M + 22, y - 12 - k * 13, ln, ok ? 'F1' : 'F2', 10.5));
+          if (h) c.rgb(0.25, 0.28, 0.33).text(W - M - 132, y - 12, (ok ? '' : 'zurück ') + RunList.fmtTime(h.at), 'F1', 9.5)
+            .text(W - M - 84, y - 12, this.fit(h.dev || '', 'F1', 9.5, 84), 'F1', 9.5);
+          else c.rgb(0.75, 0.2, 0.4).text(W - M - 132, y - 12, 'offen', 'F2', 9.5);
+          c.rgb(0.88, 0.89, 0.91, true).line(M, y - r.h + 1, W - M, y - r.h + 1, 0.4);
+        }
+        y -= r.h;
+      });
+      const last = pi === pages.length - 1;
+      if (last && total === pages.length) y = this._runSummary(c, y - 16, open, pr);
+      c.rgb(0.45, 0.48, 0.53).text(M, 24, this.fit(`Doku VT ${APP_VERSION}  ·  ${show.f.titel}  ·  Stand ${dateStr}`, 'F1', 8, W - 2 * M - 70), 'F1', 8).textR(W - M, 24, `Seite ${pi + 1} / ${total}`, 'F1', 8);
+      wr.page(c.get());
+    });
+    if (total > pages.length) {
+      const c = wr.C(); c.rgb(0.1, 0.12, 0.15).rect(0, H - 14, W, 14);
+      this._runSummary(c, H - 60, open, pr);
+      c.rgb(0.45, 0.48, 0.53).text(M, 24, `Doku VT ${APP_VERSION}  ·  ${show.f.titel}`, 'F1', 8).textR(W - M, 24, `Seite ${total} / ${total}`, 'F1', 8);
+      wr.page(c.get());
+    }
+    return wr.finish();
+  },
+  _runSummary(c, y, open, pr) {
+    const { W, M } = this;
+    c.rgb(0.07, 0.08, 0.1).text(M, y, `Zusammenfassung: ${pr.done} von ${pr.all} erledigt`, 'F2', 13); y -= 20;
+    if (!open.length) { c.rgb(0.13, 0.55, 0.33).text(M, y, 'Alle Punkte erledigt.', 'F2', 11); return y - 16; }
+    c.rgb(0.75, 0.2, 0.4).text(M, y, `Offen (${open.length}):`, 'F2', 11); y -= 16;
+    open.slice(0, 25).forEach(i => { c.rgb(0.1, 0.11, 0.13).text(M + 10, y, this.fit(`${DEPT[i.abt].short}: ${i.text.split('\n')[0]}`, 'F1', 10.5, W - 2 * M - 10), 'F1', 10.5); y -= 14; });
+    if (open.length > 25) { c.rgb(0.45, 0.48, 0.53).text(M + 10, y, `… und ${open.length - 25} weitere`, 'F1', 10); y -= 14; }
+    return y;
   }
 };
 
@@ -3170,7 +3357,7 @@ const Sync = {
   async markSynced(msg) { this.state.lastSyncAt = Date.now(); this.state.lastError = ''; await this.log(msg, 'ok'); },
   pending() {
     const since = this.state.lastSyncAt; let n = 0;
-    for (const m of [Repo.shows, Repo.entries, Repo.photos]) for (const r of m.values()) if (r.mod > since) n++;
+    for (const m of [Repo.shows, Repo.entries, Repo.photos, Repo.runs]) for (const r of m.values()) if (r.mod > since) n++;
     return n;
   },
   status() {
@@ -3187,14 +3374,23 @@ const Sync = {
   collect({ since = 0, showIds = null, depts = null } = {}) {
     const inShow = r => !showIds || showIds.includes(r.showId || r.id);
     const pick = m => [...m.values()].filter(r => r.mod > since && inShow(r));
-    return this.filterRecs({ shows: pick(Repo.shows), entries: pick(Repo.entries), photos: pick(Repo.photos) }, depts);
+    return this.filterRecs({ shows: pick(Repo.shows), entries: pick(Repo.entries), photos: pick(Repo.photos), runs: pick(Repo.runs) }, depts);
   },
   /** Einträge und Fotos auf Abteilungen beschränken. Ein Foto gehört zur Abteilung seines Eintrags. */
   filterRecs(recs, depts) {
     if (!depts) return recs;
     const okE = e => depts.includes(abtOf(e));
     const okP = p => { const e = Repo.entries.get(p.f.entryId) || (recs.entries || []).find(x => x.id === p.f.entryId); return !e || okE(e); };
-    return { shows: recs.shows || [], entries: (recs.entries || []).filter(okE), photos: (recs.photos || []).filter(okP) };
+    // Durchgänge: nur die Haken der erlaubten Abteilungen mitschicken (Feld für Feld – der Merge ergänzt den Rest)
+    const runs = (recs.runs || []).map(r => {
+      const f = {}, t = {};
+      for (const k of Object.keys(r.f)) {
+        if (k.startsWith('h:') && !depts.includes(RunList.abtOfItem(r.showId, k.slice(2)))) continue;
+        f[k] = r.f[k]; if (r.t[k] != null) t[k] = r.t[k];
+      }
+      return Object.assign({}, r, { f, t });
+    });
+    return { shows: recs.shows || [], entries: (recs.entries || []).filter(okE), photos: (recs.photos || []).filter(okP), runs };
   },
   /** Abteilungen dieses Geräts als Text, z. B. „Licht, Ton“ */
   deptLabel(depts = Settings.v.depts) { return depts.map(d => DEPT[d].short).join(', '); },
@@ -3216,7 +3412,7 @@ const Sync = {
       }
     }
     parts.push(']}');
-    return { blob: new Blob(parts, { type: 'application/json' }), counts: { shows: recs.shows.length, entries: recs.entries.length, photos: recs.photos.length, blobs: n } };
+    return { blob: new Blob(parts, { type: 'application/json' }), counts: { shows: recs.shows.length, entries: recs.entries.length, photos: recs.photos.length, runs: recs.runs.length, blobs: n } };
   },
   async importPackage(file, onProgress) {
     let data;
@@ -3568,7 +3764,7 @@ class PeerSession {
   async _local(ev) {
     if (!ev.local || !this.open) return;
     const recs = Sync.filterRecs(ev.records, this.depts || Settings.v.depts);
-    if (!recs.shows.length && !recs.entries.length && !recs.photos.length) return;
+    if (!recs.shows.length && !recs.entries.length && !recs.photos.length && !(recs.runs || []).length) return;
     await this.send({ t: 'delta', ...recs });
     const okBlobs = new Set(recs.photos.map(p => p.b));
     for (const id of (ev.blobIds || []).filter(b => okBlobs.has(b))) {
@@ -3820,16 +4016,16 @@ const Views = {
         if (!ga !== !gb) return ga ? -1 : 1;
         const c = Utils.cmpKreis(ga, gb); if (c) return c;
       }
-      return (ko[a.kat] - ko[b.kat]) || Utils.cmpKreis(mainVal(a.entry), mainVal(b.entry)) || (a.entry.c - b.entry.c);
+      return (ko[a.kat] - ko[b.kat]) || mainCmp(mainVal(a.entry), mainVal(b.entry)) || (a.entry.c - b.entry.c);
     });
     return items;
   },
   /** Abschnitt einer Karte. multi = mehrere Abteilungen in der Liste → „Licht · Aufbau“ */
   sectionOf(item, sort, multi = false) {
     if (sort === 'gruppe') return item.entry.f.gruppe ? { key: 'g' + item.entry.f.gruppe, label: 'Gruppe ' + item.entry.f.gruppe, k: null } : { key: 'g-', label: 'Ohne Gruppe', k: null };
-    if (item.abt === 'B') {                         // Bühne: Abschnitte nach Ebene (unten → oben)
-      const p = Repo.bposOf(item.entry);
-      return { key: 'B' + p.ebene, label: (multi ? 'Bühne · ' : '') + EBENE_NAME[p.ebene], k: 'A', abt: 'B' };
+    if (item.abt === 'B') {                         // Bühne: Abschnitte nach Bereich (vorne → hinten)
+      const r = BEREICH_RANK[Repo.bposOf(item.entry).bereich] ?? 2;
+      return { key: 'B' + r, label: (multi ? 'Bühne · ' : '') + BEREICH_ABSCHNITT[r], k: 'A', abt: 'B' };
     }
     const label = multi ? `${DEPT[item.abt].short} · ${katName(item.abt, item.kat)}` : katName(item.abt, item.kat);
     return { key: item.abt + item.kat, label, k: item.kat, abt: item.abt };
@@ -4240,12 +4436,23 @@ const SetupView = {
     if (!box) return;
     const s = Repo.show(showId); if (!s || !depts.length) { box.innerHTML = ''; return; }
     const multi = App.visibleDepts(showId).length > 1;
-    box.innerHTML = depts.map(d => this['html' + d](s, edit, multi)).join('');
-    box.querySelectorAll('details.setup').forEach(dt => dt.addEventListener('toggle', () => { this.open[dt.dataset.abt] = dt.open; }));
+    box.innerHTML = this.htmlRun(s, edit, depts) + depts.map(d => this['html' + d](s, edit, multi)).join('');
+    box.querySelectorAll('details.setup, details.ssubd').forEach(dt => dt.addEventListener('toggle', () => { this.open[dt.dataset.box || dt.dataset.abt] = dt.open; }));
     box.querySelectorAll('[data-setup-edit]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); this['edit' + b.dataset.setupEdit](showId); }));
     box.querySelectorAll('[data-open-entry]').forEach(b => b.addEventListener('click', e => {
       e.preventDefault(); e.stopPropagation(); const id = b.dataset.openEntry;
       if (App.sidePane()) App.selectEntry(id); else App.openDetailSheet(id);
+    }));
+    // Vor der Vorstellung: direkt hier abhaken (auch im Ansichtsmodus)
+    box.querySelectorAll('[data-run]').forEach(b => b.addEventListener('click', async e => {
+      e.preventDefault(); e.stopPropagation();
+      try {
+        const r = b.dataset.run;
+        if (r === 'start') { const run = await RunList.create(showId); this.open.run = true; Ui.toast(`${run.f.titel} angelegt`); }
+        else if (r === 'open') RunList.open(showId);
+        else if (r === 'items') RunList.editItems(showId);
+        else { if (navigator.vibrate) navigator.vibrate(10); await RunList.toggle(b.dataset.runId, r); }
+      } catch (err) { App.error(err); }
     }));
   },
   /** Rahmen eines Blocks. pink = Allgemeine Einrichtung ausgefüllt (Hinweis-Symbol) */
@@ -4255,48 +4462,84 @@ const SetupView = {
         ${edit ? btns.map(([k, l, ic]) => `<button class="btn" data-setup-edit="${k}" aria-label="${Utils.esc(l)} bearbeiten">${I(ic || 'edit', 'sm')}<span class="bl"> ${Utils.esc(l)}</span></button>`).join('') : ''}${I('arrowR', 'sm chev')}</summary>
       <div class="sbody">${body}</div></details>`;
   },
-  textBox(label, v, edit) {
-    return `<div><div class="muted" style="font-size:11px;font-weight:700;letter-spacing:.1em;margin-bottom:6px">${label}</div>
-      <div class="allg ${v ? '' : 'empty'}">${v ? Utils.esc(v) : 'Noch nichts eingetragen.' + (edit ? '' : ' Zum Eintragen in den Bearbeitungsmodus wechseln.')}</div></div>`;
+  /** Zwischenüberschrift innerhalb eines Blocks – in allen Abteilungen gleich */
+  sub(t) { return `<div class="ssub">${t}</div>`; },
+  textBox(v, edit, what) {
+    return `<div class="allg ${v ? '' : 'empty'}">${v ? Utils.esc(v) : `Noch nichts eingetragen${edit ? ` – über „${what}“ eintragen.` : '.'}`}</div>`;
   },
-  line(lab, v) { return v ? `<div class="zl"><b>${lab}</b>${Utils.esc(v)}</div>` : ''; },
+  /** kompakte Tabelle für Züge/Positionen: cols = [[Kopf, Funktion(z) → Text, Klasse]] */
+  ztab(list, cols) {
+    if (!list.length) return '<div class="allg empty">Keine Einträge.</div>';
+    return `<div class="ztab"><div class="zr zhead">${cols.map(c => `<span>${c[0]}</span>`).join('')}</div>
+      ${list.map(z => `<div class="zr">${cols.map((c, i) => { const v = c[1](z) || ''; return i === 0 ? `<b class="zn">${v}</b>` : `<span class="${c[2] || ''}" data-l="${c[0]}">${v || '<span class="muted">—</span>'}</span>`; }).join('')}</div>`).join('')}</div>`;
+  },
+  /* ---------- Vor der Vorstellung (alle sichtbaren Abteilungen) ---------- */
+  htmlRun(s, edit, depts) {
+    const items = RunList.items(s.id, depts);
+    if (!items.length && !edit) return '';
+    const today = RunList.isoDate(), run = RunList.runsOf(s.id).find(r => r.f.datum === today);
+    const pr = run ? RunList.progress(run, items) : null;
+    // Ton und Bühne brauchen die Liste vor jeder Vorstellung → dort von selbst aufgeklappt
+    const open = this.open.run ?? depts.some(d => d === 'T' || d === 'B');
+    const sum = !items.length ? 'noch keine Punkte' : pr ? `heute ${pr.done} von ${pr.all} erledigt` : `${items.length} Punkte · heute noch nicht begonnen`;
+    let body = '';
+    if (!items.length) body = `<div class="allg empty">Noch keine Punkte – über „Punkte“ anlegen.</div>`;
+    else if (!run) body = `<button class="btn big primary block" data-run="start">${I('checklist')} Vorstellung heute beginnen</button>`;
+    else {
+      body = `<div class="pbar" style="margin:0"><i style="width:${pr.all ? pr.done / pr.all * 100 : 0}%"></i></div>` +
+        DEPT_ORDER.filter(d => depts.includes(d)).map(d => {
+          const its = items.filter(i => i.abt === d); if (!its.length) return '';
+          const p = RunList.progress(run, its); let lastG = '';
+          return `<section class="runsec" data-abt="${d}"><div class="runsh"><span class="tag A" data-k="A" data-abt="${d}">${Utils.esc(DEPT[d].short)}</span><h3>${Utils.esc(DEPT[d].name)}</h3><span class="mono">${p.done}/${p.all}</span></div>
+            ${its.map(i => { const h = run.f['h:' + i.key], ok = h && h.ok;
+              const g = i.group !== lastG ? `<div class="rung">${Utils.esc(i.group)}</div>` : ''; lastG = i.group;
+              const e = i.entryId && Repo.entry(i.entryId);
+              return g + `<div class="runrow ${ok ? 'ok' : ''}"><button class="runchk" role="checkbox" aria-checked="${!!ok}" data-run="${Utils.esc(i.key)}" data-run-id="${run.id}">
+                  <span class="box">${ok ? I('check') : ''}</span><span class="rt">${Utils.esc(i.text)}</span>
+                  <span class="rm">${h && ok ? `${RunList.fmtTime(h.at)} · ${Utils.esc(h.dev || '')}` : ''}</span></button>
+                  ${e ? `<button class="btn icon" data-open-entry="${e.id}" aria-label="Eintrag ${Utils.esc(mainVal(e))} öffnen" title="${Utils.esc(mainVal(e))}">${I('image', 'sm')}</button>` : ''}</div>`; }).join('')}</section>`;
+        }).join('');
+    }
+    return `<details class="setup run" data-box="run" ${open ? 'open' : ''}>
+      <summary><span class="hint run">${I('checklist')}</span><h3>Vor der Vorstellung<span class="sum">${Utils.esc(sum)}</span></h3>
+        ${edit ? `<button class="btn" data-run="items" aria-label="Punkte bearbeiten">${I('edit', 'sm')}<span class="bl"> Punkte</span></button>` : ''}${I('arrowR', 'sm chev')}</summary>
+      <div class="sbody">${body}
+        <div class="runtools" style="margin:0"><button class="btn" data-run="open">${I('list', 'sm')} Alle Durchgänge &amp; PDF-Protokoll</button></div></div></details>`;
+  },
   /* ---------- Licht ---------- */
   htmlL(s, edit, multi) {
     const zs = Repo.zuegeOf(s.id).filter(z => z.typ === 'licht'), filled = zs.filter(z => Repo.zugFilled(z)).length;
-    const sum = [s.f.einrichtung ? 'Einrichtung' : '', `${filled}/${zs.length} Züge ausgefüllt`].filter(Boolean).join(' · ');
-    return this.frame('L', `Einrichtung &amp; Züge${multi ? ' · Licht' : ''}`, sum, !!s.f.einrichtung, edit, [['L', 'Bearbeiten']],
-      this.textBox('ALLGEMEINE EINRICHTUNG', s.f.einrichtung, edit) +
-      `<div class="zgrid">${zs.map(z => `<div class="zcard ${Repo.zugFilled(z) ? '' : 'empty'}"><div class="zn">${Utils.esc(z.name)}${Repo.zugFilled(z) ? '' : '<small>leer</small>'}</div>
-        ${this.line('Höhe', z.hoehe)}${this.line('Bestückung', z.bestueckung)}${this.line('Bemerkung', z.bemerkung)}</div>`).join('')}</div>`);
+    const sum = [s.f.einrichtung ? 'Allgemein' : '', `${filled}/${zs.length} Züge ausgefüllt`].filter(Boolean).join(' · ');
+    const e = Utils.esc;
+    return this.frame('L', `Einrichtung · Licht`, sum, !!s.f.einrichtung, edit, [['L', 'Bearbeiten']],
+      this.sub('Allgemein') + this.textBox(s.f.einrichtung, edit, 'Bearbeiten') +
+      this.sub('Beleuchterzüge') + this.ztab(zs, [['Zug', z => e(z.name)], ['Höhe / Marke', z => e(z.hoehe), 'mono'], ['Bestückung', z => e(z.bestueckung)], ['Bemerkung', z => e(z.bemerkung), 'zb']]));
   },
   /* ---------- Ton ---------- */
   htmlT(s, edit, multi) {
-    return this.frame('T', `Einrichtung Ton`, s.f.einrichtungT ? 'Einrichtung' : 'leer', !!s.f.einrichtungT, edit, [['T', 'Bearbeiten']],
-      this.textBox('PULT · SHOW-DATEI · GRUNDPEGEL · BESONDERHEITEN', s.f.einrichtungT, edit));
+    return this.frame('T', `Einrichtung · Ton`, s.f.einrichtungT ? 'Allgemein' : 'leer', !!s.f.einrichtungT, edit, [['T', 'Bearbeiten']],
+      this.sub('Allgemein · Pult · Show-Datei · Pegel · Funk') + this.textBox(s.f.einrichtungT, edit, 'Bearbeiten'));
   },
   /* ---------- Bühne ---------- */
+  /** Zugliste in Einrichte-Reihenfolge: vorne → hinten, darin unten → oben */
   posSorted(showId) {
-    return Repo.zuegeOf(showId).slice().sort((a, b) => (EBENE_RANK[a.ebene] - EBENE_RANK[b.ebene]) || (BEREICH_RANK[a.bereich] - BEREICH_RANK[b.bereich]) || (a.ord - b.ord));
+    return Repo.zuegeOf(showId).slice().sort((a, b) => (BEREICH_RANK[a.bereich] - BEREICH_RANK[b.bereich]) || (EBENE_RANK[a.ebene] - EBENE_RANK[b.ebene]) || (a.ord - b.ord));
   },
   htmlB(s, edit, multi) {
-    const steps = Repo.ablaufOf(s.id), zs = this.posSorted(s.id);
-    const bz = zs.filter(z => z.typ === 'buehne').length;
-    const sum = [steps.length ? `${steps.length} Schritte` : 'kein Ablauf', `${bz} Bühnenzüge/Positionen`].join(' · ');
-    const entries = Repo.entriesOf(s.id);
-    const link = st => { const e = st.entryId && Repo.entry(st.entryId); if (!e) return '';
-      return `<button class="alink" data-open-entry="${e.id}">${I('arrowR', 'sm')} ${Utils.esc([mainVal(e), e.f.element].filter(Boolean).join(' · '))}</button>`; };
+    const steps = Repo.ablaufOf(s.id);
+    // Positionen: Bühnenzüge/-positionen und nur ausgefüllte Beleuchterzüge (leere OLZ/BGZ wären hier nur Ballast)
+    const zs = this.posSorted(s.id).filter(z => z.typ === 'buehne' || Repo.zugFilled(z));
+    const sum = [s.f.einrichtungB ? 'Allgemein' : '', steps.length ? `${steps.length} Schritte` : 'kein Ablauf', `${zs.length} Positionen`].filter(Boolean).join(' · ');
+    const e = Utils.esc;
+    const link = st => { const en = st.entryId && Repo.entry(st.entryId); if (!en) return '';
+      return `<button class="btn icon" data-open-entry="${en.id}" aria-label="Eintrag ${e(mainVal(en))} öffnen" title="${e([mainVal(en), en.f.element].filter(Boolean).join(' · '))}">${I('image', 'sm')}</button>`; };
     const abl = ABLAUF.map(([k, n]) => { const list = steps.filter(x => x.abschnitt === k); if (!list.length) return '';
-      return `<div class="ablsec"><div class="ablh">${n}</div><ol class="abl">${list.map(st => `<li><span class="at">${Utils.esc(st.text)}</span>${link(st)}</li>`).join('')}</ol></div>`; }).join('');
-    const cnt = id => entries.filter(e => abtOf(e) === 'B' && e.f.zugId === id).length;
-    let lastEb = '';
-    const pos = zs.map(z => { const head = z.ebene !== lastEb ? `<div class="poseb">${EBENE_NAME[z.ebene]}</div>` : ''; lastEb = z.ebene;
-      return head + `<div class="zcard ${Repo.zugFilled(z) || z.typ === 'buehne' ? '' : 'empty'}"><div class="zn">${Utils.esc(z.name)}${z.typ === 'licht' ? ' <span class="tag A" data-abt="L">Licht</span>' : ''}<small>${BEREICH_NAME[z.bereich]}${cnt(z.id) ? ` · ${cnt(z.id)} Eintr.` : ''}</small></div>
-        ${this.line('Höhe', z.hoehe)}${this.line('Last', z.last)}${z.typ === 'licht' ? this.line('Bestückung', z.bestueckung) : ''}${this.line('Bemerkung', z.bemerkung)}</div>`; }).join('');
-    return this.frame('B', `Ablauf &amp; Positionen${multi ? ' · Bühne' : ''}`, sum, steps.length > 0, edit, [['B', 'Ablauf', 'checklist'], ['P', 'Positionen', 'layers']],
-      `<div class="bhint" style="margin:0">${I('info', 'sm')}<span>${Utils.esc(EINRICHT_REGEL)}</span></div>
-      ${abl || `<div class="allg empty">Noch kein Ablauf.${edit ? ' Über „Ablauf“ Schritte für Grundeinrichtung, Pausenumbau und Ende anlegen.' : ''}</div>`}
-      <div class="muted" style="font-size:11px;font-weight:700;letter-spacing:.1em">ZÜGE &amp; POSITIONEN (UNTEN → OBEN, VORNE → HINTEN)</div>
-      <div class="zgrid">${pos}</div>`);
+      return `<div class="ablsec"><div class="ablh">${n}</div><ol class="abl">${list.map(st => `<li><div class="ar"><span class="at">${e(st.text)}</span>${link(st)}</div></li>`).join('')}</ol></div>`; }).join('');
+    return this.frame('B', `Einrichtung · Bühne`, sum, !!s.f.einrichtungB || steps.length > 0, edit, [['B', 'Ablauf'], ['P', 'Positionen', 'layers']],
+      this.sub('Allgemein') + this.textBox(s.f.einrichtungB, edit, 'Ablauf') +
+      this.sub('Ablauf') + (abl || `<div class="allg empty">Noch kein Ablauf${edit ? ' – über „Ablauf“ Schritte für Grundeinrichtung, Pausenumbau und Ende anlegen.' : '.'}</div>`) +
+      `<details class="ssubd" data-box="Bpos" ${this.open.Bpos ? 'open' : ''}><summary class="ssub">${I('arrowR', 'sm chev')} Positionen · vorne → hinten, unten → oben <span class="n">${zs.length}</span></summary>` +
+      this.ztab(zs, [['Position', z => e(z.name) + (z.typ === 'licht' ? ' <span class="tag A" data-k="A" data-abt="L">Licht</span>' : '')], ['Ort', z => e(ortText(z))], ['Höhe / Marke', z => e(z.hoehe), 'mono'], ['Bemerkung', z => e([z.bemerkung, z.last ? 'Last ' + z.last : ''].filter(Boolean).join(' · ')), 'zb']]) + '</details>');
   },
 
   /* ---------- Bearbeiten: Licht (allgemeine Einrichtung + Beleuchterzüge) ---------- */
@@ -4304,7 +4547,7 @@ const SetupView = {
     const s = Repo.show(showId); if (!s) return;
     let zs = Repo.zuegeOf(showId).filter(z => z.typ === 'licht').map(z => Object.assign({}, z)), removed = [], dirty = false;
     const sh = Ui.sheet({
-      title: 'Einrichtung & Züge', full: true,
+      title: 'Einrichtung · Licht', full: true,
       headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
       headRight: `<button class="btn edit" data-x="save">${I('check')} Speichern</button>`,
       onBack: () => Editor._confirmLeave(dirty)
@@ -4324,7 +4567,7 @@ const SetupView = {
         <h3 style="margin:8px 0 0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Beleuchterzüge</h3>
         ${zs.map(zedHtml).join('')}
         <button type="button" class="btn big" data-x="add">${I('plus')} Weiteren Zug hinzufügen</button>
-        <button type="button" class="btn edit big block" data-x="save">${I('check')} Einrichtung &amp; Züge speichern</button></form>`;
+        <button type="button" class="btn edit big block" data-x="save">${I('check')} Einrichtung Licht speichern</button></form>`;
     };
     const readBack = () => {
       allg = sh.body.querySelector('#se-allg').value;
@@ -4360,7 +4603,7 @@ const SetupView = {
         });
         removed.forEach(id => { const old = s.f['z:' + id]; if (old) patch['z:' + id] = Object.assign({}, old, { del: true }); });
         if (patch.einrichtung === (s.f.einrichtung || '')) delete patch.einrichtung;
-        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open.L = true; sh.close(); Ui.toast('Einrichtung & Züge gespeichert'); }
+        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open.L = true; sh.close(); Ui.toast('Einrichtung Licht gespeichert'); }
         catch (err) { App.error(err); }
       }
     });
@@ -4370,13 +4613,13 @@ const SetupView = {
   editT(showId) {
     const s = Repo.show(showId); if (!s) return;
     let dirty = false;
-    const sh = Ui.sheet({ title: 'Einrichtung Ton', full: true,
+    const sh = Ui.sheet({ title: 'Einrichtung · Ton', full: true,
       headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
       headRight: `<button class="btn edit" data-x="save">${I('check')} Speichern</button>`,
       onBack: () => Editor._confirmLeave(dirty) });
     sh.el.dataset.editor = '1'; sh.el.dataset.abt = 'T';
     sh.body.innerHTML = `<form class="form" onsubmit="return false">
-      <div class="f"><label for="se-ton">Einrichtung Ton</label>
+      <div class="f"><label for="se-ton">Allgemein</label>
         <textarea id="se-ton" rows="8" placeholder="z. B. Pult, Show-Datei, Grundpegel, Funkstrecken, Besonderheiten">${Utils.esc(s.f.einrichtungT || '')}</textarea></div>
       <button type="button" class="btn edit big block" data-x="save">${I('check')} Einrichtung Ton speichern</button></form>`;
     sh.body.addEventListener('input', () => { dirty = true; });
@@ -4393,7 +4636,7 @@ const SetupView = {
   editB(showId) {
     const s = Repo.show(showId); if (!s) return;
     let steps = Repo.ablaufOf(showId).map(x => Object.assign({}, x)), removed = [], dirty = false;
-    const sh = Ui.sheet({ title: 'Ablauf Bühne', full: true,
+    const sh = Ui.sheet({ title: 'Einrichtung · Bühne', full: true,
       headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
       headRight: `<button class="btn edit" data-x="save">${I('check')} Speichern</button>`,
       onBack: () => Editor._confirmLeave(dirty) });
@@ -4401,9 +4644,11 @@ const SetupView = {
     const zs = Repo.zuegeOf(showId);
     const bEntries = Repo.entriesOf(showId).filter(e => abtOf(e) === 'B').sort((a, b) => Repo.bcmp(a, b, zs));
     const opts = cur => `<option value="">– kein Eintrag verknüpft –</option>` + bEntries.map(e => `<option value="${e.id}" ${e.id === cur ? 'selected' : ''}>${Utils.esc([mainVal(e), e.f.element].filter(Boolean).join(' · '))}</option>`).join('');
+    let allg = null;
     const draw = () => {
       sh.body.innerHTML = `<form class="form" onsubmit="return false">
-        <div class="bhint" style="margin:0">${I('info', 'sm')}<span>${Utils.esc(EINRICHT_REGEL)}</span></div>
+        <div class="f"><label for="se-buehne">Allgemein</label>
+          <textarea id="se-buehne" rows="3" placeholder="z. B. Bühnenbild, Besonderheiten, wer macht was">${Utils.esc(allg ?? s.f.einrichtungB ?? '')}</textarea></div>
         ${ABLAUF.map(([k, n]) => { const list = steps.filter(x => x.abschnitt === k);
           return `<section class="ablsec ed"><div class="ablh">${n}</div>
           ${list.map((st, i) => { const gi = steps.indexOf(st);
@@ -4413,9 +4658,10 @@ const SetupView = {
                 <button type="button" class="btn icon" data-x="down" aria-label="Nach unten" ${i === list.length - 1 ? 'disabled' : ''}>${I('arrowR', 'sm').replace('<svg', '<svg style="transform:rotate(90deg)"')}</button>
                 <button type="button" class="btn icon danger" data-x="rm" aria-label="Schritt entfernen">${I('trash')}</button></div></div>`; }).join('')}
           <button type="button" class="btn" data-x="add" data-ab="${k}">${I('plus')} Schritt</button></section>`; }).join('')}
-        <button type="button" class="btn edit big block" data-x="save">${I('check')} Ablauf speichern</button></form>`;
+        <button type="button" class="btn edit big block" data-x="save">${I('check')} Einrichtung Bühne speichern</button></form>`;
     };
-    const readBack = () => sh.body.querySelectorAll('.astep').forEach(el => { const st = steps[+el.dataset.gi]; el.querySelectorAll('[data-f]').forEach(inp => { st[inp.dataset.f] = inp.value; }); });
+    const readBack = () => { allg = sh.body.querySelector('#se-buehne').value;
+      sh.body.querySelectorAll('.astep').forEach(el => { const st = steps[+el.dataset.gi]; el.querySelectorAll('[data-f]').forEach(inp => { st[inp.dataset.f] = inp.value; }); }); };
     draw();
     sh.body.addEventListener('input', () => { dirty = true; });
     sh.body.addEventListener('change', () => { dirty = true; });
@@ -4442,7 +4688,8 @@ const SetupView = {
           if (!old || JSON.stringify(old) !== JSON.stringify(v)) patch['b:' + st.id] = v;
         }));
         removed.forEach(id => { const old = s.f['b:' + id]; if (old) patch['b:' + id] = Object.assign({}, old, { del: true }); });
-        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open.B = true; sh.close(); Ui.toast('Ablauf gespeichert'); }
+        const al = (allg || '').trim(); if (al !== (s.f.einrichtungB || '')) patch.einrichtungB = al;
+        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open.B = true; sh.close(); Ui.toast('Einrichtung Bühne gespeichert'); }
         catch (err) { App.error(err); }
       }
     });
@@ -4460,7 +4707,7 @@ const SetupView = {
     const sel = (f, list, v) => `<select data-f="${f}">${list.map(([k, n]) => `<option value="${k}" ${k === v ? 'selected' : ''}>${n}</option>`).join('')}</select>`;
     const draw = () => {
       sh.body.innerHTML = `<form class="form" onsubmit="return false">
-        <div class="bhint" style="margin:0">${I('info', 'sm')}<span>Reihenfolge der Liste = von vorne nach hinten. Sortiert wird erst nach Ebene (unten → oben), dann nach Bereich und Liste.</span></div>
+        <div class="fh" style="margin:0">Reihenfolge dieser Liste = von vorne nach hinten. In Liste, Checkliste und PDF wird nach Bereich (vorne → hinten) und darin nach Ebene (unten → oben) sortiert.</div>
         ${zs.map((z, i) => `<div class="zed" data-i="${i}">
           <div class="zh">${z.fixed ? `<span class="zname">${Utils.esc(z.name)}</span>` : `<input class="zname" data-f="name" value="${Utils.esc(z.name)}" aria-label="Name">`}
             <span class="tag ${z.typ === 'licht' ? 'A' : 'E'}" data-abt="${z.typ === 'licht' ? 'L' : 'B'}">${z.typ === 'licht' ? 'Licht' : 'Bühne'}</span>
@@ -4526,6 +4773,200 @@ const SetupView = {
   },
   /** bisheriger Einstieg (Licht) */
   edit(showId) { this.editL(showId); }
+};
+
+/* =====================================================================
+   RunList – Vorstellungs-Checkliste (ab 2.3.0)
+   Punkte:      Feld „ci:<id>“ im Veranstaltungs-Datensatz = {abt, text, ord, del}.
+                Bei Bühne kommen die Schritte des Ablaufs (Grundeinrichtung,
+                Pausenumbau, Ende) automatisch als Punkte dazu (Schlüssel „b:<id>“).
+   Durchgänge:  Datensatz „run“ im Store „runs“ = {id, showId, f:{datum, titel, del,
+                'h:<Punkt>': {ok, at, dev}}, t:{…}}. Jeder Haken ist ein eigenes Feld →
+                auf mehreren Geräten abhaken und zusammenführen, ohne dass etwas verloren geht.
+   Abhaken ist auch im Ansichtsmodus erlaubt; Punkte ändern und Durchgänge
+   löschen nur im Bearbeitungsmodus.
+   ===================================================================== */
+const RunList = {
+  EXAMPLES: [{ abt: 'L', text: 'Notbeleuchtung geprüft' }, { abt: 'T', text: 'Funkakkus voll' }, { abt: 'B', text: 'Sicherungsseile geprüft' }],
+  /** Hausvorlage des Geräts (Einstellungen), sonst Beispiele */
+  template() { const t = Settings.v.ciTemplate; return Array.isArray(t) && t.length ? t : this.EXAMPLES; },
+  ownOf(showId) {
+    const s = Repo.shows.get(showId); const f = (s && s.f) || {};
+    return Object.keys(f).filter(k => k.startsWith('ci:')).map(k => Object.assign({ ord: 0, text: '' }, f[k], { key: k, id: k.slice(3) }))
+      .filter(x => !x.del && DEPT[x.abt]).sort((a, b) => (DEPT_ORDER.indexOf(a.abt) - DEPT_ORDER.indexOf(b.abt)) || (a.ord - b.ord));
+  },
+  /** alle Punkte (nur gewählte Abteilungen), in Anzeigereihenfolge */
+  items(showId, depts = null) {
+    const own = this.ownOf(showId), out = [];
+    DEPT_ORDER.forEach(d => {
+      if (depts && !depts.includes(d)) return;
+      own.filter(x => x.abt === d).forEach(x => out.push({ key: x.key, abt: d, group: 'Vor der Vorstellung', text: x.text }));
+      if (d === 'B') Repo.ablaufOf(showId).forEach(st => out.push({ key: 'b:' + st.id, abt: 'B', group: 'Ablauf · ' + (ABLAUF.find(a => a[0] === st.abschnitt) || ABLAUF[0])[1], text: st.text, entryId: st.entryId }));
+    });
+    return out;
+  },
+  abtOfItem(showId, key) {
+    if (key.startsWith('b:')) return 'B';
+    const s = Repo.shows.get(showId); const v = s && s.f[key];
+    return (v && DEPT[v.abt]) ? v.abt : 'L';
+  },
+  runsOf(showId) {
+    return [...Repo.runs.values()].filter(r => r.showId === showId && !r.f.del)
+      .sort((a, b) => String(b.f.datum || '').localeCompare(String(a.f.datum || '')) || (b.c - a.c));
+  },
+  isoDate(d = new Date()) { const p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; },
+  async create(showId) {
+    const iso = this.isoDate();
+    const n = this.runsOf(showId).filter(r => r.f.datum === iso).length;
+    const r = Rec.create({ showId }, { datum: iso, titel: `Vorstellung ${Utils.fmtDate(Date.now(), false)}${n ? ` (${n + 1})` : ''}`, del: false });
+    await Repo._write({ runs: [r] }); return r;
+  },
+  async toggle(runId, key) {
+    const r = Repo.runs.get(runId); if (!r) return;
+    const cur = r.f['h:' + key];
+    const v = { ok: !(cur && cur.ok), at: Date.now(), dev: Sync.deviceName() };
+    const p = Rec.patch(r, { ['h:' + key]: v }); if (p) await Repo._write({ runs: [p] });
+  },
+  async remove(runId) { const r = Repo.runs.get(runId); const p = r && Rec.patch(r, { del: true }); if (p) await Repo._write({ runs: [p] }); },
+  progress(run, items) { const done = items.filter(i => { const h = run && run.f['h:' + i.key]; return h && h.ok; }).length; return { done, all: items.length }; },
+  fmtTime(ts) { return ts ? new Date(ts).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : ''; },
+
+  /* ---------- Ansicht ---------- */
+  open(showId, runId = null) {
+    const s = Repo.show(showId); if (!s) return;
+    let cur = runId || (this.runsOf(showId)[0] || {}).id || null;
+    const sh = Ui.sheet({ title: 'Vorstellungs-Checkliste', full: true });
+    sh.el.classList.add('runsheet');
+    const draw = () => {
+      const vis = App.visibleDepts(showId), edit = App.state.edit;
+      const runs = this.runsOf(showId), run = cur && Repo.runs.get(cur);
+      if (run && run.f.del) cur = null;
+      const items = this.items(showId, vis);
+      const pr = this.progress(run, items);
+      const head = `<div class="runhead">
+          ${runs.length ? `<div class="f" style="flex:1;min-width:0"><label for="run-sel">Durchgang</label><select id="run-sel">${runs.map(r => { const p = this.progress(r, items);
+            return `<option value="${r.id}" ${r.id === cur ? 'selected' : ''}>${Utils.esc(r.f.titel || r.f.datum)} · ${p.done}/${p.all}</option>`; }).join('')}</select></div>` : ''}
+          <button class="btn big primary" data-r="new">${I('plus')} Neue Vorstellung</button></div>
+        <div class="runtools">
+          ${run ? `<button class="btn" data-r="pdf">${I('pdf', 'sm')} PDF-Protokoll</button>` : ''}
+          ${edit ? `<button class="btn" data-r="items">${I('edit', 'sm')} Punkte bearbeiten</button>` : ''}
+          ${edit && run ? `<button class="btn danger" data-r="del">${I('trash', 'sm')} Durchgang löschen</button>` : ''}</div>`;
+      if (!items.length) {
+        sh.body.innerHTML = head + `<div class="empty"><h3>Noch keine Punkte</h3><p>${edit ? 'Über „Punkte bearbeiten“ anlegen.' : 'Zum Anlegen in den Bearbeitungsmodus wechseln.'}</p></div>`; return;
+      }
+      if (!run) {
+        sh.body.innerHTML = head + `<div class="empty"><h3>${items.length} Punkte bereit</h3><p>Für die heutige Vorstellung „Neue Vorstellung“ tippen. Jeder Haken wird mit Uhrzeit und Gerät gespeichert.</p></div>`; return;
+      }
+      const sect = d => {
+        const its = items.filter(i => i.abt === d); if (!its.length) return '';
+        const p = this.progress(run, its); let lastG = '';
+        return `<section class="runsec" data-abt="${d}"><div class="runsh"><span class="tag A" data-abt="${d}">${Utils.esc(DEPT[d].short)}</span><h3>${Utils.esc(DEPT[d].name)}</h3>
+            <span class="mono">${p.done}/${p.all}</span></div><div class="pbar"><i style="width:${p.all ? p.done / p.all * 100 : 0}%;background:var(--da)"></i></div>
+          ${its.map(i => { const h = run.f['h:' + i.key], ok = h && h.ok;
+            const g = i.group !== lastG ? `<div class="rung">${Utils.esc(i.group)}</div>` : ''; lastG = i.group;
+            const e = i.entryId && Repo.entry(i.entryId);
+            return g + `<div class="runrow ${ok ? 'ok' : ''}"><button class="runchk" role="checkbox" aria-checked="${!!ok}" data-key="${Utils.esc(i.key)}">
+                <span class="box">${ok ? I('check') : ''}</span><span class="rt">${Utils.esc(i.text)}</span>
+                <span class="rm">${h ? `${ok ? '' : 'zurückgenommen · '}${this.fmtTime(h.at)} · ${Utils.esc(h.dev || '')}` : ''}</span></button>
+                ${e ? `<button class="alink" data-open-entry="${e.id}">${I('arrowR', 'sm')} ${Utils.esc(mainVal(e))}</button>` : ''}</div>`; }).join('')}</section>`;
+      };
+      sh.body.innerHTML = head + `<div class="runall"><b>${Utils.esc(run.f.titel || '')}</b><span class="mono">${pr.done} von ${pr.all} erledigt</span></div>
+        <div class="pbar"><i style="width:${pr.all ? pr.done / pr.all * 100 : 0}%"></i></div>
+        ${vis.map(sect).join('')}
+        ${runs.length > 1 ? `<div class="group" style="margin-top:18px"><h3>Protokoll</h3>${runs.map(r => { const p = this.progress(r, items);
+          return `<button class="item" data-pick="${r.id}"><span class="lb">${Utils.esc(r.f.titel || r.f.datum)}<small>${p.done} von ${p.all} erledigt</small></span>${r.id === cur ? I('check') : I('arrowR')}</button>`; }).join('')}</div>` : ''}`;
+    };
+    draw();
+    const off = Repo.on(() => { if (sh.layer.closed) { off(); return; } draw(); });
+    sh.body.addEventListener('change', e => { if (e.target.id === 'run-sel') { cur = e.target.value; draw(); } });
+    sh.body.addEventListener('click', async e => {
+      const b = e.target.closest('[data-r],[data-key],[data-pick],[data-open-entry]'); if (!b) return;
+      try {
+        if (b.dataset.openEntry) { const id = b.dataset.openEntry; App.openDetailSheet(id); return; }
+        if (b.dataset.pick) { cur = b.dataset.pick; draw(); sh.body.scrollTop = 0; return; }
+        if (b.dataset.key) { if (navigator.vibrate) navigator.vibrate(10); await this.toggle(cur, b.dataset.key); return; }
+        const r = b.dataset.r;
+        if (r === 'new') { const run = await this.create(showId); cur = run.id; draw(); Ui.toast(`${run.f.titel} angelegt`); }
+        else if (r === 'pdf') this.exportPdf(showId, cur);
+        else if (r === 'items') this.editItems(showId);
+        else if (r === 'del') {
+          const run = Repo.runs.get(cur);
+          if (await Ui.confirm('Durchgang löschen?', `„${run.f.titel}“ mit allen Haken wird gelöscht – auch auf Geräten, mit denen später abgeglichen wird.`, 'Löschen', true)) { await this.remove(cur); cur = (this.runsOf(showId)[0] || {}).id || null; draw(); }
+        }
+      } catch (err) { App.error(err); }
+    });
+  },
+
+  /* ---------- Punkte bearbeiten (eigene Punkte je Abteilung, Hausvorlage) ---------- */
+  editItems(showId) {
+    const s = Repo.show(showId); if (!s) return;
+    const vis = App.visibleDepts(showId);
+    let list = this.ownOf(showId).map(x => Object.assign({}, x)), removed = [], dirty = false;
+    const sh = Ui.sheet({ title: 'Punkte der Checkliste', full: true,
+      headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
+      headRight: `<button class="btn edit" data-x="save">${I('check')} Speichern</button>`,
+      onBack: () => Editor._confirmLeave(dirty) });
+    sh.el.dataset.editor = '1';
+    const arrow = (n, d) => I(d, 'sm').replace('<svg', '<svg style="transform:rotate(90deg)"');
+    const draw = () => {
+      sh.body.innerHTML = `<form class="form" onsubmit="return false">
+        ${vis.map(d => { const its = list.filter(x => x.abt === d);
+          return `<section class="ablsec ed" data-abt="${d}"><div class="ablh">${Utils.esc(DEPT[d].name)} – vor der Vorstellung</div>
+            ${its.map((x, i) => `<div class="zed astep" data-gi="${list.indexOf(x)}"><div class="f"><label>Punkt ${i + 1}</label><textarea data-f="text" rows="1" placeholder="z. B. ${Utils.esc(this.EXAMPLES.find(y => y.abt === d).text)}">${Utils.esc(x.text)}</textarea></div>
+              <div class="arow"><span style="flex:1"></span>
+                <button type="button" class="btn icon" data-x="up" aria-label="Nach oben" ${i === 0 ? 'disabled' : ''}>${arrow(0, 'arrowL')}</button>
+                <button type="button" class="btn icon" data-x="down" aria-label="Nach unten" ${i === its.length - 1 ? 'disabled' : ''}>${arrow(0, 'arrowR')}</button>
+                <button type="button" class="btn icon danger" data-x="rm" aria-label="Punkt entfernen">${I('trash')}</button></div></div>`).join('')}
+            <button type="button" class="btn" data-x="add" data-abt="${d}">${I('plus')} Punkt</button>
+            ${d === 'B' ? `<div class="fh">Zusätzlich erscheinen die Schritte aus dem Bühnen-Ablauf (Grundeinrichtung, Pausenumbau, Ende) – zu bearbeiten unter „Ablauf“.</div>` : ''}</section>`; }).join('')}
+        <button type="button" class="btn big" data-x="tpl">${I('copy')} Als Hausvorlage für neue Veranstaltungen speichern</button>
+        <button type="button" class="btn edit big block" data-x="save">${I('check')} Punkte speichern</button></form>`;
+    };
+    const readBack = () => sh.body.querySelectorAll('.astep').forEach(el => { list[+el.dataset.gi].text = el.querySelector('textarea').value; });
+    draw();
+    sh.body.addEventListener('input', () => { dirty = true; });
+    sh.el.addEventListener('click', async e => {
+      const b = e.target.closest('[data-x]'); if (!b) return;
+      const x = b.dataset.x;
+      if (x === 'cancel') { history.back(); return; }
+      readBack();
+      if (x === 'add') {
+        list.push({ id: Utils.uuid(), abt: b.dataset.abt, text: '', ord: 1e9, isNew: true }); dirty = true; draw();
+        const el = [...sh.body.querySelectorAll('.astep')].find(n => list[+n.dataset.gi] === list[list.length - 1]);
+        if (el) { el.scrollIntoView({ block: 'center' }); el.querySelector('textarea').focus(); }
+      } else if (x === 'rm' || x === 'up' || x === 'down') {
+        const it = list[+b.closest('.astep').dataset.gi], same = list.filter(y => y.abt === it.abt), i = same.indexOf(it);
+        if (x === 'rm') { if (!it.isNew) removed.push(it.id); list.splice(list.indexOf(it), 1); }
+        else { const j = x === 'up' ? i - 1 : i + 1; if (j < 0 || j >= same.length) return; const o = same[j], a1 = list.indexOf(it), a2 = list.indexOf(o); list[a1] = o; list[a2] = it; }
+        dirty = true; draw();
+      } else if (x === 'tpl') {
+        const t = list.filter(y => y.text.trim()).map(y => ({ abt: y.abt, text: y.text.trim() }));
+        await Settings.set({ ciTemplate: t }); Ui.toast(`Hausvorlage gespeichert (${t.length} Punkte)`);
+      } else if (x === 'save') {
+        const patch = {};
+        DEPT_ORDER.forEach(d => list.filter(y => y.abt === d).forEach((y, i) => {
+          const old = s.f['ci:' + y.id], text = y.text.trim();
+          if (!text) { if (old) patch['ci:' + y.id] = Object.assign({}, old, { del: true }); return; }
+          const v = Object.assign({}, old || {}, { abt: d, text, ord: (i + 1) * 10, del: false });
+          if (!old || JSON.stringify(old) !== JSON.stringify(v)) patch['ci:' + y.id] = v;
+        }));
+        removed.forEach(id => { const old = s.f['ci:' + id]; if (old) patch['ci:' + id] = Object.assign({}, old, { del: true }); });
+        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; sh.close(); Ui.toast('Punkte gespeichert'); }
+        catch (err) { App.error(err); }
+      }
+    });
+  },
+
+  async exportPdf(showId, runId) {
+    const s = Repo.show(showId), run = Repo.runs.get(runId); if (!s || !run) return;
+    const bz = Ui.busy('Protokoll wird erstellt …');
+    try {
+      const blob = Pdf.buildRun(showId, runId, App.visibleDepts(showId)); bz.close();
+      const name = `${Utils.safeName(s.f.titel)}_Vorstellung_${run.f.datum || this.isoDate()}.pdf`;
+      const r = await Utils.offerFile(blob, name, 'Protokoll ist fertig', `${Pdf.lastPages} Seite${Pdf.lastPages === 1 ? '' : 'n'}`);
+      if (r === 'shared') Ui.toast('Protokoll geteilt'); else if (r === 'download') Ui.toast('Protokoll gespeichert');
+    } catch (err) { bz.close(); App.error(err); }
+  }
 };
 
 /* =====================================================================
@@ -4741,6 +5182,7 @@ const DiagView = {
         <div class="group"><h3>Lokale Daten</h3><dl class="kv">
           <dt>Veranstaltungen</dt><dd>${s.live} (+${s.dead} gelöscht)</dd><dt>Einträge</dt><dd>${e.live} (+${e.dead} gelöscht)</dd>
           <dt>Fotos</dt><dd>${p.live} (+${p.dead} gelöscht)</dd><dt>Bilddaten</dt><dd>${blobs}</dd>
+          <dt>Vorstellungen</dt><dd>${cnt(Repo.runs).live} Durchgänge (+${cnt(Repo.runs).dead} gelöscht)</dd>
           <dt>Fehlende Bilder</dt><dd>${missing.length}${missing.length ? ' – bitte vollständiges Paket/Live-Abgleich' : ''}</dd>
           <dt>Offene Änderungen</dt><dd>${Sync.pending()}</dd><dt>Letzter Abgleich</dt><dd>${Utils.fmtDate(Sync.state.lastSyncAt)}</dd>
           <dt>Letztes Paket</dt><dd>${Utils.fmtDate(Sync.state.lastPackageAt)}</dd></dl></div>
@@ -4792,6 +5234,10 @@ const SettingsView = {
         <button class="item" data-act="fkeys"><span class="lb">Filter-Schnelltasten (Licht)<small class="mono">${Utils.esc((v.filterKeys || []).join('  ') || '–')}</small></span>${I('edit')}</button>
         <button class="item" data-act="mkeys"><span class="lb">Mikrofon-Schnelltasten (Ton)<small class="mono">${Utils.esc((v.mikroKeys || []).join('  ') || '–')}</small></span>${I('edit')}</button>
       </div>
+      <div class="group"><h3>Vorstellungs-Checkliste</h3>
+        <div class="item"><span class="lb">Hausvorlage<small>${Array.isArray(v.ciTemplate) && v.ciTemplate.length ? `${v.ciTemplate.length} Punkte – werden in neue Veranstaltungen übernommen` : 'Keine eigene Vorlage – neue Veranstaltungen bekommen Beispielpunkte'}. Speichern über „Punkte bearbeiten“ in der Checkliste einer Veranstaltung.</small></span></div>
+        ${Array.isArray(v.ciTemplate) && v.ciTemplate.length ? `<button class="item" data-act="tplreset"><span class="lb">Hausvorlage zurücksetzen (Beispiele)</span>${I('undo')}</button>` : ''}
+      </div>
       <div class="group"><h3>Gerät</h3>
         <button class="item" data-act="name"><span class="lb">Gerätename<small>${Utils.esc(Sync.deviceName())} – wird beim Abgleich angezeigt</small></span>${I('edit')}</button>
       </div>
@@ -4811,6 +5257,7 @@ const SettingsView = {
       if (b.dataset.set) { await Settings.set({ [b.dataset.set]: b.dataset.val }); render(); }
       else if (b.dataset.num) { await Settings.set({ [b.dataset.num]: +b.dataset.val }); render(); }
       else if (b.dataset.act === 'name') { const n = await Ui.prompt('Gerätename', Settings.v.deviceName || Sync.deviceName(), 'z. B. iPad Beleuchtung'); if (n != null) { await Settings.set({ deviceName: n.trim() }); render(); } }
+      else if (b.dataset.act === 'tplreset') { await Settings.set({ ciTemplate: null }); Ui.toast('Hausvorlage zurückgesetzt'); render(); }
       else if (b.dataset.act === 'mkeys') {
         const n = await Ui.prompt('Mikrofon-Schnelltasten', (Settings.v.mikroKeys || []).join(', '), 'z. B. DPA 4061, SM58, Beta 91', 'Mit Komma trennen (Leerzeichen gehören zum Namen). Die Reihenfolge bleibt so erhalten.');
         if (n != null) { await Settings.set({ mikroKeys: [...new Set(n.split(/[,;]+/).map(x => x.trim()).filter(Boolean))].slice(0, 30) }); render(); }
@@ -4826,7 +5273,7 @@ const SettingsView = {
         if (!await Ui.confirm('Wirklich ALLES löschen?', 'Alle Veranstaltungen, Einträge und Fotos auf diesem Gerät werden endgültig entfernt. Auf anderen Geräten bleiben die Daten erhalten. Vorher ein Backup erstellen!', 'Weiter', true)) return;
         const t = await Ui.prompt('Zur Bestätigung LÖSCHEN eintippen', '', 'LÖSCHEN');
         if (t !== 'LÖSCHEN') { Ui.toast('Abgebrochen'); return; }
-        await Store.tx(['shows', 'entries', 'photos', 'fulls', 'thumbs', 'meta'], 'readwrite', s => { ['shows', 'entries', 'photos', 'fulls', 'thumbs'].forEach(n => s[n].clear()); s.meta.delete('syncState'); s.meta.delete('demoDone'); });
+        await Store.tx(['shows', 'entries', 'photos', 'fulls', 'thumbs', 'runs', 'meta'], 'readwrite', s => { ['shows', 'entries', 'photos', 'fulls', 'thumbs', 'runs'].forEach(n => s[n].clear()); s.meta.delete('syncState'); s.meta.delete('demoDone'); });
         location.hash = ''; location.reload();
       }
     });
@@ -4883,6 +5330,9 @@ const Demo = {
       'b:d2': { abschnitt: 'grund', text: 'Podest Haifischbecken auf Boden links, Rollen feststellen.', entryId: '', ord: 20, del: false },
       'b:d3': { abschnitt: 'grund', text: 'Rückprospekt Hafen auf Zug 14 einhängen und auf Spielhöhe fahren.', entryId: '', ord: 30, del: false },
       'b:d4': { abschnitt: 'pause', text: 'Kamera weg, Farbeimer und Pinsel abnehmen.', entryId: '', ord: 10, del: false },
+      'ci:d1': { abt: 'L', text: 'Notbeleuchtung geprüft', ord: 10, del: false },
+      'ci:d2': { abt: 'T', text: 'Funkakkus voll', ord: 10, del: false },
+      'ci:d3': { abt: 'B', text: 'Sicherungsseile geprüft', ord: 10, del: false },
       'b:d5': { abschnitt: 'ende', text: 'Becken leeren, Requisite absaugen.\nWand: absaugen → trocken abwischen → feucht abwischen.', entryId: '', ord: 10, del: false } });
     const data = [
       { f: { kreis: '361', bemerkung: 'Steckt in Podiumsklappe Li, Steckplatz 1' }, A: [['Kreis 361', 'Stecker', 210, 'nah'], ['Kreis 361', 'Podium links', 210, 'tot']] },
@@ -5114,6 +5564,7 @@ const App = {
     bar.innerHTML = `<button class="btn icon ghost" data-act="home" aria-label="Zurück zur Übersicht">${I('back')}</button>
       <h1><button class="title-btn" data-act="rename" title="Titel bearbeiten">${Utils.esc(s.f.titel)}<span class="sub">${s.f.spielstaette ? Utils.esc(s.f.spielstaette) + ' · ' : ''}${Repo.stats(s.id, vis).entries} Einträge</span></button></h1>
       ${this.pillHtml()}
+      <button class="btn icon ghost" data-act="runs" aria-label="Vorstellungs-Checkliste">${I('checklist')}</button>
       <button class="btn icon ghost" data-act="pdf" aria-label="PDF exportieren">${I('pdf')}</button>
       <button class="btn icon ghost" data-act="showmenu" data-id="${s.id}" aria-label="Weitere Aktionen">${I('more')}</button>`;
     const main = document.getElementById('main');
@@ -5133,7 +5584,7 @@ const App = {
       main.innerHTML = `<div class="toolbar"><div class="row deptrow hidden" data-deptrow></div><div class="row">
           <div class="katbar" role="group" aria-label="Phase">
             <button class="katbtn" data-kat="all"><span class="kl">Alle</span> <span class="cnt" data-cnt="all"></span></button><button class="katbtn" data-kat="A" data-k="A"><span class="kl">Aufbau</span> <span class="cnt" data-cnt="A"></span></button><button class="katbtn" data-kat="E" data-k="E"><span class="kl">Einleuchten</span> <span class="cnt" data-cnt="E"></span></button></div>
-          <button class="btn chkbtn" data-act="checklist" aria-pressed="false">${I('checklist', 'sm')}<span class="cl">Checkliste</span></button>
+          <button class="btn chkbtn" data-act="checklist" aria-pressed="false" aria-label="Einträge abhaken (Aufbau-Fortschritt)">${I('check', 'sm')}<span class="cl">Abhaken</span></button>
         </div><div class="row">
           <div class="seg" role="group" aria-label="Darstellung"><button data-view="list" aria-label="Liste">${I('list', 'sm')}</button><button data-view="grid" aria-label="Kacheln">${I('grid', 'sm')}</button><button data-view="big" aria-label="Große Bilder">${I('image', 'sm')}</button></div>
           <button class="modesw" data-act="mode" role="switch" aria-checked="false" aria-pressed="false"><span class="lab l0">${I('lock', 'sm')} Ansicht</span><span class="trk"><span class="knob"></span></span><span class="lab l1">Bearbeiten ${I('edit', 'sm')}</span></button>
@@ -5234,7 +5685,6 @@ const App = {
         const it = items[i], sec = Views.sectionOf(it, sort, multi);
         if (sec.key !== lastSect && (st.kat === 'all' || sort === 'gruppe' || multi || sec.abt === 'B')) {
           if (open) html += '</div>';
-          if (sec.abt === 'B' && !this._bhint) { this._bhint = true; html += `<div class="bhint">${I('info', 'sm')}<span>${Utils.esc(EINRICHT_REGEL)}</span></div>`; }
           const n = items.filter(x => Views.sectionOf(x, sort, multi).key === sec.key).length;
           html += `<div class="sect" ${sec.abt ? `data-abt="${sec.abt}"` : ''}>${sec.k ? `<span class="sw" data-k="${sec.k}" style="background:var(--k)${sec.k === 'N' ? ';opacity:.5' : ''}"></span>` : ''}${Utils.esc(sec.label)} <span class="n">${n}</span></div><div class="cards ${ccls}">`;
           open = true; lastSect = sec.key;
@@ -5350,7 +5800,8 @@ const App = {
       { label: 'PDF exportieren', value: 'pdf', icon: 'pdf' },
       { label: 'Backup dieser Veranstaltung', value: 'backup', icon: 'database' },
       { label: 'Duplizieren', value: 'dup', icon: 'copy' },
-      { label: 'Checkliste zurücksetzen', value: 'reset', icon: 'undo' },
+      { label: 'Vorstellungs-Checkliste', value: 'runs', icon: 'checklist' },
+      { label: 'Haken an Einträgen zurücksetzen', value: 'reset', icon: 'undo' },
       dups && { label: `${dups} doppelte Einträge zusammenführen`, value: 'merge', icon: 'merge' },
       { label: 'Veranstaltung löschen', value: 'del', icon: 'trash', danger: true }
     ]);
@@ -5360,6 +5811,7 @@ const App = {
       else if (v === 'backup') this.backup([id]);
       else if (v === 'dup') { const n = await Repo.duplicateShow(id); Ui.toast(`„${n.f.titel}“ angelegt`); }
       else if (v === 'reset') this.resetChecks(id);
+      else if (v === 'runs') RunList.open(id);
       else if (v === 'merge') { const n = await Repo.mergeDuplicates(id); Ui.toast(`${n} Einträge zusammengeführt`); }
       else if (v === 'del') {
         const st = Repo.stats(id);
@@ -5402,7 +5854,7 @@ const App = {
     // getrennt nach Abteilung und Phase: gilt für die gewählte Abteilung, bei „Alle“ für alle sichtbaren
     const ca = this.state.showId === id ? this.curAbt() : null, scope = ca ? [ca] : this.visibleDepts(id);
     const head = scope.length === 1 ? ` · ${DEPT[scope[0]].short}` : '';
-    const v = await Ui.menu('Checkliste zurücksetzen' + head, [{ label: 'Alles zurücksetzen', value: 'all' }, { label: 'Nur Aufbau', value: 'A' }, { label: 'Nur ' + katName(ca, 'E'), value: 'E' }]);
+    const v = await Ui.menu('Haken an Einträgen zurücksetzen' + head, [{ label: 'Alles zurücksetzen', value: 'all' }, { label: 'Nur Aufbau', value: 'A' }, { label: 'Nur ' + katName(ca, 'E'), value: 'E' }]);
     if (!v) return;
     const n = await Repo.resetChecks(id, v === 'all' ? null : v, scope); Ui.toast(n ? `${n} Einträge zurückgesetzt – bereit für den nächsten Aufbau` : 'Nichts abgehakt');
   },
@@ -5514,6 +5966,7 @@ const App = {
       case 'sync': SyncView.open(); break;
       case 'rename': this.editShow(st.showId); break;
       case 'pdf': this.pdf(st.showId); break;
+      case 'runs': RunList.open(st.showId); break;
       case 'mode': st.edit = !st.edit; this.render(); Ui.toast(st.edit ? 'Bearbeitungsmodus – Änderungen möglich' : 'Ansichtsmodus – geschützt vor versehentlichen Änderungen'); break;
       case 'checklist': st.checklist = !st.checklist; this.renderToolbar(); this.renderList(); this.renderDetail(); break;
       case 'resetchk': this.resetChecks(st.showId); break;
