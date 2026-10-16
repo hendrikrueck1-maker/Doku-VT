@@ -1,6 +1,6 @@
-# Doku VT – Beleuchtungsdokumentation
+# Doku VT – Technikdokumentation
 
-**Version 2.4.1** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton und Bühnentechnik: Einträge mit Fotos je Phase (Aufbau, Einleuchten/Soundcheck), PDF-Export, Checkliste und Geräte-Abgleich. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
+**Version 2.4.3** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton und Bühnentechnik: Einträge mit Fotos je Phase (Aufbau, Einleuchten/Soundcheck), PDF-Export, Checkliste und Geräte-Abgleich. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
 
 ## Auf GitHub veröffentlichen
 
@@ -21,7 +21,9 @@ Installiert startet Doku VT auch ohne Internet, und der Browser behandelt die Da
 
 Unter *Einstellungen → Dieses Gerät dokumentiert* festlegen, welche Abteilungen das Gerät führt (Standard nach dem Update: nur Licht). Jede Veranstaltung hat zusätzlich eigene Abteilungen. Sichtbar ist, was beide gemeinsam haben. Beim Abgleich gehen Einträge nur für die Abteilungen des Geräts mit; Veranstaltungen, Einrichtung und Züge immer.
 
-Die Daten liegen **nur lokal auf dem jeweiligen Gerät** (IndexedDB). Das Repository enthält keine Daten. Regelmäßig über *Abgleich → Komplett-Backup* sichern.
+Die Daten liegen **nur lokal auf dem jeweiligen Gerät** (IndexedDB). Das Repository enthält keine Daten. Regelmäßig über *Abgleich → Komplett-Backup* sichern und das Backup auf einem zweiten Ort ablegen (z. B. Fritzbox-Speicher).
+
+**Nach dem Update auf 2.4.3:** auf jedem Gerät einmal *Abgleich → Sync-Paket senden → Komplett*. Danach geben auch „Nur Änderungen“-Pakete alles weiter, was ein Gerät von anderen bekommen hat.
 
 ## Neue Version veröffentlichen
 
@@ -41,6 +43,6 @@ Die Daten liegen **nur lokal auf dem jeweiligen Gerät** (IndexedDB). Das Reposi
 | `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png` | App-Icons |
 | `DOKUMENTATION.md` | Architektur, Testcheckliste, Designentscheidungen, Ausblick |
 | `CHANGELOG.md` | Änderungen je Version |
-| `test/test_dokuvt.py` | Automatischer Test (Python + Playwright/Chromium). Nicht nötig für den Betrieb; muss nicht hochgeladen werden. |
+| `test/test_dokuvt.py` | Automatischer Test (Python + Playwright/Chromium): `python3 test/test_dokuvt.py`. Nicht nötig für den Betrieb; muss nicht hochgeladen werden. |
 
 Kamera, Teilen und Live-Abgleich brauchen **https**. Das bietet GitHub Pages automatisch. Per Doppelklick (`file://`) geöffnet funktioniert die App ebenfalls, aber ohne Kamera-Live-Vorschau und ohne Offline-Installation.

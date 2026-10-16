@@ -761,14 +761,14 @@ window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason 
 <script>
 'use strict';
 /* =====================================================================
-   DOKU VT – Beleuchtungsdokumentation
+   DOKU VT – Technikdokumentation (Licht, Ton, Bühne)
    Eine Datei, keine Abhängigkeiten. Module (in dieser Reihenfolge):
      Utils · Icons · Store (IndexedDB) · Rec (Merge-Modell) · Repo (Daten)
      Settings · Photo · Camera · Annotator · Lightbox · QR (Generator +
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.4.1';
+const APP_VERSION = '2.4.3';
 const DB_NAME = 'lichtdoku';
 /* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
    bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
@@ -1217,7 +1217,9 @@ const Store = {
         if (e && /quota/i.test(e.name)) reject(new StoreError('Der Gerätespeicher ist voll. Es wurde NICHTS gespeichert. Bitte Platz schaffen (alte Veranstaltungen sichern & löschen, „Speicher aufräumen“) und erneut speichern.', e));
         else reject(new StoreError('Speichern abgebrochen: ' + (e ? e.message || e.name : 'unbekannter Fehler'), e));
       };
-      t.onerror = ev => { ev.preventDefault && ev.preventDefault(); };
+      // KEIN preventDefault (bis 2.4.2): Ein fehlgeschlagener Request muss die GANZE Transaktion abbrechen
+      // (→ onabort → reject). Sonst würde der Rest still gespeichert und „atomar“ wäre gelogen.
+      t.onerror = () => {};
       try { result = fn(stores, t); }
       catch (e) { try { t.abort(); } catch (_) { /* schon beendet */ } reject(e instanceof StoreError ? e : new StoreError('Speicherfehler: ' + e.message, e)); }
     });
@@ -1248,10 +1250,12 @@ const Rec = {
     const ts = Clock.now(); let changed = false;
     const r = Utils.clone(rec);
     for (const [k, v] of Object.entries(patch)) {
-      if (JSON.stringify(r.f[k] ?? null) !== JSON.stringify(v ?? null)) { r.f[k] = v; r.t[k] = ts; changed = true; }
+      // Zeitstempel nie älter als der bisherige Wert: Hat ein Gerät mit vorgehender Uhr das Feld geschrieben,
+      // gilt die eigene, spätere Änderung trotzdem als jünger (sonst würde sie beim Abgleich zurückgedreht).
+      if (JSON.stringify(r.f[k] ?? null) !== JSON.stringify(v ?? null)) { r.f[k] = v; r.t[k] = Math.max(ts, (r.t[k] || 0) + 1); changed = true; }
     }
     if (!changed) return null;
-    r.mod = ts;
+    r.mod = Math.max(ts, ...Object.values(r.t));
     return r;
   },
   /** Zwei Fassungen desselben Datensatzes zusammenführen */
@@ -1271,10 +1275,29 @@ const Rec = {
     r.mod = Math.max(0, ...Object.values(r.t));
     return { rec: r, changed };
   },
+  /* Eingangsprüfung für fremde Datensätze (Import, Sync-Paket, Live). IDs landen in HTML-Attributen –
+     deshalb nur Zeichen, die nie aus einem Attribut ausbrechen können. Alle von Doku VT und dem
+     Lichtdoku-Import erzeugten IDs (UUID, lgs-/lge-/lgp-/lgb-…) passen auf dieses Muster. */
+  ID: /^[A-Za-z0-9_.:-]{1,200}$/,
+  BAD_KEYS: new Set(['__proto__', 'constructor', 'prototype']),
+  MAX_FIELDS: 2000, MAX_STR: 100000,
   valid(r, type) {
-    return r && typeof r.id === 'string' && r.f && typeof r.f === 'object' && r.t && typeof r.t === 'object' &&
-      ((type !== 'entry' && type !== 'run') || typeof r.showId === 'string') && (type !== 'photo' || (typeof r.showId === 'string' && typeof r.b === 'string'));
-  }
+    if (!r || typeof r !== 'object' || Array.isArray(r) || typeof r.id !== 'string' || !this.ID.test(r.id)) return false;
+    if (!r.f || typeof r.f !== 'object' || Array.isArray(r.f) || !r.t || typeof r.t !== 'object' || Array.isArray(r.t)) return false;
+    if ((type === 'entry' || type === 'run' || type === 'photo') && (typeof r.showId !== 'string' || !this.ID.test(r.showId))) return false;
+    if (type === 'photo') {
+      if (typeof r.b !== 'string' || !this.ID.test(r.b)) return false;
+      const en = r.f.entryId; if (en != null && en !== '' && (typeof en !== 'string' || !this.ID.test(en))) return false;
+    }
+    const fk = Object.keys(r.f), tk = Object.keys(r.t);
+    if (fk.length > this.MAX_FIELDS || tk.length > this.MAX_FIELDS) return false;
+    for (const k of fk.concat(tk)) if (this.BAD_KEYS.has(k) || k.length > 120) return false;
+    for (const v of Object.values(r.t)) if (typeof v !== 'number' || !isFinite(v) || v < 0) return false;
+    for (const v of Object.values(r.f)) if (typeof v === 'string' && v.length > this.MAX_STR) return false;
+    return true;
+  },
+  /** Kopie ohne verschachtelte „__proto__“-Schlüssel (JSON.parse legt sie als eigene Eigenschaft an) */
+  sanitize(r) { return JSON.parse(JSON.stringify(r), (k, v) => (k === '__proto__' ? undefined : v)); }
 };
 
 /* =====================================================================
@@ -1353,9 +1376,12 @@ const Repo = {
     const k = Utils.kreisTokens(e.f[d.main]).sort().join('+');
     return k ? d.key + '|' + k : '';
   },
-  duplicatesOf(showId) {
+  /** depts: nur diese Abteilungen (die sichtbaren). Ausgeblendete Abteilungen werden nicht angefasst –
+      ihre Änderungen gingen wegen des Abteilungsfilters im Sync-Paket sonst nie an andere Geräte. */
+  duplicatesOf(showId, depts = null) {
     const groups = new Map();
     for (const e of this.entriesOf(showId)) {
+      if (depts && !depts.includes(abtOf(e))) continue;
       const k = this.dupKey(e); if (!k) continue;
       if (!groups.has(k)) groups.set(k, []); groups.get(k).push(e);
     }
@@ -1364,12 +1390,32 @@ const Repo = {
 
   /* ---------- Schreiben (jeweils eine atomare Transaktion) ---------- */
   async _write({ shows = [], entries = [], photos = [], fulls = [], thumbs = [], runs = [] }, local = true) {
+    // Eingangszeit auf DIESEM Gerät (ab 2.4.3, kein Feld in f/t → kein Merge-Zeitstempel). Sie entscheidet,
+    // was ein „Nur Änderungen“-Paket weitergibt – auch Daten, die von einem anderen Gerät übernommen wurden.
+    const rx = Date.now();
+    const sets = [['shows', shows], ['entries', entries], ['photos', photos], ['runs', runs]];
+    sets.forEach(([, list]) => list.forEach(r => { r.rx = rx; }));
+    // Cache SOFORT setzen (ab 2.4.3): Wer danach Rec.patch/merge rechnet, sieht diesen Stand – zwei schnelle
+    // Schreibvorgänge überschreiben sich nicht mehr gegenseitig (Lost Update). IndexedDB führt die
+    // readwrite-Transaktionen in Anlegereihenfolge aus, damit stimmt auch die Reihenfolge in der Datenbank.
+    const prev = [];
+    sets.forEach(([n, list]) => list.forEach(r => { prev.push([n, r, this[n].get(r.id)]); this[n].set(r.id, r); }));
+    this._byEntry = null;
     const names = ['shows', 'entries', 'photos', 'fulls', 'thumbs', 'meta'];
-    await Store.tx(names, 'readwrite', s => {
-      shows.forEach(r => s.shows.put(r)); entries.forEach(r => s.entries.put(r)); photos.forEach(r => s.photos.put(r)); runs.forEach(r => s.meta.put({ k: 'run:' + r.id, v: r }));
-      fulls.forEach(r => s.fulls.put(r)); thumbs.forEach(r => s.thumbs.put(r));
-    });
-    this._cache('shows', shows); this._cache('entries', entries); this._cache('photos', photos); this._cache('runs', runs);
+    try {
+      await Store.tx(names, 'readwrite', s => {
+        shows.forEach(r => s.shows.put(r)); entries.forEach(r => s.entries.put(r)); photos.forEach(r => s.photos.put(r)); runs.forEach(r => s.meta.put({ k: 'run:' + r.id, v: r }));
+        fulls.forEach(r => s.fulls.put(r)); thumbs.forEach(r => s.thumbs.put(r));
+      });
+    } catch (err) {
+      // zurückrollen – rückwärts, und nur wo nicht inzwischen ein neuerer Stand liegt (der enthält diesen dann ohnehin)
+      for (let i = prev.length - 1; i >= 0; i--) {
+        const [n, r, old] = prev[i];
+        if (this[n].get(r.id) === r) { if (old) this[n].set(r.id, old); else this[n].delete(r.id); }
+      }
+      this._byEntry = null;
+      throw err;
+    }
     if (local) Sync.noteLocalChange();
     this.emit({ local, records: { shows, entries, photos, runs }, blobIds: fulls.map(f => f.id) });
     App.ensurePersist();
@@ -1386,11 +1432,40 @@ const Repo = {
   async patchShow(id, patch) { const r = Rec.patch(this.shows.get(id), patch); if (r) await this._write({ shows: [r] }); return r; },
   async deleteShow(id) {
     const out = { shows: [], entries: [], photos: [], runs: [] };
-    for (const r of this.runs.values()) if (r.showId === id && !r.f.del) out.runs.push(Rec.patch(r, { del: true }));
-    const s = Rec.patch(this.shows.get(id), { del: true }); if (s) out.shows.push(s);
-    for (const e of this.entries.values()) if (e.showId === id && !e.f.del) out.entries.push(Rec.patch(e, { del: true }));
-    for (const p of this.photos.values()) if (p.showId === id && !p.f.del) out.photos.push(Rec.patch(p, { del: true }));
+    // Lösch-Kennung (ab 2.4.3): kennzeichnet alles, was in DIESEM Vorgang gelöscht wird. „Wiederherstellen“ bringt
+    // genau das zurück – nicht, was ein anderes Gerät inzwischen einzeln gelöscht hat.
+    const grp = 'g-' + Utils.uuid();
+    // del und delGrp mit GLEICHEM Zeitstempel: Löscht ein anderes Gerät später einzeln, wird t.del jünger als t.delGrp
+    const mark = r => { const x = Rec.patch(r, { del: true, delGrp: grp }); if (x) { const m = Math.max(x.t.del, x.t.delGrp); x.t.del = x.t.delGrp = m; x.mod = Math.max(x.mod, m); } return x; };
+    // zuerst die Veranstaltung: alles, was mit ihr gelöscht wird, hat einen Zeitstempel ≥ ihrem (Papierkorb ohne Kennung, bis 2.4.2)
+    const s = mark(this.shows.get(id)); if (s) out.shows.push(s);
+    for (const r of this.runs.values()) if (r.showId === id && !r.f.del) out.runs.push(mark(r));
+    for (const e of this.entries.values()) if (e.showId === id && !e.f.del) out.entries.push(mark(e));
+    for (const p of this.photos.values()) if (p.showId === id && !p.f.del) out.photos.push(mark(p));
     await this._write(out);
+  },
+  /* ---------- Papierkorb (ab 2.4.2) ----------
+     Gelöschte Veranstaltungen bleiben als Datensatz mit „del“ erhalten (nötig, damit der Abgleich das
+     Löschen weitergibt). Sie lassen sich wiederherstellen: Die Veranstaltung und alles, was mit ihr
+     zusammen gelöscht wurde, bekommt „del: false“ mit neuem Zeitstempel – nach dem Abgleich ist sie
+     auch auf den anderen Geräten wieder da. Früher einzeln gelöschte Einträge bleiben gelöscht. */
+  deletedShows() { return [...this.shows.values()].filter(s => s.f.del).sort((a, b) => (b.t.del || 0) - (a.t.del || 0)); },
+  /** Datensätze einer Veranstaltung, die zusammen mit ihr gelöscht wurden: Zeitstempel des Löschens ≥ dem der Veranstaltung
+      (Durchgänge wurden bis 2.4.1 kurz davor gelöscht → 2 s Spielraum). Früher einzeln Gelöschtes liegt davor. */
+  _deletedWith(id) {
+    const s = this.shows.get(id); const t0 = (s && s.t.del) || 0;
+    // Lösch-Kennung gilt nur, wenn sie zum aktuellen Löschen gehört (nicht zu einem früheren, schon wiederhergestellten)
+    const g = s && s.f.delGrp && (s.t.delGrp || 0) >= t0 ? s.f.delGrp : null;
+    const pick = (m, slack) => [...m.values()].filter(r => r.showId === id && r.f.del &&
+      (g ? r.f.delGrp === g && (r.t.del || 0) <= (r.t.delGrp || 0) : (r.t.del || 0) >= t0 - slack));      // ohne Kennung (mit 2.4.2 gelöscht): Zeit-Heuristik wie bisher
+    return { entries: pick(this.entries, 0), photos: pick(this.photos, 0), runs: pick(this.runs, 2000) };
+  },
+  trashInfo(id) { const w = this._deletedWith(id); return { entries: w.entries.length, photos: w.photos.length, at: (this.shows.get(id).t.del || 0) }; },
+  async restoreShow(id) {
+    const s = this.shows.get(id); if (!s || !s.f.del) return false;
+    const w = this._deletedWith(id), un = r => Rec.patch(r, r.f.delGrp ? { del: false, delGrp: '' } : { del: false });
+    await this._write({ shows: [un(s)], entries: w.entries.map(un), photos: w.photos.map(un), runs: w.runs.map(un) });
+    return true;
   },
   /** Duplizieren: neue IDs, Fotos teilen sich die (unveränderlichen) Bilddaten */
   async duplicateShow(id) {
@@ -1509,7 +1584,9 @@ const Repo = {
       if (!(fd.k in draft.f)) continue;
       f[fd.k] = fd.bool ? !!draft.f[fd.k] : String(draft.f[fd.k] ?? '').trim();
     }
-    if (D.fields.find(x => x.k === main).plus) f[main] = Utils.normKreis(f[main]);
+    // Der Editor schickt bei bestehenden Einträgen nur geänderte Felder (ab 2.4.3) – fehlt das Hauptfeld,
+    // bleibt es unberührt (normKreis(undefined) würde es sonst leeren)
+    if (main in f && D.fields.find(x => x.k === main).plus) f[main] = Utils.normKreis(f[main]);
     if (target) for (const k of Object.keys(f)) if ((f[k] === '' || f[k] === false) && target.f[k] == null) delete f[k];
     const textKeys = Object.keys(f).filter(k => !deptField(abt, k).bool);
 
@@ -1560,15 +1637,18 @@ const Repo = {
         }
       });
     }
-    // Fotos, die im Editor entfernt/ersetzt wurden → Tombstone
-    if (draft.id) this.photosOf(draft.id).forEach(p => { if (!keep.has(p.id)) out.photos.push(Rec.patch(p, { del: true })); });
+    // Fotos, die im Editor entfernt/ersetzt wurden → Tombstone. Nur Fotos, die beim Öffnen des Editors zu sehen
+    // waren (draft.initialPhotos) – ein Foto, das währenddessen per Live-Abgleich dazukam, bleibt erhalten.
+    if (draft.id) this.photosOf(draft.id).forEach(p => {
+      if (!keep.has(p.id) && (!draft.initialPhotos || draft.initialPhotos.has(p.id))) out.photos.push(Rec.patch(p, { del: true }));
+    });
     await this._write(out);
     return { entryId, mergedInto: mergedInto ? mergedInto.id : null, mergeNotes };
   },
   /** Doppelte Kreise einer Show zusammenführen (z. B. nach Abgleich zweier Geräte) */
-  async mergeDuplicates(showId) {
+  async mergeDuplicates(showId, depts = null) {
     let n = 0;
-    for (const group of this.duplicatesOf(showId)) {
+    for (const group of this.duplicatesOf(showId, depts)) {
       group.sort((a, b) => a.c - b.c);
       const [keep, ...rest] = group;
       for (const other of rest) {
@@ -1584,9 +1664,25 @@ const Repo = {
   async thumb(b) { const r = await Store.get('thumbs', b); return r ? r.d : null; },
   async full(b) { const r = await Store.get('fulls', b); return r ? r.d : null; },
   async blobIds() { return new Set(await Store.allKeys('fulls')); },
-  /** Verwaiste Bilddaten entfernen (nur Bilder, die kein lebendes Foto mehr nutzt) */
+  /** Bilddaten, die noch gebraucht werden: lebende Fotos und – ab 2.4.3 – alle Fotos von Veranstaltungen
+      im Papierkorb (sonst endet „Wiederherstellen“ ohne Bilder) */
+  usedBlobs() {
+    const used = new Set();
+    for (const p of this.photos.values()) {
+      const s = this.shows.get(p.showId);
+      if (!p.f.del || (s && s.f.del)) used.add(p.b);
+    }
+    return used;
+  },
+  /** Anzahl der Bilddaten, die „Speicher aufräumen“ entfernen würde */
+  async orphanBlobs() {
+    const used = this.usedBlobs();
+    const keys = await Store.allKeys('fulls'), tkeys = await Store.allKeys('thumbs');
+    return [...new Set([...keys, ...tkeys])].filter(k => !used.has(k));
+  },
+  /** Verwaiste Bilddaten entfernen (nur Bilder, die weder ein lebendes Foto noch der Papierkorb nutzt) */
   async cleanup() {
-    const used = new Set(); for (const p of this.photos.values()) if (!p.f.del) used.add(p.b);
+    const used = this.usedBlobs();
     const keys = await Store.allKeys('fulls'); const tkeys = await Store.allKeys('thumbs');
     const del = [...new Set([...keys, ...tkeys])].filter(k => !used.has(k));
     if (del.length) await Store.tx(['fulls', 'thumbs'], 'readwrite', s => del.forEach(k => { s.fulls.delete(k); s.thumbs.delete(k); }));
@@ -1598,19 +1694,26 @@ const Repo = {
    */
   async applyRemote(data, blobs = []) {
     const out = { shows: [], entries: [], photos: [], fulls: [], thumbs: [], runs: [] };
-    const stat = { neu: 0, geaendert: 0, unveraendert: 0, bilder: 0 };
+    const stat = { neu: 0, geaendert: 0, unveraendert: 0, bilder: 0, ungueltig: 0 };
+    // Blob-Liste VOR dem Zusammenführen holen: zwischen Merge und _write darf kein await liegen,
+    // sonst rechnet ein paralleler Aufruf aus demselben alten Stand (Lost Update)
+    const have = blobs.length ? await this.blobIds() : null;
     for (const [name, type] of [['shows', 'show'], ['entries', 'entry'], ['photos', 'photo'], ['runs', 'run']]) {
-      for (const r of (data[name] || [])) {
-        if (!Rec.valid(r, type)) continue;
+      const list = Array.isArray(data[name]) ? data[name] : [];
+      for (const r0 of list) {
+        if (!Rec.valid(r0, type)) { stat.ungueltig++; continue; }
+        const r = Rec.sanitize(r0);
         const local = this[name].get(r.id);
         const { rec, changed } = Rec.merge(local, r);
         if (changed) { out[name].push(rec); local ? stat.geaendert++ : stat.neu++; } else stat.unveraendert++;
       }
     }
     if (blobs.length) {
-      const have = await this.blobIds();
+      const isJpeg = d => { try { const u = new Uint8Array(d, 0, 2); return u[0] === 0xFF && u[1] === 0xD8; } catch (e) { return false; } };
       for (const bl of blobs) {
-        if (!bl || !bl.id || have.has(bl.id) || !bl.full) continue;
+        if (!bl || typeof bl.id !== 'string' || !Rec.ID.test(bl.id) || have.has(bl.id) || !bl.full) continue;
+        if (!isJpeg(bl.full)) { stat.ungueltig++; continue; }          // Bilddaten müssen ein JPEG sein (PDF bettet sie direkt ein)
+        have.add(bl.id);
         out.fulls.push({ id: bl.id, d: bl.full }); out.thumbs.push({ id: bl.id, d: bl.thumb || bl.full }); stat.bilder++;
       }
     }
@@ -3172,8 +3275,17 @@ const Pdf = {
         const p = pg.photos[k];
         let dta = await Repo.full(p.b);
         if (!dta) { c.rgb(0.6, 0.62, 0.66).text(slots[k][0] + 8, slots[k][1] + slots[k][2] / 2, 'Bilddaten fehlen auf diesem Gerät', 'F1', 10); continue; }
-        if (opts.compact) dta = (await Photo.recompress(dta, 900, 0.7)).d;
-        const info = this.jpegInfo(dta), iid = nextId++, name = 'Im' + iid;
+        // ein beschädigtes oder fremdes Bild bricht nicht das ganze PDF ab (ab 2.4.3), es steht ein Hinweis an seiner Stelle
+        let info;
+        try {
+          if (opts.compact) dta = (await Photo.recompress(dta, 900, 0.7)).d;
+          info = this.jpegInfo(dta);
+          if (!(info.w > 0 && info.h > 0) || ![1, 3].includes(info.c)) throw new Error('Format');
+        } catch (e) {
+          c.rgb(0.75, 0.2, 0.4).text(slots[k][0] + 8, slots[k][1] + slots[k][2] / 2, 'Bild beschädigt – nicht darstellbar', 'F1', 10);
+          dta = null; continue;
+        }
+        const iid = nextId++, name = 'Im' + iid;
         const buf = dta;
         obj(iid, () => {
           put(`<< /Type /XObject /Subtype /Image /Width ${info.w} /Height ${info.h} /ColorSpace /${info.c === 1 ? 'DeviceGray' : 'DeviceRGB'} /BitsPerComponent 8 /Filter /DCTDecode /Length ${buf.byteLength} >>\nstream\n`);
@@ -3406,7 +3518,9 @@ const Sync = {
       und Zugliste) gehen IMMER mit – sie sind gemeinsam. */
   collect({ since = 0, showIds = null, depts = null } = {}) {
     const inShow = r => !showIds || showIds.includes(r.showId || r.id);
-    const pick = m => [...m.values()].filter(r => r.mod > since && inShow(r));
+    // ab 2.4.3 nach der lokalen Eingangszeit rx: auch von anderen Geräten Übernommenes geht weiter
+    // (Datensätze aus 2.4.2 ohne rx wie bisher nach mod)
+    const pick = m => [...m.values()].filter(r => (r.rx || r.mod) > since && inShow(r));
     return this.filterRecs({ shows: pick(Repo.shows), entries: pick(Repo.entries), photos: pick(Repo.photos), runs: pick(Repo.runs) }, depts);
   },
   /** Einträge und Fotos auf Abteilungen beschränken. Ein Foto gehört zur Abteilung seines Eintrags. */
@@ -3456,6 +3570,8 @@ const Sync = {
     const blobs = (data.blobs || []).map(b => ({ id: b.id, full: Utils.b64ToBuf(b.full), thumb: b.thumb ? Utils.b64ToBuf(b.thumb) : null }));
     const stat = await Repo.applyRemote(data, blobs);
     const missing = (await Repo.missingBlobs()).length;
+    // Veranstaltungen, die im Backup vorhanden, hier aber gelöscht sind (Löschen gewinnt beim Zusammenführen) → Wiederherstellen anbieten
+    stat.restorable = data.type === 'sync' ? [] : (data.shows || []).filter(x => x && x.f && !x.f.del && Repo.shows.has(x.id) && Repo.shows.get(x.id).f.del).map(x => x.id);
     const from = data.deviceName ? ` von ${data.deviceName}` : '';
     if (data.type === 'sync') await this.markSynced(`Sync-Paket${from} eingespielt: ${stat.neu} neu, ${stat.geaendert} zusammengeführt, ${stat.bilder} Bilder`);
     else await this.log(`Backup${from} importiert: ${stat.neu} neu, ${stat.geaendert} zusammengeführt, ${stat.bilder} Bilder`, 'ok');
@@ -3526,7 +3642,8 @@ const Legacy = {
       ctx.drawImage(img, (w - s) / 2, (h - s) / 2, s, s, 0, 0, Photo.THUMB_PX, Photo.THUMB_PX);
       const thumb = await Photo._jpeg(t, 0.72); t.width = t.height = 0;
       let full = buf;
-      if (type !== 'image/jpeg' || w !== h) {                    // Nicht-JPEG oder nicht quadratisch: wie jedes andere Foto aufbereiten
+      const u8 = new Uint8Array(buf, 0, Math.min(2, buf.byteLength)), jpeg = u8[0] === 0xFF && u8[1] === 0xD8;   // Inhalt prüfen, nicht nur die Angabe
+      if (type !== 'image/jpeg' || !jpeg || w !== h) {          // Nicht-JPEG oder nicht quadratisch: wie jedes andere Foto aufbereiten
         const c = document.createElement('canvas'); c.width = c.height = s;
         c.getContext('2d').drawImage(img, (w - s) / 2, (h - s) / 2, s, s, 0, 0, s, s);
         full = await Photo._jpeg(c, 0.92); c.width = c.height = 0;
@@ -3562,12 +3679,15 @@ const FileAdapter = {
   /** allDepts: auch Einträge der Abteilungen, die dieses Gerät nicht dokumentiert */
   async push({ full = false, showIds = null, onReady = null, allDepts = false } = {}, onProgress) {
     const since = full ? 0 : Sync.state.lastPackageAt || 0;
+    // Stand des Pakets = Zeitpunkt des Einsammelns (nicht des Teilens): was danach ankommt, geht ins nächste Paket.
+    // −1 ms: ein Schreibvorgang in derselben Millisekunde wird lieber doppelt als gar nicht übertragen.
+    const t0 = Date.now() - 1;
     const { blob, counts } = await Sync.buildPackage({ type: 'sync', since, showIds, depts: allDepts ? null : Settings.v.depts.slice() }, onProgress);
     const name = `DokuVT_Sync_${Utils.safeName(Sync.deviceName())}_${Utils.stamp()}.ldsync.json`;
     if (onReady) onReady();                       // Fortschrittsanzeige schließen, bevor der Dialog erscheint
     const res = await Utils.offerFile(blob, name, 'Sync-Paket ist fertig', `${counts.entries} Einträge, ${counts.blobs} Bilder`);
     if (res !== 'abort') {
-      Sync.state.lastPackageAt = Date.now();
+      Sync.state.lastPackageAt = t0;
       await Sync.markSynced(`Sync-Paket erstellt (${full ? 'komplett' : 'Änderungen'}, ${allDepts ? 'alle Abteilungen' : Sync.deptLabel()}): ${counts.entries} Einträge, ${counts.blobs} Bilder`);
     }
     return { res, counts, size: blob.size };
@@ -3721,7 +3841,12 @@ class PeerSession {
     if (!this.dc || this.dc.readyState !== 'open') return;
     const s = JSON.stringify(obj), CH = 16000;
     const raw = async str => {
-      if (this.dc.bufferedAmount > 4 << 20) await new Promise(r => { this.dc.onbufferedamountlow = () => { this.dc.onbufferedamountlow = null; r(); }; });
+      // Gegendruck: mehrere Sendungen dürfen gleichzeitig warten (bis 2.4.2 überschrieb die zweite den Handler
+      // der ersten, die dann ewig hing); schließt der Kanal, geht es ebenfalls weiter
+      if (this.dc.bufferedAmount > 4 << 20) await new Promise(r => {
+        const dc = this.dc, done = () => { dc.removeEventListener('bufferedamountlow', done); dc.removeEventListener('close', done); r(); };
+        dc.addEventListener('bufferedamountlow', done); dc.addEventListener('close', done);
+      });
       if (this.dc.readyState === 'open') this.dc.send(str);
     };
     if (s.length <= CH) { await raw('M' + s); return; }
@@ -4065,8 +4190,8 @@ const Views = {
   },
   thumbImg(b, alt = '') {
     const cached = Thumbs.map.get(b);
-    if (cached && cached.url) return `<img src="${cached.url}" class="ok" alt="${Utils.esc(alt)}" data-b="${b}" data-l="1" decoding="async">`;
-    return `<img alt="${Utils.esc(alt)}" data-b="${b}" decoding="async">`;
+    if (cached && cached.url) return `<img src="${cached.url}" class="ok" alt="${Utils.esc(alt)}" data-b="${Utils.esc(b)}" data-l="1" decoding="async">`;
+    return `<img alt="${Utils.esc(alt)}" data-b="${Utils.esc(b)}" decoding="async">`;
   },
   chips(e, keys = null) {
     const abt = abtOf(e);
@@ -4094,7 +4219,7 @@ const Views = {
     const dup = dupKeys.has(Repo.dupKey(e));
     const chips = this.chips(e);
     const name = `${D.mainLabel} ${mv || 'ohne Nummer'}`;
-    return `<article class="card ${sel ? 'sel' : ''} ${checklist && this.isDone(e, it.kat) ? 'done' : ''}" data-k="${it.kat}" data-abt="${abt}" data-key="${it.key}">
+    return `<article class="card ${sel ? 'sel' : ''} ${checklist && this.isDone(e, it.kat) ? 'done' : ''}" data-k="${it.kat}" data-abt="${abt}" data-key="${Utils.esc(it.key)}">
       ${big ? `<button class="bighead" data-k="${it.kat}" data-act="open" aria-label="${Utils.esc(name)} öffnen">${tagHtml(abt, it.kat)}
         <span class="bk"><small>${Utils.esc(D.mainLabel)}</small>${mv ? Utils.esc(mv) : '<span class="muted">ohne</span>'}</span>
         <span class="bn">${ph.length} Foto${ph.length === 1 ? '' : 's'}</span></button>` : ''}
@@ -4195,6 +4320,9 @@ const Editor = {
     const f0 = {}; D.fields.forEach(fd => { const v = ex ? ex.f[fd.k] : preset && preset[fd.k]; f0[fd.k] = fd.bool ? !!v : (v || ''); });
     const slots = { A: [], E: [] };
     if (ex) Repo.photosOf(ex.id).forEach(p => slots[D.photoKats.includes(p.f.kat) ? p.f.kat : 'A'].push({ photoId: p.id, b: p.b, w: p.w, h: p.h, label: p.f.label }));
+    // Fotos, die beim Öffnen zu sehen sind – nur diese darf „Speichern“ entfernen (nicht live hinzugekommene)
+    const initialPhotos = new Set(slots.A.concat(slots.E).map(s => s.photoId));
+    let initForm = null;                     // Formularstand beim Öffnen (wird unten gesetzt)
     let dirty = false, pending = 0, saving = false;
     const markDirty = () => { dirty = true; };
     const sh = Ui.sheet({
@@ -4406,14 +4534,21 @@ const Editor = {
         Ui.toast(`${mainFd.label} fehlt – ohne lässt sich nicht speichern.`, 'warn'); return;
       }
       saving = true; updateSave();
+      // Bestehender Eintrag: nur Felder schreiben, die HIER geändert wurden. Was ein anderes Gerät inzwischen
+      // geändert hat (Live-Abgleich), bleibt stehen, statt mit dem Stand vom Öffnen überschrieben zu werden.
+      const fAll = Object.assign({}, f);
+      if (ex && initForm) {
+        const norm = (fd, v) => fd.bool ? !!v : (fd.plus ? Utils.normKreis(v) : String(v ?? '').trim());
+        for (const fd of D.fields) if (fd.k in f && fd.k in initForm && norm(fd, f[fd.k]) === norm(fd, initForm[fd.k])) delete f[fd.k];
+      }
       try {
-        const draft = { id: ex ? ex.id : null, showId, abt: A, f, photos: { A: slots.A.map(clean), E: slots.E.map(clean) } };
+        const draft = { id: ex ? ex.id : null, showId, abt: A, f, photos: { A: slots.A.map(clean), E: slots.E.map(clean) }, initialPhotos };
         const res = await Repo.saveDraft(draft);
         dirty = false;
         slots.A.concat(slots.E).forEach(s => s.thumbUrl && URL.revokeObjectURL(s.thumbUrl));
         sh.close();
         App.state.sel = null; App.selectEntry(res.entryId);
-        const mv = mainFd.plus ? Utils.normKreis(f[MAIN]) : String(f[MAIN] || '').trim();
+        const mv = mainFd.plus ? Utils.normKreis(fAll[MAIN]) : String(fAll[MAIN] || '').trim();
         if (res.mergedInto) Ui.toast(`${D.mainLabel} ${mv} gab es schon – Einträge wurden zusammengeführt.${res.mergeNotes.length ? ' ' + res.mergeNotes.join('; ') : ''}`, 'warn', { ms: 7000 });
         else Ui.toast(ex ? 'Gespeichert' : `${D.short}: ${D.mainLabel} ${mv || '(ohne Nummer)'} angelegt`);
       } catch (err) {
@@ -4439,6 +4574,7 @@ const Editor = {
       }
     });
     D.photoKats.forEach(renderGrid); updateSave();
+    initForm = readForm();
     if (quick) {
       // Schnell-Erfassung: Kamera sofort, danach Hauptfeld eintippen
       Camera.open({ abt: A, kat: quick === 'E' ? 'E' : 'A', startIndex: 0, title: `Schnell erfassen · ${D.short}`, allowKatSwitch: true, onShot: (p, k) => addPending(p, k) })
@@ -4527,10 +4663,10 @@ const SetupView = {
             ${its.map(i => { const h = run.f['h:' + i.key], ok = h && h.ok;
               const g = i.group !== lastG ? `<div class="rung">${Utils.esc(i.group)}</div>` : ''; lastG = i.group;
               const e = i.entryId && Repo.entry(i.entryId);
-              return g + `<div class="runrow ${ok ? 'ok' : ''}"><button class="runchk" role="checkbox" aria-checked="${!!ok}" data-run="${Utils.esc(i.key)}" data-run-id="${run.id}">
+              return g + `<div class="runrow ${ok ? 'ok' : ''}"><button class="runchk" role="checkbox" aria-checked="${!!ok}" data-run="${Utils.esc(i.key)}" data-run-id="${Utils.esc(run.id)}">
                   <span class="box">${ok ? I('check') : ''}</span><span class="rt">${Utils.esc(i.text)}</span>
                   <span class="rm">${h && ok ? `${RunList.fmtTime(h.at)} · ${Utils.esc(h.dev || '')}` : ''}</span></button>
-                  ${e ? `<button class="btn icon" data-open-entry="${e.id}" aria-label="Eintrag ${Utils.esc(mainVal(e))} öffnen" title="${Utils.esc(mainVal(e))}">${I('image', 'sm')}</button>` : ''}</div>`; }).join('')}</section>`;
+                  ${e ? `<button class="btn icon" data-open-entry="${Utils.esc(e.id)}" aria-label="Eintrag ${Utils.esc(mainVal(e))} öffnen" title="${Utils.esc(mainVal(e))}">${I('image', 'sm')}</button>` : ''}</div>`; }).join('')}</section>`;
         }).join('');
     }
     return `<details class="setup run" data-box="run" ${open ? 'open' : ''}>
@@ -4565,7 +4701,7 @@ const SetupView = {
     const sum = [s.f.einrichtungB ? 'Allgemein' : '', steps.length ? `${steps.length} Schritte` : 'kein Ablauf', `${zs.length} Positionen`].filter(Boolean).join(' · ');
     const e = Utils.esc;
     const link = st => { const en = st.entryId && Repo.entry(st.entryId); if (!en) return '';
-      return `<button class="btn icon" data-open-entry="${en.id}" aria-label="Eintrag ${e(mainVal(en))} öffnen" title="${e([mainVal(en), en.f.element].filter(Boolean).join(' · '))}">${I('image', 'sm')}</button>`; };
+      return `<button class="btn icon" data-open-entry="${Utils.esc(en.id)}" aria-label="Eintrag ${e(mainVal(en))} öffnen" title="${e([mainVal(en), en.f.element].filter(Boolean).join(' · '))}">${I('image', 'sm')}</button>`; };
     const abl = ABLAUF.map(([k, n]) => { const list = steps.filter(x => x.abschnitt === k); if (!list.length) return '';
       return `<div class="ablsec"><div class="ablh">${n}</div><ol class="abl">${list.map(st => `<li><div class="ar"><span class="at">${e(st.text)}</span>${link(st)}</div></li>`).join('')}</ol></div>`; }).join('');
     return this.frame('B', `Einrichtung · Bühne`, sum, !!s.f.einrichtungB || steps.length > 0, edit, [['B', 'Ablauf'], ['P', 'Positionen', 'layers']],
@@ -4676,7 +4812,7 @@ const SetupView = {
     sh.el.dataset.editor = '1'; sh.el.dataset.abt = 'B';
     const zs = Repo.zuegeOf(showId);
     const bEntries = Repo.entriesOf(showId).filter(e => abtOf(e) === 'B').sort((a, b) => Repo.bcmp(a, b, zs));
-    const opts = cur => `<option value="">– kein Eintrag verknüpft –</option>` + bEntries.map(e => `<option value="${e.id}" ${e.id === cur ? 'selected' : ''}>${Utils.esc([mainVal(e), e.f.element].filter(Boolean).join(' · '))}</option>`).join('');
+    const opts = cur => `<option value="">– kein Eintrag verknüpft –</option>` + bEntries.map(e => `<option value="${Utils.esc(e.id)}" ${e.id === cur ? 'selected' : ''}>${Utils.esc([mainVal(e), e.f.element].filter(Boolean).join(' · '))}</option>`).join('');
     let allg = null;
     const draw = () => {
       sh.body.innerHTML = `<form class="form" onsubmit="return false">
@@ -4878,7 +5014,7 @@ const RunList = {
       const pr = this.progress(run, items);
       const head = `<div class="runhead">
           ${runs.length ? `<div class="f" style="flex:1;min-width:0"><label for="run-sel">Durchgang</label><select id="run-sel">${runs.map(r => { const p = this.progress(r, items);
-            return `<option value="${r.id}" ${r.id === cur ? 'selected' : ''}>${Utils.esc(r.f.titel || r.f.datum)} · ${p.done}/${p.all}</option>`; }).join('')}</select></div>` : ''}
+            return `<option value="${Utils.esc(r.id)}" ${r.id === cur ? 'selected' : ''}>${Utils.esc(r.f.titel || r.f.datum)} · ${p.done}/${p.all}</option>`; }).join('')}</select></div>` : ''}
           <button class="btn big primary" data-r="new">${I('plus')} Neue Vorstellung</button></div>
         <div class="runtools">
           ${run ? `<button class="btn" data-r="pdf">${I('pdf', 'sm')} PDF-Protokoll</button>` : ''}
@@ -4901,13 +5037,13 @@ const RunList = {
             return g + `<div class="runrow ${ok ? 'ok' : ''}"><button class="runchk" role="checkbox" aria-checked="${!!ok}" data-key="${Utils.esc(i.key)}">
                 <span class="box">${ok ? I('check') : ''}</span><span class="rt">${Utils.esc(i.text)}</span>
                 <span class="rm">${h ? `${ok ? '' : 'zurückgenommen · '}${this.fmtTime(h.at)} · ${Utils.esc(h.dev || '')}` : ''}</span></button>
-                ${e ? `<button class="alink" data-open-entry="${e.id}">${I('arrowR', 'sm')} ${Utils.esc(mainVal(e))}</button>` : ''}</div>`; }).join('')}</section>`;
+                ${e ? `<button class="alink" data-open-entry="${Utils.esc(e.id)}">${I('arrowR', 'sm')} ${Utils.esc(mainVal(e))}</button>` : ''}</div>`; }).join('')}</section>`;
       };
       sh.body.innerHTML = head + `<div class="runall"><b>${Utils.esc(run.f.titel || '')}</b><span class="mono">${pr.done} von ${pr.all} erledigt</span></div>
         <div class="pbar"><i style="width:${pr.all ? pr.done / pr.all * 100 : 0}%"></i></div>
         ${vis.map(sect).join('')}
         ${runs.length > 1 ? `<div class="group" style="margin-top:18px"><h3>Protokoll</h3>${runs.map(r => { const p = this.progress(r, items);
-          return `<button class="item" data-pick="${r.id}"><span class="lb">${Utils.esc(r.f.titel || r.f.datum)}<small>${p.done} von ${p.all} erledigt</small></span>${r.id === cur ? I('check') : I('arrowR')}</button>`; }).join('')}</div>` : ''}`;
+          return `<button class="item" data-pick="${Utils.esc(r.id)}"><span class="lb">${Utils.esc(r.f.titel || r.f.datum)}<small>${p.done} von ${p.all} erledigt</small></span>${r.id === cur ? I('check') : I('arrowR')}</button>`; }).join('')}</div>` : ''}`;
     };
     draw();
     const off = Repo.on(() => { if (sh.layer.closed) { off(); return; } draw(); });
@@ -5230,7 +5366,13 @@ const DiagView = {
     await render();
     sh.body.addEventListener('click', async ev => {
       const b = ev.target.closest('[data-act]'); if (!b) return;
-      if (b.dataset.act === 'clean') { const n = await Repo.cleanup(); Ui.toast(`${n} nicht mehr benötigte Bilder entfernt`); render(); }
+      if (b.dataset.act === 'clean') {
+        const orphans = (await Repo.orphanBlobs()).length;
+        if (!orphans) { Ui.toast('Nichts aufzuräumen – alle Bilder werden noch gebraucht.'); return; }
+        const inTrash = Repo.deletedShows().length;
+        if (!await Ui.confirm('Speicher aufräumen?', `${orphans} nicht mehr benötigte Bilder werden endgültig entfernt.` + (inTrash ? `\nFotos von Veranstaltungen im Papierkorb (${inTrash}) bleiben erhalten.` : ''), 'Aufräumen', true)) return;
+        const n = await Repo.cleanup(); Ui.toast(`${n} nicht mehr benötigte Bilder entfernt`); render();
+      }
       if (b.dataset.act === 'persist') { const ok = navigator.storage && navigator.storage.persist ? await navigator.storage.persist() : false; Ui.toast(ok ? 'Speicher ist jetzt dauerhaft' : 'Der Browser hat dauerhaften Speicher (noch) nicht gewährt – als App installieren hilft meist.', ok ? '' : 'warn'); render(); }
       if (b.dataset.act === 'clearerr') { Sync.state.lastError = ''; await Sync.save(); render(); }
     });
@@ -5282,7 +5424,7 @@ const SettingsView = {
         <button class="item danger" data-act="wipe"><span class="lb">Alle Daten auf diesem Gerät löschen</span>${I('trash')}</button>
       </div>
       <div class="group"><h3>Info</h3><dl class="kv"><dt>Doku VT</dt><dd>Version ${APP_VERSION}</dd><dt>Daten</dt><dd>nur lokal auf diesem Gerät (IndexedDB)</dd>
-        <dt>Tastatur</dt><dd>/ Suche · E Ansicht/Bearbeiten · N Neuer Eintrag · Esc Schließen</dd></dl></div>`;
+        <dt>Tastatur</dt><dd>E Ansicht/Bearbeiten · N Neuer Eintrag · Esc Schließen</dd></dl></div>`;
     };
     render();
     sh.body.addEventListener('click', async e => {
@@ -5537,6 +5679,7 @@ const App = {
         <button class="btn" data-act="import">${I('download')} Import</button></div>
       ${shows.length ? `<div class="shows">${shows.map(s => this.showCard(s)).join('')}</div>` :
         `<div class="empty"><div class="ico">${I('bulb', 'lg')}</div><h3>Noch keine Veranstaltung</h3><p>Lege die erste Produktion an – oder spiele ein Backup bzw. Sync-Paket ein.</p></div>`}
+      ${Repo.deletedShows().length ? `<div style="text-align:center;margin-top:18px"><button class="btn ghost" data-act="trash">${I('trash', 'sm')} Papierkorb (${Repo.deletedShows().length})</button></div>` : ''}
       <input type="file" class="hidden" accept=".json,.ldsync,application/json,text/plain" data-file>
       <div class="appver">Doku VT · Version ${APP_VERSION}</div></div>
       <div class="fabbar"><button class="fab" data-act="newshow">${I('plus')} Veranstaltung</button></div>`;
@@ -5554,11 +5697,11 @@ const App = {
       const x = Repo.stats(s.id, [d]); if (!x.aDone && !x.eDone) return '';
       return `<div class="prog" data-abt="${d}">${vis.length > 1 ? `<span class="pl">${Utils.esc(DEPT[d].short)}</span>` : ''}<span class="bar a" title="${Utils.esc(DEPT[d].done.A)}"><i style="width:${pct(x.aDone, x.a)}%"></i></span><span class="bar e" title="${Utils.esc(DEPT[d].done.E)}"><i style="width:${pct(x.eDone, x.e)}%"></i></span></div>`;
     }).join('');
-    return `<article class="showcard"><button class="open" data-act="open" data-id="${s.id}" aria-label="${Utils.esc(s.f.titel)} öffnen">
+    return `<article class="showcard"><button class="open" data-act="open" data-id="${Utils.esc(s.id)}" aria-label="${Utils.esc(s.f.titel)} öffnen">
       <div class="mosaic">${[0, 1, 2].map(i => `<div class="m">${ph[i] ? Views.thumbImg(ph[i].b) : ''}</div>`).join('')}</div>
       <div class="body"><h3>${Utils.esc(s.f.titel)}</h3><div class="meta">${s.f.spielstaette ? `<span>${Utils.esc(s.f.spielstaette)}</span>` : ''}${Repo.showDepts(s.id).length > 1 || Settings.v.depts.length > 1 ? `<span>${Utils.esc(Repo.showDepts(s.id).map(d => DEPT[d].short).join(' · '))}</span>` : ''}<span>${st.entries} Einträge</span><span>${st.photos} Fotos</span><span>geändert ${Utils.fmtAgo(s.mod)}</span></div>
       ${progs ? `<div class="progs">${progs}</div>` : ''}</div></button>
-      <button class="btn icon ghost menu" data-act="showmenu" data-id="${s.id}" aria-label="Aktionen für ${Utils.esc(s.f.titel)}">${I('more')}</button></article>`;
+      <button class="btn icon ghost menu" data-act="showmenu" data-id="${Utils.esc(s.id)}" aria-label="Aktionen für ${Utils.esc(s.f.titel)}">${I('more')}</button></article>`;
   },
 
   /* ---------- Abteilungen ---------- */
@@ -5601,7 +5744,7 @@ const App = {
       ${this.pillHtml()}
       <button class="btn icon ghost" data-act="runs" aria-label="Vorstellungs-Checkliste">${I('checklist')}</button>
       <button class="btn icon ghost" data-act="pdf" aria-label="PDF exportieren">${I('pdf')}</button>
-      <button class="btn icon ghost" data-act="showmenu" data-id="${s.id}" aria-label="Weitere Aktionen">${I('more')}</button>`;
+      <button class="btn icon ghost" data-act="showmenu" data-id="${Utils.esc(s.id)}" aria-label="Weitere Aktionen">${I('more')}</button>`;
     const main = document.getElementById('main');
     if (!vis.length) {
       // keine gemeinsame Abteilung: klarer Hinweis statt leerer Liste
@@ -5695,7 +5838,7 @@ const App = {
     main.querySelectorAll('[data-cnt]').forEach(el => { el.textContent = cnt[el.dataset.cnt]; });
     const items = st.kat === 'all' ? all : all.filter(i => i.kat === st.kat);
     const multi = !ca && vis.length > 1;
-    const dupKeys = new Set(Repo.duplicatesOf(st.showId).map(g => Repo.dupKey(g[0])));
+    const dupKeys = new Set(Repo.duplicatesOf(st.showId, vis).map(g => Repo.dupKey(g[0])));
     this._items = items;
     const split = main.querySelector('.split');
     split.classList.toggle('has-detail', !!st.sel && !!Repo.entry(st.sel.split(':')[0]) && this.sidePane());
@@ -5829,7 +5972,7 @@ const App = {
   },
   async showMenu(id) {
     const s = Repo.show(id); if (!s) return;
-    const dups = Repo.duplicatesOf(id).length;
+    const dups = Repo.duplicatesOf(id, this.visibleDepts(id)).length;
     const v = await Ui.menu(s.f.titel, [
       { label: 'Titel & Details bearbeiten', value: 'edit', icon: 'edit' },
       { label: 'PDF exportieren', value: 'pdf', icon: 'pdf' },
@@ -5847,10 +5990,10 @@ const App = {
       else if (v === 'dup') { const n = await Repo.duplicateShow(id); Ui.toast(`„${n.f.titel}“ angelegt`); }
       else if (v === 'reset') this.resetChecks(id);
       else if (v === 'runs') RunList.open(id);
-      else if (v === 'merge') { const n = await Repo.mergeDuplicates(id); Ui.toast(`${n} Einträge zusammengeführt`); }
+      else if (v === 'merge') { const n = await Repo.mergeDuplicates(id, this.visibleDepts(id)); Ui.toast(`${n} Einträge zusammengeführt`); }
       else if (v === 'del') {
         const st = Repo.stats(id);
-        if (await Ui.confirm('Veranstaltung löschen?', `„${s.f.titel}“ mit ${st.entries} Einträgen und ${st.photos} Fotos wird gelöscht – auch auf Geräten, mit denen später abgeglichen wird. Tipp: vorher ein Backup erstellen.`, 'Löschen', true)) {
+        if (await Ui.confirm('Veranstaltung löschen?', `„${s.f.titel}“ mit ${st.entries} Einträgen und ${st.photos} Fotos wird gelöscht – auch auf Geräten, mit denen später abgeglichen wird. Sie bleibt im Papierkorb (Startseite unten) und lässt sich von dort wiederherstellen.`, 'Löschen', true)) {
           await Repo.deleteShow(id); Ui.toast('Veranstaltung gelöscht'); if (this.state.showId === id) this.go('#/');
         }
       }
@@ -5951,14 +6094,48 @@ const App = {
           location.hash = '#/show/' + L.showIds[0];
           await new Promise(res => setTimeout(res, 350));
         }
+        const delL = L.showIds.filter(id => Repo.shows.has(id) && Repo.shows.get(id).f.del);
+        if (delL.length && await this.offerRestore(delL)) return;
         Ui.dialog({ title: again ? 'Lichtdoku-Datei war schon importiert' : 'Lichtdoku-Datei importiert',
           message: `„${L.titles.join('“, „')}“\n${L.entries} Kreise · ${L.photos} Fotos (in Originalqualität)` +
             (again ? '\n\nEs wurde nichts doppelt angelegt.' : `\n\n${r.neu} neu, ${r.geaendert} aktualisiert.`) +
             (L.bad ? `\n\nAchtung: ${L.bad} Bild(er) waren beschädigt und konnten nicht gelesen werden.` : '') });
         return;
       }
+      if (r.restorable && r.restorable.length && await this.offerRestore(r.restorable)) return;
       Ui.dialog({ title: r.type === 'sync' ? 'Sync-Paket eingespielt' : 'Backup importiert', message: `${r.neu} neue und ${r.geaendert} zusammengeführte Datensätze, ${r.bilder} Bilder übernommen.${r.missing ? `\n\nHinweis: ${r.missing} Fotos haben auf diesem Gerät noch keine Bilddaten – bitte ein komplettes Paket einspielen oder live abgleichen.` : ''}\n\nBestehende Daten wurden nicht überschrieben, sondern feldweise nach Zeitstempel zusammengeführt.` });
     } catch (err) { bz.close(); Sync.log('Import fehlgeschlagen: ' + err.message, 'error'); this.error(err); }
+  },
+  /** Gelöschte Veranstaltungen aus einem Backup wiederherstellen? → true, wenn wiederhergestellt */
+  async offerRestore(ids) {
+    const names = ids.map(id => `„${Repo.shows.get(id).f.titel}“`).join(', ');
+    const v = await Ui.dialog({ title: 'Gelöschte Veranstaltung wiederherstellen?',
+      message: `${names} ist im Backup enthalten, wurde aber gelöscht – auf diesem Gerät oder auf einem Gerät, mit dem abgeglichen wurde. Beim Import gewinnt das Löschen, deshalb wurde nichts übernommen.\n\nWiederherstellen? Nach dem nächsten Abgleich ist sie auch auf den anderen Geräten wieder da.`,
+      buttons: [{ label: 'Nicht wiederherstellen', value: false }, { label: 'Wiederherstellen', value: true, cls: 'primary' }] });
+    await Ui.afterBack();             // Dialog schließt per Zurück-Navigation – erst danach die Seite wechseln
+    if (!v) return false;
+    for (const id of ids) await Repo.restoreShow(id);
+    Ui.toast(ids.length === 1 ? 'Veranstaltung wiederhergestellt' : `${ids.length} Veranstaltungen wiederhergestellt`, 'ok');
+    if (ids.length === 1) this.go('#/show/' + ids[0]); else this.render(true);
+    return true;
+  },
+  /** Papierkorb: gelöschte Veranstaltungen ansehen und wiederherstellen */
+  openTrash() {
+    const sh = Ui.sheet({ title: 'Papierkorb' });
+    const draw = () => {
+      const list = Repo.deletedShows();
+      sh.body.innerHTML = `<p class="muted" style="margin-top:0">Gelöschte Veranstaltungen – hier oder auf einem abgeglichenen Gerät. Wiederherstellen bringt sie mit allen Einträgen und Fotos zurück, die zusammen mit ihr gelöscht wurden; nach dem nächsten Abgleich auch auf den anderen Geräten.</p>` +
+        (list.length ? `<div class="group">${list.map(s => { const i = Repo.trashInfo(s.id);
+          return `<div class="item"><span class="lb">${Utils.esc(s.f.titel || 'Ohne Titel')}<small>gelöscht ${i.at ? Utils.fmtDate(i.at) : ''} · ${i.entries} Einträge · ${i.photos} Fotos</small></span>
+            <button class="btn primary" data-restore="${Utils.esc(s.id)}">${I('undo', 'sm')} Wiederherstellen</button></div>`; }).join('')}</div>`
+          : `<div class="empty"><h3>Der Papierkorb ist leer</h3></div>`);
+    };
+    draw();
+    sh.body.addEventListener('click', async e => {
+      const b = e.target.closest('[data-restore]'); if (!b) return;
+      try { const id = b.dataset.restore; await Repo.restoreShow(id); Ui.toast('Veranstaltung wiederhergestellt', 'ok'); sh.close(); await Ui.afterBack(); this.go('#/show/' + id); }
+      catch (err) { this.error(err); }
+    });
   },
   keys(e) {
     if (Ui.topOpen || e.metaKey || e.ctrlKey || e.altKey || Utils.isEditable(document.activeElement)) return;
@@ -6011,6 +6188,7 @@ const App = {
         const abt = await this.askAbt('Schnell erfassen – Abteilung'); if (!abt) break;
         Editor.open({ showId: st.showId, abt, quick: st.kat === 'E' && DEPT[abt].photoKats.includes('E') ? 'E' : 'A' }); break;
       }
+      case 'trash': this.openTrash(); break;
       case 'import': { const inp = document.querySelector('[data-file]'); inp.value = ''; inp.onchange = () => inp.files[0] && this.importFile(inp.files[0]); inp.click(); break; }
     }
   }

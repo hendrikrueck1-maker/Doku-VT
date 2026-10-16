@@ -1,5 +1,33 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.4.3 – 16.10.2026
+
+Sicherheit für die Daten – nach der Code-Review: Abgleich über mehrere Geräte, Papierkorb, gleichzeitiges Arbeiten. Kein Datenbank-Update, Paketformat bleibt 2, alle älteren Dateien bleiben lesbar.
+
+- **„Nur Änderungen“ gibt jetzt alles weiter:** Was ein Gerät von einem anderen bekommen hat, geht im nächsten Sync-Paket mit. Vorher fehlten solche Daten beim dritten Gerät (z. B. iPad → iPhone → Pixel), obwohl der Status „Synchron“ zeigte. Grundlage ist eine lokale Eingangszeit je Datensatz (`rx`). Der Stand eines Pakets ist jetzt der Moment des Einsammelns, nicht des Teilens. **Nach dem Update einmal „Komplett“ senden**, damit eventuelle alte Lücken geschlossen sind.
+- **Papierkorb bleibt vollständig:** „Speicher aufräumen“ behält die Fotos von Veranstaltungen im Papierkorb (vorher endete „Wiederherstellen“ danach ohne Bilder) und fragt vorher mit Anzahl nach.
+- **Wiederherstellen bringt genau zurück, was mit der Veranstaltung gelöscht wurde:** Jeder Löschvorgang bekommt eine Kennung. Ein Eintrag, den ein anderes Gerät inzwischen einzeln gelöscht hat, bleibt gelöscht. Für Löschungen aus 2.4.2 gilt die bisherige Zeitregel.
+- **Nichts geht beim schnellen Speichern verloren:** Schnelles Abhaken in „Vor der Vorstellung“ und mehrere Live-Änderungen kurz hintereinander werden alle gespeichert (vorher blieb manchmal nur die letzte).
+- **Bearbeiten während des Live-Abgleichs:** Der Eintrag speichert nur, was im Formular geändert wurde. Felder und Fotos, die währenddessen vom anderen Gerät kommen, bleiben erhalten. (Folge: Ein schon doppelt vorhandener Kreis wird beim Bearbeiten eines anderen Feldes nicht mehr automatisch zusammengeführt – dafür weiter „⋯ → zusammenführen“.)
+- **Falsch gestellte Geräteuhr:** Eine eigene Änderung gilt immer als neuer als der Wert, den das Gerät gerade anzeigt – auch wenn ein anderes Gerät mit vorgehender Uhr ihn geschrieben hat.
+- **Sicherheit beim Import:** Backups, Sync-Pakete und Live-Daten werden geprüft (Kennungen, Feldnamen, Zeitstempel, Größe); ungültige Datensätze werden übersprungen. Kennungen werden in der Oberfläche zusätzlich maskiert – eine präparierte Datei kann kein Skript mehr ausführen. Bilddaten müssen ein JPEG sein.
+- **Speichern wirklich atomar:** Schlägt ein einzelner Schreibvorgang fehl, wird nichts gespeichert (vorher wurde der Rest still übernommen). Auch der Arbeitsspeicher der App wird dann zurückgesetzt.
+- **PDF:** Ein beschädigtes Foto bricht das PDF nicht mehr ab; an seiner Stelle steht „Bild beschädigt“.
+- **Live-Abgleich robuster:** Viele Bilder und gleichzeitiges Speichern bringen die Übertragung nicht mehr zum Stehen.
+- **Doppelte Einträge zusammenführen** betrifft nur die Abteilungen, die das Gerät zeigt (vorher auch ausgeblendete, deren Änderung dann nie weiterging).
+- Import aus der alten Lichtdoku-App: Ein als JPEG bezeichnetes Bild, das keines ist, wird umgewandelt statt abgewiesen.
+- Einstellungen → Info: Hinweis auf die entfernte Suche („/“) gestrichen.
+- **Automatischer Test neu:** `test/test_dokuvt.py` (34 Prüfungen, ohne pytest lauffähig). Gegen 2.4.2 schlagen 15 davon fehl.
+
+## 2.4.2 – 16.10.2026
+
+Gelöschte Veranstaltungen lassen sich wiederherstellen.
+
+- **Ausgangslage:** Wird eine Veranstaltung gelöscht, gibt der Abgleich das Löschen an die anderen Geräte weiter (so ist es gewollt). Ein Backup ließ sich danach nicht mehr einspielen: Beim Zusammenführen gewinnt immer das jüngere Löschen – die Meldung lautete „0 neue und 0 zusammengeführte Datensätze“. Die Daten waren aber nie weg.
+- **Papierkorb** auf der Startseite (unten, sobald etwas gelöscht ist): gelöschte Veranstaltungen mit Datum, Einträgen und Fotos; „Wiederherstellen“ bringt sie mit allem zurück, was zusammen mit ihr gelöscht wurde. Früher einzeln gelöschte Einträge bleiben gelöscht. Nach dem nächsten Abgleich ist die Veranstaltung auch auf den anderen Geräten wieder da.
+- **Backup einer gelöschten Veranstaltung importieren:** Die App erkennt das und fragt „Gelöschte Veranstaltung wiederherstellen?“ – auch für Dateien der alten Lichtdoku-App.
+- Der Löschen-Dialog weist auf den Papierkorb hin.
+
 ## 2.4.1 – 16.10.2026
 
 Fehlerbehebung: Die App blieb beim Start in einem schwarzen Bild hängen.
