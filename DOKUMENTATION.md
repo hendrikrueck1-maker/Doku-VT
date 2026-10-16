@@ -1,6 +1,6 @@
-# Doku VT 1.8.1 – Dokumentation
+# Doku VT 2.0.0 – Dokumentation
 
-Die App ist eine Datei (`index.html`, ca. 245 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
+Die App ist eine Datei (`index.html`, ca. 331 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
 
 ---
 
@@ -8,11 +8,12 @@ Die App ist eine Datei (`index.html`, ca. 245 KB), keine Abhängigkeiten, kein C
 
 | Modul | Aufgabe |
 |---|---|
+| `DEPT` (+ `abtOf`, `katName`, `katHex`, `fieldLabel`, `tagHtml`) | **Zentrale Konfiguration der Abteilungen** (ab 2.0.0): je Abteilung Name, Kurzname, Phasennamen, Foto-Phasen, Hauptfeld, Chips, Felder (mit Optionen wie `main`, `plus`, `req`, `extra`, `bool`, `qkeys`), PDF-Spalten und Farben. Editor, Karten, Detail, Bildansicht, Kamera und PDF lesen nur hier. Eine neue Abteilung = ein Eintrag in `DEPT` + `DEPT_ORDER` + drei Farbvariablen im CSS. |
 | `Utils`, `Clock`, `ICONS` | Helfer, monotone Uhr für Zeitstempel, Inline-SVG-Icons |
 | `Store` | IndexedDB, Stores: `shows`, `entries`, `photos` (nur Metadaten), `fulls`/`thumbs` (Bilddaten als ArrayBuffer), `meta`. Alle Schreibvorgänge laufen in **einer atomaren Transaktion**; ist der Speicher voll, gibt es eine klare Meldung „Es wurde NICHTS gespeichert“. |
 | `Rec` | Datensatzformat mit **Zeitstempel je Feld** (`f` = Werte, `t` = Zeiten). Beim Merge gewinnt pro Feld der jüngere Wert. Löschen setzt das Feld `del` (Tombstone). |
-| `Repo` | Datenzugriff mit RAM-Cache aller Metadaten, Index Eintrag → Fotos, `saveDraft` (inkl. automatischem Zusammenführen gleicher Kreise), `applyRemote` (Import/Sync), Aufräumen |
-| `Settings` | Geräte-Einstellungen (werden nicht synchronisiert): Theme, Dimmer, Fotoauflösung … |
+| `Repo` | Datenzugriff mit RAM-Cache aller Metadaten, Index Eintrag → Fotos, `saveDraft` (nur Felder der Abteilung; zusammengeführt wird bei gleichem Hauptfeld **innerhalb** derselben Abteilung, Bühne nie), `showDepts` (Abteilungen einer Veranstaltung, mit Lese-Migration), `stats(showId, depts)`, `applyRemote` (Import/Sync), Aufräumen |
+| `Settings` | Geräte-Einstellungen (werden nicht synchronisiert): Theme, Dimmer, Fotoauflösung, **`depts`** (Abteilungen dieses Geräts, Standard `['L']`), Filter- und Mikrofon-Schnelltasten … |
 | `Photo`, `Thumbs` | 1:1-Zuschnitt, JPEG-Kompression (Standard 1600 px / 0,82), Vorschau 360 px; LRU-Cache für Object-URLs (max. 500, alte werden freigegeben), Lazy Loading per IntersectionObserver |
 | `Camera` | Live-Vorschau 1:1, Auswahl der Rückkamera-Objektive 0,5×/1×/Tele ohne Selfie- und Kombi-Kameras, bei nur einer Rückkamera Zoomstufen (gemerkt in `Settings.cameraId`), Serienaufnahme, Umschalter Aufbau/Einleuchten mit farbigem Sucherrand, Taschenlampe, Fallback auf Mediathek/System-Kamera |
 | `Annotator` | Pfeil, Kreis oder Freihand auf ein Foto zeichnen. Das Ergebnis wird als **neues** Foto gespeichert (Bilddaten bleiben unveränderlich und damit sync-sicher). |
@@ -20,10 +21,18 @@ Die App ist eine Datei (`index.html`, ca. 245 KB), keine Abhängigkeiten, kein C
 | `QR`, `QrScan` | Eigener QR-**Generator** (Version 1–40, L/M) und eigener **Decoder** (Finder-Suche, perspektivische Entzerrung, Reed-Solomon-Korrektur). Der Scanner nutzt `BarcodeDetector`, wo vorhanden, sonst den eigenen Decoder. Auf iPad/iPhone gibt es keinen BarcodeDetector, dort ist der eigene Decoder also nötig. |
 | `Pdf` | Eigener PDF-1.4-Generator: Helvetica mit WinAnsiEncoding (Umlaute), JPEG per DCTDecode, Deckblatt mit Inhaltsverzeichnis und Seitenzahlen |
 | `Legacy` | Import von JSON-Dateien der früheren Lichtdoku-App (`{show, entries}` mit `bilderAufbau`/`bilderEinleuchten` als Data-URLs). Feste IDs aus alten IDs (`lgs-`, `lge-`) und Bildinhalt (`lgb-` + Hash) → wiederholter Import idempotent. Original-JPEGs werden unverändert gespeichert, nur das Vorschaubild wird erzeugt. |
-| `Sync` + Adapter | Kern: Pakete bauen und einspielen, Status, Protokoll. Adapter mit gleichem Interface (`id, name, available(), push(), pull()`): `FileAdapter`, `PeerAdapter`/`PeerSession` (WebRTC), `ServerAdapter` (vorbereitet für eine spätere Version) |
+| `Sync` + Adapter | Kern: Pakete bauen und einspielen, Status, Protokoll. `collect({since, showIds, depts})` und `filterRecs()` beschränken Einträge und Fotos auf Abteilungen; Veranstaltungen gehen immer mit. Paketformat 2 (Feld `depts` im Kopf). Adapter mit gleichem Interface (`id, name, available(), push(), pull()`): `FileAdapter`, `PeerAdapter`/`PeerSession` (WebRTC), `ServerAdapter` (vorbereitet für eine spätere Version) |
 | `Ui` | Ebenen mit History-Eintrag (Android-Zurück, Wischgeste und Esc schließen die oberste Ebene), eigene Dialoge, Toasts, Busy-Anzeige |
 | `SetupView` | „Einrichtung & Züge“: Anzeige über der Liste, Bearbeitungsblatt. Daten im Show-Datensatz: `einrichtung` und je Zug ein Feld `z:<id>` (OLZ 1/2, BGZ 1/2 fest, weitere frei) → feldweiser Merge je Zug |
 | `Views`, `Editor`, `SyncView`, `PeerView`, `DiagView`, `SettingsView`, `App` | Oberfläche, Routing per Hash (`#/show/<id>`), Ereignis-Delegation |
+
+**Farbsystem (ab 2.0.0):** `[data-abt]` setzt `--da` (Aufbau, dunkel), `--de` (2. Phase, hell), `--dei`/`--dai` (Schrift darauf); `[data-k="A|E|N"]` wählt daraus `--k`, `--ks`, `--ki`. Komponenten benutzen nur `--k`/`--ks`/`--ki` und erben die Abteilung vom nächsten Vorfahren mit `data-abt`. Ohne Abteilung (Leiste bei „Alle“) sind die Werte neutral. Kamera und PDF nehmen die Hex-Werte aus `DEPT[abt].col`.
+
+**Migration (beim Lesen, nie als Massen-Schreibvorgang):** Eintrag ohne `abt` = Licht (`abtOf`). Veranstaltung ohne `abteilungen` = Licht + jede Abteilung, die Einträge hat (`Repo.showDepts`). Gerät ohne `depts` = Licht. Beim Speichern eines bestehenden Eintrags werden leere Felder, die es im Datensatz noch nicht gibt, nicht angelegt und `abt` wird nicht nachgetragen – ein unverändert gespeicherter 1.8.1-Eintrag bekommt keinen neuen Zeitstempel. `abteilungen` wird erst geschrieben, wenn jemand die Auswahl bewusst ändert.
+
+**Sichtbarkeit:** In einer Veranstaltung erscheinen nur die Abteilungen aus `Repo.showDepts(show) ∩ Settings.v.depts` (`App.visibleDepts`). `App.curAbt()` liefert die Abteilung, nach der sich Beschriftungen richten (gewählte, sonst die einzige sichtbare, sonst keine = „Alle“).
+
+**Abgleich nach Abteilungen:** Sync-Paket: Einträge/Fotos der Geräte-Abteilungen (Option „Komplett, alle Abteilungen“). Live: beide Geräte senden `d` (ihre Abteilungen) in `hello`; `meta` und jede `delta` enthalten nur die Schnittmenge. Ältere Gegenstellen ohne `d` gelten als „nur Licht“. Komplett-Backup: immer alles. Empfangen wird immer alles, was ankommt (Merge wie bisher).
 
 **Datenfluss:** UI → `Repo.saveDraft/patch…` → eine IDB-Transaktion → Cache → `Repo.emit(change)` → (a) UI zeichnet die Liste debounced neu, **nie während ein Eingabefeld fokussiert ist**; (b) eine offene Live-Verbindung schickt die Änderung sofort als `delta` an das andere Gerät.
 
@@ -74,6 +83,22 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 - [ ] PDF herunterladen: Umlaute stimmen, eine Seite pro Kreis und Kategorie, Inhaltsverzeichnis mit korrekten Seitenzahlen.
 - [ ] Kompakt-PDF ist deutlich kleiner.
 
+**Abteilungen (ab 2.0.0)**
+- [ ] Update 1.8.1 → 2.0.0 mit bestehenden Daten: Alles ist da, alles ist Licht, Farben sind rot, Sync-Status bleibt „Synchron“ (kein Eintrag gilt als geändert).
+- [ ] Gerät nur Licht: Oberfläche wie 1.8.1, keine Abteilungsleiste, „Aufbau / Einleuchten“.
+- [ ] Einstellungen → „Dieses Gerät dokumentiert“: alle drei an → Leiste Alle/Licht/Ton/Bühne, bei Alle „Aufbau / Einrichtung“, im Bearbeiten-Modus „+ Licht“, „+ Ton“, „+ Bühne“. Letzte Abteilung lässt sich nicht abschalten.
+- [ ] iPhone und Pixel (auch mit großer Systemschrift): Leiste passt ohne waagrechtes Scrollen, Hinzufügen-Knöpfe gestapelt, letzte Karte erreichbar. Kamera-Knopf sitzt unten.
+- [ ] Ton-Kanal „17 18“ wird zu „17+18“. Zweiter Eintrag „18+17“ wird zusammengeführt; Licht-Kreis „17+18“ bleibt eigener Eintrag.
+- [ ] Bühne: ohne Zug/Position kein Speichern (Hinweis am Feld). Zwei Elemente am selben Zug bleiben getrennt. Checkliste: zwei Haken je Karte.
+- [ ] Neue Veranstaltung: Abteilungen vorausgewählt wie das Gerät. „Titel & Details“: Abteilung abwählen → Rückfrage, Einträge nur ausgeblendet.
+- [ ] Gerät „nur Bühne“, Veranstaltung „nur Licht“: Hinweis mit Knopf zu den Einstellungen.
+- [ ] Sync-Paket von einem Ton-Gerät auf ein Licht-Gerät: Veranstaltung/Einrichtung kommt an, Ton-Einträge sind auf dem Licht-Gerät ausgeblendet; Licht-Einträge des Ton-Geräts wurden nicht übertragen.
+- [ ] Sync-Paket 2.0.0 auf einem Gerät mit 1.8.1 einspielen → Meldung „bitte zuerst aktualisieren“.
+- [ ] Rotlicht: Aufbau-Streifen schraffiert, 2. Phase gefüllt, Tag mit Abteilungsname.
+- [ ] „Allgemeine Einrichtung“ ausgefüllt → pinker Rahmen mit Hinweis-Symbol.
+- [ ] PDF „nur Ton“: nur Ton-Seiten, Spalten Kanal/Phase/Quelle/Mikrofon, Dateiname `…_Ton_Datum.pdf`.
+- [ ] iPad: Tastatur im Ton- und Bühnen-Editor öffnen und schließen; Felder bleiben antippbar, Speichern oben und unten funktioniert.
+
 **Backup & Sync**
 - [ ] Komplett-Backup erstellen, auf einem zweiten Gerät einspielen, dann ein zweites Mal einspielen: Es entsteht nichts doppelt.
 - [ ] Sync-Paket iPad → iPhone per AirDrop: Änderungen kommen an, der Status wird „Synchron“.
@@ -92,13 +117,19 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 
 ## 3. Bewusste Designentscheidungen und Abweichungen
 
+0a. **Automatischer Test 2.0.0:** `test/test_dokuvt.py` (Python + Playwright, Chromium headless mit simulierter Kamera, startet selbst einen lokalen Server). 80 Prüfungen zu Abteilungen, Farben, Migration ohne Änderungsmarkierung, Leiste/Knöpfe, Ton-Zusammenführen, Bühne-Pflichtfeld, Kamera-Farben, Bildansicht, Paketformat 2 mit Abteilungsfilter (zwei Geräte), PDF (qpdf), Rotlicht und drei Smartphone-Breiten. Die frühere Testsuite (127 Prüfungen) lag dieser Lieferung nicht bei; sie wird in den folgenden Etappen mit diesem Test zusammengeführt.
+13. **Abteilung bestimmt den Farbton, Phase die Darstellung** (Aufbau umrandet/dunkel, 2. Phase gefüllt/hell) – so bleibt alles auch ohne Farbsehen und im Rotlicht über Form und Tag unterscheidbar.
+14. **Rot = Licht, deshalb `--danger` Karminrosa** und der Einrichtungs-Rahmen pink mit Symbol. Gefahr ist zusätzlich immer über Symbol und Text erkennbar.
+15. **Ton/Bühne schon in 2.0.0 bedienbar:** Der Editor baut sich aus `DEPT`; Licht ergibt dabei exakt das Layout aus 1.7.0. Die Bühnen-Zugauswahl aus der Zugliste und die PDF-Kapitel je Abteilung kommen in den nächsten Etappen.
+16. **Bühne: Pflichtfeld Zug/Position vorerst als Textfeld.** Mit der gemeinsamen Zugliste (Etappe 3) wird daraus eine Auswahl mit „+ Neuer Zug“ und „Freie Position“.
+17. **Versionierung:** Etappe 1 erscheint als 2.0.0 (statt 1.9.0), weil sich Farbsystem und Paketformat ändern. Die weiteren Etappen folgen als 2.1.0 (Ton/Bühne vollständig), 2.2.0 (Zugliste, Einrichtung je Abteilung) und 2.3.0 (Vorstellungs-Checkliste).
 0. **Automatischer Test (ab 1.3.0, erweitert in 1.4.0):** 127 Prüfungen (inkl. Import der echten Garland-Datei) in Chromium mit simulierter Kamera – Start, Liste, Filter, Suche, Sortierung, Lightbox, Checkliste, Editor mit Kamera und Schnelltasten, Zusammenführen, Markieren, PDF (qpdf-Prüfung, Umlaute, Seitenzahl), Backup-Import auf zweitem Gerät, Sync-Paket, QR (auch gedreht), WebRTC-Live-Abgleich zwischen zwei Geräten, Einstellungen, iPad hoch und iPhone. Echte Geräte ersetzt das nicht: Safari-Teilen, mehrere Kameras und Taschenlampe bitte auf iPad/iPhone/Pixel prüfen.
 12. **Farbiger Rand nur in der Anzeige**, nicht ins Foto eingebrannt. So bleibt ein Foto korrekt, wenn es später in die andere Kategorie verschoben wird, und das PDF zeigt saubere Bilder.
 
 1. **Feld-Zeitstempel statt Eintrags-Zeitstempel.** Wenn zwei Leute denselben Eintrag ändern (einer die Bemerkung, einer den Filter), bleiben beide Änderungen erhalten. Das geht über die Vorgabe „Merge pro Eintrag“ hinaus.
 2. **Fotos als eigene Datensätze** statt als Listen im Eintrag. Reihenfolge, Kategorie und Löschung sind einzeln zusammenführbar. Bilddaten sind unveränderlich, deshalb erzeugen Markieren und Ersetzen ein neues Foto. Beim Duplizieren einer Veranstaltung teilen sich die Fotos die Bilddaten und belegen keinen doppelten Speicher.
-3. **Einträge ohne Fotos** erscheinen als graue Karte „Ohne Foto“ (die Vorgabe sah nur Karten je Kategorie mit Fotos vor). Sonst wären reine Text-Einträge unsichtbar.
-4. **Rotlicht-Modus**: Kategorien sind dort zusätzlich durch Text-Tags und ein Streifenmuster unterscheidbar, weil Blau und Gelb im Rotlicht nicht mehr erkennbar sind. Fotos werden standardmäßig rot getönt (abschaltbar).
+3. **Einträge ohne Fotos** erscheinen als gestrichelte Karte „Ohne Foto“ in der Abteilungsfarbe (bis 1.8.1 grau) (die Vorgabe sah nur Karten je Kategorie mit Fotos vor). Sonst wären reine Text-Einträge unsichtbar.
+4. **Rotlicht-Modus**: Alle Abteilungen erscheinen rot. Unterschieden wird über das Tag (Abteilung · Phase) und die Darstellung: Aufbau schraffiert/umrandet, 2. Phase gefüllt. Fotos werden standardmäßig rot getönt (abschaltbar).
 5. **Bearbeitungsmodus** ist durch einen orangen Rahmen um den ganzen Bildschirm deutlich erkennbar. Im Ansichtsmodus sind Anlegen-Knöpfe ausgeblendet, das Abhaken in der Checkliste ist aber erlaubt.
 6. **Schnell-Erfassung**: Kamera-Knopf → Fotos (Kategorie direkt in der Kamera wählbar) → Kreis eintippen → Speichern.
 7. **Zusammenführen gleicher Kreise** gilt für „123+124“ und „124+123“ gleichermaßen. Bei abweichenden Feldern gewinnt der neue Wert, alte Werte werden im Hinweis genannt, Bemerkungen werden verbunden. Doppelte Kreise, die erst beim Abgleich entstehen, werden markiert und lassen sich über „⋯ → zusammenführen“ bereinigen.

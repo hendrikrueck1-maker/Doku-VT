@@ -1,5 +1,27 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.0.0 – 16.10.2026
+
+Erste Etappe der Erweiterung um **Ton** und **Bühnentechnik**. Ein Gerät, das nur Licht dokumentiert, sieht fast aus wie 1.8.1 – nur in Rot.
+
+- **Abteilungen:** Licht (Rot), Ton (Blau), Bühne (Grau). Alles, was eine Abteilung ausmacht – Felder, Beschriftungen, Phasen, Hauptfeld, Farben –, steht an einer Stelle im Code (`DEPT`). Phasen: Licht Aufbau/Einleuchten, Ton Aufbau/Soundcheck, Bühne nur Aufbau (Fotos) mit zwei Haken (Aufbau, Einrichten).
+- **Neues Farbsystem:** Die Abteilung bestimmt den Farbton, die Phase die Darstellung: Aufbau dunkel und umrandet, 2. Phase hell und gefüllt. Jede Karte trägt ein Tag „LICHT · AUFBAU“ (schmal: „L · AUFBAU“). Das bisherige Blau/Gelb entfällt.
+- **Ohne Foto:** gestrichelte Karte in der Abteilungsfarbe statt grau (Grau gehört jetzt der Bühne).
+- **Warnfarbe:** Löschen und Fehler in Karminrosa, klar vom Licht-Rot abgesetzt. Der Rahmen um „Einrichtung & Züge“ ist pink und hat ein Hinweis-Symbol.
+- **Rotlicht:** Alle Abteilungen in Rottönen; Aufbau schraffiert, 2. Phase gefüllt, dazu das Tag mit dem Abteilungsnamen.
+- **Dieses Gerät dokumentiert:** neue Gruppe in den Einstellungen (Licht, Ton, Bühne; mindestens eine). Bestehende Installationen: nur Licht.
+- **Abteilungen je Veranstaltung:** Beim Anlegen Titel und drei große Umschalter (vorausgewählt: die Abteilungen des Geräts). Änderbar unter „Titel & Details bearbeiten“; Abwählen blendet nur aus, mit Rückfrage. Sichtbar ist die Schnittmenge aus Veranstaltung und Gerät; ist sie leer, erscheint ein Hinweis mit Knopf zu den Einstellungen.
+- **Werkzeugleiste:** Bei mehr als einer sichtbaren Abteilung zusätzlich die Leiste „Alle / Licht / Ton / Bühne“ mit Zählern. Die Phasen heißen je nach Abteilung, bei „Alle“ „Aufbau / Einrichtung“; bei Bühne entfällt der Phasen-Filter.
+- **Hinzufügen:** Bei mehreren Abteilungen „+ Licht“, „+ Ton“, „+ Bühne“ in Abteilungsfarbe (auf dem Smartphone gestapelt). Die Kamera-Taste fragt bei „Alle“ kurz nach der Abteilung.
+- **Liste:** Sortierung Abteilung → Phase → Hauptfeld; Abschnitte „Licht · Aufbau“, „Ton · Soundcheck“ … Rechte Spalte zeigt Kreis / Kanal / Zug. Bildansicht: „Nächster Eintrag“ statt „Nächster Kreis“.
+- **Ton und Bühne – erster Stand:** Editor aus `DEPT` gebaut (Licht unverändert). Ton: Kanal wird wie Kreis zu „17+18“, gleiche Kanäle werden zusammengeführt (getrennt von Licht), Mikrofon-Schnelltasten (Einstellungen → Eingabe). Bühne: Zug/Position ist Pflichtfeld, gleiche Züge werden nicht zusammengeführt. Zug-Auswahl aus der Zugliste folgt in einer späteren Etappe.
+- **Speichern-Knopf zusätzlich unten** im Eintrag (wie bei „Einrichtung & Züge“).
+- **Abgleich, Paketformat 2:** Sync-Paket und Live-Abgleich übertragen Veranstaltungen (mit Einrichtung und Zügen) immer, Einträge und Fotos nur der Abteilungen dieses Geräts; beim Live-Abgleich die Schnittmenge beider Geräte. Neue Option „Komplett, alle Abteilungen“. Das Komplett-Backup enthält weiterhin alles. 1.8.1 lehnt Pakete im Format 2 mit „bitte zuerst aktualisieren“ ab.
+- **PDF:** Farben und Plakette je Abteilung („TON · SOUNDCHECK“), Infoblock und Inhaltsverzeichnis mit den Feldern der Abteilung; im Dialog Auswahl der Abteilung. Dateiname bei einer einzelnen Abteilung z. B. `Der_Haifisch_Ton_2026-10-16.pdf`.
+- **Daten bleiben unverändert:** fehlende Angaben (Abteilung, Abteilungen der Veranstaltung) gelten beim Lesen als Licht. Gespeichert wird nur, was sich ändert – leere neue Felder werden nicht angelegt, kein bestehender Eintrag gilt nach dem Update als „geändert“.
+- **Behoben:** Der Kamera-Knopf (Schnell-Erfassung) rutschte wegen eines CSS-Namenskonflikts mit der Vollbild-Kamera nach oben links hinter die Kopfzeile. Er sitzt jetzt unten neben „+ Eintrag“.
+- **Demo „Der Haifisch“** mit allen drei Abteilungen (ein Ton-Kanal, zwei Bühnen-Einträge).
+
 ## 1.8.1 – 15.10.2026
 
 - **Einrichtung & Züge repariert:** Die Tastatur-Anpassung aus 1.8.0 hat das Blatt auf dem iPad zusammengeschoben, sodass sich keine Felder mehr antippen ließen. Sie ist wieder entfernt. Speichern geht bei offener Tastatur über den großen Knopf unten im Formular.

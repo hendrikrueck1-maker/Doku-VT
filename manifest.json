@@ -1,8 +1,8 @@
 {
   "id": "./?app=doku-vt",
-  "name": "Doku VT – Beleuchtungsdokumentation",
+  "name": "Doku VT – Licht, Ton, Bühne",
   "short_name": "Doku VT",
-  "description": "Beleuchtungsdokumentation für den Theaterbetrieb – offline, mit Fotos, PDF-Export und Geräte-Abgleich.",
+  "description": "Technikdokumentation (Licht, Ton, Bühne) für den Theaterbetrieb – offline, mit Fotos, PDF-Export und Geräte-Abgleich.",
   "lang": "de",
   "start_url": "./index.html",
   "scope": "./",

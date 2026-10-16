@@ -1,6 +1,6 @@
 # Doku VT – Beleuchtungsdokumentation
 
-**Version 1.8.1** · Web-App für die Beleuchtungsdokumentation im Theater: Kreise mit Fotos (Aufbau/Einleuchten), PDF-Export, Checkliste und Geräte-Abgleich. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
+**Version 2.0.0** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton und Bühnentechnik: Einträge mit Fotos je Phase (Aufbau, Einleuchten/Soundcheck), PDF-Export, Checkliste und Geräte-Abgleich. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
 
 ## Auf GitHub veröffentlichen
 
@@ -16,6 +16,10 @@
 - **Android (Chrome):** Seite öffnen → Menü ⋮ → **App installieren** bzw. **Zum Startbildschirm hinzufügen**.
 
 Installiert startet Doku VT auch ohne Internet, und der Browser behandelt die Daten als dauerhaft. Gerade auf dem iPad ist das wichtig: Safari kann Daten nicht installierter Webseiten nach längerer Nichtnutzung löschen.
+
+## Abteilungen einstellen
+
+Unter *Einstellungen → Dieses Gerät dokumentiert* festlegen, welche Abteilungen das Gerät führt (Standard nach dem Update: nur Licht). Jede Veranstaltung hat zusätzlich eigene Abteilungen. Sichtbar ist, was beide gemeinsam haben. Beim Abgleich gehen Einträge nur für die Abteilungen des Geräts mit; Veranstaltungen, Einrichtung und Züge immer.
 
 Die Daten liegen **nur lokal auf dem jeweiligen Gerät** (IndexedDB). Das Repository enthält keine Daten. Regelmäßig über *Abgleich → Komplett-Backup* sichern.
 
@@ -37,5 +41,6 @@ Die Daten liegen **nur lokal auf dem jeweiligen Gerät** (IndexedDB). Das Reposi
 | `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png` | App-Icons |
 | `DOKUMENTATION.md` | Architektur, Testcheckliste, Designentscheidungen, Ausblick |
 | `CHANGELOG.md` | Änderungen je Version |
+| `test/test_dokuvt.py` | Automatischer Test (Python + Playwright/Chromium). Nicht nötig für den Betrieb; muss nicht hochgeladen werden. |
 
 Kamera, Teilen und Live-Abgleich brauchen **https**. Das bietet GitHub Pages automatisch. Per Doppelklick (`file://`) geöffnet funktioniert die App ebenfalls, aber ohne Kamera-Live-Vorschau und ohne Offline-Installation.

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>Doku VT</title>
-<meta name="description" content="Beleuchtungsdokumentation für den Theaterbetrieb – offline, mit Fotos, PDF-Export und Geräte-Abgleich.">
+<meta name="description" content="Technikdokumentation (Licht, Ton, Bühne) für den Theaterbetrieb – offline, mit Fotos, PDF-Export und Geräte-Abgleich.">
 <meta name="theme-color" content="#0b0d10">
 <meta name="color-scheme" content="dark light">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,20 +18,30 @@
 <style>
 /* =====================================================================
    DOKU VT – Design-System
-   Leitidee „Stellwerk“: ruhig, dunkel, werkzeughaft. Kreis-Nummer zuerst.
-   Blau = Aufbau, Gelb = Einleuchten – immer zusätzlich mit Text-Tag,
-   damit die Kategorie auch im Rotlicht-Modus eindeutig bleibt.
+   Leitidee „Stellwerk“: ruhig, dunkel, werkzeughaft. Hauptfeld (Kreis/Kanal/Zug) zuerst.
+   Ab 2.0.0: Die ABTEILUNG bestimmt den Farbton (Licht Rot, Ton Blau, Bühne Grau),
+   die PHASE die Darstellung: Aufbau = dunkle Abstufung, umrandet;
+   2. Phase (Einleuchten/Soundcheck/Einrichten) = helle Abstufung, gefüllt.
+   Dazu immer ein Text-Tag („LICHT · AUFBAU“) – auch im Rotlicht-Modus eindeutig.
+   Mechanik: [data-abt] setzt --da/--de/--dei/--dai, [data-k] wählt daraus --k/--ks/--ki.
    ===================================================================== */
 :root{
   --bg:#0b0d10; --bg2:#101318; --surf:#151920; --surf2:#1b2029; --surf3:#232a35;
   --line:#2a313d; --line2:#3a4352;
   --text:#e9ecf1; --text2:#b5bdc9; --muted:#8a94a3;
-  --blue:#4ea1ff; --blue-ink:#06213f; --blue-soft:rgba(78,161,255,.14);
-  --yellow:#ffcc33; --yellow-ink:#2b2100; --yellow-soft:rgba(255,204,51,.13);
+  /* Abteilungen: a = Aufbau (dunkel), e = 2. Phase (hell), ei = Schrift auf hell, ai = Schrift auf dunkel */
+  --L-a:#c4352b; --L-e:#ff7a6b; --L-ei:#2b0603;
+  --T-a:#2d6fd2; --T-e:#7cc0ff; --T-ei:#06213f;
+  --B-a:#6b7480; --B-e:#b9c1cc; --B-ei:#15191f;
+  --ai:#ffffff;
+  /* neutral, wenn keine Abteilung gewählt ist (z. B. Leiste bei „Alle“) */
+  --da:var(--text2); --de:var(--text2); --dei:var(--bg); --dai:var(--bg);
   --neutral:#7c8696; --neutral-soft:rgba(124,134,150,.14);
   --edit:#ff8a2a; --edit-soft:rgba(255,138,42,.14);
   --ok:#3fd88a; --ok-soft:rgba(63,216,138,.14);
-  --danger:#ff5f5f; --danger-soft:rgba(255,95,95,.14);
+  /* Gefahr: Karminrosa, klar vom Licht-Rot abgesetzt; Löschen immer mit Symbol + Text */
+  --danger:#ff5c93; --danger-soft:rgba(255,92,147,.14);
+  --pink:#ff4fd8; --pink-soft:rgba(255,79,216,.16);
   --focus:#9cc9ff;
   --photo-filter:none;
   --shadow:0 10px 30px rgba(0,0,0,.45);
@@ -49,12 +59,14 @@ html[data-theme="light"]{
   --bg:#eef0f3; --bg2:#e6e9ee; --surf:#ffffff; --surf2:#f4f6f9; --surf3:#e9edf2;
   --line:#d5dbe3; --line2:#c2cad5;
   --text:#11161d; --text2:#3a4553; --muted:#5d6878;
-  --blue:#1764d8; --blue-ink:#ffffff; --blue-soft:rgba(23,100,216,.10);
-  --yellow:#e0a800; --yellow-ink:#1f1800; --yellow-soft:rgba(224,168,0,.14);
+  --L-a:#b42318; --L-e:#f4897d; --L-ei:#2b0603;
+  --T-a:#1f5fbf; --T-e:#8cc3fb; --T-ei:#06213f;
+  --B-a:#5b636e; --B-e:#bfc6cf; --B-ei:#15191f;
   --neutral:#6b7686; --neutral-soft:rgba(107,118,134,.12);
   --edit:#d9620b; --edit-soft:rgba(217,98,11,.10);
   --ok:#14945a; --ok-soft:rgba(20,148,90,.10);
-  --danger:#d43c3c; --danger-soft:rgba(212,60,60,.10);
+  --danger:#c2185b; --danger-soft:rgba(194,24,91,.10);
+  --pink:#c026a8; --pink-soft:rgba(192,38,168,.12);
   --focus:#1764d8;
   --shadow:0 10px 30px rgba(20,30,50,.18);
   color-scheme:light;
@@ -64,9 +76,11 @@ html[data-theme="red"]{
   --bg:#000; --bg2:#070000; --surf:#0e0202; --surf2:#150404; --surf3:#1d0606;
   --line:#2c0a0a; --line2:#401010;
   --text:#ff4a3d; --text2:#d23a30; --muted:#9a2a22;
-  --blue:#ff4a3d; --blue-ink:#000; --blue-soft:rgba(255,74,61,.12);
-  --yellow:#c8241a; --yellow-ink:#000; --yellow-soft:rgba(200,36,26,.16);
+  /* alle Abteilungen rot; Unterscheidung über Tag (Abteilungsname) und Schraffur (Aufbau) / Füllung (2. Phase) */
+  --L-a:#ff4a3d; --L-e:#ff4a3d; --L-ei:#000; --T-a:#ff4a3d; --T-e:#ff4a3d; --T-ei:#000; --B-a:#ff4a3d; --B-e:#ff4a3d; --B-ei:#000;
+  --ai:#000;
   --neutral:#7a1c16; --neutral-soft:rgba(122,28,22,.2);
+  --pink:#ff7a6a; --pink-soft:rgba(255,122,106,.16);
   --edit:#ff6a55; --edit-soft:rgba(255,106,85,.12);
   --ok:#ff4a3d; --ok-soft:rgba(255,74,61,.12);
   --danger:#ff7a6a; --danger-soft:rgba(255,122,106,.14);
@@ -85,6 +99,15 @@ svg.i{width:22px;height:22px;flex:none;stroke:currentColor;fill:none;stroke-widt
 svg.i.sm{width:18px;height:18px}
 svg.i.lg{width:28px;height:28px}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+/* Abteilung → Farbton */
+[data-abt="L"]{--da:var(--L-a);--de:var(--L-e);--dei:var(--L-ei);--dai:var(--ai)}
+[data-abt="T"]{--da:var(--T-a);--de:var(--T-e);--dei:var(--T-ei);--dai:var(--ai)}
+[data-abt="B"]{--da:var(--B-a);--de:var(--B-e);--dei:var(--B-ei);--dai:var(--ai)}
+/* Phase → Abstufung (--k Farbe, --ks Hauch, --ki Schrift auf --k) */
+[data-k="A"]{--k:var(--da);--ks:color-mix(in srgb,var(--da) 14%,transparent);--ki:var(--dai)}
+[data-k="E"]{--k:var(--de);--ks:color-mix(in srgb,var(--de) 16%,transparent);--ki:var(--dei)}
+[data-k="N"]{--k:var(--da);--ks:transparent;--ki:var(--dai)}
+.hatch{background:repeating-linear-gradient(45deg,var(--k) 0 4px,transparent 4px 8px)!important}
 .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .mono{font-family:var(--mono)}
 .muted{color:var(--muted)}
@@ -120,8 +143,9 @@ html.editing body::after{content:"";position:fixed;inset:0;border:4px solid var(
 .btn.edit{background:var(--edit);color:#1a0a00;border-color:var(--edit)}
 .btn.danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,var(--line))}
 .btn.danger.solid{background:var(--danger);color:#fff;border-color:var(--danger)}
-.btn.blue{background:var(--blue);color:var(--blue-ink);border-color:var(--blue)}
-.btn.yellow{background:var(--yellow);color:var(--yellow-ink);border-color:var(--yellow)}
+/* Knopf in Phasenfarbe (data-k + geerbtes data-abt) */
+.btn.kfill{background:var(--k);color:var(--ki);border-color:var(--k)}
+.btn.kline{border:2px solid var(--k)}
 .btn.block{width:100%}
 .btn.big{min-height:56px;font-size:17px;border-radius:var(--r)}
 html[data-theme="red"] .btn.primary{background:var(--text);color:#000}
@@ -161,7 +185,9 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .prog{display:flex;gap:6px;margin-top:10px}
 .prog .bar{flex:1;height:6px;border-radius:3px;background:var(--surf3);overflow:hidden}
 .prog .bar i{display:block;height:100%;border-radius:3px}
-.prog .bar.a i{background:var(--blue)} .prog .bar.e i{background:var(--yellow)}
+.prog .bar.a i{background:var(--da)} .prog .bar.e i{background:var(--de)}
+.prog .pl{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:44px}
+.progs{display:grid;gap:6px;margin-top:10px}.progs .prog{margin-top:0;align-items:center}
 .empty{text-align:center;padding:60px 20px;color:var(--muted)}
 .empty h3{color:var(--text);margin:14px 0 6px;font-size:20px}
 .empty .ico{width:72px;height:72px;margin:0 auto;border-radius:20px;background:var(--surf);border:1px solid var(--line);display:grid;place-items:center}
@@ -183,15 +209,28 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .seg{display:inline-flex;background:var(--surf);border:1px solid var(--line);border-radius:var(--r-sm);padding:3px;gap:2px;flex:none}
 .seg button{border:0;background:transparent;min-height:40px;padding:0 13px;border-radius:7px;font-weight:600;font-size:14px;color:var(--text2);display:inline-flex;align-items:center;gap:6px}
 .seg button[aria-pressed="true"]{background:var(--surf3);color:var(--text)}
-.seg button[data-k="A"][aria-pressed="true"]{background:var(--blue);color:var(--blue-ink)}
-.seg button[data-k="E"][aria-pressed="true"]{background:var(--yellow);color:var(--yellow-ink)}
 .seg .cnt{font-family:var(--mono);font-size:12px;opacity:.8}
 /* Kategorie-Knöpfe, farbig umrandet */
 .katbar{display:flex;gap:8px;flex-wrap:wrap}
 .katbtn{--kc:var(--text2);--ki:var(--bg);min-height:46px;padding:0 16px;border-radius:var(--r-sm);border:2px solid var(--kc);background:transparent;color:var(--text);
   font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:8px}
-.katbtn[data-k="A"]{--kc:var(--blue);--ki:var(--blue-ink)} .katbtn[data-k="E"]{--kc:var(--yellow);--ki:var(--yellow-ink)}
-.katbtn[aria-pressed="true"]{background:var(--kc);color:var(--ki)}
+.katbtn[data-k]{--kc:var(--k);--kci:var(--ki)}
+.katbtn{--kci:var(--bg)}
+.katbtn[aria-pressed="true"]{background:var(--kc);color:var(--kci)}
+/* Abteilungsleiste (nur bei mehr als einer sichtbaren Abteilung) */
+.deptbar{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:6px;width:100%}
+.deptbtn{--kc:var(--text2);--kci:var(--bg);min-height:46px;padding:0 6px;border-radius:var(--r-sm);border:2px solid var(--kc);background:transparent;color:var(--text);
+  font-weight:700;font-size:15px;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:0;white-space:nowrap;overflow:hidden}
+.deptbtn[data-abt]{--kc:var(--da);--kci:var(--dai)}
+.deptbtn[aria-pressed="true"]{background:var(--kc);color:var(--kci)}
+.deptbtn .cnt{font-family:var(--mono);font-size:12px;opacity:.8}
+@media (max-width:400px){.deptbtn{font-size:14px;gap:4px}.deptbtn .cnt{font-size:11px}}
+/* Abteilungs-Umschalter beim Anlegen/Bearbeiten einer Veranstaltung */
+.depttgls{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.depttgl{min-height:64px;border-radius:var(--r);border:2px solid var(--da);background:transparent;color:var(--text);font-weight:800;font-size:17px;
+  display:flex;align-items:center;justify-content:center;gap:8px}
+.depttgl[aria-pressed="true"]{background:var(--da);color:var(--dai)}
+.depttgl .ck{width:22px;height:22px;border-radius:6px;border:2px solid currentColor;display:grid;place-items:center}
 .katbtn .cnt{font-family:var(--mono);font-size:12px;opacity:.8}
 .chkbtn[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:#002b14}
 @media (max-width:560px){.chkbtn .cl{display:none}.chkbtn{padding:0;width:var(--tap);min-width:var(--tap)}
@@ -213,7 +252,9 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
   .modesw .trk{width:46px}.modesw[aria-checked="true"] .knob{transform:translateX(14px)}}
 @media (max-width:360px){.toolbar .katbtn .cnt{display:none}}
 .progress-strip{display:flex;gap:14px;align-items:center;font-size:13px;color:var(--text2);flex-wrap:wrap}
-.progress-strip .pb{display:flex;align-items:center;gap:8px;min-width:160px;flex:1}
+.progress-strip .pb{display:flex;align-items:center;gap:8px;min-width:160px;flex:1 1 230px}
+.toolbar .row.progress-strip{flex-wrap:wrap;row-gap:8px}
+.progress-strip .pb .tag{min-width:0}
 .progress-strip .pb .bar{flex:1;height:8px;background:var(--surf3);border-radius:4px;overflow:hidden}
 .progress-strip .pb .bar i{display:block;height:100%}
 
@@ -234,12 +275,14 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 
 .cards{display:flex;flex-direction:column;gap:10px}
 .cards.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px}
-.card{--k:var(--neutral);--ks:var(--neutral-soft);position:relative;display:flex;background:var(--surf);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+.card{position:relative;display:flex;background:var(--surf);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
   min-height:96px;text-align:left;width:100%;padding:0;transition:border-color .15s,background .15s}
-.card[data-k="A"]{--k:var(--blue);--ks:var(--blue-soft)}
-.card[data-k="E"]{--k:var(--yellow);--ks:var(--yellow-soft)}
 .card .strip{width:7px;flex:none;background:var(--k)}
-html[data-theme="red"] .card[data-k="E"] .strip,html[data-theme="red"] .tag.E{background:repeating-linear-gradient(45deg,var(--k) 0 4px,transparent 4px 8px)}
+/* Eintrag ohne Foto: gestrichelte Karte in der Abteilungsfarbe */
+.card[data-k="N"]{border:2px dashed color-mix(in srgb,var(--da) 75%,transparent)}
+.card[data-k="N"] .strip{background:repeating-linear-gradient(180deg,var(--da) 0 6px,transparent 6px 12px)}
+/* Rotlicht: Aufbau schraffiert, 2. Phase gefüllt */
+html[data-theme="red"] [data-k="A"] .strip,html[data-theme="red"] .bighead[data-k="A"]{background:repeating-linear-gradient(45deg,var(--k) 0 4px,transparent 4px 8px)}
 .card .hit{all:unset;cursor:pointer;display:flex;flex:1;min-width:0;gap:12px;padding:12px 12px 12px 12px}
 .card .hit:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
 .card.sel{border-color:var(--k);background:color-mix(in srgb,var(--k) 7%,var(--surf))}
@@ -252,10 +295,12 @@ html[data-theme="red"] .card[data-k="E"] .strip,html[data-theme="red"] .tag.E{ba
 .kreis{font-family:var(--mono);font-weight:800;font-size:28px;line-height:1.05;letter-spacing:-.02em;word-break:break-word;color:var(--text)}
 .kreis small{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.06em;margin-right:6px;font-family:var(--font)}
 .kreis.none{font-size:18px;color:var(--muted);font-weight:600}
-.tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:6px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
-  background:var(--k);color:var(--bg);flex:none}
-.tag.A{--k:var(--blue);color:var(--blue-ink)} .tag.E{--k:var(--yellow);color:var(--yellow-ink)} .tag.N{--k:var(--neutral);color:var(--bg)}
-html[data-theme="red"] .tag{color:#000}
+/* Tag „ABTEILUNG · PHASE“: Aufbau umrandet, 2. Phase gefüllt, ohne Foto gestrichelt */
+.tag{display:inline-flex;align-items:center;height:22px;padding:0 7px;border-radius:6px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  border:2px solid var(--k);background:transparent;color:var(--text);flex:none;white-space:nowrap}
+.tag.A{--k:var(--da)} .tag.E{--k:var(--de);background:var(--de);color:var(--dei)} .tag.N{--k:var(--da);border-style:dashed}
+@media (max-width:380px){.tag .td{display:none}.tag .ts{display:inline!important}}
+.tag .ts{display:none}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{display:inline-flex;align-items:baseline;gap:5px;height:24px;padding:0 8px;border-radius:6px;background:var(--surf2);border:1px solid var(--line);font-size:13px;white-space:nowrap;max-width:100%;overflow:hidden}
 .chip b{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
@@ -263,6 +308,13 @@ html[data-theme="red"] .tag{color:#000}
 .card .note{color:var(--text2);font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line}
 .card .chk{flex:none;width:64px;border:0;border-left:1px solid var(--line);background:var(--surf2);display:grid;place-items:center;color:var(--muted)}
 .card .chk .box{width:34px;height:34px;border-radius:9px;border:2.5px solid currentColor;display:grid;place-items:center}
+.card .chks{flex:none;display:flex;flex-direction:column;border-left:1px solid var(--line)}
+.card .chks .chk{flex:1;border-left:0;min-height:48px;gap:2px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.card .chks .chk + .chk{border-top:1px solid var(--line)}
+.card .chks .chk .box{width:28px;height:28px}
+.card .chks .chk small{font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.cards.grid .card .chks{flex-direction:row;border-left:0;border-top:1px solid var(--line)}
+.cards.grid .card .chks .chk + .chk{border-top:0;border-left:1px solid var(--line)}
 .card .chk[aria-checked="true"]{background:var(--ks);color:var(--k)}
 .card .chk[aria-checked="true"] .box{background:var(--k);border-color:var(--k);color:var(--bg)}
 /* Kreis-Spalte rechts: Nummer immer an derselben Stelle, unabhängig von Fotos und Text */
@@ -290,12 +342,11 @@ html[data-theme="red"] .tag{color:#000}
   min-height:58px;padding:6px 16px;border:0;border-radius:0;
   background:color-mix(in srgb,var(--k) 50%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);
   color:var(--text);text-align:left;box-shadow:0 6px 14px -8px rgba(0,0,0,.7);border-radius:var(--r) var(--r) 0 0}
-.bighead .tag{background:rgba(0,0,0,.22);color:inherit;border:0}
+.bighead .tag{background:rgba(0,0,0,.22);color:inherit;border-color:transparent}
 .bighead .bk{flex:1;min-width:0;font-family:var(--mono);font-weight:800;font-size:clamp(24px,6.5vw,34px);line-height:1.05;overflow-wrap:anywhere;display:flex;align-items:baseline;gap:8px}
 .bighead .bk small{font-family:var(--font);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
 .bighead .bn{font-family:var(--mono);font-size:13px;font-weight:700;opacity:.75;white-space:nowrap}
 .card[data-k] .bighead{color:var(--text)}
-.card[data-k="N"] .bighead{color:var(--text)}
 html[data-theme="red"] .bighead{background:var(--surf3);color:var(--text)}
 .cards.big .card .hit{flex-wrap:wrap;padding:12px;gap:12px}
 .cards.big .card .thumbs{flex:1 1 100%;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
@@ -322,7 +373,8 @@ html[data-theme="red"] .bighead{background:var(--surf3);color:var(--text)}
 
 /* Einrichtung & Züge */
 .setup{margin:4px 0 6px;border:1px solid var(--line);border-radius:var(--r);background:var(--surf);overflow:hidden}
-.setup.has-allg{border:2px solid var(--danger);box-shadow:0 0 0 3px var(--danger-soft)}
+.setup.has-allg{border:2px solid var(--pink);box-shadow:0 0 0 3px var(--pink-soft)}
+.setup .hint{color:var(--pink);display:inline-flex}
 .setup>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:52px;padding:0 10px 0 14px}
 .setup>summary::-webkit-details-marker{display:none}
 .setup>summary h3{margin:0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);flex:1}
@@ -359,7 +411,6 @@ html[data-theme="red"] .bighead{background:var(--surf3);color:var(--text)}
 .fieldbox.wide span{font-family:var(--font);font-weight:500;font-size:16px;white-space:pre-wrap}
 .kat{margin-top:18px;border-radius:var(--r);border:1px solid var(--line);overflow:hidden}
 .kat .kh{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--ks);border-bottom:3px solid var(--k)}
-.kat[data-k="A"]{--k:var(--blue);--ks:var(--blue-soft)} .kat[data-k="E"]{--k:var(--yellow);--ks:var(--yellow-soft)}
 .kat .kh h3{margin:0;font-size:15px;letter-spacing:.06em;text-transform:uppercase;flex:1}
 .kat .photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;padding:10px;background:var(--surf)}
 .kat .photos button{all:unset;cursor:zoom-in;position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--surf2)}
@@ -375,7 +426,15 @@ html[data-theme="red"] .bighead{background:var(--surf3);color:var(--text)}
 .fabbar{position:fixed;z-index:35;right:calc(var(--sar) + 18px);bottom:calc(var(--sab) + 18px);display:flex;gap:12px;align-items:center}
 .fab{height:64px;min-width:64px;border-radius:20px;border:0;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:0 22px;
   font-weight:700;font-size:16px;box-shadow:var(--shadow);background:var(--text);color:var(--bg)}
-.fab.cam{background:var(--surf3);color:var(--text);border:1px solid var(--line2);padding:0;width:64px}
+/* Kamera-Knopf: eigene Klasse – „.cam“ ist die Vollbild-Kamera (position:fixed) und hat den Knopf früher nach oben links verschoben */
+.fab.qcam{background:var(--surf3);color:var(--text);border:1px solid var(--line2);padding:0;width:64px}
+.fab.dept{background:var(--da);color:var(--dai)}
+.fabbar.multi .fab:not(.qcam){padding:0 18px}
+@media (max-width:620px){.fabbar.multi{flex-direction:column-reverse;align-items:flex-end;gap:10px}
+  .fabbar.multi .fab:not(.qcam){height:54px;min-width:112px;justify-content:flex-start}}
+@media (max-width:560px){.setup>summary .sum{display:none}.setup>summary [data-setup-edit] .bl{display:none}.setup>summary [data-setup-edit]{width:var(--tap);padding:0}}
+.split.multi .listpane{padding-bottom:calc(var(--sab) + 140px)}
+@media (max-width:620px){.split.multi .listpane{padding-bottom:calc(var(--sab) + 300px)}}
 .fab:active{transform:scale(.96)}
 
 /* ---------- Overlays: Sheet, Dialog, Toast ---------- */
@@ -419,7 +478,11 @@ html[data-theme="red"] .toast{background:#2a0606;color:var(--text);border:1px so
 .f-row.ka{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
 .f-row.gf{grid-template-columns:1fr 1fr}
 .f-row.ka .f.kreisf{grid-column:auto}
-.f-row.ka #ed-adresse{height:60px;font-size:18px}
+.f-row.ka .f:not(.kreisf) input{height:60px;font-size:18px}
+.f .req{display:none;color:var(--pink);font-size:14px;font-weight:600;margin:6px 2px 0}
+.f.invalid .req{display:block}.f.invalid input{border-color:var(--pink);box-shadow:0 0 0 3px var(--pink-soft)}
+.f .fh{font-size:12px;color:var(--muted);margin:4px 2px 0}
+.f .swrow{display:flex;align-items:center;gap:12px;min-height:52px}
 .f-row.gf + .qkeys{margin-top:-6px}
 @media (max-width:600px){.f-row{grid-template-columns:1fr 1fr}.f-row.ka{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:8px}.f-row.ka .plusbtn{width:52px}}
 .f label{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px 2px}
@@ -446,7 +509,6 @@ details.more[open] summary .chev{transform:rotate(90deg)}
 details.more .inner{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:600px){details.more .inner{grid-template-columns:1fr}}
 .pk{border-radius:var(--r);border:1px solid var(--line);overflow:hidden;background:var(--surf)}
-.pk[data-k="A"]{--k:var(--blue);--ks:var(--blue-soft)} .pk[data-k="E"]{--k:var(--yellow);--ks:var(--yellow-soft)}
 .pk .ph{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;background:var(--ks);border-bottom:3px solid var(--k)}
 .pk .ph h3{margin:0;font-size:14px;letter-spacing:.08em;text-transform:uppercase;flex:1}
 .pk .ph .n{font-family:var(--mono);font-size:13px;color:var(--text2)}
@@ -460,7 +522,9 @@ details.more .inner{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:
 .slot.add{border:2px dashed var(--line2);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--text2);font-weight:700;font-size:14px}
 .slot.add:hover{border-color:var(--k);color:var(--k)}
 .slot.add .hint{font-weight:500;font-size:12px;color:var(--muted)}
-.slot.add .plus{width:46px;height:46px;border-radius:50%;background:var(--k);color:var(--bg);display:grid;place-items:center}
+.slot.add .plus{width:46px;height:46px;border-radius:50%;background:var(--k);color:var(--ki);display:grid;place-items:center}
+/* Editor-Kopf in Abteilungsfarbe */
+.sheet[data-abt] > .sheet-h{border-bottom:3px solid var(--da)}
 .spinner{width:26px;height:26px;border-radius:50%;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .savebtn .spinner{width:18px;height:18px;border-color:rgba(0,0,0,.25);border-top-color:currentColor}
@@ -492,9 +556,8 @@ button.item:hover{background:var(--surf2)}
   padding:calc(var(--sat) + 68px) var(--sar) calc(var(--sab) + 8px) var(--sal)}
 .cam .top{position:absolute;top:calc(var(--sat) + 8px);left:calc(var(--sal) + 10px);right:calc(var(--sar) + 10px);display:flex;align-items:center;gap:8px;z-index:2}
 .cam .top .ttl{flex:1;text-align:center;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cam .vf{--kc:#4ea1ff;position:relative;width:min(100vw,calc(var(--vh)*100 - 340px));width:min(100vw,calc(100dvh - 340px));aspect-ratio:1;background:#111;overflow:hidden;border-radius:8px;
+.cam .vf{--kc:#c4352b;position:relative;width:min(100vw,calc(var(--vh)*100 - 340px));width:min(100vw,calc(100dvh - 340px));aspect-ratio:1;background:#111;overflow:hidden;border-radius:8px;
   border:6px solid var(--kc);transition:border-color .15s}
-.cam .vf[data-k="E"]{--kc:#ffcc33}
 .cam .camname{font-size:12px;color:#ccc;text-align:center;min-height:16px;margin-top:6px}
 .cam .camsys{display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:6px}
 .cam .camsys .tbtn{min-height:40px;font-size:13px}
@@ -517,12 +580,10 @@ button.item:hover{background:var(--surf2)}
 .cam .cbtn{width:56px;height:56px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center}
 .cam .cbtn[aria-pressed="true"]{background:#ffcc33;color:#000}
 .cam .strip{display:flex;gap:6px;height:56px;align-items:center;overflow-x:auto;max-width:100%;padding:0 12px}
-.cam .strip img{width:48px;height:48px;border-radius:6px;object-fit:cover;border:3px solid #4ea1ff;flex:none}
-.cam .strip img[data-k="E"]{border-color:#ffcc33}
+.cam .strip img{width:48px;height:48px;border-radius:6px;object-fit:cover;border:3px solid #888;flex:none}
 .cam .katsw{display:flex;gap:6px;margin-top:4px}
 .cam .katsw button{border:0;min-height:44px;padding:0 16px;border-radius:999px;font-weight:700;background:rgba(255,255,255,.14);color:#fff}
-.cam .katsw button[aria-pressed="true"][data-k="A"]{background:var(--blue);color:#06213f}
-.cam .katsw button[aria-pressed="true"][data-k="E"]{background:#ffcc33;color:#2b2100}
+.cam .katsw button[aria-pressed="true"]{background:var(--kc);color:var(--kci,#fff)}
 .cam .msg{max-width:420px;text-align:center;padding:20px;color:#ddd}
 .cam .tbtn{border:0;background:rgba(255,255,255,.16);color:#fff;min-height:48px;padding:0 16px;border-radius:12px;font-weight:700;display:inline-flex;align-items:center;gap:8px}
 .cam .tbtn.done{background:#fff;color:#000}
@@ -539,6 +600,7 @@ button.item:hover{background:var(--surf2)}
   background:linear-gradient(transparent,rgba(0,0,0,.88) 34%);transition:opacity .2s}
 .lbx .infos .row1{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .lbx .infos .kreis{color:#fff;font-size:44px}
+.lbx .tag{color:#fff} .lbx .tag.E{color:var(--dei)}
 .lbx .infos .chips .chip{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.18);height:30px;font-size:15px}
 .lbx .infos .chips .chip b{color:#bbb}
 .lbx .infos .note{margin-top:8px;font-size:18px;line-height:1.4;white-space:pre-wrap;max-height:30vh;overflow:auto}
@@ -620,28 +682,135 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '1.8.1';
+const APP_VERSION = '2.0.0';
 const DB_NAME = 'lichtdoku';
 const DB_VERSION = 1;
-const FORMAT_VERSION = 1;              // Format von Backup-/Sync-Paketen
+const FORMAT_VERSION = 2;              // Format von Backup-/Sync-Paketen (2: Abteilungen, Filter je Abteilung)
 
-/** Kategorien: Aufbau (blau), Einleuchten (gelb), N = Eintrag ohne Fotos */
-const KAT = {
-  A: { key: 'A', name: 'Aufbau', rgb: [0.16, 0.46, 0.95] },
-  E: { key: 'E', name: 'Einleuchten', rgb: [1.0, 0.78, 0.12] },
-  N: { key: 'N', name: 'Ohne Fotos', rgb: [0.55, 0.58, 0.63] }
+/* =====================================================================
+   DEPT – zentrale Konfiguration der Abteilungen. Felder, Beschriftungen,
+   Phasen, Hauptfeld und Farben kommen NUR von hier. Eine weitere Abteilung
+   (z. B. Requisite) = ein weiterer Eintrag + Farbvariablen im CSS.
+   Foto-Kategorien bleiben intern 'A' (Aufbau) und 'E' (2. Phase).
+   Feld-Optionen: main (Hauptfeld), plus (Zahlentastatur + „+“-Taste, wird wie
+   Kreis normalisiert), mode ('tel' | 'num' | 'text'), mono, area (mehrzeilig),
+   bool (Schalter), extra (unter „Weitere Angaben“), qkeys (Settings-Schlüssel
+   der Schnelltasten), req (Pflichtfeld), hint (Hinweis unter dem Feld).
+   ===================================================================== */
+const DEPT_ORDER = ['L', 'T', 'B'];
+const DEPT = {
+  L: {
+    key: 'L', name: 'Beleuchtung', short: 'Licht', abbr: 'L',
+    phases: { A: 'Aufbau', E: 'Einleuchten' }, done: { A: 'Aufgebaut', E: 'Eingeleuchtet' }, photoKats: ['A', 'E'],
+    main: 'kreis', mainLabel: 'Kreis', mergeMain: true,
+    chips: ['gruppe', 'filter', 'adresse'],
+    fields: [
+      { k: 'kreis', label: 'Kreis', main: true, plus: true, mode: 'tel', ph: 'z. B. 123+124' },
+      { k: 'adresse', label: 'Adresse', mono: true, ph: '12/301' },
+      { k: 'gruppe', label: 'Gruppe', mono: true, mode: 'tel' },
+      { k: 'filter', label: 'Filter', mono: true, ph: 'z. B. L201, nc', qkeys: 'filterKeys' },
+      { k: 'bemerkung', label: 'Bemerkung', area: true, ph: 'Wo steckt es, was ist zu beachten?' },
+      { k: 'geraet', label: 'Gerät / Scheinwerfer', extra: true, ph: 'z. B. ETC Source Four 26°' },
+      { k: 'dmx', label: 'DMX-Adresse / Universe', extra: true, mono: true, ph: 'z. B. 2/145' },
+      { k: 'position', label: 'Position / Zug', extra: true, ph: 'z. B. 3. Zug, Portal rechts' },
+      { k: 'farbe', label: 'Farbe / Gobo', extra: true, ph: 'z. B. L201, Gobo Wald' },
+      { k: 'szene', label: 'Szene / Bild', extra: true, ph: 'z. B. Bild 3' }
+    ],
+    extraHint: 'Gerät, DMX, Position, Farbe, Szene',
+    pdf: [['KREIS', 'kreis'], ['FILTER', 'filter'], ['GRUPPE', 'gruppe'], ['ADRESSE', 'adresse']],
+    toc: ['gruppe', 'filter'],
+    col: { A: '#c4352b', E: '#ff7a6b' }
+  },
+  T: {
+    key: 'T', name: 'Ton', short: 'Ton', abbr: 'T',
+    phases: { A: 'Aufbau', E: 'Soundcheck' }, done: { A: 'Aufgebaut', E: 'Soundcheck ok' }, photoKats: ['A', 'E'],
+    main: 'kanal', mainLabel: 'Kanal', mergeMain: true,
+    chips: ['quelle', 'mikro', 'stagebox'],
+    fields: [
+      { k: 'kanal', label: 'Kanal / Input', main: true, plus: true, mode: 'tel', ph: 'z. B. 17' },
+      { k: 'quelle', label: 'Bezeichnung / Quelle', ph: 'z. B. Funk Mackie, Atmo L' },
+      { k: 'mikro', label: 'Mikrofon / Gerät', ph: 'z. B. DPA 4061', qkeys: 'mikroKeys' },
+      { k: 'stagebox', label: 'Stagebox / Patch', mono: true, ph: 'z. B. SB2-07' },
+      { k: 'ausgang', label: 'Ausgang / Weg', ph: 'z. B. PA, Monitor 3, Aux 5' },
+      { k: 'mikropos', label: 'Mikrofonposition', ph: 'z. B. Stirn, Haaransatz', hint: 'Fotos dazu unten unter „Aufbau“' },
+      { k: 'bemerkung', label: 'Bemerkung', area: true, ph: 'Was ist zu beachten?' },
+      { k: 'funk', label: 'Funk: Sender-Nr. / Frequenz', extra: true, mono: true, ph: 'z. B. TX 4 · 606,250 MHz' },
+      { k: 'akku', label: 'Akku-Wechsel', extra: true, ph: 'z. B. vor jeder Vorstellung' },
+      { k: 'rolle', label: 'Rolle / Darsteller', extra: true, ph: 'z. B. Mackie Messer' },
+      { k: 'szene', label: 'Szene / Snapshot', extra: true, ph: 'z. B. Szene 3, Snap 12' },
+      { k: 'phantom', label: 'Phantomspeisung 48 V', extra: true, bool: true }
+    ],
+    extraHint: 'Funk, Akku, Rolle, Szene, 48 V',
+    pdf: [['KANAL', 'kanal'], ['QUELLE', 'quelle'], ['MIKROFON', 'mikro'], ['STAGEBOX', 'stagebox']],
+    toc: ['quelle', 'mikro'],
+    col: { A: '#2d6fd2', E: '#7cc0ff' }
+  },
+  B: {
+    key: 'B', name: 'Bühnentechnik', short: 'Bühne', abbr: 'B',
+    phases: { A: 'Aufbau', E: 'Einrichten' }, done: { A: 'Aufgebaut', E: 'Eingerichtet' }, photoKats: ['A'],
+    main: 'zug', mainLabel: 'Zug', mergeMain: false,          // mehrere Elemente am selben Zug sind normal
+    chips: ['element', 'hoehe', 'reihenfolge'],
+    fields: [
+      { k: 'zug', label: 'Zug / Position', main: true, req: true, ph: 'z. B. Zug 14, OLZ 1, Boden links' },
+      { k: 'element', label: 'Element / Bezeichnung', ph: 'z. B. Rückprospekt Hafen' },
+      { k: 'hoehe', label: 'Höhe / Spielmarke', mono: true, ph: 'z. B. 8,20 m, Marke rot' },
+      { k: 'reihenfolge', label: 'Reihenfolge Umbau', mono: true, mode: 'num', ph: 'z. B. 4' },
+      { k: 'bemerkung', label: 'Bemerkung', area: true, ph: 'Was ist zu beachten?' },
+      { k: 'szene', label: 'Szene / Verwandlung', extra: true, ph: 'z. B. Bild 2 → 3' },
+      { k: 'zustaendig', label: 'Zuständig', extra: true, ph: 'z. B. Seite links' },
+      { k: 'last', label: 'Last / Gewicht', extra: true, mono: true, ph: 'z. B. 180 kg' },
+      { k: 'sicherung', label: 'Befestigung / Sicherung', extra: true, ph: 'z. B. 2 Sicherungsseile' },
+      { k: 'brandschutz', label: 'Brandschutz', extra: true, ph: 'z. B. Dekomaterial B1, Nachweis liegt vor' },
+      { k: 'lagerort', label: 'Lagerort', extra: true, ph: 'z. B. Seitenbühne rechts' }
+    ],
+    extraHint: 'Szene, Zuständig, Last, Sicherung, Brandschutz, Lagerort',
+    pdf: [['ZUG', 'zug'], ['ELEMENT', 'element'], ['HÖHE', 'hoehe'], ['REIHENF.', 'reihenfolge']],
+    toc: ['element', 'hoehe'],
+    col: { A: '#6b7480', E: '#b9c1cc' }
+  }
 };
+
+/** Kategorien (intern): A = Aufbau, E = 2. Phase, N = Eintrag ohne Fotos. Namen je Abteilung über katName(). */
+const KAT = { A: { key: 'A' }, E: { key: 'E' }, N: { key: 'N' } };
+/** Abteilung eines Eintrags – fehlt das Feld (Daten bis 1.8.1), ist es Licht. Nur lesen, nie nachträglich schreiben. */
+function abtOf(e) { const a = e && e.f && e.f.abt; return DEPT[a] ? a : 'L'; }
+/** Phasenname: ohne Abteilung (Ansicht „Alle“) heißt die 2. Phase allgemein „Einrichtung“ */
+function katName(abt, kat) {
+  if (kat === 'N') return 'Ohne Foto';
+  if (!abt || !DEPT[abt]) return kat === 'E' ? 'Einrichtung' : 'Aufbau';
+  return DEPT[abt].phases[kat];
+}
+function hexRgb(h) { return [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255); }
+/** Farbe für PDF/Kamera: Aufbau dunkel, 2. Phase hell, ohne Foto = Aufbau-Ton */
+function katHex(abt, kat) { const d = DEPT[abt] || DEPT.L; return kat === 'E' ? d.col.E : d.col.A; }
+function katRgb(abt, kat) { return hexRgb(katHex(abt, kat)); }
+function deptField(abt, k) { return (DEPT[abt] || DEPT.L).fields.find(x => x.k === k); }
+function fieldLabel(abt, k) { const f = deptField(abt, k); return f ? f.label : (FIELD_LABEL[k] || k); }
+/** Wert des Hauptfelds (Kreis / Kanal / Zug) */
+function mainVal(e) { return (e && e.f && e.f[DEPT[abtOf(e)].main]) || ''; }
+/** Anzeigewert eines Feldes ('' = nicht anzeigen); Schalter erscheinen als „an“ */
+function fieldVal(abt, k, v) { const fd = deptField(abt, k); if (fd && fd.bool) return v ? 'an' : ''; return v == null ? '' : String(v); }
+/** Felder für Info-Chips: zuerst die Chips der Abteilung, dann alle weiteren ausgefüllten (ohne Hauptfeld/Bemerkung) */
+function infoKeys(abt, all = false) {
+  const D = DEPT[abt]; const rest = D.fields.map(x => x.k).filter(k => k !== D.main && k !== 'bemerkung' && !D.chips.includes(k));
+  return all ? D.chips.concat(rest) : D.chips;
+}
+/** Tag „LICHT · AUFBAU“ (bei schmalem Bildschirm „L · AUFBAU“) */
+function tagHtml(abt, kat, cls = '') {
+  const d = DEPT[abt];
+  return `<span class="tag ${kat} ${cls}" ${d ? `data-abt="${abt}"` : ''}>${d ? `<span class="td">${Utils.esc(d.short)}&nbsp;·&nbsp;</span><span class="ts">${d.abbr}&nbsp;·&nbsp;</span>` : ''}${Utils.esc(katName(abt, kat))}</span>`;
+}
+
 /** Feldnamen je Datensatztyp – jedes Feld trägt einen eigenen Zeitstempel */
 const FIELDS = {
-  show: ['titel', 'spielstaette', 'notiz', 'del'],
-  entry: ['kreis', 'gruppe', 'filter', 'adresse', 'bemerkung', 'geraet', 'dmx', 'position', 'farbe', 'chkA', 'chkE', 'del'],
+  show: ['titel', 'spielstaette', 'notiz', 'abteilungen', 'del'],
+  entry: ['abt', 'chkA', 'chkE', 'del', ...new Set(DEPT_ORDER.flatMap(a => DEPT[a].fields.map(x => x.k)))],
   photo: ['entryId', 'kat', 'ord', 'label', 'del']
 };
-const TEXT_FIELDS = ['kreis', 'gruppe', 'filter', 'adresse', 'bemerkung', 'geraet', 'dmx', 'position', 'farbe'];
-const FIELD_LABEL = {
-  kreis: 'Kreis', gruppe: 'Gruppe', filter: 'Filter', adresse: 'Adresse', bemerkung: 'Bemerkung',
-  geraet: 'Gerät', dmx: 'DMX / Universe', position: 'Position / Zug', farbe: 'Farbe / Gobo'
-};
+/** alle Textfelder aller Abteilungen (Suche, Vorlagen) */
+const TEXT_FIELDS = [...new Set(DEPT_ORDER.flatMap(a => DEPT[a].fields.filter(x => !x.bool).map(x => x.k)))];
+const FIELD_LABEL = Object.fromEntries(DEPT_ORDER.flatMap(a => DEPT[a].fields.map(x => [x.k, x.label])).reverse());
+Object.assign(FIELD_LABEL, { kreis: 'Kreis', gruppe: 'Gruppe', filter: 'Filter', adresse: 'Adresse', bemerkung: 'Bemerkung', geraet: 'Gerät', dmx: 'DMX / Universe', position: 'Position / Zug', farbe: 'Farbe / Gobo' });
 
 /* =====================================================================
    Utils – kleine Helfer ohne Zustand
@@ -1001,6 +1170,14 @@ const Repo = {
     this._byEntry = m; return m;
   },
   photosOf(entryId, kat) { const arr = this._index().get(entryId) || []; return kat ? arr.filter(p => p.f.kat === kat) : arr; },
+  /** Abteilungen einer Veranstaltung. Fehlt das Feld (bis 1.8.1): Licht + jede Abteilung mit Einträgen.
+      Wird nur gelesen – geschrieben wird erst, wenn jemand die Auswahl bewusst ändert. */
+  showDepts(showId) {
+    const s = this.shows.get(showId); const v = s && s.f.abteilungen;
+    if (Array.isArray(v)) { const ok = DEPT_ORDER.filter(d => v.includes(d)); if (ok.length) return ok; }
+    const have = new Set(['L']); this.entriesOf(showId).forEach(e => have.add(abtOf(e)));
+    return DEPT_ORDER.filter(d => have.has(d));
+  },
   /** Kategorien, in denen ein Eintrag als Karte erscheint */
   catsOf(entryId) {
     const ps = this.photosOf(entryId); const c = [];
@@ -1008,19 +1185,30 @@ const Repo = {
     if (ps.some(p => p.f.kat === 'E')) c.push('E');
     return c.length ? c : ['N'];
   },
-  stats(showId) {
-    const es = this.entriesOf(showId); let photos = 0, a = 0, aDone = 0, e = 0, eDone = 0;
+  /** Zähler für Fortschritt; depts = nur diese Abteilungen (null = alle) */
+  stats(showId, depts = null) {
+    const es = this.entriesOf(showId).filter(en => !depts || depts.includes(abtOf(en)));
+    let photos = 0, a = 0, aDone = 0, e = 0, eDone = 0;
     for (const en of es) {
       const cats = this.catsOf(en.id); photos += this.photosOf(en.id).length;
+      if (DEPT[abtOf(en)].photoKats.length === 1) {               // Bühne: eine Karte, zwei Haken
+        a++; if (en.f.chkA) aDone++; e++; if (en.f.chkE) eDone++; continue;
+      }
       if (cats.includes('A') || cats.includes('N')) { a++; if (en.f.chkA) aDone++; }
       if (cats.includes('E')) { e++; if (en.f.chkE) eDone++; }
     }
     return { entries: es.length, photos, a, aDone, e, eDone };
   },
+  /** Schlüssel für „gleicher Eintrag“: Abteilung + Menge des Hauptfelds (nur Abteilungen mit mergeMain) */
+  dupKey(e) {
+    const d = DEPT[abtOf(e)]; if (!d.mergeMain) return '';
+    const k = Utils.kreisTokens(e.f[d.main]).sort().join('+');
+    return k ? d.key + '|' + k : '';
+  },
   duplicatesOf(showId) {
     const groups = new Map();
     for (const e of this.entriesOf(showId)) {
-      const k = Utils.kreisTokens(e.f.kreis).sort().join('+'); if (!k) continue;
+      const k = this.dupKey(e); if (!k) continue;
       if (!groups.has(k)) groups.set(k, []); groups.get(k).push(e);
     }
     return [...groups.values()].filter(g => g.length > 1);
@@ -1038,8 +1226,10 @@ const Repo = {
     this.emit({ local, records: { shows, entries, photos }, blobIds: fulls.map(f => f.id) });
     App.ensurePersist();
   },
-  async createShow(titel) {
-    const s = Rec.create({}, { titel: titel || 'Neue Veranstaltung', spielstaette: '', notiz: '', del: false });
+  async createShow(titel, abteilungen = null) {
+    const f = { titel: titel || 'Neue Veranstaltung', spielstaette: '', notiz: '', del: false };
+    if (abteilungen && abteilungen.length) f.abteilungen = DEPT_ORDER.filter(d => abteilungen.includes(d));
+    const s = Rec.create({}, f);
     await this._write({ shows: [s] }); return s;
   },
   async patchShow(id, patch) { const r = Rec.patch(this.shows.get(id), patch); if (r) await this._write({ shows: [r] }); return r; },
@@ -1053,12 +1243,13 @@ const Repo = {
   /** Duplizieren: neue IDs, Fotos teilen sich die (unveränderlichen) Bilddaten */
   async duplicateShow(id) {
     const src = this.shows.get(id);
-    const sf = { titel: src.f.titel + ' (Kopie)', spielstaette: src.f.spielstaette || '', notiz: src.f.notiz || '', einrichtung: src.f.einrichtung || '', del: false };
+    const sf = { titel: src.f.titel + ' (Kopie)', spielstaette: src.f.spielstaette || '', notiz: src.f.notiz || '', einrichtung: src.f.einrichtung || '', abteilungen: this.showDepts(id), del: false };
     Object.keys(src.f).forEach(k => { if (k.startsWith('z:') && src.f[k] && !src.f[k].del) sf[k] = Utils.clone(src.f[k]); });   // Züge mitnehmen
     const s = Rec.create({}, sf);
     const entries = [], photos = [];
     for (const e of this.entriesOf(id)) {
-      const f = {}; FIELDS.entry.forEach(k => { f[k] = e.f[k] ?? (k.startsWith('chk') || k === 'del' ? false : ''); });
+      // nur vorhandene Felder kopieren (keine leeren Felder fremder Abteilungen anlegen)
+      const f = Utils.clone(e.f); f.abt = abtOf(e); f.chkA = !!f.chkA; f.chkE = !!f.chkE; f.del = false;
       const ne = Rec.create({ showId: s.id }, f); entries.push(ne);
       for (const p of this.photosOf(e.id)) photos.push(Rec.create({ showId: s.id, b: p.b, w: p.w, h: p.h }, { entryId: ne.id, kat: p.f.kat, ord: p.f.ord, label: p.f.label || '', del: false }));
     }
@@ -1088,9 +1279,10 @@ const Repo = {
     const e = this.entries.get(id); const k = kat === 'E' ? 'chkE' : 'chkA';
     const r = Rec.patch(e, { [k]: !e.f[k] }); if (r) await this._write({ entries: [r] }); return r;
   },
-  async resetChecks(showId, which) {
+  async resetChecks(showId, which, depts = null) {
     const out = [];
     for (const e of this.entriesOf(showId)) {
+      if (depts && !depts.includes(abtOf(e))) continue;
       const p = {}; if (which !== 'E' && e.f.chkA) p.chkA = false; if (which !== 'A' && e.f.chkE) p.chkE = false;
       const r = Object.keys(p).length ? Rec.patch(e, p) : null; if (r) out.push(r);
     }
@@ -1101,20 +1293,29 @@ const Repo = {
   /**
    * Eintrag aus dem Editor speichern (neu oder bestehend) – inkl. Fotos, Reihenfolge,
    * gelöschter Fotos und automatischem Zusammenführen bei gleicher Kreis-Nummer.
-   * draft = { id|null, showId, f:{…}, photos:{A:[slot], E:[slot]} }
+   * draft = { id|null, showId, abt, f:{…}, photos:{A:[slot], E:[slot]} }
    * slot  = { photoId|null, b, w, h, full?:ArrayBuffer, thumb?:ArrayBuffer, label }
+   * Es werden nur die Felder der Abteilung behandelt; ein leeres Feld, das es im
+   * Datensatz noch nicht gibt, wird NICHT angelegt (sonst gälte der Eintrag als geändert).
    */
   async saveDraft(draft) {
     const showId = draft.showId;
-    const f = Object.assign({}, draft.f);
-    f.kreis = Utils.normKreis(f.kreis);
-    TEXT_FIELDS.forEach(k => { f[k] = String(f[k] ?? '').trim(); });
-
-    // Ziel bestimmen: gleiche Kreis-Nummer in derselben Show → zusammenführen
     let target = draft.id ? this.entries.get(draft.id) : null;
+    const abt = target ? abtOf(target) : (DEPT[draft.abt] ? draft.abt : 'L');
+    const D = DEPT[abt], main = D.main;
+    const f = {};
+    for (const fd of D.fields) {
+      if (!(fd.k in draft.f)) continue;
+      f[fd.k] = fd.bool ? !!draft.f[fd.k] : String(draft.f[fd.k] ?? '').trim();
+    }
+    if (D.fields.find(x => x.k === main).plus) f[main] = Utils.normKreis(f[main]);
+    if (target) for (const k of Object.keys(f)) if ((f[k] === '' || f[k] === false) && target.f[k] == null) delete f[k];
+    const textKeys = Object.keys(f).filter(k => !deptField(abt, k).bool);
+
+    // Ziel bestimmen: gleiches Hauptfeld in derselben Show und Abteilung → zusammenführen
     let mergedInto = null, mergeNotes = [];
-    if (f.kreis) {
-      const dup = this.entriesOf(showId).find(e => e.id !== draft.id && Utils.kreisEq(e.f.kreis, f.kreis));
+    if (D.mergeMain && f[main]) {
+      const dup = this.entriesOf(showId).find(e => e.id !== draft.id && abtOf(e) === abt && Utils.kreisEq(e.f[main], f[main]));
       if (dup) mergedInto = dup;
     }
     const out = { entries: [], photos: [], fulls: [], thumbs: [] };
@@ -1122,13 +1323,14 @@ const Repo = {
     if (mergedInto) {
       // Felder übernehmen: leere Zielfelder füllen, abweichende Werte → neuer Wert gewinnt, Bemerkungen werden verbunden
       const patch = {};
-      for (const k of TEXT_FIELDS) {
+      for (const k of textKeys) {
         const nv = f[k], ov = String(mergedInto.f[k] ?? '').trim();
         if (!nv || nv === ov) continue;
         if (k === 'bemerkung' && ov) { if (!ov.includes(nv)) patch[k] = ov + '\n— \n' + nv; }
-        else if (k === 'kreis') continue;
-        else { if (ov) mergeNotes.push(`${FIELD_LABEL[k]}: „${ov}“ → „${nv}“`); patch[k] = nv; }
+        else if (k === main) continue;
+        else { if (ov) mergeNotes.push(`${fieldLabel(abt, k)}: „${ov}“ → „${nv}“`); patch[k] = nv; }
       }
+      Object.keys(f).filter(k => deptField(abt, k).bool && f[k] && !mergedInto.f[k]).forEach(k => { patch[k] = true; });
       const r = Rec.patch(mergedInto, patch); if (r) out.entries.push(r);
       entryId = mergedInto.id;
       if (target) { const t = Rec.patch(target, { del: true }); if (t) out.entries.push(t); }
@@ -1136,7 +1338,7 @@ const Repo = {
       const r = Rec.patch(target, f); if (r) out.entries.push(r);
       entryId = target.id;
     } else {
-      const ne = Rec.create({ showId }, Object.assign({ chkA: false, chkE: false, del: false }, f));
+      const ne = Rec.create({ showId }, Object.assign({ abt, chkA: false, chkE: false, del: false }, f));
       out.entries.push(ne); entryId = ne.id;
     }
 
@@ -1169,9 +1371,9 @@ const Repo = {
       group.sort((a, b) => a.c - b.c);
       const [keep, ...rest] = group;
       for (const other of rest) {
-        const draft = { id: other.id, showId, f: Object.assign({}, other.f), photos: { A: [], E: [] } };
+        const draft = { id: other.id, showId, abt: abtOf(other), f: Object.assign({}, other.f), photos: { A: [], E: [] } };
         this.photosOf(other.id).forEach(p => draft.photos[p.f.kat].push({ photoId: p.id, b: p.b, w: p.w, h: p.h, label: p.f.label }));
-        draft.f.kreis = keep.f.kreis;
+        const m = DEPT[abtOf(keep)].main; draft.f[m] = keep.f[m];
         await this.saveDraft(draft); n++;
       }
     }
@@ -1231,9 +1433,16 @@ const Settings = {
     demoOnFirstStart: true, deviceName: '', redPhotos: true,
     cameraId: '',                                   // zuletzt gewählte Kamera (deviceId)
     camMode: 'app',                                 // 'app' = Doku-VT-Kamera, 'system' = Kamera-App des Geräts (alle Objektive)
-    filterKeys: ['nc', 'L201', 'L202', 'L203', 'L204', 'L205', 'L216', 'L250', 'L132']   // Filter-Schnelltasten
+    filterKeys: ['nc', 'L201', 'L202', 'L203', 'L204', 'L205', 'L216', 'L250', 'L132'],  // Filter-Schnelltasten (Licht)
+    mikroKeys: ['DPA 4061', 'DPA 4066', 'SM58', 'Beta 91', 'e604', 'MKE 2'],              // Mikrofon-Schnelltasten (Ton)
+    depts: ['L']                                    // Abteilungen, die DIESES Gerät dokumentiert (bestehende Installationen: nur Licht)
   },
-  async load() { Object.assign(this.v, await Store.metaGet('settings', {})); this.apply(); },
+  async load() {
+    Object.assign(this.v, await Store.metaGet('settings', {}));
+    const d = DEPT_ORDER.filter(x => (this.v.depts || []).includes(x));
+    this.v.depts = d.length ? d : ['L'];
+    this.apply();
+  },
   async set(patch) { Object.assign(this.v, patch); this.apply(); await Store.metaSet('settings', this.v); },
   apply() {
     const root = document.documentElement;
@@ -1415,9 +1624,11 @@ const Camera = {
   open(opts) {
     if (Settings.v.camMode === 'system' && !opts.forceApp) return this.openSystem(opts);
     return new Promise(resolve => {
-      let kat = opts.kat || 'A', count = 0, torch = false, devices = [], curId = Settings.v.cameraId || '';
+      const abt = DEPT[opts.abt] ? opts.abt : 'L', D = DEPT[abt];
+      const canSwitch = opts.allowKatSwitch && D.photoKats.length > 1;     // Bühne: nur Aufbau, kein Umschalter
+      let kat = D.photoKats.includes(opts.kat) ? opts.kat : 'A', count = 0, torch = false, devices = [], curId = Settings.v.cameraId || '';
       const el = document.createElement('div');
-      el.className = 'cam'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Kamera');
+      el.className = 'cam'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Kamera'); el.dataset.abt = abt;
       el.innerHTML = `
         <div class="top">
           <button class="tbtn" data-a="close" aria-label="Kamera schließen">${I('close')}</button>
@@ -1428,8 +1639,8 @@ const Camera = {
         <div class="msg hidden"></div>
         <div class="camlist hidden" role="group" aria-label="Objektiv wählen"></div>
         <div class="camsys"><span class="camhint"></span><button class="tbtn" data-a="sys">${I('camera')} Geräte-Kamera · alle Objektive</button></div>
-        ${opts.allowKatSwitch ? `<div class="katsw" role="group" aria-label="Kategorie">
-          <button data-k="A" aria-pressed="${kat === 'A'}">Aufbau</button><button data-k="E" aria-pressed="${kat === 'E'}">Einleuchten</button></div>` : ''}
+        ${canSwitch ? `<div class="katsw" role="group" aria-label="Phase">${D.photoKats.map(k =>
+          `<button data-k="${k}" aria-pressed="${kat === k}" style="--kc:${katHex(abt, k)};--kci:${k === 'E' ? '#000' : '#fff'}">${Utils.esc(D.short + ' · ' + D.phases[k])}</button>`).join('')}</div>` : ''}
         <div class="ctrl">
           <button class="cbtn" data-a="file" aria-label="Foto aus Mediathek oder System-Kamera">${I('image')}</button>
           <button class="shutter" data-a="shot" aria-label="Auslösen"></button>
@@ -1446,9 +1657,10 @@ const Camera = {
       const camlist = el.querySelector('.camlist');
       const setHint = () => {
         const n = (opts.startIndex || 0) + count + 1;
-        hint.textContent = `${KAT[kat].name} · Foto ${n}`;
-        hint.style.background = kat === 'A' ? 'rgba(30,90,200,.85)' : 'rgba(200,150,0,.9)';
-        vf.dataset.k = kat;
+        hint.textContent = `${D.short} · ${D.phases[kat]} · Foto ${n}`;
+        hint.style.background = katHex(abt, kat) + 'e0';
+        hint.style.color = kat === 'E' ? '#000' : '#fff';
+        vf.dataset.k = kat; vf.style.setProperty('--kc', katHex(abt, kat));
       };
       let zoom = null, zoomCur = 1;     // Android: eine logische Rückkamera, Objektivwechsel über Zoom
       const renderCams = () => {
@@ -1511,7 +1723,7 @@ const Camera = {
         el.querySelector('.shutter').classList.add('hidden');
       };
       const addThumb = (p, k) => {
-        const im = document.createElement('img'); im.alt = ''; im.dataset.k = k;
+        const im = document.createElement('img'); im.alt = ''; im.dataset.k = k; im.style.borderColor = katHex(abt, k);
         strip.appendChild(im); strip.scrollLeft = strip.scrollWidth;
         p.then(r => { im.src = Thumbs.local(r.thumb); }).catch(() => im.remove());
       };
@@ -1658,7 +1870,7 @@ const Lightbox = {
       <button class="nav prev" data-a="prev" aria-label="Vorheriges Foto">${I('arrowL')}</button>
       <button class="nav next" data-a="next" aria-label="Nächstes Foto">${I('arrowR')}</button>
       <div class="infos"></div>
-      <button class="nextk" data-a="nextk" aria-label="Zum nächsten Kreis">Nächster Kreis ${I('arrowR', 'sm')}</button>`;
+      <button class="nextk" data-a="nextk" aria-label="Zum nächsten Eintrag">Nächster Eintrag ${I('arrowR', 'sm')}</button>`;
     const img = el.querySelector('img'), stage = el.querySelector('.stage'), infos = el.querySelector('.infos'), pos = el.querySelector('.pos');
     const apply = (anim) => {
       img.style.transition = anim ? 'transform .22s ease' : 'none';
@@ -1676,11 +1888,13 @@ const Lightbox = {
       el.querySelector('.nav.prev').disabled = i === 0; el.querySelector('.nav.next').disabled = i === items.length - 1;
       el.querySelectorAll('.nav').forEach(n => n.classList.toggle('hidden', items.length < 2));
       el.querySelector('.nextk').classList.toggle('hidden', nextKreisIdx() < 0);
-      const e = it.draftF ? { f: it.draftF } : (Repo.entries.get(it.entryId) || { f: {} });
-      const chips = ['gruppe', 'filter', 'adresse', 'geraet', 'dmx', 'position', 'farbe'].filter(k => e.f[k])
-        .map(k => `<span class="chip"><b>${FIELD_LABEL[k]}</b><span>${Utils.esc(e.f[k])}</span></span>`).join('');
-      infos.innerHTML = `<div class="row1"><span class="tag ${it.kat}">${KAT[it.kat].name}</span>
-          <span class="kreis">${e.f.kreis ? Utils.esc(e.f.kreis) : '<span class="muted">ohne Kreis</span>'}</span>
+      const e = it.draftF ? { f: Object.assign({ abt: it.draftAbt }, it.draftF) } : (Repo.entries.get(it.entryId) || { f: {} });
+      const abt = abtOf(e), D = DEPT[abt], mv = e.f[D.main];
+      el.dataset.abt = abt;
+      const chips = infoKeys(abt, true).filter(k => fieldVal(abt, k, e.f[k]))
+        .map(k => `<span class="chip"><b>${Utils.esc(fieldLabel(abt, k))}</b><span>${Utils.esc(fieldVal(abt, k, e.f[k]))}</span></span>`).join('');
+      infos.innerHTML = `<div class="row1">${tagHtml(abt, it.kat)}
+          <span class="kreis"><small style="color:#bbb">${Utils.esc(D.mainLabel)}</small>${mv ? Utils.esc(mv) : '<span class="muted">ohne</span>'}</span>
           <span class="muted mono">Foto ${it.idx + 1}/${it.n}</span></div>
         ${chips ? `<div class="chips" style="margin-top:8px">${chips}</div>` : ''}
         ${e.f.bemerkung ? `<div class="note">${Utils.esc(e.f.bemerkung)}</div>` : ''}`;
@@ -2439,13 +2653,15 @@ const Pdf = {
 
   /**
    * PDF für eine Veranstaltung erzeugen.
-   * opts: { kat:'all'|'A'|'E', cover:boolean, compact:boolean }, onProgress(done,total)
+   * opts: { kat:'all'|'A'|'E', depts:['L','T',…], cover:boolean, compact:boolean }, onProgress(done,total)
    */
   async build(showId, opts, onProgress) {
     const show = Repo.show(showId); if (!show) throw new Error('Veranstaltung nicht gefunden');
     const { W, H, M } = this;
     // ---- Seiten planen ----
-    const items = Views.sortedItems(showId, { kat: opts.kat, sort: 'kreis', q: '' });
+    const items = Views.sortedItems(showId, { kat: opts.kat, sort: 'kreis', q: '', depts: opts.depts || App.visibleDepts(showId) });
+    const abts = [...new Set(items.map(it => abtOf(it.entry)))];
+    const tocAbt = abts.length <= 1 ? (abts[0] || (opts.depts || ['L'])[0]) : null;    // einheitliche Spalten, wenn nur eine Abteilung
     const pages = [];
     for (const it of items) {
       const ph = it.kat === 'N' ? [] : Repo.photosOf(it.entry.id, it.kat);
@@ -2504,8 +2720,8 @@ const Pdf = {
       pageIds.push(pid);
     };
     const dateStr = Utils.fmtDate(Date.now());
-    const footer = (c, n, kat) => {
-      const col = KAT[kat || 'N'].rgb;
+    const footer = (c, n, kat, abt) => {
+      const col = kat ? katRgb(abt, kat) : [0.55, 0.58, 0.63];
       c.rgb(...col).rect(0, 0, W, 14);
       c.rgb(0.45, 0.48, 0.53).text(M, 24, this.fit(`Doku VT ${APP_VERSION}  ·  ${show.f.titel}  ·  Stand ${dateStr}`, 'F1', 8, W - 2 * M - 70), 'F1', 8)
         .textR(W - M, 24, `Seite ${n} / ${total}`, 'F1', 8);
@@ -2521,10 +2737,11 @@ const Pdf = {
         c.rgb(0.1, 0.12, 0.15).rect(0, H - 14, W, 14);
         let y = H - 60;
         if (tp === 0) {
-          c.rgb(0.45, 0.48, 0.53).text(M, y, 'BELEUCHTUNGSDOKUMENTATION', 'F2', 10); y -= 34;
+          const docName = tocAbt === 'L' || !tocAbt ? (abts.length > 1 ? 'TECHNIKDOKUMENTATION' : 'BELEUCHTUNGSDOKUMENTATION') : DEPT[tocAbt].name.toUpperCase() + ' – DOKUMENTATION';
+          c.rgb(0.45, 0.48, 0.53).text(M, y, docName, 'F2', 10); y -= 34;
           for (const ln of this.wrap(show.f.titel, 'F2', 30, W - 2 * M).slice(0, tocDense ? 2 : 3)) { c.rgb(0.07, 0.08, 0.1).text(M, y, ln, 'F2', 30); y -= 34; }
           if (show.f.spielstaette) { c.rgb(0.25, 0.28, 0.33).text(M, y, show.f.spielstaette, 'F1', 14); y -= 22; }
-          c.rgb(0.45, 0.48, 0.53).text(M, y, `Stand ${dateStr}  ·  ${st.entries} Einträge  ·  ${st.photos} Fotos` + (opts.kat !== 'all' ? `  ·  nur ${KAT[opts.kat].name}` : ''), 'F1', 10); y -= 18;
+          c.rgb(0.45, 0.48, 0.53).text(M, y, `Stand ${dateStr}  ·  ${st.entries} Einträge  ·  ${st.photos} Fotos` + (opts.kat !== 'all' ? `  ·  nur ${katName(tocAbt, opts.kat)}` : ''), 'F1', 10); y -= 18;
           if (show.f.notiz) { for (const ln of this.wrap(show.f.notiz, 'F1', 10, W - 2 * M).slice(0, tocDense ? 3 : 6)) { c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 10); y -= 13; } }
           y -= 14; c.rgb(0.8, 0.82, 0.85, true).line(M, y, W - M, y, 1); y -= 26;
           c.rgb(0.07, 0.08, 0.1).text(M, y, 'Inhalt', 'F2', 16); y -= 22;
@@ -2541,9 +2758,14 @@ const Pdf = {
         const gap = 16, colW = two ? (W - 2 * M - gap) / 2 : W - 2 * M;
         const perCol = two ? Math.ceil(n / 2) : n;
         const rh = Math.min(18, avail / Math.max(1, perCol)), fs = Math.min(10.5, Math.max(6, rh * 0.72));
+        // Spaltenköpfe: bei einer Abteilung deren Felder (Licht wie bisher), gemischt allgemein
+        const TD = tocAbt ? DEPT[tocAbt] : null, up = s => s.split(' / ')[0].toUpperCase();
+        const hd = TD ? [TD.mainLabel.toUpperCase(), tocAbt === 'L' ? 'KATEGORIE' : 'PHASE', up(fieldLabel(tocAbt, TD.toc[0])), up(fieldLabel(tocAbt, TD.toc[1]))]
+          : ['EINTRAG', 'ABTEILUNG · PHASE', 'ANGABE', 'ANGABE'];
+        const hd2 = TD ? (tocAbt === 'L' ? 'GR.' : hd[2].slice(0, 4) + '.') : 'ANG.';
         const cols = two
-          ? [['KREIS', 9, 98], ['GR.', 110, 34], ['FILTER', 147, colW - 147 - 34]]
-          : [['KREIS', 14, 170], ['KATEGORIE', 190, 80], ['GRUPPE', 276, 64], ['FILTER', 346, W - 2 * M - 346 - 50]];
+          ? [[hd[0], 9, 98], [hd2, 110, 34], [hd[3], 147, colW - 147 - 34]]
+          : [[hd[0], 14, 170], [hd[1], 190, TD ? 80 : 110], [hd[2], TD ? 276 : 306, TD ? 64 : 60], [hd[3], TD ? 346 : 372, W - 2 * M - (TD ? 346 : 372) - 50]];
         const head = x0 => {
           cols.forEach(([l, dx]) => c.rgb(0.45, 0.48, 0.53).text(x0 + dx, y, l, 'F2', 7));
           c.rgb(0.45, 0.48, 0.53).textR(x0 + colW, y, 'SEITE', 'F2', 7);
@@ -2554,9 +2776,11 @@ const Pdf = {
           const ci = two && r >= perCol ? 1 : 0, rr = ci ? r - perCol : r;
           const x0 = M + ci * (colW + gap), yy = y0 - rr * rh, base = yy - rh * 0.68;
           if (rr % 2 === 0) c.rgb(0.95, 0.955, 0.965).rect(x0, yy - rh, colW, rh);
-          c.rgb(...KAT[it.kat].rgb).rect(x0, yy - rh + 1, two ? 4 : 6, rh - 2);
-          const f = it.entry.f;
-          const vals = two ? [f.kreis || '—', f.gruppe || '', f.filter || ''] : [f.kreis || '—', KAT[it.kat].name, f.gruppe || '', f.filter || ''];
+          const ab = abtOf(it.entry), RD = DEPT[ab];
+          c.rgb(...katRgb(ab, it.kat)).rect(x0, yy - rh + 1, two ? 4 : 6, rh - 2);
+          const f = it.entry.f, mv = f[RD.main] || '—', t1 = fieldVal(ab, RD.toc[0], f[RD.toc[0]]), t2 = fieldVal(ab, RD.toc[1], f[RD.toc[1]]);
+          const ph = TD ? katName(ab, it.kat) : RD.short + ' · ' + katName(ab, it.kat);
+          const vals = two ? [mv, t1, t2] : [mv, ph, t1, t2];
           vals.forEach((v, k) => {
             const [, dx, w] = cols[k], bold = k === 0;
             c.rgb(bold ? 0.07 : 0.25, bold ? 0.08 : 0.28, bold ? 0.1 : 0.33).text(x0 + dx, base, this.fit(v, bold ? 'F2' : 'F1', fs, w - 4), bold ? 'F2' : 'F1', fs);
@@ -2606,24 +2830,25 @@ const Pdf = {
     let done = 0;
     for (const pg of pages) {
       pageNo++;
-      const { it } = pg, e = it.entry, col = KAT[it.kat].rgb;
+      const { it } = pg, e = it.entry, ab = abtOf(e), D = DEPT[ab], col = katRgb(ab, it.kat);
       const c = C(), images = {};
       // Kopf: Farbbalken, Titel fett, Kategorie-Plakette
       c.rgb(...col).rect(0, H - 14, W, 14);
-      const pill = it.kat === 'N' ? 'OHNE FOTOS' : KAT[it.kat].name.toUpperCase(), pw = this.width(pill, 'F2', 12) + 24;
+      const pill = (D.short + ' · ' + (it.kat === 'N' ? 'Ohne Fotos' : D.phases[it.kat])).toUpperCase(), pw = this.width(pill, 'F2', 12) + 24;
       c.rgb(...col).rect(W - M - pw, H - 58, pw, 24);
       c.rgb(it.kat === 'E' ? 0.15 : 1, it.kat === 'E' ? 0.12 : 1, it.kat === 'E' ? 0 : 1).text(W - M - pw + 12, H - 50, pill, 'F2', 12);
       c.rgb(0.07, 0.08, 0.1).text(M, H - 52, this.fit(show.f.titel, 'F2', 20, W - 2 * M - pw - 14), 'F2', 20);
       c.rgb(0.85, 0.86, 0.88, true).line(M, H - 70, W - M, H - 70, 0.8);
-      const kreisTxt = e.f.kreis || '—';
-      c.rgb(0.45, 0.48, 0.53).text(M, H - 96, 'KREIS', 'F2', 9);
+      const kreisTxt = e.f[D.main] || '—', ml = D.mainLabel.toUpperCase(), mw = this.width(ml, 'F2', 9) + 12;
+      c.rgb(0.45, 0.48, 0.53).text(M, H - 96, ml, 'F2', 9);
       let ks = 30; while (ks > 14 && this.width(kreisTxt, 'F2', ks) > W - 2 * M - 150) ks -= 2;
-      c.rgb(0.07, 0.08, 0.1).text(M + 44, H - 100, kreisTxt, 'F2', ks);
+      c.rgb(0.07, 0.08, 0.1).text(M + Math.max(44, mw), H - 100, kreisTxt, 'F2', ks);
       if (pg.cont) c.rgb(0.45, 0.48, 0.53).textR(W - M, H - 96, `Fortsetzung · Fotos ${pg.from + 1}–${pg.from + pg.photos.length}`, 'F1', 9);
 
       // Infoblock (unten, gerahmt): Kreis | Filter | Gruppe | Adresse, darunter Bemerkung
       const innerW = W - 2 * M - 20;
-      const extras = ['geraet', 'dmx', 'position', 'farbe'].filter(k => e.f[k]).map(k => `${FIELD_LABEL[k]}: ${e.f[k]}`).join('   ·   ');
+      const pdfKeys = D.pdf.map(x => x[1]);
+      const extras = infoKeys(ab, true).filter(k => !pdfKeys.includes(k) && fieldVal(ab, k, e.f[k])).map(k => `${fieldLabel(ab, k)}: ${fieldVal(ab, k, e.f[k])}`).join('   ·   ');
       let bem = this.wrap(e.f.bemerkung || '—', 'F1', 11, innerW);
       const exl = extras ? this.wrap(extras, 'F1', 9.5, innerW) : [];
       if (bem.length > 14) bem = bem.slice(0, 13).concat(['… (gekürzt)']);
@@ -2632,7 +2857,7 @@ const Pdf = {
       c.rgb(0.97, 0.97, 0.98).rect(M, boxY, W - 2 * M, boxH);
       c.rgb(0.55, 0.58, 0.63, true); c.rect(M, boxY, W - 2 * M, boxH, 'S');
       c.rgb(...col).rect(M, boxY + boxH - 4, W - 2 * M, 4);
-      const cols = [['KREIS', e.f.kreis], ['FILTER', e.f.filter], ['GRUPPE', e.f.gruppe], ['ADRESSE', e.f.adresse]];
+      const cols = D.pdf.map(([lab, k]) => [lab, fieldVal(ab, k, e.f[k])]);
       const cw = (W - 2 * M) / 4, rowTop = boxY + boxH - 4;
       cols.forEach(([lab, val], k) => {
         const x = M + k * cw;
@@ -2680,7 +2905,7 @@ const Pdf = {
         c.rgb(1, 1, 1).text(x + 11, yy + (s - ih) / 2 + ih - 16, lbl, 'F2', 8);
         d = null;
       }
-      footer(c, pageNo, it.kat);
+      footer(c, pageNo, it.kat, ab);
       writePage(c.get(), images);
       done++; onProgress && onProgress(done, pages.length);
       if (done % 4 === 0) await Utils.frame();     // Oberfläche reaktionsfähig halten
@@ -2750,16 +2975,27 @@ const Sync = {
     if (n) return { state: 'pending', label: `${n} offen`, text: `${n} Änderungen seit dem letzten Abgleich (${Utils.fmtAgo(this.state.lastSyncAt)})` };
     return { state: 'ok', label: 'Synchron', text: `Abgeglichen ${Utils.fmtAgo(this.state.lastSyncAt)}` };
   },
-  /** Datensätze sammeln: seit Zeitpunkt, optional nur bestimmte Shows (inkl. Tombstones!) */
-  collect({ since = 0, showIds = null } = {}) {
+  /** Datensätze sammeln: seit Zeitpunkt, optional nur bestimmte Shows (inkl. Tombstones!).
+      depts: nur Einträge/Fotos dieser Abteilungen (null = alle). Veranstaltungen (inkl. Einrichtung
+      und Zugliste) gehen IMMER mit – sie sind gemeinsam. */
+  collect({ since = 0, showIds = null, depts = null } = {}) {
     const inShow = r => !showIds || showIds.includes(r.showId || r.id);
     const pick = m => [...m.values()].filter(r => r.mod > since && inShow(r));
-    return { shows: pick(Repo.shows), entries: pick(Repo.entries), photos: pick(Repo.photos) };
+    return this.filterRecs({ shows: pick(Repo.shows), entries: pick(Repo.entries), photos: pick(Repo.photos) }, depts);
   },
+  /** Einträge und Fotos auf Abteilungen beschränken. Ein Foto gehört zur Abteilung seines Eintrags. */
+  filterRecs(recs, depts) {
+    if (!depts) return recs;
+    const okE = e => depts.includes(abtOf(e));
+    const okP = p => { const e = Repo.entries.get(p.f.entryId) || (recs.entries || []).find(x => x.id === p.f.entryId); return !e || okE(e); };
+    return { shows: recs.shows || [], entries: (recs.entries || []).filter(okE), photos: (recs.photos || []).filter(okP) };
+  },
+  /** Abteilungen dieses Geräts als Text, z. B. „Licht, Ton“ */
+  deptLabel(depts = Settings.v.depts) { return depts.map(d => DEPT[d].short).join(', '); },
   /** Paket als Blob – stückweise zusammengesetzt (kein Riesen-String im Speicher) */
-  async buildPackage({ type = 'sync', since = 0, showIds = null, withBlobs = true } = {}, onProgress) {
-    const recs = this.collect({ since, showIds });
-    const head = { format: 'lichtdoku', type, formatVersion: FORMAT_VERSION, appVersion: APP_VERSION, deviceId: this.deviceId, deviceName: this.deviceName(), createdAt: Date.now(), since, showIds, ...recs, blobs: [] };
+  async buildPackage({ type = 'sync', since = 0, showIds = null, withBlobs = true, depts = null } = {}, onProgress) {
+    const recs = this.collect({ since, showIds, depts });
+    const head = { format: 'lichtdoku', type, formatVersion: FORMAT_VERSION, appVersion: APP_VERSION, deviceId: this.deviceId, deviceName: this.deviceName(), createdAt: Date.now(), since, showIds, depts, ...recs, blobs: [] };
     const json = JSON.stringify(head);
     const parts = [json.slice(0, -2)];
     let n = 0;
@@ -2829,7 +3065,7 @@ const Legacy = {
         let A = e.bilderAufbau, E = e.bilderEinleuchten;
         if (!A && !E) { const b = [e.bild1, e.bild2].filter(Boolean); if (e.kategorie === 'Aufbau') { A = b; E = []; } else { A = []; E = b; } }
         const f = { kreis: String(e.kreis ?? '').trim(), gruppe: String(e.gruppe ?? '').trim(), filter: this.normFilter(e.filter), adresse: String(e.adresse ?? '').trim(),
-          bemerkung: String(e.bemerkung ?? ''), geraet: '', dmx: '', position: '', farbe: '', chkA: false, chkE: false, del: false };
+          bemerkung: String(e.bemerkung ?? ''), geraet: '', dmx: '', position: '', farbe: '', abt: 'L', chkA: false, chkE: false, del: false };
         entries.push(mk(eid, { showId: sid }, f, et, ec));
         for (const [kat, arr] of [['A', A || []], ['E', E || []]]) {
           arr.forEach((url, i) => {
@@ -2888,15 +3124,16 @@ const Legacy = {
 const FileAdapter = {
   id: 'file', name: 'Sync-Paket (Datei)',
   available: () => true,
-  async push({ full = false, showIds = null, onReady = null } = {}, onProgress) {
+  /** allDepts: auch Einträge der Abteilungen, die dieses Gerät nicht dokumentiert */
+  async push({ full = false, showIds = null, onReady = null, allDepts = false } = {}, onProgress) {
     const since = full ? 0 : Sync.state.lastPackageAt || 0;
-    const { blob, counts } = await Sync.buildPackage({ type: 'sync', since, showIds }, onProgress);
+    const { blob, counts } = await Sync.buildPackage({ type: 'sync', since, showIds, depts: allDepts ? null : Settings.v.depts.slice() }, onProgress);
     const name = `DokuVT_Sync_${Utils.safeName(Sync.deviceName())}_${Utils.stamp()}.ldsync.json`;
     if (onReady) onReady();                       // Fortschrittsanzeige schließen, bevor der Dialog erscheint
     const res = await Utils.offerFile(blob, name, 'Sync-Paket ist fertig', `${counts.entries} Einträge, ${counts.blobs} Bilder`);
     if (res !== 'abort') {
       Sync.state.lastPackageAt = Date.now();
-      await Sync.markSynced(`Sync-Paket erstellt (${full ? 'komplett' : 'Änderungen'}): ${counts.entries} Einträge, ${counts.blobs} Bilder`);
+      await Sync.markSynced(`Sync-Paket erstellt (${full ? 'komplett' : 'Änderungen'}, ${allDepts ? 'alle Abteilungen' : Sync.deptLabel()}): ${counts.entries} Einträge, ${counts.blobs} Bilder`);
     }
     return { res, counts, size: blob.size };
   },
@@ -3015,7 +3252,7 @@ class PeerSession {
     this.dc = dc; dc.bufferedAmountLowThreshold = 1 << 20;
     dc.onopen = () => {
       this.open = true; Sync.peer = this; Sync.changed(); this.onstate('open');
-      this.send({ t: 'hello', id: Sync.deviceId, n: Sync.deviceName(), v: APP_VERSION });
+      this.send({ t: 'hello', id: Sync.deviceId, n: Sync.deviceName(), v: APP_VERSION, d: Settings.v.depts });
     };
     dc.onclose = () => this._closed();
     dc.onmessage = ev => this._recv(ev.data);
@@ -3072,8 +3309,11 @@ class PeerSession {
       switch (msg.t) {
         case 'hello':
           this.peerName = msg.n; this.peerId = msg.id; Sync.changed(); this.onstate('hello', msg.n);
-          await Sync.log(`Live-Verbindung mit ${msg.n} hergestellt`, 'ok');
-          await this.send({ t: 'meta', ...Sync.collect({ since: 0 }) });
+          // Abteilungen: Schnittmenge beider Geräte (ältere Versionen ohne Angabe = nur Licht)
+          this.peerDepts = Array.isArray(msg.d) ? msg.d : ['L'];
+          this.depts = Settings.v.depts.filter(d => this.peerDepts.includes(d));
+          await Sync.log(`Live-Verbindung mit ${msg.n} hergestellt (Einträge: ${this.depts.length ? Sync.deptLabel(this.depts) : 'keine gemeinsame Abteilung – nur Veranstaltungen'})`, 'ok');
+          await this.send({ t: 'meta', ...Sync.collect({ since: 0, depts: this.depts }) });
           this.unsub = Repo.on(ev => this._local(ev));
           break;
         case 'meta': {
@@ -3121,8 +3361,11 @@ class PeerSession {
   /** Lokale Änderung sofort an das andere Gerät schicken */
   async _local(ev) {
     if (!ev.local || !this.open) return;
-    await this.send({ t: 'delta', ...ev.records });
-    for (const id of ev.blobIds || []) {
+    const recs = Sync.filterRecs(ev.records, this.depts || Settings.v.depts);
+    if (!recs.shows.length && !recs.entries.length && !recs.photos.length) return;
+    await this.send({ t: 'delta', ...recs });
+    const okBlobs = new Set(recs.photos.map(p => p.b));
+    for (const id of (ev.blobIds || []).filter(b => okBlobs.has(b))) {
       const full = await Repo.full(id), thumb = await Repo.thumb(id);
       await this.send({ t: 'blob', id, full: Utils.bufToB64(full), thumb: thumb ? Utils.bufToB64(thumb) : null });
     }
@@ -3182,6 +3425,11 @@ const Ui = {
   },
   _restoreFocus(L) { if (L.focus && L.focus.isConnected && L.focus.focus) { try { L.focus.focus({ preventScroll: true }); } catch (e) { /* egal */ } } },
   get topOpen() { return this.stack.length > 0; },
+  /** wartet, bis das history.back() einer gerade geschlossenen Ebene verarbeitet ist */
+  afterBack() {
+    return new Promise(r => { let done = false; const f = () => { if (done) return; done = true; removeEventListener('popstate', f); setTimeout(r, 0); };
+      addEventListener('popstate', f); setTimeout(f, 400); });
+  },
 
   /** Dialog → Promise(Wert). buttons: [{label, value, cls}] ; input: {value, placeholder, inputmode} */
   dialog({ title, message = '', buttons = [{ label: 'OK', value: true, cls: 'primary' }], input = null, cancelValue = null, html = '', row = false }) {
@@ -3246,86 +3494,113 @@ const Ui = {
    Views – Startseite, Show-Liste, Detail
    ===================================================================== */
 const Views = {
-  /** Sortierte Kartenliste: je Eintrag eine Karte pro Kategorie mit Fotos */
-  sortedItems(showId, { kat = 'all', sort = 'kreis', q = '' }) {
+  /** Sortierte Kartenliste: je Eintrag eine Karte pro Kategorie mit Fotos.
+      Sortierung: Abteilung (L, T, B) → Phase (A, E, ohne Foto) → Hauptfeld numerisch.
+      depts = sichtbare Abteilungen, abt = 'all' oder eine Abteilung */
+  sortedItems(showId, { kat = 'all', sort = 'kreis', q = '', depts = null, abt = 'all' }) {
     const nq = q.trim().toLowerCase();
     const terms = nq ? nq.split(/\s+/) : [];
     const items = [];
     for (const e of Repo.entriesOf(showId)) {
+      const a = abtOf(e);
+      if (depts && !depts.includes(a)) continue;
+      if (abt !== 'all' && a !== abt) continue;
       if (terms.length) {
         const hay = TEXT_FIELDS.map(k => e.f[k] || '').join(' \u0001 ').toLowerCase();
         if (!terms.every(t => hay.includes(t))) continue;
       }
       for (const k of Repo.catsOf(e.id)) {
         if (kat !== 'all' && k !== kat) continue;
-        items.push({ entry: e, kat: k, key: e.id + ':' + k });
+        items.push({ entry: e, kat: k, abt: a, key: e.id + ':' + k });
       }
     }
     const ko = { A: 0, E: 1, N: 2 };
     items.sort((a, b) => {
+      const da = DEPT_ORDER.indexOf(a.abt) - DEPT_ORDER.indexOf(b.abt); if (da) return da;
       if (sort === 'gruppe') {
         const ga = a.entry.f.gruppe || '', gb = b.entry.f.gruppe || '';
         if (!ga !== !gb) return ga ? -1 : 1;
         const c = Utils.cmpKreis(ga, gb); if (c) return c;
       }
-      return (ko[a.kat] - ko[b.kat]) || Utils.cmpKreis(a.entry.f.kreis, b.entry.f.kreis) || (a.entry.c - b.entry.c);
+      return (ko[a.kat] - ko[b.kat]) || Utils.cmpKreis(mainVal(a.entry), mainVal(b.entry)) || (a.entry.c - b.entry.c);
     });
     return items;
   },
-  sectionOf(item, sort) {
+  /** Abschnitt einer Karte. multi = mehrere Abteilungen in der Liste → „Licht · Aufbau“ */
+  sectionOf(item, sort, multi = false) {
     if (sort === 'gruppe') return item.entry.f.gruppe ? { key: 'g' + item.entry.f.gruppe, label: 'Gruppe ' + item.entry.f.gruppe, k: null } : { key: 'g-', label: 'Ohne Gruppe', k: null };
-    return { key: item.kat, label: KAT[item.kat].name, k: item.kat };
+    const label = multi ? `${DEPT[item.abt].short} · ${katName(item.abt, item.kat)}` : katName(item.abt, item.kat);
+    return { key: item.abt + item.kat, label, k: item.kat, abt: item.abt };
   },
   thumbImg(b, alt = '') {
     const cached = Thumbs.map.get(b);
     if (cached && cached.url) return `<img src="${cached.url}" class="ok" alt="${Utils.esc(alt)}" data-b="${b}" data-l="1" decoding="async">`;
     return `<img alt="${Utils.esc(alt)}" data-b="${b}" decoding="async">`;
   },
-  chips(e, keys = ['gruppe', 'filter', 'adresse']) {
-    return keys.filter(k => e.f[k]).map(k => `<span class="chip"><b>${FIELD_LABEL[k]}</b><span>${Utils.esc(e.f[k])}</span></span>`).join('');
+  chips(e, keys = null) {
+    const abt = abtOf(e);
+    return (keys || DEPT[abt].chips).filter(k => fieldVal(abt, k, e.f[k]))
+      .map(k => `<span class="chip"><b>${Utils.esc(fieldLabel(abt, k))}</b><span>${Utils.esc(fieldVal(abt, k, e.f[k]))}</span></span>`).join('');
+  },
+  /** Haken für die Eintrags-Checkliste. Bühne (nur Aufbau-Fotos): zwei Haken auf einer Karte. */
+  chkHtml(e, kat) {
+    const abt = abtOf(e), D = DEPT[abt];
+    const one = k => { const on = !!e.f[k === 'E' ? 'chkE' : 'chkA'];
+      return `<button class="chk" role="checkbox" aria-checked="${on}" data-act="chk" data-k="${k}" aria-label="${Utils.esc(D.done[k])}"><span class="box">${on ? I('check') : ''}</span>${D.photoKats.length === 1 ? `<small>${Utils.esc(D.phases[k].slice(0, 5))}</small>` : ''}</button>`; };
+    if (D.photoKats.length === 1) return `<span class="chks">${one('A')}${one('E')}</span>`;
+    return one(kat === 'E' ? 'E' : 'A');
+  },
+  isDone(e, kat) {
+    if (DEPT[abtOf(e)].photoKats.length === 1) return !!(e.f.chkA && e.f.chkE);
+    return !!e.f[kat === 'E' ? 'chkE' : 'chkA'];
   },
   cardHtml(it, { sel, checklist, dupKeys, big = false }) {
-    const e = it.entry, ph = it.kat === 'N' ? [] : Repo.photosOf(e.id, it.kat);
-    const chkKey = it.kat === 'E' ? 'chkE' : 'chkA', checked = !!e.f[chkKey];
+    const e = it.entry, abt = it.abt, D = DEPT[abt], mv = e.f[D.main];
+    const ph = it.kat === 'N' ? [] : Repo.photosOf(e.id, it.kat);
     const thumbs = big
       ? ph.map((p, i) => `<span class="th" data-act="lb" data-i="${i}">${this.thumbImg(p.b).replace('<img ', '<img data-hq="1" ').replace(' data-l="1"', '')}<span class="plbl">${i + 1}</span></span>`).join('')
       : ph.slice(0, 2).map((p, i) => `<span class="th" data-act="lb" data-i="${i}">${this.thumbImg(p.b)}${i === 1 && ph.length > 2 ? `<span class="more">+${ph.length - 2}</span>` : ''}</span>`).join('');
-    const dup = dupKeys.has(Utils.kreisTokens(e.f.kreis).sort().join('+'));
-    return `<article class="card ${sel ? 'sel' : ''} ${checklist && checked ? 'done' : ''}" data-k="${it.kat}" data-key="${it.key}">
-      ${big ? `<button class="bighead" data-act="open" aria-label="Kreis ${Utils.esc(e.f.kreis || 'ohne Nummer')} öffnen"><span class="tag ${it.kat}">${it.kat === 'N' ? 'Ohne Foto' : KAT[it.kat].name}</span>
-        <span class="bk"><small>Kreis</small>${e.f.kreis ? Utils.esc(e.f.kreis) : '<span class="muted">ohne</span>'}</span>
+    const dup = dupKeys.has(Repo.dupKey(e));
+    const chips = this.chips(e);
+    const name = `${D.mainLabel} ${mv || 'ohne Nummer'}`;
+    return `<article class="card ${sel ? 'sel' : ''} ${checklist && this.isDone(e, it.kat) ? 'done' : ''}" data-k="${it.kat}" data-abt="${abt}" data-key="${it.key}">
+      ${big ? `<button class="bighead" data-k="${it.kat}" data-act="open" aria-label="${Utils.esc(name)} öffnen">${tagHtml(abt, it.kat)}
+        <span class="bk"><small>${Utils.esc(D.mainLabel)}</small>${mv ? Utils.esc(mv) : '<span class="muted">ohne</span>'}</span>
         <span class="bn">${ph.length} Foto${ph.length === 1 ? '' : 's'}</span></button>` : ''}
       <div class="strip"></div>
-      <button class="hit" data-act="open" aria-label="${Utils.esc(`Kreis ${e.f.kreis || 'ohne Nummer'}, ${KAT[it.kat].name}`)}">
+      <button class="hit" data-act="open" aria-label="${Utils.esc(`${name}, ${D.short}, ${katName(abt, it.kat)}`)}">
         ${thumbs ? `<span class="thumbs">${thumbs}</span>` : ''}
         <span class="info">
-          <span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="tag ${it.kat}">${it.kat === 'N' ? 'Ohne Foto' : KAT[it.kat].name}</span></span>
-          ${(e.f.gruppe || e.f.filter || e.f.adresse) ? `<span class="chips">${this.chips(e)}</span>` : ''}
+          <span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">${tagHtml(abt, it.kat)}</span>
+          ${chips ? `<span class="chips">${chips}</span>` : ''}
           ${e.f.bemerkung ? `<span class="note">${Utils.esc(e.f.bemerkung)}</span>` : ''}
         </span>
-        <span class="kcol"><small>Kreis</small><span class="kreis ${e.f.kreis ? '' : 'none'}">${e.f.kreis ? Utils.esc(e.f.kreis).replace(/\+/g, '+<wbr>') : 'ohne'}</span></span>
+        <span class="kcol"><small>${Utils.esc(D.mainLabel)}</small><span class="kreis ${mv ? '' : 'none'}">${mv ? Utils.esc(mv).replace(/\+/g, '+<wbr>') : 'ohne'}</span></span>
       </button>
-      ${dup ? '<span class="dup" title="Kreis doppelt">doppelt</span>' : ''}
-      ${checklist ? `<button class="chk" role="checkbox" aria-checked="${checked}" data-act="chk" aria-label="${it.kat === 'E' ? 'Eingeleuchtet' : 'Aufgebaut'}"><span class="box">${checked ? I('check') : ''}</span></button>` : ''}
+      ${dup ? `<span class="dup" title="${Utils.esc(D.mainLabel)} doppelt">doppelt</span>` : ''}
+      ${checklist ? this.chkHtml(e, it.kat) : ''}
     </article>`;
   },
   detailHtml(e, editMode, checklist) {
-    const f = e.f;
-    const fieldBox = (k, wide) => `<div class="fieldbox ${wide ? 'wide' : ''}"><b>${FIELD_LABEL[k]}</b><span>${f[k] ? Utils.esc(f[k]) : '<span class="muted">—</span>'}</span></div>`;
-    const extras = ['geraet', 'dmx', 'position', 'farbe'].filter(k => f[k]);
+    const f = e.f, abt = abtOf(e), D = DEPT[abt], mv = f[D.main];
+    const fieldBox = (k, wide) => { const v = fieldVal(abt, k, f[k]);
+      return `<div class="fieldbox ${wide ? 'wide' : ''}"><b>${Utils.esc(fieldLabel(abt, k))}</b><span>${v ? Utils.esc(v) : '<span class="muted">—</span>'}</span></div>`; };
+    const rest = infoKeys(abt, true).filter(k => !D.chips.includes(k) && fieldVal(abt, k, f[k]));
+    const chkBtn = k => { const on = !!f[k === 'E' ? 'chkE' : 'chkA'];
+      return `<button class="btn ${on ? 'kfill' : 'kline'}" data-k="${k}" data-act="dchk" aria-pressed="${on}">${I('check')} ${Utils.esc(D.done[k])}</button>`; };
     const kat = k => {
-      const ph = Repo.photosOf(e.id, k), chk = k === 'E' ? f.chkE : f.chkA;
-      return `<section class="kat" data-k="${k}"><div class="kh"><span class="tag ${k}">${KAT[k].name}</span><h3>${ph.length} Foto${ph.length === 1 ? '' : 's'}</h3>
-          ${checklist ? `<button class="btn ${chk ? (k === 'E' ? 'yellow' : 'blue') : ''}" data-act="dchk" data-k="${k}" aria-pressed="${!!chk}">${I('check')} ${k === 'E' ? 'Eingeleuchtet' : 'Aufgebaut'}</button>` : ''}</div>
+      const ph = Repo.photosOf(e.id, k);
+      const chks = checklist ? (D.photoKats.length === 1 ? chkBtn('A') + chkBtn('E') : chkBtn(k)) : '';
+      return `<section class="kat" data-k="${k}"><div class="kh">${tagHtml(abt, k)}<h3>${ph.length} Foto${ph.length === 1 ? '' : 's'}</h3>${chks}</div>
         ${ph.length ? `<div class="photos">${ph.map((p, i) => `<button data-act="dlb" data-k="${k}" data-i="${i}" aria-label="Foto ${i + 1} vergrößern">${this.thumbImg(p.b)}<span class="lbl">${i + 1}</span></button>`).join('')}</div>`
-          : `<div class="nophotos">Keine Fotos in dieser Kategorie.</div>`}</section>`;
+          : `<div class="nophotos">Keine Fotos in dieser Phase.</div>`}</section>`;
     };
-    return `<div class="detail">
-      <div class="dh"><div style="flex:1;min-width:0"><div class="muted" style="font-size:12px;font-weight:700;letter-spacing:.1em">KREIS</div>
-        <div class="kreis ${f.kreis ? '' : 'none'}">${f.kreis ? Utils.esc(f.kreis) : 'ohne Kreis'}</div></div>
+    return `<div class="detail" data-abt="${abt}">
+      <div class="dh"><div style="flex:1;min-width:0"><div class="muted" style="font-size:12px;font-weight:700;letter-spacing:.1em">${Utils.esc(D.short.toUpperCase())} · ${Utils.esc(D.mainLabel.toUpperCase())}</div>
+        <div class="kreis ${mv ? '' : 'none'}">${mv ? Utils.esc(mv) : 'ohne ' + Utils.esc(D.mainLabel)}</div></div>
         <button class="btn ${editMode ? 'edit' : ''}" data-act="dedit">${I('edit')} Bearbeiten</button></div>
-      <div class="fields">${fieldBox('gruppe')}${fieldBox('filter')}${fieldBox('adresse')}${extras.map(k => fieldBox(k)).join('')}${fieldBox('bemerkung', true)}</div>
-      ${kat('A')}${kat('E')}
+      <div class="fields">${D.chips.map(k => fieldBox(k)).join('')}${rest.map(k => fieldBox(k)).join('')}${fieldBox('bemerkung', true)}</div>
+      ${D.photoKats.map(kat).join('')}
       <div class="actions">
         <button class="btn" data-act="ddup">${I('copy')} Als Vorlage duplizieren</button>
         ${editMode ? `<button class="btn danger" data-act="ddel">${I('trash')} Löschen</button>` : ''}
@@ -3337,98 +3612,122 @@ const Views = {
 /* =====================================================================
    Editor – Eintrag anlegen/bearbeiten. Wird EINMAL aufgebaut und danach nur
    gezielt verändert (keine Neuzeichnung → Tastatur bleibt, kein Flackern).
+   Die Felder kommen aus DEPT[abt].fields; für Licht ergibt das genau das
+   Layout aus 1.7.0: Kreis | Adresse · Gruppe | Filter · Schnelltasten ·
+   Bemerkung · Fotos · „Weitere Angaben“.
    ===================================================================== */
 const Editor = {
-  open({ showId, entryId = null, preset = null, quick = false }) {
+  /** Formular-HTML aus der Abteilungs-Konfiguration */
+  formHtml(D, f0) {
+    const fid = k => 'ed-' + k;
+    const input = fd => {
+      const v = f0[fd.k];
+      if (fd.bool) return `<div class="f"><label for="${fid(fd.k)}">${Utils.esc(fd.label)}</label><div class="swrow"><span class="switch"><input type="checkbox" id="${fid(fd.k)}" name="${fd.k}" ${v ? 'checked' : ''}><span></span></span></div></div>`;
+      if (fd.area) return `<div class="f"><label for="${fid(fd.k)}">${Utils.esc(fd.label)}</label><textarea id="${fid(fd.k)}" name="${fd.k}" rows="3" placeholder="${Utils.esc(fd.ph || '')}">${Utils.esc(v || '')}</textarea></div>`;
+      const im = fd.mode === 'tel' ? 'inputmode="tel"' : fd.mode === 'num' ? 'inputmode="numeric"' : '';
+      const attrs = `id="${fid(fd.k)}" name="${fd.k}" ${im} enterkeyhint="next" placeholder="${Utils.esc(fd.ph || '')}" value="${Utils.esc(v || '')}" ${fd.mono || fd.plus ? 'autocapitalize="off" spellcheck="false"' : ''}`;
+      if (fd.main) return `<div class="f kreisf"><label for="${fid(fd.k)}">${Utils.esc(fd.label)}</label>
+          <div class="inwrap"><input ${attrs}>${fd.plus ? `<button type="button" class="plusbtn" data-act="plus" aria-label="Plus-Zeichen einfügen">+</button>` : ''}</div>
+          ${fd.req ? `<div class="req">${Utils.esc(fd.label)} fehlt – bitte eintragen.</div>` : ''}</div>`;
+      return `<div class="f ${fd.mono ? 'mono' : ''}"><label for="${fid(fd.k)}">${Utils.esc(fd.label)}</label><input ${attrs}>${fd.hint ? `<div class="fh">${Utils.esc(fd.hint)}</div>` : ''}</div>`;
+    };
+    const base = D.fields.filter(x => !x.extra && x.k !== 'bemerkung'), extra = D.fields.filter(x => x.extra);
+    let html = '';
+    for (let i = 0; i < base.length; i += 2) {
+      const pair = base.slice(i, i + 2);
+      html += `<div class="f-row ${i === 0 ? 'ka' : 'gf'}">${pair.map(input).join('')}</div>`;
+      pair.filter(x => x.qkeys).forEach(x => { html += `<div class="qkeys" data-qkeys="${x.k}" role="group" aria-label="${Utils.esc(x.label)}-Schnelltasten: antippen setzt, nochmal antippen entfernt"></div>`; });
+    }
+    const bem = D.fields.find(x => x.k === 'bemerkung');
+    if (bem) html += input(bem);
+    html += D.photoKats.map(k => `<section class="pk" data-k="${k}"><div class="ph">${tagHtml(D.key, k)}<h3></h3><span class="n"></span>
+          <button type="button" class="btn kfill" data-k="${k}" data-act="cam">${I('camera')} Foto</button></div>
+          <div class="pgrid" data-k="${k}"></div></section>`).join('');
+    const extraOpen = extra.some(x => f0[x.k]);
+    if (extra.length) html += `<details class="more" ${extraOpen ? 'open' : ''}><summary>${I('layers', 'sm')} Weitere Angaben <span class="muted" style="font-weight:400">${Utils.esc(D.extraHint || '')}</span>${I('arrowR', 'sm chev')}</summary>
+        <div class="inner">${extra.map(input).join('')}</div></details>`;
+    return html;
+  },
+  open({ showId, entryId = null, preset = null, quick = false, abt = null }) {
     const ex = entryId ? Repo.entry(entryId) : null;
-    const f0 = {}; TEXT_FIELDS.forEach(k => { f0[k] = (ex ? ex.f[k] : preset && preset[k]) || ''; });
+    const A = ex ? abtOf(ex) : (preset && DEPT[preset.abt] ? preset.abt : (DEPT[abt] ? abt : 'L'));
+    const D = DEPT[A], MAIN = D.main, mainFd = D.fields.find(x => x.k === MAIN);
+    const f0 = {}; D.fields.forEach(fd => { const v = ex ? ex.f[fd.k] : preset && preset[fd.k]; f0[fd.k] = fd.bool ? !!v : (v || ''); });
     const slots = { A: [], E: [] };
-    if (ex) Repo.photosOf(ex.id).forEach(p => slots[p.f.kat].push({ photoId: p.id, b: p.b, w: p.w, h: p.h, label: p.f.label }));
+    if (ex) Repo.photosOf(ex.id).forEach(p => slots[D.photoKats.includes(p.f.kat) ? p.f.kat : 'A'].push({ photoId: p.id, b: p.b, w: p.w, h: p.h, label: p.f.label }));
     let dirty = false, pending = 0, saving = false;
     const markDirty = () => { dirty = true; };
     const sh = Ui.sheet({
-      title: ex ? `Kreis ${ex.f.kreis || '(ohne Nummer)'} bearbeiten` : 'Neuer Eintrag', full: true,
+      title: ex ? `${D.mainLabel} ${ex.f[MAIN] || '(ohne Nummer)'} bearbeiten` : `Neuer Eintrag ${D.short}`, full: true,
       headLeft: `<button class="btn ghost" data-act="cancel">Abbrechen</button>`,
       headRight: `<button class="btn edit savebtn" data-act="save">${I('check')}<span class="sl">Speichern</span></button>`,
       onBack: () => this._confirmLeave(dirty || pending)
     });
-    sh.el.dataset.editor = '1';
-    const extraOpen = ['geraet', 'dmx', 'position', 'farbe'].some(k => f0[k]);
+    sh.el.dataset.editor = '1'; sh.el.dataset.abt = A;
+    sh.head.querySelector('h2').insertAdjacentHTML('beforebegin', `<span class="tag E" data-abt="${A}">${Utils.esc(D.short)}</span>`);
     sh.body.innerHTML = `<form class="form" autocomplete="off" onsubmit="return false">
-      <div class="f-row ka">
-        <div class="f kreisf"><label for="ed-kreis">Kreis</label>
-          <div class="inwrap"><input id="ed-kreis" name="kreis" inputmode="tel" enterkeyhint="next" placeholder="z. B. 123+124" value="${Utils.esc(f0.kreis)}" autocapitalize="off" spellcheck="false">
-          <button type="button" class="plusbtn" data-act="plus" aria-label="Plus-Zeichen einfügen">+</button></div></div>
-        <div class="f mono"><label for="ed-adresse">Adresse</label><input id="ed-adresse" name="adresse" enterkeyhint="next" placeholder="12/301" value="${Utils.esc(f0.adresse)}" autocapitalize="off" spellcheck="false"></div>
-      </div>
-      <div class="f-row gf">
-        <div class="f mono"><label for="ed-gruppe">Gruppe</label><input id="ed-gruppe" name="gruppe" inputmode="tel" enterkeyhint="next" value="${Utils.esc(f0.gruppe)}" spellcheck="false"></div>
-        <div class="f mono"><label for="ed-filter">Filter</label><input id="ed-filter" name="filter" enterkeyhint="next" placeholder="z. B. L201, nc" value="${Utils.esc(f0.filter)}" autocapitalize="off" spellcheck="false"></div>
-      </div>
-      <div class="qkeys" data-qkeys role="group" aria-label="Filter-Schnelltasten: antippen setzt, nochmal antippen entfernt"></div>
-      <div class="f"><label for="ed-bem">Bemerkung</label><textarea id="ed-bem" name="bemerkung" rows="3" placeholder="Wo steckt es, was ist zu beachten?">${Utils.esc(f0.bemerkung)}</textarea></div>
-      ${['A', 'E'].map(k => `<section class="pk" data-k="${k}"><div class="ph"><span class="tag ${k}">${KAT[k].name}</span><h3></h3><span class="n"></span>
-          <button type="button" class="btn ${k === 'A' ? 'blue' : 'yellow'}" data-act="cam" data-k="${k}">${I('camera')} Foto</button></div>
-          <div class="pgrid" data-k="${k}"></div></section>`).join('')}
-      <details class="more" ${extraOpen ? 'open' : ''}><summary>${I('layers', 'sm')} Weitere Angaben <span class="muted" style="font-weight:400">Gerät, DMX, Position, Farbe</span>${I('arrowR', 'sm chev')}</summary>
-        <div class="inner">
-          <div class="f"><label for="ed-geraet">Gerät / Scheinwerfer</label><input id="ed-geraet" name="geraet" value="${Utils.esc(f0.geraet)}" placeholder="z. B. ETC Source Four 26°"></div>
-          <div class="f mono"><label for="ed-dmx">DMX-Adresse / Universe</label><input id="ed-dmx" name="dmx" value="${Utils.esc(f0.dmx)}" placeholder="z. B. 2/145" spellcheck="false"></div>
-          <div class="f"><label for="ed-pos">Position / Zug</label><input id="ed-pos" name="position" value="${Utils.esc(f0.position)}" placeholder="z. B. 3. Zug, Portal rechts"></div>
-          <div class="f"><label for="ed-farbe">Farbe / Gobo</label><input id="ed-farbe" name="farbe" value="${Utils.esc(f0.farbe)}" placeholder="z. B. L201, Gobo Wald"></div>
-        </div></details>
+      ${this.formHtml(D, f0)}
+      <button type="button" class="btn edit big block savebtn2" data-act="save">${I('check')} Speichern</button>
       ${ex ? `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
         <button type="button" class="btn danger" data-act="del">${I('trash')} Eintrag löschen</button></div>` : ''}
     </form>`;
-    const form = sh.body.querySelector('form'), saveBtn = sh.el.querySelector('[data-act=save]');
-    const kreisIn = form.querySelector('#ed-kreis');
+    const form = sh.body.querySelector('form'), saveBtn = sh.el.querySelector('.savebtn');
+    const kreisIn = form.elements[MAIN];
 
-    /* ---- Filter-Schnelltasten: feste Liste (Einstellungen) + in dieser Veranstaltung schon benutzte Filter ---- */
-    const filterIn = form.querySelector('#ed-filter'), qbox = form.querySelector('[data-qkeys]');
+    /* ---- Schnelltasten (Filter bei Licht, Mikrofon bei Ton): feste Liste aus den Einstellungen
+           + in dieser Veranstaltung schon benutzte Werte (gestrichelt) ---- */
     const ftok = v => String(v || '').split(/\s*[+,;]\s*/).map(x => x.trim()).filter(Boolean);
-    const fixed = (Settings.v.filterKeys || []).filter(Boolean);
-    const freq = new Map();
-    Repo.entriesOf(showId).forEach(e => ftok(e.f.filter).forEach(t => { if (!fixed.some(k => k.toLowerCase() === t.toLowerCase())) freq.set(t, (freq.get(t) || 0) + 1); }));
-    const used = [...freq.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(x => x[0]);
-    const renderQ = () => {
-      const cur = ftok(filterIn.value).map(t => t.toLowerCase());
-      qbox.innerHTML = fixed.concat(used).map((k, i) => `<button type="button" data-q="${Utils.esc(k)}" class="${i >= fixed.length ? 'used' : ''}" aria-pressed="${cur.includes(k.toLowerCase())}" ${i >= fixed.length ? 'title="in dieser Veranstaltung benutzt"' : ''}>${Utils.esc(k)}</button>`).join('')
-        + (cur.length ? `<button type="button" class="qclr" data-qclr aria-label="Filter leeren">${I('close', 'sm')}</button>` : '');
-    };
-    qbox.addEventListener('click', e => {
-      const b = e.target.closest('button'); if (!b) return;
-      if (b.hasAttribute('data-qclr')) filterIn.value = '';
-      else {
-        const k = b.dataset.q, cur = ftok(filterIn.value), i = cur.findIndex(t => t.toLowerCase() === k.toLowerCase());
-        if (i >= 0) cur.splice(i, 1); else cur.push(k);
-        filterIn.value = cur.join('+');
-      }
-      markDirty(); renderQ();
+    D.fields.filter(x => x.qkeys).forEach(fd => {
+      const qIn = form.elements[fd.k], qbox = form.querySelector(`[data-qkeys="${fd.k}"]`);
+      if (!qIn || !qbox) return;
+      const fixed = (Settings.v[fd.qkeys] || []).filter(Boolean);
+      const freq = new Map();
+      Repo.entriesOf(showId).filter(e => abtOf(e) === A).forEach(e => ftok(e.f[fd.k]).forEach(t => { if (!fixed.some(k => k.toLowerCase() === t.toLowerCase())) freq.set(t, (freq.get(t) || 0) + 1); }));
+      const used = [...freq.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(x => x[0]);
+      const renderQ = () => {
+        const cur = ftok(qIn.value).map(t => t.toLowerCase());
+        qbox.innerHTML = fixed.concat(used).map((k, i) => `<button type="button" data-q="${Utils.esc(k)}" class="${i >= fixed.length ? 'used' : ''}" aria-pressed="${cur.includes(k.toLowerCase())}" ${i >= fixed.length ? 'title="in dieser Veranstaltung benutzt"' : ''}>${Utils.esc(k)}</button>`).join('')
+          + (cur.length ? `<button type="button" class="qclr" data-qclr aria-label="${Utils.esc(fd.label)} leeren">${I('close', 'sm')}</button>` : '');
+      };
+      qbox.addEventListener('click', e => {
+        const b = e.target.closest('button'); if (!b) return;
+        if (b.hasAttribute('data-qclr')) qIn.value = '';
+        else {
+          const k = b.dataset.q, cur = ftok(qIn.value), i = cur.findIndex(t => t.toLowerCase() === k.toLowerCase());
+          if (i >= 0) cur.splice(i, 1); else cur.push(k);
+          qIn.value = cur.join('+');
+        }
+        markDirty(); renderQ();
+      });
+      qIn.addEventListener('input', renderQ);
+      renderQ();
     });
-    filterIn.addEventListener('input', renderQ);
-    renderQ();
-    form.addEventListener('input', markDirty);
-    kreisIn.addEventListener('blur', () => { const n = Utils.normKreis(kreisIn.value); if (n !== kreisIn.value) kreisIn.value = n; fitKreis(); });
-    // lange Kreise (z. B. 12+17+103+113+628) kleiner schreiben, damit alles sichtbar bleibt
+    form.addEventListener('input', () => { markDirty(); const fm = kreisIn.closest('.f'); if (fm.classList.contains('invalid') && kreisIn.value.trim()) fm.classList.remove('invalid'); });
+    form.addEventListener('change', markDirty);
+    if (mainFd.plus) kreisIn.addEventListener('blur', () => { const n = Utils.normKreis(kreisIn.value); if (n !== kreisIn.value) kreisIn.value = n; fitKreis(); });
+    // lange Hauptfelder (z. B. 12+17+103+113+628) kleiner schreiben, damit alles sichtbar bleibt
     const fitKreis = () => { const n = kreisIn.value.length; kreisIn.style.fontSize = n > 14 ? '16px' : n > 10 ? '19px' : n > 7 ? '22px' : ''; };
     kreisIn.addEventListener('input', fitKreis); fitKreis();
     // Eingabe-Navigation: „Weiter“ springt ins nächste Feld
     form.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+      if (e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.type !== 'checkbox') {
         e.preventDefault();
-        const ins = [...form.querySelectorAll('input,textarea')]; const i = ins.indexOf(e.target);
+        const ins = [...form.querySelectorAll('input:not([type=checkbox]),textarea')]; const i = ins.indexOf(e.target);
         if (ins[i + 1]) ins[i + 1].focus(); else e.target.blur();
       }
       if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); save(); }
     });
 
     /* ---- Fotos ---- */
+    const saveBtns = () => sh.el.querySelectorAll('[data-act=save]');
     const updateSave = () => {
-      saveBtn.disabled = pending > 0 || saving;
+      const busy = pending > 0 || saving;
+      saveBtns().forEach(b => { b.disabled = busy; });
       saveBtn.querySelector('.sl').textContent = pending > 0 ? `Fotos werden verarbeitet (${pending})` : saving ? 'Speichert …' : 'Speichern';
-      const ic = saveBtn.querySelector('svg, .spinner'), busy = pending > 0 || saving;
+      const ic = saveBtn.querySelector('svg, .spinner');
       if (busy !== ic.classList.contains('spinner')) ic.outerHTML = busy ? '<span class="spinner"></span>' : I('check');
     };
+    const pname = k => D.phases[k];
     const slotEl = (s, k) => {
       if (s.el) return s.el;
       const b = document.createElement('button'); b.type = 'button'; b.className = 'slot';
@@ -3439,11 +3738,12 @@ const Editor = {
       s.el = b; return b;
     };
     const renderGrid = k => {
-      const g = form.querySelector(`.pgrid[data-k="${k}"]`), list = slots[k];
+      const g = form.querySelector(`.pgrid[data-k="${k}"]`); if (!g) return;
+      const list = slots[k];
       list.forEach((s, i) => {
         const el = slotEl(s, k);
         el.querySelector('.lbl').textContent = `${i + 1}`;
-        el.setAttribute('aria-label', `${KAT[k].name} Foto ${i + 1} – Optionen`);
+        el.setAttribute('aria-label', `${pname(k)} Foto ${i + 1} – Optionen`);
       });
       let add = g.querySelector('.slot.add');
       if (!add) {
@@ -3452,12 +3752,13 @@ const Editor = {
       }
       const n = list.length;
       add.innerHTML = `<span class="plus">${I('plus')}</span>Foto ${n + 1}`;
-      add.setAttribute('aria-label', `${KAT[k].name}: Foto ${n + 1} aufnehmen`);
+      add.setAttribute('aria-label', `${pname(k)}: Foto ${n + 1} aufnehmen`);
       g.replaceChildren(...list.map(s => s.el), add);
       const sec = form.querySelector(`.pk[data-k="${k}"]`);
       sec.querySelector('h3').textContent = ''; sec.querySelector('.n').textContent = `${n} Foto${n === 1 ? '' : 's'}`;
     };
     const addPending = (promise, k, at = null) => {
+      if (!D.photoKats.includes(k)) k = 'A';
       const s = { pending: true }; pending++; updateSave();
       if (at != null) slots[k].splice(at, 0, s); else slots[k].push(s);
       renderGrid(k); markDirty();
@@ -3470,31 +3771,32 @@ const Editor = {
         Ui.toast('Foto konnte nicht verarbeitet werden: ' + err.message, 'err');
       }).finally(() => { pending--; updateSave(); });
     };
+    const camTitle = () => kreisIn.value ? `${D.mainLabel} ${kreisIn.value}` : `Neuer Eintrag ${D.short}`;
     const shoot = k => Camera.open({
-      kat: k, startIndex: slots[k].length, title: kreisIn.value ? 'Kreis ' + kreisIn.value : 'Neuer Eintrag',
+      abt: A, kat: k, startIndex: slots[k].length, title: camTitle(),
       allowKatSwitch: true, onShot: (p, kk) => addPending(p, kk)
     });
     const slotMenu = async s => {
       if (s.pending) return;
       const k = slots.A.includes(s) ? 'A' : 'E', list = slots[k], i = list.indexOf(s), other = k === 'A' ? 'E' : 'A';
-      const v = await Ui.menu(`${KAT[k].name} · Foto ${i + 1}`, [
+      const v = await Ui.menu(`${pname(k)} · Foto ${i + 1}`, [
         { label: 'Ansehen', value: 'view', icon: 'eye' },
         { label: 'Markieren (Pfeil/Kreis)', value: 'ann', icon: 'pen' },
         { label: 'Ersetzen (neu aufnehmen)', value: 'rep', icon: 'replace' },
         i > 0 && { label: 'Nach vorn', value: 'left', icon: 'arrowL' },
         i < list.length - 1 && { label: 'Nach hinten', value: 'right', icon: 'arrowR' },
-        { label: `Zu „${KAT[other].name}“ verschieben`, value: 'move', icon: 'layers' },
+        D.photoKats.length > 1 && { label: `Zu „${pname(other)}“ verschieben`, value: 'move', icon: 'layers' },
         { label: 'Foto entfernen', value: 'del', icon: 'trash', danger: true }
       ]);
       if (!v) return;
       markDirty();
-      if (v === 'view') Lightbox.open(list.map((x, j) => ({ b: x.b, buf: x.full, thumbUrl: x.thumbUrl, entryId: entryId, kat: k, idx: j, n: list.length, draftF: readForm() })), i);
+      if (v === 'view') Lightbox.open(list.map((x, j) => ({ b: x.b, buf: x.full, thumbUrl: x.thumbUrl, entryId: entryId, kat: k, idx: j, n: list.length, draftF: readForm(), draftAbt: A })), i);
       else if (v === 'left' || v === 'right') { const j = v === 'left' ? i - 1 : i + 1; [list[i], list[j]] = [list[j], list[i]]; renderGrid(k); }
       else if (v === 'move') { list.splice(i, 1); slots[other].push(s); renderGrid(k); renderGrid(other); }
       else if (v === 'del') { list.splice(i, 1); renderGrid(k); }
       else if (v === 'rep') {
         let got = null;
-        await Camera.open({ kat: k, startIndex: i, title: `Foto ${i + 1} ersetzen`, onShot: p => { if (!got) { got = p; } } , allowKatSwitch: false });
+        await Camera.open({ abt: A, kat: k, startIndex: i, title: `Foto ${i + 1} ersetzen`, onShot: p => { if (!got) { got = p; } }, allowKatSwitch: false });
         if (got) { list.splice(i, 1); addPending(got, k, i); }
       } else if (v === 'ann') {
         const buf = s.full || await Repo.full(s.b);
@@ -3503,23 +3805,33 @@ const Editor = {
         if (r) { const idx = list.indexOf(s); list.splice(idx, 1); addPending(Promise.resolve(r), k, idx); }
       }
     };
-    const readForm = () => { const f = {}; TEXT_FIELDS.forEach(k => { const el = form.elements[k]; f[k] = el ? el.value : ''; }); return f; };
+    const readForm = () => {
+      const f = {};
+      D.fields.forEach(fd => { const el = form.elements[fd.k]; if (el) f[fd.k] = fd.bool ? el.checked : el.value; });
+      return f;
+    };
 
     /* ---- Speichern ---- */
     const save = async () => {
       if (pending > 0 || saving) return;
+      const f = readForm();
+      const empty = !D.fields.some(fd => fd.bool ? false : String(f[fd.k] || '').trim()) && !slots.A.length && !slots.E.length;
+      if (empty && !ex) { dirty = false; sh.close(); return; }
+      if (mainFd.req && !String(f[MAIN] || '').trim()) {              // Pflichtfeld (Bühne: Zug / Position)
+        const fm = kreisIn.closest('.f'); fm.classList.add('invalid'); kreisIn.focus();
+        Ui.toast(`${mainFd.label} fehlt – ohne lässt sich nicht speichern.`, 'warn'); return;
+      }
       saving = true; updateSave();
       try {
-        const draft = { id: ex ? ex.id : null, showId, f: readForm(), photos: { A: slots.A.map(clean), E: slots.E.map(clean) } };
-        const empty = !TEXT_FIELDS.some(k => draft.f[k].trim()) && !draft.photos.A.length && !draft.photos.E.length;
-        if (empty && !ex) { dirty = false; sh.close(); return; }
+        const draft = { id: ex ? ex.id : null, showId, abt: A, f, photos: { A: slots.A.map(clean), E: slots.E.map(clean) } };
         const res = await Repo.saveDraft(draft);
         dirty = false;
         slots.A.concat(slots.E).forEach(s => s.thumbUrl && URL.revokeObjectURL(s.thumbUrl));
         sh.close();
         App.state.sel = null; App.selectEntry(res.entryId);
-        if (res.mergedInto) Ui.toast(`Kreis ${Utils.normKreis(draft.f.kreis)} gab es schon – Einträge wurden zusammengeführt.${res.mergeNotes.length ? ' ' + res.mergeNotes.join('; ') : ''}`, 'warn', { ms: 7000 });
-        else Ui.toast(ex ? 'Gespeichert' : `Kreis ${Utils.normKreis(draft.f.kreis) || '(ohne Nummer)'} angelegt`);
+        const mv = mainFd.plus ? Utils.normKreis(f[MAIN]) : String(f[MAIN] || '').trim();
+        if (res.mergedInto) Ui.toast(`${D.mainLabel} ${mv} gab es schon – Einträge wurden zusammengeführt.${res.mergeNotes.length ? ' ' + res.mergeNotes.join('; ') : ''}`, 'warn', { ms: 7000 });
+        else Ui.toast(ex ? 'Gespeichert' : `${D.short}: ${D.mainLabel} ${mv || '(ohne Nummer)'} angelegt`);
       } catch (err) {
         saving = false; updateSave();
         App.error(err);
@@ -3537,15 +3849,15 @@ const Editor = {
         const v = kreisIn.value, st = kreisIn.selectionStart ?? v.length, en = kreisIn.selectionEnd ?? v.length;
         kreisIn.value = v.slice(0, st) + '+' + v.slice(en); kreisIn.focus(); kreisIn.setSelectionRange(st + 1, st + 1); markDirty();
       } else if (a === 'del') {
-        if (await Ui.confirm('Eintrag löschen?', `Kreis ${ex.f.kreis || '(ohne Nummer)'} mit ${slots.A.length + slots.E.length} Fotos wird gelöscht. Beim Abgleich wird die Löschung auf andere Geräte übertragen.`, 'Löschen', true)) {
+        if (await Ui.confirm('Eintrag löschen?', `${D.mainLabel} ${ex.f[MAIN] || '(ohne Nummer)'} mit ${slots.A.length + slots.E.length} Fotos wird gelöscht. Beim Abgleich wird die Löschung auf andere Geräte übertragen.`, 'Löschen', true)) {
           try { await Repo.deleteEntry(ex.id); dirty = false; sh.close(); App.state.sel = null; Ui.toast('Eintrag gelöscht'); } catch (err) { App.error(err); }
         }
       }
     });
-    renderGrid('A'); renderGrid('E'); updateSave();
+    D.photoKats.forEach(renderGrid); updateSave();
     if (quick) {
-      // Schnell-Erfassung: Kamera sofort, danach Kreis eintippen
-      Camera.open({ kat: quick === 'E' ? 'E' : 'A', startIndex: 0, title: 'Schnell erfassen', allowKatSwitch: true, onShot: (p, k) => addPending(p, k) })
+      // Schnell-Erfassung: Kamera sofort, danach Hauptfeld eintippen
+      Camera.open({ abt: A, kat: quick === 'E' ? 'E' : 'A', startIndex: 0, title: `Schnell erfassen · ${D.short}`, allowKatSwitch: true, onShot: (p, k) => addPending(p, k) })
         .then(() => {
           if (!slots.A.length && !slots.E.length) { dirty = false; sh.close(); return; }
           setTimeout(() => kreisIn.focus(), 60);
@@ -3572,8 +3884,8 @@ const SetupView = {
     const line = (lab, v) => v ? `<div class="zl"><b>${lab}</b>${Utils.esc(v)}</div>` : '';
     const wasOpen = this.open;
     box.innerHTML = `<details class="setup ${s.f.einrichtung ? 'has-allg' : ''}" ${wasOpen ? 'open' : ''}>
-      <summary><h3>Einrichtung &amp; Züge<span class="sum">${Utils.esc(sum)}</span></h3>
-        ${edit ? `<button class="btn" data-setup-edit>${I('edit', 'sm')} Bearbeiten</button>` : ''}${I('arrowR', 'sm chev')}</summary>
+      <summary>${s.f.einrichtung ? `<span class="hint" title="Allgemeine Einrichtung beachten">${I('info')}</span>` : ''}<h3>Einrichtung &amp; Züge${App.visibleDepts(showId).length > 1 ? ' · Licht' : ''}<span class="sum">${Utils.esc(sum)}</span></h3>
+        ${edit ? `<button class="btn" data-setup-edit aria-label="Einrichtung bearbeiten">${I('edit', 'sm')}<span class="bl"> Bearbeiten</span></button>` : ''}${I('arrowR', 'sm chev')}</summary>
       <div class="sbody">
         <div><div class="muted" style="font-size:11px;font-weight:700;letter-spacing:.1em;margin-bottom:6px">ALLGEMEINE EINRICHTUNG</div>
           <div class="allg ${s.f.einrichtung ? '' : 'empty'}">${s.f.einrichtung ? Utils.esc(s.f.einrichtung) : 'Noch nichts eingetragen.' + (edit ? '' : ' Zum Eintragen in den Bearbeitungsmodus wechseln.')}</div></div>
@@ -3680,17 +3992,20 @@ const SyncView = {
   },
   async send() {
     const last = Sync.state.lastPackageAt;
-    const changes = last ? Sync.collect({ since: last }) : null;
+    const mine = Settings.v.depts, allMine = mine.length === DEPT_ORDER.length;
+    const changes = last ? Sync.collect({ since: last, depts: mine }) : null;
     const nCh = changes ? changes.shows.length + changes.entries.length + changes.photos.length : 0;
+    const lbl = allMine ? '' : ` · ${Sync.deptLabel()}`;
     const v = await Ui.menu('Sync-Paket senden', [
-      last && { label: `Nur Änderungen seit ${Utils.fmtDate(last)} (${nCh})`, value: 'inc', icon: 'sync' },
-      { label: 'Komplett (alle Veranstaltungen)', value: 'full', icon: 'layers' }
+      last && { label: `Nur Änderungen seit ${Utils.fmtDate(last)} (${nCh})${lbl}`, value: 'inc', icon: 'sync' },
+      { label: `Komplett (alle Veranstaltungen)${lbl}`, value: 'full', icon: 'layers' },
+      !allMine && { label: 'Komplett, alle Abteilungen', value: 'fullall', icon: 'database' }
     ]);
     if (!v) return;
     if (v === 'inc' && !nCh) { Ui.toast('Keine Änderungen seit dem letzten Paket.'); return; }
     const bz = Ui.busy('Paket wird erstellt …');
     try {
-      const r = await FileAdapter.push({ full: v === 'full', onReady: () => bz.close() }, (i, n) => bz.set(`Bilder werden verpackt … ${i}/${n}`));
+      const r = await FileAdapter.push({ full: v !== 'inc', allDepts: v === 'fullall', onReady: () => bz.close() }, (i, n) => bz.set(`Bilder werden verpackt … ${i}/${n}`));
       bz.close();
       if (r.res === 'abort') Ui.toast('Teilen abgebrochen – kein Paket gesendet.', 'warn');
       else Ui.toast(r.res === 'shared' ? `Sync-Paket geteilt (${Utils.fmtBytes(r.size)})` : `Sync-Paket gespeichert (${Utils.fmtBytes(r.size)}) – jetzt auf dem anderen Gerät einspielen.`);
@@ -3851,6 +4166,7 @@ const DiagView = {
         <div class="bigstatus" data-state="${st.state}"><span class="dot"></span><div><h3>${Utils.esc(st.label)}</h3><p>${Utils.esc(st.text)}</p></div></div>
         <div class="group"><h3>Dieses Gerät</h3><dl class="kv">
           <dt>Name</dt><dd>${Utils.esc(Sync.deviceName())}</dd><dt>Geräte-ID</dt><dd>${Sync.deviceId}</dd><dt>App-Version</dt><dd>${APP_VERSION}</dd>
+          <dt>Dokumentiert</dt><dd>${Utils.esc(Sync.deptLabel())}</dd><dt>Paketformat</dt><dd>${FORMAT_VERSION}</dd>
           <dt>Speicher</dt><dd>${est ? `${Utils.fmtBytes(est.usage)} von ${Utils.fmtBytes(est.quota)} belegt` : 'unbekannt'}</dd>
           <dt>Dauerhaft</dt><dd>${persisted == null ? 'unbekannt' : persisted ? 'ja – Browser löscht die Daten nicht automatisch' : 'nein – bei Speichermangel könnte der Browser löschen'}</dd></dl></div>
         <div class="group"><h3>Lokale Daten</h3><dl class="kv">
@@ -3898,8 +4214,14 @@ const SettingsView = {
         <div style="display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap">${opt('camMode', 'app', I('camera') + ' Doku-VT-Kamera')}${opt('camMode', 'system', I('phone') + ' Geräte-Kamera')}</div>
         <label class="item"><span class="lb">Serienaufnahme<small>Kamera bleibt nach dem Auslösen offen</small></span><span class="switch"><input type="checkbox" data-bool="burst" ${v.burst ? 'checked' : ''}><span></span></span></label>
       </div>
+      <div class="group"><h3>Dieses Gerät dokumentiert</h3>
+        <div class="item" style="border-top:0"><span class="lb"><small>Bestimmt, welche Abteilungen in einer Veranstaltung erscheinen und welche Einträge beim Abgleich mitgehen. Mindestens eine bleibt aktiv.</small></span></div>
+        ${DEPT_ORDER.map(d => `<label class="item" data-abt="${d}"><span class="lb"><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--da);margin-right:8px"></span>${Utils.esc(DEPT[d].name)}</span>
+          <span class="switch"><input type="checkbox" data-dept="${d}" ${v.depts.includes(d) ? 'checked' : ''}><span></span></span></label>`).join('')}
+      </div>
       <div class="group"><h3>Eingabe</h3>
-        <button class="item" data-act="fkeys"><span class="lb">Filter-Schnelltasten<small class="mono">${Utils.esc((v.filterKeys || []).join('  ') || '–')}</small></span>${I('edit')}</button>
+        <button class="item" data-act="fkeys"><span class="lb">Filter-Schnelltasten (Licht)<small class="mono">${Utils.esc((v.filterKeys || []).join('  ') || '–')}</small></span>${I('edit')}</button>
+        <button class="item" data-act="mkeys"><span class="lb">Mikrofon-Schnelltasten (Ton)<small class="mono">${Utils.esc((v.mikroKeys || []).join('  ') || '–')}</small></span>${I('edit')}</button>
       </div>
       <div class="group"><h3>Gerät</h3>
         <button class="item" data-act="name"><span class="lb">Gerätename<small>${Utils.esc(Sync.deviceName())} – wird beim Abgleich angezeigt</small></span>${I('edit')}</button>
@@ -3920,6 +4242,10 @@ const SettingsView = {
       if (b.dataset.set) { await Settings.set({ [b.dataset.set]: b.dataset.val }); render(); }
       else if (b.dataset.num) { await Settings.set({ [b.dataset.num]: +b.dataset.val }); render(); }
       else if (b.dataset.act === 'name') { const n = await Ui.prompt('Gerätename', Settings.v.deviceName || Sync.deviceName(), 'z. B. iPad Beleuchtung'); if (n != null) { await Settings.set({ deviceName: n.trim() }); render(); } }
+      else if (b.dataset.act === 'mkeys') {
+        const n = await Ui.prompt('Mikrofon-Schnelltasten', (Settings.v.mikroKeys || []).join(', '), 'z. B. DPA 4061, SM58, Beta 91', 'Mit Komma trennen (Leerzeichen gehören zum Namen). Die Reihenfolge bleibt so erhalten.');
+        if (n != null) { await Settings.set({ mikroKeys: [...new Set(n.split(/[,;]+/).map(x => x.trim()).filter(Boolean))].slice(0, 30) }); render(); }
+      }
       else if (b.dataset.act === 'fkeys') {
         const n = await Ui.prompt('Filter-Schnelltasten', (Settings.v.filterKeys || []).join(', '), 'z. B. nc, L201, L202, R132', 'Mit Komma oder Leerzeichen trennen. Die Reihenfolge bleibt so erhalten.');
         if (n != null) { await Settings.set({ filterKeys: [...new Set(n.split(/[\s,;]+/).map(x => x.trim()).filter(Boolean))].slice(0, 30) }); render(); }
@@ -3938,6 +4264,12 @@ const SettingsView = {
     sh.body.addEventListener('change', async e => {
       const t = e.target;
       if (t.dataset.bool) await Settings.set({ [t.dataset.bool]: t.checked });
+      if (t.dataset.dept) {
+        const cur = new Set(Settings.v.depts); t.checked ? cur.add(t.dataset.dept) : cur.delete(t.dataset.dept);
+        if (!cur.size) { t.checked = true; Ui.toast('Mindestens eine Abteilung muss aktiv bleiben.', 'warn'); return; }
+        await Settings.set({ depts: DEPT_ORDER.filter(d => cur.has(d)) });
+        App.state.abt = 'all'; App.render(); App.updatePill();
+      }
       if (t.dataset.range) { await Settings.set({ [t.dataset.range]: +t.value }); render(); }
     });
     sh.body.addEventListener('input', e => { const t = e.target; if (t.dataset.range) { Settings.v[t.dataset.range] = +t.value; Settings.apply(); } });
@@ -3970,6 +4302,7 @@ const Demo = {
   },
   async create() {
     const show = Rec.create({}, { titel: 'Demo: Der Haifisch', spielstaette: 'Großes Haus', notiz: 'Beispieldaten zum Ausprobieren – kann jederzeit gelöscht werden.', del: false,
+      abteilungen: ['L', 'T', 'B'],
       einrichtung: 'Grundlicht: Gruppe 1 auf 60 %. Saallicht über Pult, Stimmung 0.\nHaikopf-Requisite steht vor Vorstellung links in der Gasse 2, Lichterkette vorher prüfen.',
       'z:olz1': { name: 'OLZ 1', hoehe: '8,50 m', bestueckung: '6× PC 2 kW, 2× Profiler 26°', bemerkung: 'Torblenden oben leicht schließen', ord: 0, del: false },
       'z:bgz1': { name: 'BGZ 1', hoehe: '7,20 m', bestueckung: '4× Fresnel 1 kW', bemerkung: '', ord: 2, del: false },
@@ -3980,11 +4313,17 @@ const Demo = {
       { f: { kreis: '901', bemerkung: 'Tür mittlere Position vor Steg' }, A: [['Kreis 901', 'Tür vor Steg', 30, 'tot']] },
       { f: { kreis: '12+17+103+113+620', gruppe: '24', filter: 'nc', bemerkung: 'Einleuchten Spiegelkugel-Stimmung' }, E: [['Gruppe 24', 'Spiegelkugel', 48, 'tot'], ['Gruppe 24', 'Kugel', 48, 'nah']] },
       { f: { kreis: '10127', geraet: 'Overheadprojektor', bemerkung: 'Verkabelt in die Unterbühne durch die Klappe, muss am Gerät ausgeschaltet sein' }, A: [['Kreis 10127', 'OHP Schalter', 160, 'nah']], E: [['Kreis 10127', 'Projektion', 160, 'tot']] },
-      { f: { kreis: '45', gruppe: '3', filter: 'L201', adresse: '12/301', position: '1. Portalbrücke', bemerkung: 'Seitenlicht links, Torblende oben leicht schließen' } }
+      { f: { kreis: '45', gruppe: '3', filter: 'L201', adresse: '12/301', position: '1. Portalbrücke', bemerkung: 'Seitenlicht links, Torblende oben leicht schließen' } },
+      { abt: 'T', f: { kanal: '17', quelle: 'Funk Mackie', mikro: 'DPA 4061', stagebox: 'SB2-07', ausgang: 'PA', mikropos: 'Stirn', rolle: 'Mackie Messer', funk: 'TX 4 · 606,250 MHz', bemerkung: 'Kabel unter der Perücke, Akku vor jeder Vorstellung tauschen' },
+        A: [['Kanal 17', 'Mikro Stirn', 205, 'nah']], E: [['Kanal 17', 'Pult-Kanal', 205, 'tot']] },
+      { abt: 'B', f: { zug: 'Zug 14', element: 'Rückprospekt Hafen', hoehe: '8,20 m', reihenfolge: '1', bemerkung: 'Erst nach dem Lichtwechsel fahren' }, A: [['Zug 14', 'Rückprospekt', 0, 'tot']] },
+      { abt: 'B', f: { zug: 'Boden links', element: 'Podest Haifischbecken', reihenfolge: '2', lagerort: 'Seitenbühne links', bemerkung: 'Rollen feststellen' } }
     ];
     const entries = [], photos = [], fulls = [], thumbs = [];
     for (const d of data) {
-      const e = Rec.create({ showId: show.id }, Object.assign({ kreis: '', gruppe: '', filter: '', adresse: '', bemerkung: '', geraet: '', dmx: '', position: '', farbe: '', chkA: false, chkE: false, del: false }, d.f));
+      const base = d.abt ? { abt: d.abt, bemerkung: '', chkA: false, chkE: false, del: false }
+        : { abt: 'L', kreis: '', gruppe: '', filter: '', adresse: '', bemerkung: '', geraet: '', dmx: '', position: '', farbe: '', chkA: false, chkE: false, del: false };
+      const e = Rec.create({ showId: show.id }, Object.assign(base, d.f));
       entries.push(e);
       for (const k of ['A', 'E']) for (const [i, args] of (d[k] || []).entries()) {
         const p = await this.photo(...args);
@@ -4050,7 +4389,7 @@ const Pwa = {
    App – Navigation, Zustand, Rendering
    ===================================================================== */
 const App = {
-  state: { route: 'home', showId: null, kat: 'all', q: '', edit: false, checklist: false, sel: null, renderPending: false },
+  state: { route: 'home', showId: null, abt: 'all', kat: 'all', q: '', edit: false, checklist: false, sel: null, renderPending: false },
   async start() {
     const setVh = () => document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
     setVh(); window.addEventListener('resize', setVh);
@@ -4103,7 +4442,7 @@ const App = {
   route() {
     const h = location.hash.replace(/^#\/?/, '').split('/');
     if (h[0] === 'show' && Repo.show(h[1])) {
-      if (this.state.showId !== h[1]) Object.assign(this.state, { showId: h[1], q: '', sel: null, kat: 'all', checklist: false });
+      if (this.state.showId !== h[1]) Object.assign(this.state, { showId: h[1], q: '', sel: null, abt: 'all', kat: 'all', checklist: false });
       this.state.route = 'show';
     } else { this.state.route = 'home'; this.state.showId = null; }
     this.render(true);
@@ -4146,29 +4485,76 @@ const App = {
     const ph = [];
     for (const e of Repo.entriesOf(s.id)) { for (const p of Repo.photosOf(e.id)) { ph.push(p); if (ph.length >= 3) break; } if (ph.length >= 3) break; }
     const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+    // Fortschritt je sichtbarer Abteilung (eine Abteilung: wie bisher ohne Beschriftung)
+    const vis = this.visibleDepts(s.id);
+    const progs = vis.map(d => {
+      const x = Repo.stats(s.id, [d]); if (!x.aDone && !x.eDone) return '';
+      return `<div class="prog" data-abt="${d}">${vis.length > 1 ? `<span class="pl">${Utils.esc(DEPT[d].short)}</span>` : ''}<span class="bar a" title="${Utils.esc(DEPT[d].done.A)}"><i style="width:${pct(x.aDone, x.a)}%"></i></span><span class="bar e" title="${Utils.esc(DEPT[d].done.E)}"><i style="width:${pct(x.eDone, x.e)}%"></i></span></div>`;
+    }).join('');
     return `<article class="showcard"><button class="open" data-act="open" data-id="${s.id}" aria-label="${Utils.esc(s.f.titel)} öffnen">
       <div class="mosaic">${[0, 1, 2].map(i => `<div class="m">${ph[i] ? Views.thumbImg(ph[i].b) : ''}</div>`).join('')}</div>
-      <div class="body"><h3>${Utils.esc(s.f.titel)}</h3><div class="meta">${s.f.spielstaette ? `<span>${Utils.esc(s.f.spielstaette)}</span>` : ''}<span>${st.entries} Einträge</span><span>${st.photos} Fotos</span><span>geändert ${Utils.fmtAgo(s.mod)}</span></div>
-      ${(st.aDone || st.eDone) ? `<div class="prog"><span class="bar a" title="Aufgebaut"><i style="width:${pct(st.aDone, st.a)}%"></i></span><span class="bar e" title="Eingeleuchtet"><i style="width:${pct(st.eDone, st.e)}%"></i></span></div>` : ''}</div></button>
+      <div class="body"><h3>${Utils.esc(s.f.titel)}</h3><div class="meta">${s.f.spielstaette ? `<span>${Utils.esc(s.f.spielstaette)}</span>` : ''}${Repo.showDepts(s.id).length > 1 || Settings.v.depts.length > 1 ? `<span>${Utils.esc(Repo.showDepts(s.id).map(d => DEPT[d].short).join(' · '))}</span>` : ''}<span>${st.entries} Einträge</span><span>${st.photos} Fotos</span><span>geändert ${Utils.fmtAgo(s.mod)}</span></div>
+      ${progs ? `<div class="progs">${progs}</div>` : ''}</div></button>
       <button class="btn icon ghost menu" data-act="showmenu" data-id="${s.id}" aria-label="Aktionen für ${Utils.esc(s.f.titel)}">${I('more')}</button></article>`;
+  },
+
+  /* ---------- Abteilungen ---------- */
+  /** Sichtbar = Abteilungen der Veranstaltung ∩ Abteilungen dieses Geräts */
+  visibleDepts(showId) { const sd = Repo.showDepts(showId); return DEPT_ORDER.filter(d => sd.includes(d) && Settings.v.depts.includes(d)); },
+  /** Abteilung, nach der sich Beschriftungen richten: gewählte, sonst die einzige sichtbare, sonst null („Alle“) */
+  curAbt() {
+    const v = this.visibleDepts(this.state.showId);
+    if (this.state.abt !== 'all' && v.includes(this.state.abt)) return this.state.abt;
+    return v.length === 1 ? v[0] : null;
+  },
+  /** Abteilung für ein neues Element wählen (bei „Alle“ und mehreren Abteilungen kurz nachfragen) */
+  async askAbt(title) {
+    const ca = this.curAbt(); if (ca) return ca;
+    const v = this.visibleDepts(this.state.showId);
+    return Ui.menu(title, v.map(d => ({ label: DEPT[d].name, value: d })));
+  },
+  /** Umschalter für die Abteilungen einer Veranstaltung (Anlegen/Bearbeiten) */
+  deptToggles(sel) {
+    return `<div class="depttgls" role="group" aria-label="Abteilungen">${DEPT_ORDER.map(d => `<button type="button" class="depttgl" data-abt="${d}" data-tgl="${d}" aria-pressed="${sel.includes(d)}">
+      <span class="ck">${sel.includes(d) ? I('check', 'sm') : ''}</span>${Utils.esc(DEPT[d].short)}</button>`).join('')}</div>`;
+  },
+  bindToggles(root, sel) {
+    root.addEventListener('click', e => {
+      const b = e.target.closest('[data-tgl]'); if (!b) return;
+      const d = b.dataset.tgl, i = sel.indexOf(d);
+      if (i >= 0) { if (sel.length === 1) { Ui.toast('Mindestens eine Abteilung', 'warn'); return; } sel.splice(i, 1); } else sel.push(d);
+      const on = sel.includes(d); b.setAttribute('aria-pressed', on); b.querySelector('.ck').innerHTML = on ? I('check', 'sm') : '';
+    });
   },
 
   /* ---------- Show ---------- */
   renderShow(full) {
     const s = Repo.show(this.state.showId); if (!s) { this.go('#/'); return; }
     const st = this.state;
+    const vis = this.visibleDepts(s.id);
     const bar = document.getElementById('appbarRow');
     bar.innerHTML = `<button class="btn icon ghost" data-act="home" aria-label="Zurück zur Übersicht">${I('back')}</button>
-      <h1><button class="title-btn" data-act="rename" title="Titel bearbeiten">${Utils.esc(s.f.titel)}<span class="sub">${s.f.spielstaette ? Utils.esc(s.f.spielstaette) + ' · ' : ''}${Repo.stats(s.id).entries} Einträge</span></button></h1>
+      <h1><button class="title-btn" data-act="rename" title="Titel bearbeiten">${Utils.esc(s.f.titel)}<span class="sub">${s.f.spielstaette ? Utils.esc(s.f.spielstaette) + ' · ' : ''}${Repo.stats(s.id, vis).entries} Einträge</span></button></h1>
       ${this.pillHtml()}
       <button class="btn icon ghost" data-act="pdf" aria-label="PDF exportieren">${I('pdf')}</button>
       <button class="btn icon ghost" data-act="showmenu" data-id="${s.id}" aria-label="Weitere Aktionen">${I('more')}</button>`;
     const main = document.getElementById('main');
+    if (!vis.length) {
+      // keine gemeinsame Abteilung: klarer Hinweis statt leerer Liste
+      const sd = Repo.showDepts(s.id).map(d => DEPT[d].name).join(', ');
+      main.innerHTML = `<div class="wrap"><div class="empty"><div class="ico">${I('layers', 'lg')}</div>
+        <h3>Keine Abteilung dieses Geräts</h3>
+        <p>Diese Veranstaltung umfasst: <b>${Utils.esc(sd)}</b>.<br>Dieses Gerät dokumentiert: <b>${Utils.esc(Settings.v.depts.map(d => DEPT[d].name).join(', '))}</b>.</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn big primary" data-act="settings">${I('settings')} Einstellungen öffnen</button>
+          <button class="btn big" data-act="rename">${I('edit')} Abteilungen der Veranstaltung</button></div></div></div>`;
+      this.updatePill(); this.stickyTop(); return;
+    }
     if (full || !main.querySelector('.toolbar')) {
       st.q = '';
-      main.innerHTML = `<div class="toolbar"><div class="row">
-          <div class="katbar" role="group" aria-label="Kategorie">
-            <button class="katbtn" data-kat="all">Alle <span class="cnt" data-cnt="all"></span></button><button class="katbtn" data-kat="A" data-k="A">Aufbau <span class="cnt" data-cnt="A"></span></button><button class="katbtn" data-kat="E" data-k="E">Einleuchten <span class="cnt" data-cnt="E"></span></button></div>
+      main.innerHTML = `<div class="toolbar"><div class="row deptrow hidden" data-deptrow></div><div class="row">
+          <div class="katbar" role="group" aria-label="Phase">
+            <button class="katbtn" data-kat="all"><span class="kl">Alle</span> <span class="cnt" data-cnt="all"></span></button><button class="katbtn" data-kat="A" data-k="A"><span class="kl">Aufbau</span> <span class="cnt" data-cnt="A"></span></button><button class="katbtn" data-kat="E" data-k="E"><span class="kl">Einleuchten</span> <span class="cnt" data-cnt="E"></span></button></div>
           <button class="btn chkbtn" data-act="checklist" aria-pressed="false">${I('checklist', 'sm')}<span class="cl">Checkliste</span></button>
         </div><div class="row">
           <div class="seg" role="group" aria-label="Darstellung"><button data-view="list" aria-label="Liste">${I('list', 'sm')}</button><button data-view="grid" aria-label="Kacheln">${I('grid', 'sm')}</button><button data-view="big" aria-label="Große Bilder">${I('image', 'sm')}</button></div>
@@ -4185,41 +4571,76 @@ const App = {
   },
   renderToolbar() {
     const st = this.state, main = document.getElementById('main');
+    const tb = main.querySelector('.toolbar'); if (!tb) return;
+    const vis = this.visibleDepts(st.showId);
+    if (st.abt !== 'all' && !vis.includes(st.abt)) st.abt = 'all';
+    const ca = this.curAbt(), D = ca && DEPT[ca];
+    // Zeile 0: Abteilungsleiste (nur bei mehr als einer sichtbaren Abteilung)
+    const dr = main.querySelector('[data-deptrow]');
+    if (vis.length > 1) {
+      dr.classList.remove('hidden');
+      dr.innerHTML = `<div class="deptbar" role="group" aria-label="Abteilung" style="--n:${vis.length + 1}">
+        <button class="deptbtn" data-dept="all" aria-pressed="${st.abt === 'all'}">Alle <span class="cnt" data-dcnt="all"></span></button>
+        ${vis.map(d => `<button class="deptbtn" data-dept="${d}" data-abt="${d}" aria-pressed="${st.abt === d}">${Utils.esc(DEPT[d].short)} <span class="cnt" data-dcnt="${d}"></span></button>`).join('')}</div>`;
+    } else { dr.classList.add('hidden'); dr.innerHTML = ''; }
+    if (ca) tb.dataset.abt = ca; else delete tb.dataset.abt;
+    // Zeile 1: Phasen mit Namen der Abteilung („Einrichtung“ bei Alle); Bühne ohne Phasen-Filter
+    const katbar = main.querySelector('.katbar');
+    const noPhase = D && D.photoKats.length === 1;
+    if (noPhase && st.kat !== 'all') st.kat = 'all';
+    katbar.classList.toggle('hidden', !!noPhase);
+    katbar.querySelector('[data-kat=A] .kl').textContent = katName(ca, 'A');
+    katbar.querySelector('[data-kat=E] .kl').textContent = katName(ca, 'E');
     main.querySelectorAll('[data-kat]').forEach(b => b.setAttribute('aria-pressed', b.dataset.kat === st.kat));
     main.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', b.dataset.view === Settings.v.view));
     main.querySelector('[data-act=checklist]').setAttribute('aria-pressed', st.checklist);
     const mb = main.querySelector('[data-act=mode]');
     mb.setAttribute('aria-pressed', st.edit); mb.setAttribute('aria-checked', st.edit);
     mb.setAttribute('aria-label', st.edit ? 'Bearbeitungsmodus aktiv – umschalten auf Ansicht' : 'Ansichtsmodus – umschalten auf Bearbeiten');
+    // Hinzufügen: eine Abteilung → wie bisher; mehrere → je Abteilung ein farbiger Knopf
     const fab = main.querySelector('[data-fab]');
-    fab.innerHTML = st.edit ? `<button class="fab cam" data-act="quick" aria-label="Schnell erfassen mit Kamera">${I('camera', 'lg')}</button><button class="fab" data-act="new">${I('plus')} Eintrag</button>` : '';
+    const multiAdd = st.edit && !ca && vis.length > 1;
+    fab.classList.toggle('multi', multiAdd);
+    main.querySelector('.split').classList.toggle('multi', multiAdd);
+    const cam = `<button class="fab qcam" data-act="quick" aria-label="Schnell erfassen mit Kamera">${I('camera', 'lg')}</button>`;
+    fab.innerHTML = !st.edit ? '' : multiAdd
+      ? cam + vis.map(d => `<button class="fab dept" data-act="new" data-abt="${d}" aria-label="Neuer Eintrag ${Utils.esc(DEPT[d].name)}">${I('plus')} ${Utils.esc(DEPT[d].short)}</button>`).join('')
+      : cam + (vis.length > 1 ? `<button class="fab dept" data-abt="${ca}" data-act="new" data-new-abt="${ca}">${I('plus')} ${Utils.esc(D.short)}</button>` : `<button class="fab" data-act="new">${I('plus')} Eintrag</button>`);
+    // Fortschritt der Checkliste je Abteilung und Phase
     const pr = main.querySelector('[data-prog]');
     if (st.checklist) {
-      const s = Repo.stats(st.showId);
+      const scope = ca ? [ca] : vis;
+      const bar = (d, k, done, all) => `<span class="pb" data-abt="${d}">${tagHtml(d, k)}<span class="bar"><i style="width:${all ? done / all * 100 : 0}%;background:var(${k === 'E' ? '--de' : '--da'})"></i></span><span class="mono">${done}/${all}</span></span>`;
       pr.classList.remove('hidden');
-      pr.innerHTML = `<span class="pb"><span class="tag A">Aufbau</span><span class="bar"><i style="width:${s.a ? s.aDone / s.a * 100 : 0}%;background:var(--blue)"></i></span><span class="mono">${s.aDone}/${s.a}</span></span>
-        <span class="pb"><span class="tag E">Einleuchten</span><span class="bar"><i style="width:${s.e ? s.eDone / s.e * 100 : 0}%;background:var(--yellow)"></i></span><span class="mono">${s.eDone}/${s.e}</span></span>
-        <button class="btn ghost" data-act="resetchk">${I('undo', 'sm')} Zurücksetzen</button>`;
+      pr.innerHTML = scope.map(d => { const s = Repo.stats(st.showId, [d]); return bar(d, 'A', s.aDone, s.a) + bar(d, 'E', s.eDone, s.e); }).join('')
+        + `<button class="btn ghost" data-act="resetchk">${I('undo', 'sm')} Zurücksetzen</button>`;
     } else pr.classList.add('hidden');
   },
   renderList() {
     const st = this.state, main = document.getElementById('main');
     const list = main.querySelector('[data-list]'); if (!list) return;
-    SetupView.render(main.querySelector('[data-setup]'), st.showId, st.edit);
-    const sort = 'kreis';                         // Sortierung immer nach Kreis aufsteigend
-    const all = Views.sortedItems(st.showId, { kat: 'all', sort, q: st.q });
+    const vis = this.visibleDepts(st.showId), ca = this.curAbt();
+    const setupBox = main.querySelector('[data-setup]');
+    if (vis.includes('L') && (st.abt === 'all' || st.abt === 'L')) SetupView.render(setupBox, st.showId, st.edit); else setupBox.innerHTML = '';
+    const sort = 'kreis';                         // Sortierung immer: Abteilung → Phase → Hauptfeld aufsteigend
+    const every = Views.sortedItems(st.showId, { kat: 'all', sort, q: st.q, depts: vis });
+    const dc = { all: every.length }; vis.forEach(d => { dc[d] = 0; }); every.forEach(i => { dc[i.abt]++; });
+    main.querySelectorAll('[data-dcnt]').forEach(el => { el.textContent = dc[el.dataset.dcnt] ?? 0; });
+    const all = st.abt === 'all' ? every : every.filter(i => i.abt === st.abt);
     const cnt = { all: all.length, A: 0, E: 0 }; all.forEach(i => { if (cnt[i.kat] != null) cnt[i.kat]++; });
     main.querySelectorAll('[data-cnt]').forEach(el => { el.textContent = cnt[el.dataset.cnt]; });
     const items = st.kat === 'all' ? all : all.filter(i => i.kat === st.kat);
-    const dupKeys = new Set(Repo.duplicatesOf(st.showId).map(g => Utils.kreisTokens(g[0].f.kreis).sort().join('+')));
+    const multi = !ca && vis.length > 1;
+    const dupKeys = new Set(Repo.duplicatesOf(st.showId).map(g => Repo.dupKey(g[0])));
     this._items = items;
     const split = main.querySelector('.split');
     split.classList.toggle('has-detail', !!st.sel && !!Repo.entry(st.sel.split(':')[0]) && this.sidePane());
     if (!items.length) {
       const anyEntries = Repo.entriesOf(st.showId).length;
+      const ml = ca ? DEPT[ca].mainLabel : 'Hauptfeld';
       list.innerHTML = `<div class="empty"><div class="ico">${I(st.q ? 'search' : 'camera', 'lg')}</div>
-        <h3>${st.q ? 'Nichts gefunden' : anyEntries ? 'Keine Einträge in dieser Kategorie' : 'Noch keine Einträge'}</h3>
-        <p>${st.q ? `Kein Eintrag passt zu „${Utils.esc(st.q)}“.` : st.edit ? 'Mit der Kamera-Taste unten rechts geht es am schnellsten: Foto → Kreis eintippen → fertig.' : 'Zum Anlegen oben rechts in den Bearbeitungsmodus wechseln.'}</p>
+        <h3>${st.q ? 'Nichts gefunden' : anyEntries ? 'Keine Einträge in dieser Auswahl' : 'Noch keine Einträge'}</h3>
+        <p>${st.q ? `Kein Eintrag passt zu „${Utils.esc(st.q)}“.` : st.edit ? `Mit der Kamera-Taste unten rechts geht es am schnellsten: Foto → ${Utils.esc(ml)} eintippen → fertig.` : 'Zum Anlegen oben rechts in den Bearbeitungsmodus wechseln.'}</p>
         ${!st.q && !st.edit ? `<button class="btn edit big" data-act="mode">${I('edit')} Bearbeiten</button>` : ''}</div>`;
       return;
     }
@@ -4232,11 +4653,11 @@ const App = {
       let html = '', open = shown > 0;
       const end = Math.min(items.length, shown + CH);
       for (let i = shown; i < end; i++) {
-        const it = items[i], sec = Views.sectionOf(it, sort);
-        if (sec.key !== lastSect && (st.kat === 'all' || sort === 'gruppe')) {
+        const it = items[i], sec = Views.sectionOf(it, sort, multi);
+        if (sec.key !== lastSect && (st.kat === 'all' || sort === 'gruppe' || multi)) {
           if (open) html += '</div>';
-          const n = items.filter(x => Views.sectionOf(x, sort).key === sec.key).length;
-          html += `<div class="sect">${sec.k ? `<span class="sw" style="background:var(--${sec.k === 'A' ? 'blue' : sec.k === 'E' ? 'yellow' : 'neutral'})"></span>` : ''}${Utils.esc(sec.label)} <span class="n">${n}</span></div><div class="cards ${ccls}">`;
+          const n = items.filter(x => Views.sectionOf(x, sort, multi).key === sec.key).length;
+          html += `<div class="sect" ${sec.abt ? `data-abt="${sec.abt}"` : ''}>${sec.k ? `<span class="sw" data-k="${sec.k}" style="background:var(--k)${sec.k === 'N' ? ';opacity:.5' : ''}"></span>` : ''}${Utils.esc(sec.label)} <span class="n">${n}</span></div><div class="cards ${ccls}">`;
           open = true; lastSect = sec.key;
         } else if (!open) { html += `<div class="cards ${ccls}">`; open = true; }
         html += Views.cardHtml(it, { sel: st.sel === it.key, checklist: st.checklist, dupKeys, big });
@@ -4256,7 +4677,7 @@ const App = {
         const io = new IntersectionObserver(en => { if (en[0].isIntersecting) { io.disconnect(); appendChunk(); } }, { rootMargin: '800px' }); io.observe(s);
       } else {
         const f = document.createElement('div'); f.className = 'listfoot';
-        f.textContent = `${items.length} Karte${items.length === 1 ? '' : 'n'}${dupKeys.size ? ` · ${dupKeys.size} doppelte Kreis-Nummer(n) – über „⋯“ zusammenführen` : ''} · Doku VT v${APP_VERSION}`;
+        f.textContent = `${items.length} Karte${items.length === 1 ? '' : 'n'}${dupKeys.size ? ` · ${dupKeys.size} doppelte Einträge – über „⋯“ zusammenführen` : ''} · Doku VT v${APP_VERSION}`;
         list.appendChild(f);
       }
       Thumbs.observe(list);
@@ -4282,7 +4703,9 @@ const App = {
   sidePane() { return window.innerWidth >= 900 && Settings.v.view !== 'big'; },
   openDetailSheet(entryId) {
     const e = Repo.entry(entryId); if (!e) return;
-    const sh = Ui.sheet({ title: e.f.kreis ? 'Kreis ' + e.f.kreis : 'Eintrag', full: true });
+    const D = DEPT[abtOf(e)];
+    const sh = Ui.sheet({ title: mainVal(e) ? `${D.mainLabel} ${mainVal(e)}` : 'Eintrag', full: true });
+    sh.el.dataset.abt = D.key;
     const draw = () => { const cur = Repo.entry(entryId); if (!cur) { sh.close(); return; } sh.body.innerHTML = Views.detailHtml(cur, this.state.edit, this.state.checklist); sh.body.firstElementChild.style.padding = '0 0 40px'; Thumbs.observe(sh.body); };
     draw();
     const off = Repo.on(() => { if (sh.layer.closed) { off(); return; } draw(); });
@@ -4291,23 +4714,23 @@ const App = {
   async detailAction(ev, entryId, sheet) {
     const b = ev.target.closest('[data-act]'); if (!b) return;
     const e = Repo.entry(entryId); if (!e) return;
-    const a = b.dataset.act;
+    const a = b.dataset.act, abt = abtOf(e), D = DEPT[abt];
     if (a === 'dlb') this.openLightbox(entryId, b.dataset.k, +b.dataset.i);
     else if (a === 'dedit') { if (!this.state.edit) { this.state.edit = true; this.render(); } sheet && sheet.close(); setTimeout(() => Editor.open({ showId: e.showId, entryId }), sheet ? 60 : 0); }
     else if (a === 'dchk') { try { await Repo.toggleCheck(entryId, b.dataset.k); } catch (err) { this.error(err); } }
     else if (a === 'ddup') {
-      const preset = {}; TEXT_FIELDS.forEach(k => { preset[k] = e.f[k]; }); preset.kreis = '';
+      const preset = { abt }; D.fields.forEach(fd => { preset[fd.k] = e.f[fd.k]; }); preset[D.main] = '';
       sheet && sheet.close();
       if (!this.state.edit) { this.state.edit = true; this.render(); }
-      setTimeout(() => { Editor.open({ showId: e.showId, preset }); Ui.toast('Vorlage übernommen – bitte neue Kreis-Nummer eintragen'); }, sheet ? 60 : 0);
+      setTimeout(() => { Editor.open({ showId: e.showId, preset }); Ui.toast(`Vorlage übernommen – bitte neuen Wert für „${D.mainLabel}“ eintragen`); }, sheet ? 60 : 0);
     } else if (a === 'ddel') {
-      if (await Ui.confirm('Eintrag löschen?', `Kreis ${e.f.kreis || '(ohne Nummer)'} mit allen Fotos löschen?`, 'Löschen', true)) {
+      if (await Ui.confirm('Eintrag löschen?', `${D.mainLabel} ${mainVal(e) || '(ohne Nummer)'} mit allen Fotos löschen?`, 'Löschen', true)) {
         try { await Repo.deleteEntry(entryId); this.state.sel = null; sheet && sheet.close(); Ui.toast('Eintrag gelöscht'); } catch (err) { this.error(err); }
       }
     }
   },
   openLightbox(entryId, kat, idx) {
-    // Galerie über alle sichtbaren Karten – Wischen springt zum nächsten Kreis weiter
+    // Galerie über alle sichtbaren Karten – Wischen springt zum nächsten Eintrag weiter
     const items = []; let start = 0;
     for (const it of this._items || []) {
       if (it.kat === 'N') continue;
@@ -4319,13 +4742,26 @@ const App = {
   },
 
   /* ---------- Aktionen ---------- */
+  /** Neue Veranstaltung: Titel + Abteilungen (vorausgewählt: die des Geräts). Nichts wird angelegt, bevor „Anlegen“ getippt ist. */
   async newShow() {
-    try {
-      const s = await Repo.createShow('Neue Veranstaltung');
-      this.state.edit = true; this.go('#/show/' + s.id);
-      const t = await Ui.prompt('Titel der Veranstaltung', s.f.titel, 'z. B. Die Zauberflöte');
-      if (t != null && t.trim()) await Repo.patchShow(s.id, { titel: t.trim() });
-    } catch (err) { this.error(err); }
+    const sel = Settings.v.depts.slice();
+    const sh = Ui.sheet({ title: 'Neue Veranstaltung', center: true });
+    sh.body.innerHTML = `<form class="form" onsubmit="return false">
+      <div class="f"><label for="ns-t">Titel</label><input id="ns-t" placeholder="z. B. Die Zauberflöte" enterkeyhint="done"></div>
+      <div class="f"><label>Abteilungen</label>${this.deptToggles(sel)}</div>
+      <button class="btn primary big block" data-ok>${I('plus')} Anlegen</button></form>`;
+    this.bindToggles(sh.body, sel);
+    const go = async () => {
+      try {
+        const t = sh.body.querySelector('#ns-t').value.trim();
+        const s = await Repo.createShow(t || 'Neue Veranstaltung', sel);
+        sh.close(); await Ui.afterBack();          // erst die Zurück-Navigation des Blatts abwarten, sonst hebt sie den Seitenwechsel auf
+        this.state.edit = true; this.state.abt = 'all'; this.go('#/show/' + s.id);
+      } catch (err) { this.error(err); }
+    };
+    sh.body.querySelector('[data-ok]').onclick = go;
+    sh.body.querySelector('#ns-t').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+    setTimeout(() => sh.body.querySelector('#ns-t').focus(), 50);
   },
   async showMenu(id) {
     const s = Repo.show(id); if (!s) return;
@@ -4336,7 +4772,7 @@ const App = {
       { label: 'Backup dieser Veranstaltung', value: 'backup', icon: 'database' },
       { label: 'Duplizieren', value: 'dup', icon: 'copy' },
       { label: 'Checkliste zurücksetzen', value: 'reset', icon: 'undo' },
-      dups && { label: `${dups} doppelte Kreis-Nummer(n) zusammenführen`, value: 'merge', icon: 'merge' },
+      dups && { label: `${dups} doppelte Einträge zusammenführen`, value: 'merge', icon: 'merge' },
       { label: 'Veranstaltung löschen', value: 'del', icon: 'trash', danger: true }
     ]);
     try {
@@ -4356,31 +4792,55 @@ const App = {
   },
   async editShow(id) {
     const s = Repo.show(id);
+    const before = Repo.showDepts(id), sel = before.slice();
     const sh = Ui.sheet({ title: 'Veranstaltung', center: true });
     sh.body.innerHTML = `<form class="form" onsubmit="return false">
       <div class="f"><label for="sh-t">Titel</label><input id="sh-t" value="${Utils.esc(s.f.titel)}"></div>
       <div class="f"><label for="sh-s">Spielstätte</label><input id="sh-s" value="${Utils.esc(s.f.spielstaette || '')}" placeholder="z. B. Großes Haus, Werkstattbühne"></div>
+      <div class="f"><label>Abteilungen</label>${this.deptToggles(sel)}
+        <div class="fh">Abwählen blendet die Abteilung nur aus – Einträge werden nicht gelöscht.</div></div>
       <div class="f"><label for="sh-n">Notiz</label><textarea id="sh-n" rows="3" placeholder="Allgemeines zur Produktion">${Utils.esc(s.f.notiz || '')}</textarea></div>
       <button class="btn primary big block" data-ok>Speichern</button></form>`;
+    this.bindToggles(sh.body, sel);
     sh.body.querySelector('[data-ok]').onclick = async () => {
-      try { await Repo.patchShow(id, { titel: sh.body.querySelector('#sh-t').value.trim() || 'Ohne Titel', spielstaette: sh.body.querySelector('#sh-s').value.trim(), notiz: sh.body.querySelector('#sh-n').value.trim() }); sh.close(); }
+      try {
+        const patch = { titel: sh.body.querySelector('#sh-t').value.trim() || 'Ohne Titel', spielstaette: sh.body.querySelector('#sh-s').value.trim(), notiz: sh.body.querySelector('#sh-n').value.trim() };
+        const now = DEPT_ORDER.filter(d => sel.includes(d));
+        if (now.join() !== before.join()) {           // nur schreiben, wenn die Auswahl wirklich geändert wurde
+          const gone = before.filter(d => !now.includes(d));
+          const hit = Repo.entriesOf(id).filter(e => gone.includes(abtOf(e))).length;
+          if (hit && !await Ui.confirm('Abteilung ausblenden?', `${hit} Einträge (${gone.map(d => DEPT[d].short).join(', ')}) werden in dieser Veranstaltung ausgeblendet. Sie bleiben gespeichert und erscheinen wieder, wenn die Abteilung erneut gewählt wird.`, 'Ausblenden')) return;
+          patch.abteilungen = now;
+        }
+        await Repo.patchShow(id, patch); sh.close();
+        if (this.state.route === 'show') this.render(true);
+      }
       catch (err) { this.error(err); }
     };
     setTimeout(() => sh.body.querySelector('#sh-t').focus(), 50);
   },
   async resetChecks(id) {
-    const v = await Ui.menu('Checkliste zurücksetzen', [{ label: 'Alles zurücksetzen', value: 'all' }, { label: 'Nur Aufbau', value: 'A' }, { label: 'Nur Einleuchten', value: 'E' }]);
+    // getrennt nach Abteilung und Phase: gilt für die gewählte Abteilung, bei „Alle“ für alle sichtbaren
+    const ca = this.state.showId === id ? this.curAbt() : null, scope = ca ? [ca] : this.visibleDepts(id);
+    const head = scope.length === 1 ? ` · ${DEPT[scope[0]].short}` : '';
+    const v = await Ui.menu('Checkliste zurücksetzen' + head, [{ label: 'Alles zurücksetzen', value: 'all' }, { label: 'Nur Aufbau', value: 'A' }, { label: 'Nur ' + katName(ca, 'E'), value: 'E' }]);
     if (!v) return;
-    const n = await Repo.resetChecks(id, v === 'all' ? null : v); Ui.toast(n ? `${n} Einträge zurückgesetzt – bereit für den nächsten Aufbau` : 'Nichts abgehakt');
+    const n = await Repo.resetChecks(id, v === 'all' ? null : v, scope); Ui.toast(n ? `${n} Einträge zurückgesetzt – bereit für den nächsten Aufbau` : 'Nichts abgehakt');
   },
   async pdf(id) {
     const s = Repo.show(id);
     const sh = Ui.sheet({ title: 'PDF exportieren', center: true });
-    const o = { kat: 'all', cover: true, compact: false };
+    const vis = this.visibleDepts(id);
+    const ca0 = this.state.showId === id ? this.curAbt() : null;
+    const o = { kat: 'all', abt: vis.length > 1 && ca0 ? ca0 : 'all', cover: true, compact: false };
     const draw = () => {
       const seg = (name, val, label) => `<button class="btn ${o[name] === val ? 'primary' : ''}" data-o="${name}" data-v="${val}">${label}</button>`;
-      sh.body.innerHTML = `<p class="muted" style="margin-top:0">„${Utils.esc(s.f.titel)}“ – eine Seite je Kreis und Kategorie, Fotos groß, Infoblock darunter.</p>
-        <div class="group"><h3>Inhalt</h3><div style="display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap">${seg('kat', 'all', 'Alles')}${seg('kat', 'A', 'Nur Aufbau')}${seg('kat', 'E', 'Nur Einleuchten')}</div>
+      const pa = o.abt !== 'all' ? o.abt : (vis.length === 1 ? vis[0] : null);
+      const onePhase = pa && DEPT[pa].photoKats.length === 1;
+      if (onePhase) o.kat = 'all';
+      sh.body.innerHTML = `<p class="muted" style="margin-top:0">„${Utils.esc(s.f.titel)}“ – eine Seite je Eintrag und Phase, Fotos groß, Infoblock darunter.</p>
+        ${vis.length > 1 ? `<div class="group"><h3>Abteilung</h3><div style="display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap">${seg('abt', 'all', 'Alle')}${vis.map(d => seg('abt', d, Utils.esc(DEPT[d].short))).join('')}</div></div>` : ''}
+        <div class="group"><h3>Inhalt</h3>${onePhase ? '' : `<div style="display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap">${seg('kat', 'all', 'Alles')}${seg('kat', 'A', 'Nur ' + katName(pa, 'A'))}${seg('kat', 'E', 'Nur ' + katName(pa, 'E'))}</div>`}
           <label class="item"><span class="lb">Deckblatt mit Inhaltsverzeichnis</span><span class="switch"><input type="checkbox" data-c="cover" ${o.cover ? 'checked' : ''}><span></span></span></label>
           <label class="item"><span class="lb">Kompakt<small>kleinere Datei zum Mailen (Fotos 900 px)</small></span><span class="switch"><input type="checkbox" data-c="compact" ${o.compact ? 'checked' : ''}><span></span></span></label></div>
         <button class="btn primary big block" data-go="build">${I('pdf')} PDF erstellen</button>`;
@@ -4392,9 +4852,12 @@ const App = {
       if (!b.dataset.go) return;
       const bz = Ui.busy('PDF wird erstellt …');
       try {
-        const blob = await Pdf.build(id, o, (i, n) => bz.set(`PDF wird erstellt … Seite ${i} / ${n}`));
+        const depts = o.abt === 'all' ? vis : [o.abt];
+        const blob = await Pdf.build(id, Object.assign({}, o, { depts }), (i, n) => bz.set(`PDF wird erstellt … Seite ${i} / ${n}`));
         bz.close();
-        const name = `${Utils.safeName(s.f.titel)}_${Utils.stamp().slice(0, 10)}.pdf`;
+        // eine einzelne Abteilung (bei mehreren sichtbaren): Veranstaltung_Ton_Datum.pdf
+        const part = o.abt !== 'all' ? '_' + Utils.safeName(DEPT[o.abt].short) : '';
+        const name = `${Utils.safeName(s.f.titel)}${part}_${Utils.stamp().slice(0, 10)}.pdf`;
         const r = await Utils.offerFile(blob, name, 'PDF ist fertig', `${Pdf.lastPages} Seiten`);
         if (r === 'shared') Ui.toast('PDF geteilt'); else if (r === 'download') Ui.toast(`PDF gespeichert (${Utils.fmtBytes(blob.size)})`);
       } catch (err) { bz.close(); this.error(err); }
@@ -4435,12 +4898,17 @@ const App = {
     if (Ui.topOpen || e.metaKey || e.ctrlKey || e.altKey || Utils.isEditable(document.activeElement)) return;
     if (this.state.route !== 'show') return;
     if (e.key === 'e' || e.key === 'E') { this.state.edit = !this.state.edit; this.render(); }
-    else if ((e.key === 'n' || e.key === 'N') && this.state.edit) Editor.open({ showId: this.state.showId });
+    else if ((e.key === 'n' || e.key === 'N') && this.state.edit && this.visibleDepts(this.state.showId).length) this.newEntry();
+  },
+  async newEntry(abt) {
+    const a = DEPT[abt] ? abt : await this.askAbt('Neuer Eintrag – Abteilung'); if (!a) return;
+    Editor.open({ showId: this.state.showId, abt: a });
   },
   /* ---------- Ereignis-Delegation ---------- */
   async onClick(e) {
-    const b = e.target.closest('[data-act],[data-kat],[data-sort],[data-view]'); if (!b) return;
+    const b = e.target.closest('[data-act],[data-kat],[data-sort],[data-view],[data-dept]'); if (!b) return;
     const st = this.state;
+    if (b.dataset.dept && !b.dataset.act) { st.abt = b.dataset.dept; st.kat = 'all'; st.sel = null; this.renderToolbar(); this.renderList(); this.renderDetail(); this.stickyTop(); return; }
     if (b.dataset.kat) { st.kat = b.dataset.kat; this.renderToolbar(); this.renderList(); return; }
     if (b.dataset.sort) { await Settings.set({ sort: b.dataset.sort }); this.renderToolbar(); this.renderList(); return; }
     if (b.dataset.view) { await Settings.set({ view: b.dataset.view }); this.renderToolbar(); this.renderList(); return; }
@@ -4448,7 +4916,7 @@ const App = {
     const card = b.closest('.card');
     if (card && (a === 'open' || a === 'lb' || a === 'chk')) {
       const [entryId, kat] = card.dataset.key.split(':');
-      if (a === 'chk') { e.stopPropagation(); try { await Repo.toggleCheck(entryId, kat === 'N' ? 'A' : kat); } catch (err) { this.error(err); } return; }
+      if (a === 'chk') { e.stopPropagation(); try { await Repo.toggleCheck(entryId, b.dataset.k || (kat === 'N' ? 'A' : kat)); } catch (err) { this.error(err); } return; }
       const thumb = e.target.closest('[data-act=lb]');
       if (thumb && !st.edit) { this.state.sel = card.dataset.key; this.openLightbox(entryId, kat, +thumb.dataset.i); return; }
       if (st.edit) { Editor.open({ showId: st.showId, entryId }); return; }
@@ -4471,8 +4939,11 @@ const App = {
       case 'checklist': st.checklist = !st.checklist; this.renderToolbar(); this.renderList(); this.renderDetail(); break;
       case 'resetchk': this.resetChecks(st.showId); break;
       case 'clearq': { const s = document.querySelector('[data-search]'); s.value = ''; st.q = ''; b.classList.add('hidden'); this.renderList(); s.focus(); break; }
-      case 'new': Editor.open({ showId: st.showId }); break;
-      case 'quick': Editor.open({ showId: st.showId, quick: st.kat === 'E' ? 'E' : 'A' }); break;
+      case 'new': this.newEntry(b.dataset.abt); break;
+      case 'quick': {
+        const abt = await this.askAbt('Schnell erfassen – Abteilung'); if (!abt) break;
+        Editor.open({ showId: st.showId, abt, quick: st.kat === 'E' && DEPT[abt].photoKats.includes('E') ? 'E' : 'A' }); break;
+      }
       case 'import': { const inp = document.querySelector('[data-file]'); inp.value = ''; inp.onchange = () => inp.files[0] && this.importFile(inp.files[0]); inp.click(); break; }
     }
   }
