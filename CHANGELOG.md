@@ -1,5 +1,15 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.4.4 – 17.10.2026
+
+Aufbau und 2. Phase (Einleuchten, Soundcheck, Einrichten) sind in jeder Abteilung klar zu unterscheiden.
+
+- **Farben weiter auseinander:** Aufbau kräftig und dunkel, 2. Phase hell und blass – Licht Rot ↔ Lachs, Ton Blau ↔ Himmelblau, Bühne Schiefergrau ↔ Hellgrau. Der Kontrast zwischen den Phasen ist etwa doppelt so groß wie vorher.
+- **Liste und Kacheln:** Karten der 2. Phase sind ganz hell hinterlegt und hell umrandet, Aufbau-Karten bleiben neutral. Der Farbstreifen links ist breiter.
+- **Große Bilder:** Kopfzeile bei Aufbau dunkel mit weißer Schrift, bei der 2. Phase hell mit dunkler Schrift; beide kräftiger als bisher (vorher 50 % abgeschwächt).
+- Gilt für Dunkel und Hell; Kamera-Rahmen und PDF-Bänder ziehen mit. Rotlicht bleibt bei Schraffur (Aufbau) und Füllung (2. Phase).
+- Neuer Test: Aufbau und 2. Phase müssen je Abteilung mindestens 3,5 : 1 auseinanderliegen (2.4.3: 2,1 : 1 bei Licht).
+
 ## 2.4.3 – 16.10.2026
 
 Sicherheit für die Daten – nach der Code-Review: Abgleich über mehrere Geräte, Papierkorb, gleichzeitiges Arbeiten. Kein Datenbank-Update, Paketformat bleibt 2, alle älteren Dateien bleiben lesbar.
