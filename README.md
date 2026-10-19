@@ -1,6 +1,6 @@
 # Doku VT – Technikdokumentation
 
-**Version 2.5.0** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton, Bühnentechnik und Requisite: Einträge mit Fotos, Abläufe zum Abhaken, PDF-Export und Geräte-Abgleich. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
+**Version 2.6.0** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton, Bühnentechnik und Requisite: Einträge mit Fotos, Abläufe zum Abhaken, PDF-Export und Geräte-Abgleich. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
 
 ## Auf GitHub veröffentlichen
 
@@ -23,11 +23,15 @@ Unter *Einstellungen → Dieses Gerät dokumentiert* festlegen, welche Abteilung
 
 Die Daten liegen **nur lokal auf dem jeweiligen Gerät** (IndexedDB). Das Repository enthält keine Daten. Regelmäßig über *Abgleich → Komplett-Backup* sichern und das Backup auf einem zweiten Ort ablegen (z. B. Fritzbox-Speicher).
 
+## Spielstätte (ab 2.6.0)
+
+Jede Veranstaltung kann eine Spielstätte haben: Großes Haus, Werkstattbühne, Spiegelhalle, Münsterplatz oder Sonstiges (freier Text). Sie steht über dem Titel auf der Startseite, in der Kopfzeile der Veranstaltung und in jeder PDF-Kopfzeile; auf der Startseite lässt sich danach filtern.
+
 ## Requisite einschalten (ab 2.5.0)
 
-*Einstellungen → Dieses Gerät dokumentiert → Requisite.* Beim ersten Einschalten legt die App die Haus-Orte (Requisitentisch, Gassen, Waffenschrank …), Vorlagen für häufige Gegenstände und die Demo „Einfache Leute“ an. In einer Veranstaltung mit Requisite gibt es die Ansichten „Nach Ort“, „Ablauf“ und „Personen“ sowie den Filter „Sicherheit“. Anlegen und Ändern nur im Bearbeitungsmodus, Ansehen und Abhaken immer.
+*Einstellungen → Dieses Gerät dokumentiert → Requisite.* Beim ersten Einschalten legt die App die Haus-Orte (Requisitentisch, Gassen, Waffenschrank …), Vorlagen für häufige Gegenstände und die Demo „Einfache Leute“ an. In einer Veranstaltung mit Requisite gibt es die Ansichten „Einrichten“ (= Checkliste vor der Vorstellung, nach Ort, mit großen Haken), „Ablauf“ und „Personen“ sowie den Filter „Sicherheit“. Am Gegenstand legt „Wann gebraucht?“ fest, in welchen Abschnitten er gebraucht wird (Vorgabe: vor der Vorstellung), „Wofür“ sagt, wozu. Anlegen und Ändern nur im Bearbeitungsmodus, Ansehen und Abhaken immer.
 
-**Wichtig:** Ein Sync-Paket oder Backup mit Requisite-Inhalt hat das Paketformat 3. **Alle Geräte, die Requisite-Pakete bekommen, zuerst auf 2.5.0 aktualisieren** – Doku VT 2.4.4 lehnt solche Pakete mit „bitte zuerst aktualisieren“ ab. Pakete ohne Requisite (z. B. von einem reinen Licht-Gerät) bleiben für ältere Versionen lesbar. Geräte ohne Requisite übernehmen aus Sync-Paketen keine Requisite-Gegenstände.
+**Wichtig:** Ein Sync-Paket oder Backup mit Requisite-Inhalt hat das Paketformat 3. **Alle Geräte, die Requisite-Pakete bekommen, zuerst auf 2.5.0 oder neuer aktualisieren** – Doku VT 2.4.4 lehnt solche Pakete mit „bitte zuerst aktualisieren“ ab. Pakete ohne Requisite (z. B. von einem reinen Licht-Gerät) bleiben für ältere Versionen lesbar. Geräte ohne Requisite übernehmen aus Sync-Paketen keine Requisite-Gegenstände.
 
 **Nach dem Update auf 2.4.3:** auf jedem Gerät einmal *Abgleich → Sync-Paket senden → Komplett*. Danach geben auch „Nur Änderungen“-Pakete alles weiter, was ein Gerät von anderen bekommen hat.
 

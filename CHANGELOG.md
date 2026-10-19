@@ -1,5 +1,21 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.6.0 – 19.10.2026
+
+Requisite übersichtlicher: **„Einrichten“ ist die Checkliste vor der Vorstellung**, jeder Gegenstand weiß, **wann und wofür** er gebraucht wird, und jede Veranstaltung hat eine **Spielstätte**. Kein Datenbank-Update, Paketformat unverändert (2 bzw. 3 mit Requisite).
+
+- **Ansichten heißen jetzt Einrichten · Ablauf · Personen** (vorher „Nach Ort“). Der Knopf „Abhaken“ entfällt bei Requisite – abgehakt wird direkt in Einrichten und Ablauf.
+- **Einrichten = Checkliste „Vor der Vorstellung“:** oben groß „Vor der Vorstellung“ mit Fortschritt („1 von 28 erledigt“) und „Durchgänge & PDF“, darunter „Vorbereiten“ (feste Punkte und Schritte aus „Vor der Vorstellung“), Verbrauch und alle Gegenstände nach Ort – jeder mit **großem Haken** links. Antippen hakt ab; gibt es heute noch keinen Durchgang, wird er dabei angelegt („Vorstellung heute beginnen“ entfällt). Die Checkliste muss nicht mehr extra gepflegt werden: Jeder neue Gegenstand steht von selbst darauf.
+- **„Wann gebraucht?“ und „Wofür“ am Gegenstand:** im Editor direkt unter „Stelle“ die Abschnitte des Stücks als Knöpfe (Vorgabe „Vor der Vorstellung“), Mehrfachauswahl, dazu ein Feld „Wofür“ (z. B. „Szene 3 – Anna raucht“). Auf der Karte steht „🕘 Teil 1 – für Szene 3“. Ohne „Vor der Vorstellung“ steht der Gegenstand ohne Haken in Einrichten (z. B. etwas, das erst in der Pause gebraucht wird).
+- **Ablauf:** je Abschnitt die Schritte und darunter die dort gebrauchten **Gegenstände mit Haken**. „Vor der Vorstellung“ zeigt nur „26 Gegenstände einrichten →“ und springt nach Einrichten. Im Bearbeitungsmodus je Abschnitt „+ Schritt“, „+ Gegenstand“ (mit diesem Abschnitt vorgewählt) und **„Gegenstände zuordnen“** (Mehrfachauswahl mit Suche, eine Speicherung).
+- **„+ Abschnitt“** statt „+ Pause“/„+ Abbau“: Menü mit Vor der Vorstellung · Teil · Pause · Nach der Vorstellung · Abbau · Sonstiges (eigener Name). Es wird nur der gewählte Abschnitt angelegt, an der passenden Stelle – eine Pause bringt **keinen** zweiten Teil mehr mit. **Neue Stücke starten mit Vor der Vorstellung · Teil 1 · Nach der Vorstellung.** Teile heißen immer „Teil 1“, „Teil 2“ …, mehrere Pausen „Pause 1“, „Pause 2“. Löschen eines Abschnitts löscht seine Schritte; Gegenstände bleiben.
+- **„Einrichtung · Requisite“ heißt jetzt „Allgemeine Infos“** (Kasten über der Liste, Bearbeiten-Blatt, PDF).
+- **Spielstätte für alle Abteilungen:** beim Anlegen und unter „Titel & Details bearbeiten“ große Knöpfe Großes Haus · Werkstattbühne · Spiegelhalle · Münsterplatz · Sonstiges (freier Text). Sichtbar als Plakette über dem Titel jeder Veranstaltungskarte, mit Ortssymbol in der Kopfzeile der Veranstaltung und in jeder PDF-Kopfzeile („Titel · Spielstätte“, auch Kapitelband und Fußzeile). Auf der Startseite Filter nach Spielstätte, sobald es mehr als eine gibt; eine neue Veranstaltung übernimmt den gewählten Filter.
+- **PDF Requisite:** Ablauf je Abschnitt mit den zugeordneten Gegenständen; Gegenstandstabelle mit Kästchen (= vor der Vorstellung einrichten) und neuer Spalte „Wann · Wofür“. Kapitel-Plakette „EINRICHTEN“.
+- **Demo „Einfache Leute“:** Crashglas-Flasche und Handtuch sind „Vor der Vorstellung“ und „Teil 1 – für Umbau nach ca. 60 min“.
+- Am Requisitentisch (nach Person gegliedert) steht die Person nicht mehr zusätzlich auf jeder Karte.
+- **Test:** 34 Prüfungen (neu: Einrichten als Checkliste mit automatisch angelegtem Durchgang, „Wann gebraucht“/Zuordnen, Abschnitt-Menü, Spielstätte); Version wird gegen `version.json` geprüft.
+
 ## 2.5.0 – 19.10.2026
 
 Neue Abteilung **Requisite** (Grün): Was liegt wo, wem gehört es, was ist vor, während und nach der Vorstellung zu tun. Licht, Ton und Bühne bleiben unverändert. Kein Datenbank-Update.
