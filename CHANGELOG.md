@@ -1,5 +1,14 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.6.3 – 19.10.2026
+
+- **Ablauf:** Teile und Pausen sind beim Öffnen aufgeklappt, Vor/Nach der Vorstellung zugeklappt.
+- **Feste Spalten:** Jeder Gegenstand (Einrichten und Ablauf) und jeder Schritt hat denselben Aufbau – Kästchen · Was (mit wofür, Sicherheit, Zustand, Bemerkung) · ein Foto · Ort bzw. Stelle · Zu wem · Lichtzeichen · Übergabe. Ort, Person und Lichtzeichen stehen immer an derselben Stelle.
+- **Gegenstand bearbeiten:** Die Felder Person/Rolle sind weg (Personen kommen aus „Allgemeine Infos → Personen“). Neu: „Zu wem sonst (Übergabe)“ mit Schnelltasten Bühnentechnik, Inspizient/in, Beleuchtung, Ton, Maske, Garderobe – oder frei eintippen.
+- **Übergabe-Ort:** Schnelltasten Gasse links, Gasse rechts, Unterbühne, Hinterbühne; frei eintragen geht weiter.
+- **Spielstätten-Farben:** Großes Haus rot, Werkstattbühne blau, Spiegelhalle violett, Münsterplatz gold, Sonstiges türkis – als Rahmen der Veranstaltungskarte, in der Plakette und im Filter.
+- **PDF:** Personen (Person · Rolle) stehen auf dem Deckblatt beim Inhaltsverzeichnis. „Vor der Vorstellung“ enthält jetzt alle Gegenstände nach Ort. Ablauf und Gegenstände haben dieselben Spalten wie die App: Kästchen · Was (fett, darunter wofür/Sicherheit/Zustand/Bemerkung) · Ort/Stelle · Zu wem · Lichtz. · Übergabe · Foto. Innerhalb jedes Orts zuerst die Gegenstände mit Foto, dann ohne.
+
 ## 2.6.2 – 19.10.2026
 
 Zweite Runde Nachbesserungen Requisite. Kein Datenbank-Update, Paketformat unverändert.

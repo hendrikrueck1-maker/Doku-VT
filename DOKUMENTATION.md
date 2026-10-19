@@ -1,4 +1,4 @@
-# Doku VT 2.6.2 – Dokumentation
+# Doku VT 2.6.3 – Dokumentation
 
 Die App ist eine Datei (`index.html`, ca. 570 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
 
@@ -43,6 +43,8 @@ Die App ist eine Datei (`index.html`, ca. 570 KB), keine Abhängigkeiten, kein C
 - Gegenstand: `abschnitte` = Liste von `ra:`-Schlüsseln (Feld fehlt = „Vor der Vorstellung“ des Stücks; leere Liste = in keinem Abschnitt), `wofuer` = Freitext. Beim Duplizieren werden die Schlüssel auf die Kopie umgebogen (`remapEntry`). Gelöschte Abschnitte bleiben als toter Schlüssel stehen und werden ignoriert.
 - Checklisten-Punkt „Gegenstand in Abschnitt“: `RunList.items` liefert je Abschnitt erst die Schritte, dann die Gegenstände mit Schlüssel `rg:<Eintrag>:<Abschnitt>` (Haken im Durchgang als `h:rg:…`, `abtOfItem` → R). Die Punkte entstehen aus den Daten – es gibt nichts zusätzlich zu pflegen und nichts Neues abzugleichen.
 - Spielstätte: das bestehende Feld `spielstaette` der Veranstaltung (Text). Feste Werte `SPIELSTAETTEN`, alles andere gilt als „Sonstiges“. Startseiten-Filter `App.state.homeSp` (nur Sitzung).
+
+**Ab 2.6.3:** Neues Feld `zuAndere` (Text, Teil von „Zu wem“). `ReqView.eRow`/`sRow` mit festen Spalten (`fx`). `SP_COLOR` = Farbe je Spielstätte. PDF: Zeilen mit `sub` (Unterzeile normal gesetzt unter fettem Namen, `boldN`).
 
 **Ab 2.6.2:** Jeder Gegenstand ist Checklisten-Punkt „eingerichtet“ (`Req.setupKey` = `rg:<Eintrag>:<Vor-Abschnitt>`, ohne Vor-Abschnitt `…:vor`). Neue Felder am Gegenstand: `lichtzeichen` ('ja'|'nein'), `uebergabe` (Text) – nur gespeichert, wenn er in Teil/Pause/Sonstiges gebraucht wird. `Settings.reqQuick` = Ensemble `[{id, name}]`. `Req.personLabel` = „Person (Rolle)“. PDF: Block `pb` = Seitenumbruch, `thead.grpH` = Höhe der ganzen Tabelle (Umbruch davor, wenn sie auf eine Seite passt).
 

@@ -191,7 +191,10 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .showcard h3{margin:0 0 4px;font-size:19px;letter-spacing:-.01em;padding-right:44px}
 .showcard .meta{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:13px}
 .showcard .spbadge{display:inline-flex;align-items:center;gap:5px;margin:0 0 6px;padding:3px 10px 3px 7px;border-radius:999px;background:var(--surf2);border:1px solid var(--line2);color:var(--text);font-size:13px;font-weight:700;letter-spacing:.01em}
-.showcard .spbadge svg{color:var(--text2)}
+.showcard .spbadge svg{color:var(--sp,var(--text2))}
+.showcard.hassp{border:3px solid var(--sp);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--sp) 30%,transparent)}
+.showcard.hassp .spbadge{background:color-mix(in srgb,var(--sp) 22%,var(--surf2));border-color:var(--sp)}
+.spdot{width:12px;height:12px;border-radius:50%;flex:none}
 .spfilter{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;margin:-6px 0 6px;scrollbar-width:none}
 .spfilter::-webkit-scrollbar{display:none}
 .spfilter button{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line2);background:var(--surf);color:var(--text);font:inherit;font-weight:600;font-size:15px;cursor:pointer}
@@ -792,16 +795,25 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
 .rquickchk input{width:24px;height:24px;flex:none}
 @media (max-width:520px){.rnewp{grid-template-columns:1fr auto}.rnewp input[name=newDarst]{grid-column:1/2}.rnewp .btn{grid-row:1/3;grid-column:2}}
 .rmv{margin-left:auto}
-.card.erow{display:grid;grid-template-columns:76px minmax(0,1.15fr) auto minmax(0,1fr);align-items:stretch;min-height:76px}
-.erow .ename{display:flex;align-items:center;padding:10px 14px;min-width:0;gap:0}
-.erow .rwas{font-size:21px}
-.erow .thumbs{align-self:center;padding:6px 0}
-.erow .th{width:64px;height:64px}
-.erow .edet{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:4px;padding:8px 14px;min-width:0;font-size:15px;color:var(--text2);border-left:1px dashed var(--line)}
-.erow .ed{display:flex;gap:5px;align-items:flex-start;overflow-wrap:anywhere}.erow .ed svg{flex:none;margin-top:3px}
-.erow .note{font-size:14px}
+.card.erow{display:grid;grid-template-columns:76px minmax(0,1.15fr) 76px minmax(0,1.7fr);align-items:stretch;min-height:76px}
+.card.erow.hasmv{grid-template-columns:76px minmax(0,1.15fr) 76px minmax(0,1.7fr) auto}
+.erow .ename{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:5px;padding:10px 14px;min-width:0}
+.erow .rwas{font-size:20px}
+.erow .rst{font-size:17px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.erow .ed{display:flex;gap:5px;align-items:flex-start;font-size:15px;color:var(--text);font-weight:600}.erow .ed svg{flex:none;margin-top:3px;color:var(--k)}
+.erow .note{font-size:14px;color:var(--text2)}
+.erow .thumbs{align-self:center;justify-self:center;padding:6px 0}
+.erow .th{width:64px;height:64px;border:0;padding:0;display:block}
+.erow .edet{display:flex;align-items:center;padding:8px 12px;min-width:0;border-left:1px dashed var(--line)}
+.fx{display:grid;grid-template-columns:1.3fr 1.1fr .8fr 1fr;gap:4px 12px;width:100%}
+.fc{display:flex;flex-direction:column;gap:1px;min-width:0}
+.fc small{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fv{font-size:14px;color:var(--text);overflow-wrap:anywhere;line-height:1.25}
+.erow .rmv{align-self:center;padding-right:6px}
 .erow.done .ename,.erow.done .edet,.erow.done .thumbs{opacity:.5}
-@media (max-width:640px){.card.erow{grid-template-columns:64px minmax(0,1fr) auto}.erow .gchk{grid-row:1/3}.erow .edet{grid-column:2/4;border-left:0;padding-top:0}}
+.arow{background:var(--surf2)}
+@media (max-width:700px){.card.erow,.card.erow.hasmv{grid-template-columns:64px minmax(0,1fr) 70px}.erow .gchk{grid-row:1/3}.erow .edet{grid-column:2/4;border-left:0;padding-top:0}
+  .fx{grid-template-columns:repeat(2,minmax(0,1fr))}.erow .rmv{grid-column:2/4;justify-self:end;padding-bottom:6px}}
 .rens{flex-basis:100%;margin-top:6px}
 .rteil{border-left:4px solid var(--R-a);padding-left:12px;margin-bottom:6px}
 .rlz{color:var(--text)}
@@ -967,7 +979,7 @@ window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason 
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.6.2';
+const APP_VERSION = '2.6.3';
 const DB_NAME = 'lichtdoku';
 /* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
    bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
@@ -1079,7 +1091,8 @@ const DEPT = {
       { k: 'zuWem', label: 'Zu wem', hidden: true },
       { k: 'abschnitte', label: 'Wann gebraucht', hidden: true, arr: true },   // Abschnitte (ra:…); fehlt das Feld = „Vor der Vorstellung“
       { k: 'wofuer', label: 'Wofür', ph: 'z. B. Szene 3 – Anna raucht' },
-      { k: 'lichtzeichen', label: 'Lichtzeichen', hidden: true },                // ab 2.6.2: 'ja' | 'nein' | '' (im Stück gebraucht)
+      { k: 'lichtzeichen', label: 'Lichtzeichen', hidden: true },
+      { k: 'zuAndere', label: 'Zu wem sonst', hidden: true },                    // ab 2.6.3: z. B. Bühnentechnik, Inspizient                // ab 2.6.2: 'ja' | 'nein' | '' (im Stück gebraucht)
       { k: 'uebergabe', label: 'Übergabe-Ort', ph: 'z. B. Gassenwand links' },
       { k: 'zustand', label: 'Zustand', arr: true },
       { k: 'sicherheit', label: 'Sicherheit' },
@@ -1108,6 +1121,9 @@ const REQ_ABTYP = { vor: 'Vor der Vorstellung', teil: 'Teil', pause: 'Pause', na
 const REQ_ABKURZ = { vor: 'Vor Beginn', nach: 'Nach der Vorstellung', abbau: 'Abbau' };
 /** Spielstätten (für alle Gewerke, ab 2.6.0) – „Sonstiges“ mit freiem Text */
 const SPIELSTAETTEN = ['Großes Haus', 'Werkstattbühne', 'Spiegelhalle', 'Münsterplatz'];
+/** Farbe je Spielstätte (Rahmen auf der Startseite, ab 2.6.3); alles andere = Sonstiges */
+const SP_COLOR = { 'Großes Haus': '#d9534f', 'Werkstattbühne': '#3b8fd9', 'Spiegelhalle': '#9b6bdf', 'Münsterplatz': '#d9a12b', '': '#2aa198' };
+const spColor = v => v ? (SP_COLOR[v] || SP_COLOR['']) : '';
 const REQ_AUSL = [['einruf', 'Einruf'], ['licht', 'Lichtzeichen'], ['stichwort', 'Stichwort'], ['tuer', 'Tür'], ['applaus', 'Applaus']];
 const REQ_ZUSTAND = ['präpariert', 'beklebt', 'befüllt', 'geladen', 'markiert', 'angeklebt', 'aufgeladen'];
 const REQ_NAME = list => Object.fromEntries(list);
@@ -3295,7 +3311,9 @@ const Pdf = {
       const bc = box === 1 ? 1 : box ? 2 : 0;
       rows.forEach(r => {
         const cells = r.vals.map((v, i) => this.wrap(v || '', i === bc || r.bold ? 'F2' : 'F1', fs, Math.max(20, cols[i][2] - 10 - (i === bc && r.indent ? 14 : 0))).slice(0, 8));
-        out.push({ t: 'rrow', cols, cells, fs, box: box && !r.nobox, bc, entry: r.entry || null, indent: !!r.indent, bold: r.bold, thead, h: Math.max(...cells.map(x => x.length), 1) * (fs + 3) + (fs < 10 ? 6 : 9) });
+        const boldN = cells[bc].length;
+        if (r.sub) cells[bc] = cells[bc].concat(this.wrap(r.sub, 'F1', fs - 0.5, Math.max(20, cols[bc][2] - 10 - (r.indent ? 14 : 0))).slice(0, 8));
+        out.push({ t: 'rrow', cols, cells, fs, boldN, box: box && !r.nobox, bc, entry: r.entry || null, indent: !!r.indent, bold: r.bold, thead, h: Math.max(...cells.map(x => x.length), 1) * (fs + 3) + (fs < 10 ? 6 : 9) });
       });
       thead.grpH = out.slice(out.indexOf(thead)).reduce((n, x) => n + x.h, 0);   // ganze Tabelle – passt sie auf eine Seite, wird sie nicht geteilt
       out.push({ t: 'gap', h: 8 });
@@ -3317,7 +3335,7 @@ const Pdf = {
         steps.filter(s => Req.stepSafety(s) === k).forEach(s => saf.push(`[!] ${n.toUpperCase()} – Schritt: ${s.text}${(abs.find(a => a.key === s.abschnitt) || {}).label ? ' (' + abs.find(a => a.key === s.abschnitt).label + ')' : ''}`));
       });
       if (saf.length) { out.push(rhead('SICHERHEIT')); saf.forEach(t => { const ls = this.wrap(t, 'F2', 10.5, CW).slice(0, 6); out.push({ t: 'safe', lines: ls, h: ls.length * 13 + 5 }); }); out.push({ t: 'gap', h: 8 }); }
-      if (ps.length) {                                   // klein, zweispaltig: Person – Rolle
+      if (ps.length && !opts.cover) {                    // klein, zweispaltig: Person – Rolle (mit Deckblatt steht die Liste dort)
         out.push(rhead('PERSONEN'));
         const half = Math.ceil(ps.length / 2), w = CW / 2;
         const rows = []; for (let i = 0; i < half; i++) { const a = ps[i], b = ps[i + half];
@@ -3325,29 +3343,70 @@ const Pdf = {
         rrows([['PERSON', 0, w * 0.5], ['ROLLE', w * 0.5, w * 0.5], ['PERSON', w, w * 0.5], ['ROLLE', w * 1.5, w * 0.5]], rows, out, false, 9);
       }
       parts.push(out);
-      // Ablauf-Tabelle: Kästchen · Wann · Was · Wo · Foto
-      const cols = [['', 0, 18], ['WANN', 18, 92], ['WAS', 110, CW - 110 - 140 - 54], ['WO', CW - 194, 140], FOTO];
+      // Eine Tabellenform für Ablauf und Gegenstände (wie in der App): Kästchen · Was · Ort/Stelle · Zu wem · Lichtzeichen · Übergabe · Foto
+      const tcols = first => { const w = [96, 84, 46, 86, 50], x0 = CW - w.reduce((a, b) => a + b, 0); let x = x0;
+        return [['', 0, 18], ['WAS', 18, x0 - 18]].concat([[first, 0, w[0]], ['ZU WEM', 0, w[1]], ['LICHTZ.', 0, w[2]], ['ÜBERGABE', 0, w[3]], ['FOTO', 0, w[4]]].map(c => { c[1] = x; x += c[2]; return c; })); };
+      const cols = tcols('ORT');
+      const lzOf = e => e.f.lichtzeichen === 'ja' ? 'Ja' : e.f.lichtzeichen === 'nein' ? 'Nein' : '';
+      const gDet = (e, withWann) => [withWann ? [Req.val(e, 'abschnitte'), e.f.wofuer ? 'für ' + e.f.wofuer : ''].filter(Boolean).join(' – ') : (e.f.wofuer ? 'für ' + e.f.wofuer : ''),
+        e.f.sicherheit ? '[!] ' + Req.safeLabel(e.f.sicherheit).toUpperCase() : '', Req.val(e, 'zustand'), e.f.markierung ? 'Markierung ' + e.f.markierung : '', (e.f.art || []).includes('defekt') ? 'DEFEKT' : '', e.f.bemerkung || ''].filter(Boolean).join(' · ');
       const stepRow = s => { const o = s.ortId ? Req.ortByKey(sid, s.ortId) : null, saf1 = Req.stepSafety(s), e = Req.stepEntry(s);
-        return { vals: ['', Req.whenLong(s), (saf1 ? `[!] ${Req.safeLabel(saf1).toUpperCase()} · ` : '') + s.text + (e && !s.text.includes(e.f.was || '\u0000') ? ` (${e.f.was || 'Gegenstand'})` : ''), o ? o.name : (e ? Req.val(e, 'ort') : ''), ''], entry: e }; };
-      const gRow = e => ({ vals: ['', e.f.lichtzeichen === 'ja' ? 'auf Lichtzeichen' : '',
-        `${mz(e)}${e.f.was || 'Ohne Namen'}${e.f.wofuer ? ' – für ' + e.f.wofuer : ''}${Req.val(e, 'zuWem') ? ' · zu ' + Req.val(e, 'zuWem') : ''}${e.f.sicherheit ? ' [!] ' + Req.safeLabel(e.f.sicherheit).toUpperCase() : ''}`,
-        [Req.val(e, 'ort'), e.f.uebergabe ? '-> Übergabe: ' + e.f.uebergabe : ''].filter(Boolean).join(' '), ''], entry: e });
+        const lz = (s.ausloeser || []).filter(x => x && x.typ === 'licht').reduce((n, x) => n + Math.max(1, +x.anzahl || 1), 0);
+        return { vals: ['', s.text, o ? o.name : (e ? Req.val(e, 'ort') : ''), e ? Req.val(e, 'zuWem') : '', lz ? 'Ja' + (lz > 1 ? ` (${lz}x)` : '') : '', '', ''],
+          sub: [Req.whenLong(s), saf1 ? `[!] ${Req.safeLabel(saf1).toUpperCase()}` : '', e ? 'Gegenstand: ' + (e.f.was || 'Ohne Namen') : ''].filter(Boolean).join(' · '), entry: e }; };
+      const gRow = e => ({ vals: ['', mz(e) + (e.f.was || 'Ohne Namen'), [Req.val(e, 'ort'), e.f.stelle].filter(Boolean).join(' · '), Req.val(e, 'zuWem'), lzOf(e), e.f.uebergabe || '', ''], sub: gDet(e, false), entry: e });
       const section = (a, out) => {
         const its = Req.sectionItems(sid, a, steps, es).filter(it => it.kind === 's' || a.typ !== 'vor');
         if (!its.length && !a.notiz) return false;
         if (!out[0] || out[0].text !== a.label.toUpperCase()) out.push(rsub(a.label.toUpperCase()));   // nicht doppelt unter gleichnamiger Überschrift
         if (a.notiz) { const ls = this.wrap(a.notiz, 'F1', 10, CW).slice(0, 8); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4, chain: true }); }
-        if (its.length) rrows(cols, its.map(it => it.kind === 's' ? stepRow(it.s) : gRow(it.e)), out, true);
+        if (its.length) rrows(cols, its.map(it => it.kind === 's' ? stepRow(it.s) : gRow(it.e)), out, 1, 9);
         return true;
       };
-      // --- 2. Vor der Vorstellung
+      // Gegenstände nach Ort bzw. Person – je Gruppe erst die mit Foto, dann ohne
+      const byPhoto = cmp => (x, y) => (Repo.photosOf(y.id).length > 0) - (Repo.photosOf(x.id).length > 0) || cmp(x, y);
+      const gegenstaende = out => {
+        const byP = opts.rsort === 'person', gcols = tcols(byP ? 'ORT' : 'STELLE');
+        out.push(rhead(byP ? 'GEGENSTÄNDE EINRICHTEN – NACH PERSON' : 'GEGENSTÄNDE EINRICHTEN – NACH ORT'));
+        const row = (e, indent) => ({ vals: ['', (indent ? '> ' : '') + mz(e) + (e.f.was || 'Ohne Namen'), byP ? [Req.val(e, 'ort'), e.f.stelle].filter(Boolean).join(' · ') : e.f.stelle || '', Req.val(e, 'zuWem'), lzOf(e), e.f.uebergabe || '', ''], sub: gDet(e, true), entry: e, indent });
+        const withIn = (list, rows) => list.forEach(e => { rows.push(row(e, false)); Req.contentsOf(e).sort(Req.cmp(sid)).forEach(c => rows.push(row(c, true))); });
+        const cmp = byPhoto(Req.cmp(sid));
+        if (byP) {
+          const pk = new Map(ps.map(p => [p.key, p]));
+          ps.concat([{ key: '', rolle: 'Ohne Person' }]).forEach(p => {
+            const l = es.filter(e => p.key ? (e.f.personIds || []).includes(p.key) : !(e.f.personIds || []).some(i => pk.has(i))).sort(cmp); if (!l.length) return;
+            out.push(rsub(Req.personLabel(p).toUpperCase() || 'OHNE PERSON')); rrows(gcols, l.map(e => row(e, false)), out, 1, 9);
+          });
+          return;
+        }
+        const top = es.filter(e => !Req.containerOf(e)).sort(Req.cmp(sid)), groups = [];
+        top.forEach(e => { const o = Req.ortOf(e), k = o ? (o.ort ? o.key : 'n:' + o.name) : ''; let g = groups.find(x => x.k === k); if (!g) groups.push(g = { k, o, list: [] }); g.list.push(e); });
+        groups.sort((a, b) => (a.k === '') - (b.k === ''));
+        groups.forEach(g => {
+          const o = g.o && g.o.ort, name = g.k === '' ? 'Ohne Ort' : (o ? o.name : g.o.name + (g.o.removed ? ' · Ort entfernt' : ''));
+          out.push(rsub(name.toUpperCase()));
+          if (o && o.notiz) { const ls = this.wrap(o.notiz, 'F1', 10, CW).slice(0, 6); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4, chain: true }); }
+          if (o && o.foto) out.push({ t: 'img', b: o.foto, size: 90, cap: o.cap || '', h: 102, chain: true });
+          const rows = [];
+          if (/requisitentisch/i.test(name)) {
+            const pidx = new Map(ps.map((p, i) => [p.key, i])), subs = new Map();
+            g.list.forEach(e => { const ids = (e.f.personIds || []).filter(i => pidx.has(i)).sort((a, b) => pidx.get(a) - pidx.get(b)); const k = ids.join('+'); if (!subs.has(k)) subs.set(k, { ids, list: [] }); subs.get(k).list.push(e); });
+            [...subs.values()].sort((a, b) => (a.ids.length ? pidx.get(a.ids[0]) : 999) - (b.ids.length ? pidx.get(b.ids[0]) : 999)).forEach(s => {
+              rows.push({ vals: ['', s.ids.length ? s.ids.map(i => Req.personLabel(Req.sh(sid)[i])).join(' + ') : 'Ohne Person', '', '', '', '', ''], bold: true, nobox: true });
+              withIn(s.list.sort(cmp), rows);
+            });
+          } else withIn(g.list.sort(cmp), rows);
+          rrows(gcols, rows, out, 1, 9);
+        });
+      };
+      // --- 2. Vor der Vorstellung: feste Punkte, Schritte, Verbrauch, alle Gegenstände nach Ort
       out = [rhead('VOR DER VORSTELLUNG')];
       const own = RunList.ownOf(sid).filter(x => x.abt === 'R');
       if (own.length) { own.forEach(x => out.push(chk(x.text, 0, null))); out.push({ t: 'gap', h: 6 }); }
       abs.filter(a => a.typ === 'vor').forEach(a => section(a, out));
       const verb = es.filter(e => (e.f.art || []).includes('verbrauch')).sort(Req.cmp(sid));
       if (verb.length) { out.push(rsub('VERBRAUCH – FRISCH BESORGEN')); verb.forEach(e => out.push(chk(`${mz(e)}${e.f.was || 'Ohne Namen'}${Req.val(e, 'ort') ? ' – ' + Req.val(e, 'ort') : ''}`, 0, null))); out.push({ t: 'gap', h: 6 }); }
-      if (es.length) { const ls = this.wrap(`Alle ${es.length} Gegenstände einrichten: siehe „Gegenstände nach Ort“ (eigene Seite, mit Kästchen).`, 'F1', 10, CW); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4 }); }
+      if (es.length) gegenstaende(out);
       if (out.length > 1) parts.push(out);
       // --- 3. Ablauf (Teile, Pausen, Sonstiges) und 4. Nach der Vorstellung (Nach, Abbau)
       out = [rhead('ABLAUF IN DER VORSTELLUNG')]; let any = false;
@@ -3356,47 +3415,8 @@ const Pdf = {
       out = [rhead('NACH DER VORSTELLUNG')]; any = false;
       abs.filter(a => ['nach', 'abbau'].includes(a.typ)).forEach(a => { any = section(a, out) || any; });
       const ak = new Set(abs.map(a => a.key)), lose = steps.filter(s => !ak.has(s.abschnitt));
-      if (lose.length) { out.push(rsub('OHNE ABSCHNITT')); rrows(cols, lose.map(stepRow), out, true); any = true; }
+      if (lose.length) { out.push(rsub('OHNE ABSCHNITT')); rrows(cols, lose.map(stepRow), out, 1, 9); any = true; }
       if (any) parts.push(out);
-      // --- 5. Gegenstände nach Ort bzw. Person
-      if (es.length) {
-        out = [];
-        const byP = opts.rsort === 'person';
-        out.push(rhead(byP ? 'GEGENSTÄNDE NACH PERSON' : 'GEGENSTÄNDE NACH ORT'));
-        const gcols = [['', 0, 18], ['WAS', 18, 114], ['MENGE', 132, 32], [byP ? 'ORT' : 'ZU WEM', 164, 84], ['STELLE · ZUSTAND', 248, CW - 248 - 54 - 104], ['WANN · WOFÜR', CW - 158, 104], FOTO];
-        const row = (e, indent) => ({ vals: ['', (indent ? '> ' : '') + (e.f.was || 'Ohne Namen'), e.f.menge || '', byP ? Req.val(e, 'ort') : Req.val(e, 'zuWem'),
-          [e.f.stelle, Req.val(e, 'zustand'), e.f.markierung ? 'Markierung ' + e.f.markierung : '', e.f.sicherheit ? '[!] ' + Req.safeLabel(e.f.sicherheit) : '', (e.f.art || []).includes('defekt') ? 'DEFEKT' : ''].filter(Boolean).join(' · '),
-          [Req.val(e, 'abschnitte'), e.f.wofuer ? 'für ' + e.f.wofuer : '', e.f.lichtzeichen === 'ja' ? 'Lichtzeichen' : '', e.f.uebergabe ? 'Übergabe: ' + e.f.uebergabe : ''].filter(Boolean).join(' – '), ''], entry: e, indent });
-        const withIn = (list, rows) => list.forEach(e => { rows.push(row(e, false)); Req.contentsOf(e).sort(Req.cmp(sid)).forEach(c => rows.push(row(c, true))); });
-        if (byP) {
-          const pk = new Map(ps.map(p => [p.key, p]));
-          ps.concat([{ key: '', rolle: 'Ohne Person' }]).forEach(p => {
-            const l = es.filter(e => p.key ? (e.f.personIds || []).includes(p.key) : !(e.f.personIds || []).some(i => pk.has(i))).sort(Req.cmp(sid)); if (!l.length) return;
-            out.push(rsub(Req.personLabel(p).toUpperCase() || 'OHNE PERSON')); const rows = []; l.forEach(e => rows.push(row(e, false))); rrows(gcols, rows, out, 1);
-          });
-        } else {
-          const top = es.filter(e => !Req.containerOf(e)).sort(Req.cmp(sid)), groups = [];
-          top.forEach(e => { const o = Req.ortOf(e), k = o ? (o.ort ? o.key : 'n:' + o.name) : ''; let g = groups.find(x => x.k === k); if (!g) groups.push(g = { k, o, list: [] }); g.list.push(e); });
-          groups.sort((a, b) => (a.k === '') - (b.k === ''));
-          groups.forEach(g => {
-            const o = g.o && g.o.ort, name = g.k === '' ? 'Ohne Ort' : (o ? o.name : g.o.name + (g.o.removed ? ' · Ort entfernt' : ''));
-            out.push(rsub(name.toUpperCase()));
-            if (o && o.notiz) { const ls = this.wrap(o.notiz, 'F1', 10, CW).slice(0, 6); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4, chain: true }); }
-            if (o && o.foto) out.push({ t: 'img', b: o.foto, size: 90, cap: o.cap || '', h: 102, chain: true });
-            const rows = [];
-            if (/requisitentisch/i.test(name)) {
-              const pidx = new Map(ps.map((p, i) => [p.key, i])), subs = new Map();
-              g.list.forEach(e => { const ids = (e.f.personIds || []).filter(i => pidx.has(i)).sort((a, b) => pidx.get(a) - pidx.get(b)); const k = ids.join('+'); if (!subs.has(k)) subs.set(k, { ids, list: [] }); subs.get(k).list.push(e); });
-              [...subs.values()].sort((a, b) => (a.ids.length ? pidx.get(a.ids[0]) : 999) - (b.ids.length ? pidx.get(b.ids[0]) : 999)).forEach(s => {
-                rows.push({ vals: ['', s.ids.length ? s.ids.map(i => Req.personLabel(Req.sh(sid)[i])).join(' + ') : 'Ohne Person', '', '', '', '', ''], bold: true, nobox: true });
-                withIn(s.list, rows);
-              });
-            } else withIn(g.list, rows);
-            rrows(gcols, rows, out, 1);
-          });
-        }
-        parts.push(out);
-      }
       // Teile mit Seitenumbruch verbinden
       const all = [];
       parts.filter(x => x.length).forEach((x, i) => { while (x.length && x[x.length - 1].t === 'gap') x.pop(); if (i) all.push({ t: 'pb', h: 0 }); all.push(...x); });
@@ -3495,6 +3515,9 @@ const Pdf = {
       if (show.f.spielstaette) { c.rgb(0.25, 0.28, 0.33).text(M, y, show.f.spielstaette, 'F1', 14); y -= 22; }
       c.rgb(0.45, 0.48, 0.53).text(M, y, `Stand ${dateStr}  ·  ${st0.entries} Einträge  ·  ${st0.photos} Fotos` + (opts.kat !== 'all' ? `  ·  nur ${katName(tocAbt, opts.kat)}` : ''), 'F1', 10); y -= 18;
       if (show.f.notiz) { for (const ln of this.wrap(show.f.notiz, 'F1', 10, CW).slice(0, 4)) { c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 10); y -= 13; } }
+      const rps = inDepts.includes('R') ? Req.persons(showId) : [];      // Requisite: Personen (Person · Rolle) auf dem Deckblatt
+      if (rps.length) { y -= 8; c.rgb(0.07, 0.08, 0.1).text(M, y, 'Personen', 'F2', 11); y -= 14;
+        for (const ln of this.wrap(rps.map(p => Req.personLabel(p)).join('   ·   '), 'F1', 10, CW).slice(0, 6)) { c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 10); y -= 13; } }
       y -= 12; c.rgb(0.8, 0.82, 0.85, true).line(M, y, W - M, y, 1); y -= 26;
       c.rgb(0.07, 0.08, 0.1).text(M, y, 'Inhalt', 'F2', 16); y -= 14;
       return y;
@@ -3661,8 +3684,9 @@ const Pdf = {
           const bc = b.bc ?? 0;
           b.cells.forEach((ls, i) => { const col = b.cols[i], x = M + col[1] + 6 + (i === bc && b.indent ? 14 : 0);
             if (col[0] === 'SEITE' || col[0] === 'FOTO') { const pn = b.entry && Repo.photosOf(b.entry.id).length && entryPage.get(b.entry.id); if (pn) c.rgb(0.25, 0.28, 0.33).text(x, y - 13, 'Foto S. ' + pn, 'F2', 9); return; }
-            const bold = b.bold || i === bc, fs = b.fs || 10;
-            ls.forEach((ln, k) => c.rgb(0.1, 0.11, 0.13).text(x, y - (fs + 3) - k * (fs + 3), ln, bold ? 'F2' : 'F1', fs)); });
+            const fs = b.fs || 10;
+            ls.forEach((ln, k) => { const bold = b.bold || (i === bc && (b.boldN == null || k < b.boldN));
+              c.rgb(bold ? 0.1 : 0.3, bold ? 0.11 : 0.32, bold ? 0.13 : 0.36).text(x, y - (fs + 3) - k * (fs + 3), ln, bold ? 'F2' : 'F1', bold ? fs : fs - 0.5); }); });
           c.rgb(0.82, 0.84, 0.87, true).line(M, y - b.h, W - M, y - b.h, 0.5);
         } else if (b.t === 'hl') {
           c.rgb(1, 0.93, 0.97).rect(M, y - b.h + 2, CW, b.h - 2); c.rgb(...dk).rect(M, y - b.h + 2, 4, b.h - 2);
@@ -5803,13 +5827,13 @@ const Req = {
     if (!e.showId) return e.f.zuWem || '';
     const f = this.sh(e.showId);
     const names = ids.map(id => f[id] && !f[id].del ? this.personLabel(f[id]) : '').filter(Boolean);
-    return names.length ? names.join(', ') : (ids.length || e.f.zuWem ? (e.f.zuWem || '') : '');
+    return names.length ? names.join(', ') : (ids.length && !e.f.zuAndere ? (e.f.zuWem || '') : '');
   },
   /** Anzeigewert eines Requisite-Felds */
   val(e, k) {
     const f = e.f || {};
     if (k === 'ort') { const o = this.ortOf(e); return o ? (o.name || '') + (o.removed ? ' · Ort entfernt' : '') : ''; }
-    if (k === 'zuWem') return this.personNames(e);
+    if (k === 'zuWem') return [this.personNames(e), String(f.zuAndere || '').trim()].filter(Boolean).join(', ');
     if (k === 'abschnitte') return e.showId ? this.whenOf(e).filter(a => a.typ !== 'vor').map(a => a.kurz).join(', ') : '';
     if (k === 'lichtzeichen') return f.lichtzeichen === 'ja' ? 'auf Lichtzeichen' : f.lichtzeichen === 'nein' ? 'ohne Lichtzeichen' : '';
     if (k === 'inId') { const c = this.containerOf(e); return c ? (c.f.was || 'Ohne Namen') : ''; }
@@ -6141,11 +6165,12 @@ const Req = {
       ${inp('wofuer', 'Wofür', 'z. B. Szene 3 – Anna raucht')}
       <div class="rteil hidden" data-rteil><div class="f"><label>Lichtzeichen?</label><div class="qkeys" data-rlz></div></div>
         <div class="f"><label for="ed-uebergabe">Übergabe-Ort</label><input id="ed-uebergabe" name="uebergabe" list="rq-orts" value="${Utils.esc(f0.uebergabe || '')}" placeholder="z. B. Gassenwand links" autocomplete="off">
+          <div class="qkeys" style="margin-top:8px">${['Gasse links', 'Gasse rechts', 'Unterbühne', 'Hinterbühne'].map(x => `<button type="button" class="rq" data-rset="uebergabe" data-v="${Utils.esc(x)}">${Utils.esc(x)}</button>`).join('')}</div>
           <datalist id="rq-orts">${this.allOrts(showId).map(o => `<option value="${Utils.esc(o.name)}">`).join('')}</datalist></div></div>
       <div class="f"><label>Zu wem</label><div class="qkeys" data-persons></div>
-        <div class="rnewp"><input name="newDarst" list="rq-ens" placeholder="Person, z. B. Julian" autocomplete="off" enterkeyhint="next" aria-label="Person"><input name="newRolle" placeholder="Rolle, z. B. Mackie" autocomplete="off" enterkeyhint="done" aria-label="Rolle">
-          <button type="button" class="btn" data-ract="addperson" aria-label="Person hinzufügen">${I('plus')}</button></div>
-        <datalist id="rq-ens">${this.quickList().map(x => `<option value="${Utils.esc(x.name)}">`).join('')}</datalist></div>
+        <div class="fh">Personen des Stücks: Allgemeine Infos → Personen (aus dem Ensemble).</div></div>
+      <div class="f"><label for="ed-zuAndere">Zu wem sonst (Übergabe)</label><input id="ed-zuAndere" name="zuAndere" value="${Utils.esc(f0.zuAndere || '')}" placeholder="z. B. Bühnentechnik, Inspizient" autocomplete="off">
+        <div class="qkeys" style="margin-top:8px">${['Bühnentechnik', 'Inspizient/in', 'Beleuchtung', 'Ton', 'Maske', 'Garderobe'].map(x => `<button type="button" class="rq" data-rset="zuAndere" data-v="${Utils.esc(x)}">${Utils.esc(x)}</button>`).join('')}</div></div>
       <div class="f"><label>Zustand</label><div class="qkeys" data-rchips="zustand"></div></div>
       <div class="f"><label>Sicherheit</label><div class="qkeys rsafechips" data-rchips="sicherheit"></div></div>
       <div class="f"><label for="ed-bemerkung">Bemerkung</label><textarea id="ed-bemerkung" name="bemerkung" rows="3" placeholder="Was ist zu beachten?">${v('bemerkung')}</textarea></div>
@@ -6238,7 +6263,7 @@ const Req = {
     };
     form.addEventListener('input', e => { if (e.target.name === 'was') renderSugg(); });
     form.addEventListener('click', async e => {
-      const b = e.target.closest('[data-rort],[data-rper],[data-rchip],[data-sugg-i],[data-rwa],[data-ract="addperson"],[data-ract="zsonst"],[data-rlz]'); if (!b) return;
+      const b = e.target.closest('[data-rort],[data-rper],[data-rchip],[data-sugg-i],[data-rwa],[data-ract="zsonst"],[data-rlz],[data-rset]'); if (!b) return;
       if (b.dataset.rwa) { const k = b.dataset.rwa, i = rs.abschnitte.indexOf(k); if (i >= 0) rs.abschnitte.splice(i, 1); else rs.abschnitte.push(k); markDirty(); renderWann(); return; }
       if (b.dataset.suggI != null) {
         const x = (this._sugg || [])[+b.dataset.suggI]; if (!x) return;
@@ -6264,9 +6289,9 @@ const Req = {
         if (n === 'zustaendig' && rs.zustaendig === 'andere') setTimeout(() => form.elements.zustAndere.focus(), 30);
         return;
       }
+      if (b.dataset.rset) { const el = form.elements[b.dataset.rset]; el.value = el.value.trim() && !el.value.includes(b.dataset.v) && b.dataset.rset === 'zuAndere' ? el.value.trim() + ', ' + b.dataset.v : b.dataset.v; markDirty(); return; }
       if (b.dataset.rlz) { rs.lichtzeichen = rs.lichtzeichen === b.dataset.rlz ? '' : b.dataset.rlz; markDirty(); renderTeil(); return; }
       if (b.dataset.ract === 'zsonst') { Ui.prompt('Zustand', '', 'z. B. geölt, gekühlt').then(v => { v = (v || '').trim(); if (v && !rs.zustand.includes(v)) { rs.zustand.push(v); markDirty(); renderChips('zustand'); } }); return; }
-      if (b.dataset.ract === 'addperson') addPerson();
     });
     /** Person im Stück anlegen (falls es sie dort noch nicht gibt) und für diesen Gegenstand wählen */
     const takePerson = async (rolle, darst) => {
@@ -6281,14 +6306,7 @@ const Req = {
       if (!rs.personIds.includes(key)) rs.personIds.push(key);
       markDirty(); renderPersons();
     };
-    const addPerson = async () => {
-      const ri = form.elements.newRolle, di = form.elements.newDarst, rolle = ri.value.trim(), darst = di.value.trim();
-      if (!rolle && !darst) { di.focus(); return; }
-      await takePerson(rolle, darst);
-      ri.value = ''; di.value = ''; di.focus();
-    };
-    form.elements.newDarst.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); form.elements.newRolle.focus(); } });
-    form.elements.newRolle.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); addPerson(); } });
+
     renderOrts(); renderPersons(); renderWann(); ['zustand', 'sicherheit', 'zustaendig', 'art'].forEach(renderChips); renderInId(); renderSugg();
     return rs;
   },
@@ -6299,7 +6317,8 @@ const Req = {
       ortId: rs.ortId || '', ort: rs.ort || '', personIds: rs.personIds.slice(), zustand: rs.zustand.slice(), sicherheit: rs.sicherheit || '',
       zustaendig: rs.zustaendig === 'andere' ? (g('zustAndere').trim() || 'andere') : (rs.zustaendig || ''), art: rs.art.slice(), inId: form.elements.inId && !form.elements.inId.disabled ? g('inId') : (form.elements.inId ? g('inId') : '') };
     const sf = this.sh(showId);
-    f.zuWem = f.personIds.map(k => sf[k] && !sf[k].del ? this.personLabel(sf[k]) : '').filter(Boolean).join(', ');
+    f.zuAndere = g('zuAndere').trim();
+    f.zuWem = f.personIds.map(k => sf[k] && !sf[k].del ? this.personLabel(sf[k]) : '').concat([f.zuAndere]).filter(Boolean).join(', ');
     if (f.ortId) { const o = this.ortByKey(showId, f.ortId); if (o) f.ort = o.name; }
     return f;
   }
@@ -6915,25 +6934,43 @@ const ReqView = {
     const check = opts.check ? { key: opts.check, ok: this.isOk(ctx.run, opts.check) } : null;
     return Views.cardHtmlR(e, Object.assign({ sel: ctx.st.sel === e.id + ':' + (Repo.photosOf(e.id, 'A').length ? 'A' : 'N'), hideVor: !!ctx.hideVor }, opts, { check }));
   },
-  /** Zeile in „Einrichten“: Kästchen · Gegenstand · Foto · Angaben (ab 2.6.2, ohne Schraffur) */
+  /** feste Spalten – Ort, Zu wem, Lichtzeichen, Übergabe stehen in Einrichten und Ablauf immer an derselben Stelle (ab 2.6.3) */
+  fx(cells) { return `<span class="fx">${cells.map(([l, v]) => `<span class="fc"><small>${Utils.esc(l)}</small><span class="fv">${v || '<span class="muted">–</span>'}</span></span>`).join('')}</span>`; },
+  gCells(e, first) {
+    const f = e.f, esc = Utils.esc;
+    return this.fx([[first === 'stelle' ? 'Stelle' : 'Ort', esc(first === 'stelle' ? (f.stelle || '') : [Req.val(e, 'ort'), f.stelle].filter(Boolean).join(' · '))],
+      ['Zu wem', esc(Req.val(e, 'zuWem'))], ['Lichtzeichen', f.lichtzeichen === 'ja' ? '<b class="rlz">Ja</b>' : f.lichtzeichen === 'nein' ? 'Nein' : ''], ['Übergabe', esc(f.uebergabe || '')]]);
+  },
+  /** Zeile eines Gegenstands (Einrichten und Ablauf): Kästchen · Gegenstand · ein Foto · feste Spalten */
   eRow(e, ctx, opts) {
     ctx.push(e);
     const esc = Utils.esc, f = e.f, ph = Repo.photosOf(e.id, 'A'), key = opts.check, ok = this.isOk(ctx.run, key), name = f.was || 'Ohne Namen';
     const menge = f.menge && String(f.menge).trim() && String(f.menge).trim() !== '1' ? `<span class="rmenge">${esc(String(f.menge).trim())}×</span> ` : '';
-    const wn = Req.whenOf(e).filter(a => a.typ !== 'vor').map(a => a.kurz), zw = opts.hidePerson ? '' : Req.val(e, 'zuWem');
-    const line = (ic, t) => `<span class="ed">${I(ic, 'sm')}<span>${t}</span></span>`;
-    const det = [
-      wn.length || f.wofuer ? line('clock', `${esc(wn.join(' · '))}${wn.length && f.wofuer ? ' – ' : ''}${f.wofuer ? 'für ' + esc(f.wofuer) : ''}`) : '',
-      f.lichtzeichen === 'ja' ? line('bulb', 'auf Lichtzeichen') : '',
-      f.uebergabe ? line('pin', 'Übergabe: ' + esc(f.uebergabe)) : '',
-      zw ? line('user', esc(zw)) : '', f.stelle ? line('pin', esc(f.stelle)) : '',
+    const wn = opts.ablauf ? [] : Req.whenOf(e).filter(a => a.typ !== 'vor').map(a => a.kurz);
+    const under = [
+      wn.length || f.wofuer ? `<span class="ed">${I('clock', 'sm')}<span>${esc(wn.join(' · '))}${wn.length && f.wofuer ? ' – ' : ''}${f.wofuer ? 'für ' + esc(f.wofuer) : ''}</span></span>` : '',
       f.sicherheit || (Array.isArray(f.zustand) && f.zustand.length) || f.markierung ? `<span class="chips">${f.sicherheit ? Req.safeBadge(f.sicherheit) : ''}${(f.zustand || []).map(z => `<span class="chip"><span>${esc(z)}</span></span>`).join('')}${f.markierung ? `<span class="chip"><b>Markierung</b><span>${esc(f.markierung)}</span></span>` : ''}</span>` : '',
-      f.bemerkung ? `<span class="note">${esc(f.bemerkung)}</span>` : ''].filter(Boolean).join('');
-    return `<article class="card rcard erow ${opts.indent ? 'rin' : ''} ${ok ? 'done' : ''}" data-k="A" data-abt="R" data-key="${esc(e.id + ':' + (ph.length ? 'A' : 'N'))}">
-      <button type="button" class="gchk" role="checkbox" aria-checked="${ok}" data-ract="g-chk" data-key="${esc(key)}" aria-label="${esc(name)} ${ok ? 'eingerichtet – zurücknehmen' : 'als eingerichtet abhaken'}"><span class="box">${ok ? I('check') : ''}</span></button>
-      <button class="hit ename" data-act="open" aria-label="${esc(name)}"><span class="rwas">${menge}${f.was ? esc(f.was) : '<span class="muted">Ohne Namen</span>'}</span></button>
-      ${ph.length ? `<span class="thumbs"><span class="th" data-act="lb" data-i="0">${Views.thumbImg(ph[0].b)}${ph.length > 1 ? `<span class="more">+${ph.length - 1}</span>` : ''}</span></span>` : '<span class="nothumb"></span>'}
-      ${det ? `<button class="hit edet" data-act="open" tabindex="-1" aria-hidden="true">${det}</button>` : '<span></span>'}
+      f.bemerkung ? `<span class="note">${esc(f.bemerkung)}</span>` : ''].join('');
+    return `<article class="card rcard erow ${opts.ablauf ? 'arow rg' : ''} ${opts.mv ? 'hasmv' : ''} ${opts.indent ? 'rin' : ''} ${ok ? 'done' : ''}" data-k="A" data-abt="R" data-key="${esc(e.id + ':' + (ph.length ? 'A' : 'N'))}">
+      <button type="button" class="gchk" role="checkbox" aria-checked="${ok}" data-ract="g-chk" data-key="${esc(key)}" aria-label="${esc(name)} ${ok ? 'erledigt – zurücknehmen' : 'abhaken'}"><span class="box">${ok ? I('check') : ''}</span></button>
+      <button class="hit ename" data-act="open" aria-label="${esc(name)}"><span class="rwas">${menge}${f.was ? esc(f.was) : '<span class="muted">Ohne Namen</span>'}</span>${under}</button>
+      ${ph.length ? `<span class="thumbs"><span class="th" data-act="lb" data-i="0">${Views.thumbImg(ph[0].b)}</span></span>` : '<span class="nothumb"></span>'}
+      <button class="hit edet" data-act="open" tabindex="-1" aria-hidden="true">${this.gCells(e, opts.ablauf ? 'ort' : 'stelle')}</button>
+      ${opts.mv || ''}
+    </article>`;
+  },
+  /** Schritt im Ablauf – gleicher Aufbau wie ein Gegenstand */
+  sRow(s, ctx, run, mv = '') {
+    const esc = Utils.esc, e = Req.stepEntry(s), o = s.ortId ? Req.ortByKey(ctx.showId, s.ortId) : null, saf = Req.stepSafety(s), k = esc(s.key);
+    const ok = this.isOk(run, s.key), when = Req.whenShort(s), ph = e && Repo.photosOf(e.id, 'A')[0];
+    const lz = (s.ausloeser || []).filter(x => x && x.typ === 'licht').reduce((n, x) => n + Math.max(1, +x.anzahl || 1), 0);
+    return `<article class="card rcard erow arow as ${mv ? 'hasmv' : ''} ${ok ? 'done' : ''}" data-k="A" data-abt="R">
+      <button type="button" class="gchk" role="checkbox" aria-checked="${ok}" data-ract="s-chk" data-step="${k}" aria-label="${ok ? 'Erledigt – zurücknehmen' : 'Abhaken'}"><span class="box">${ok ? I('check') : ''}</span></button>
+      <button type="button" class="hit ename" data-ract="${s.ci ? 'ci-open' : 's-open'}" data-step="${k}"><span class="rst">${when ? `<span class="rsz">${esc(when)}</span> ` : ''}${esc(s.text)}</span>
+        ${saf || e ? `<span class="chips">${saf ? Req.safeBadge(saf) : ''}${e ? `<span class="chip">${I('box', 'sm')}<span>${esc(e.f.was || 'Ohne Namen')}</span></span>` : ''}</span>` : ''}</button>
+      ${ph ? `<span class="thumbs"><button type="button" class="th" data-ract="s-photo" data-step="${k}" aria-label="Foto ansehen">${Views.thumbImg(ph.b)}</button></span>` : '<span class="nothumb"></span>'}
+      <button type="button" class="hit edet" data-ract="${s.ci ? 'ci-open' : 's-open'}" data-step="${k}" tabindex="-1" aria-hidden="true">${this.fx([['Ort', esc(o ? o.name : s.ortId ? 'Ort entfernt' : e ? Req.val(e, 'ort') : '')], ['Zu wem', esc(e ? Req.val(e, 'zuWem') : '')], ['Lichtzeichen', lz ? `<b class="rlz">Ja${lz > 1 ? ` (${lz}×)` : ''}</b>` : ''], ['Übergabe', '']])}</button>
+      ${mv}
     </article>`;
   },
   withContents(e, ctx, opts = {}, checkFn = null) {
@@ -7094,16 +7131,16 @@ const ReqView = {
     const lose = steps.filter(s => !ai.has(s.abschnitt));
     abs.forEach((a, i) => {
       const l = steps.filter(s => s.abschnitt === a.key), ge = gOf(a), keys = keysOf(a), d = keys.filter(k => this.isOk(run, k)).length;
-      const isOpen = this.open[a.key] ?? (run ? a.key === first : true);
+      const isOpen = this.open[a.key] ?? (['teil', 'pause', 'sonst'].includes(a.typ) || (run ? a.key === first : false));   // Teile und Pausen offen
       const k = Utils.esc(a.key);
       const disabledFirst = s => i === 0 ? s.replace('class="btn icon"', 'class="btn icon" disabled') : s, disabledLast = s => i === abs.length - 1 ? s.replace('class="btn icon"', 'class="btn icon" disabled') : s;
       // Schritte und Gegenstände in einer Reihenfolge (von Hand verschiebbar); „Vor der Vorstellung“ zeigt die Gegenstände nur als Verweis
       const its = Req.sectionItems(showId, a, steps, es).filter(it => a.typ !== 'vor' || it.kind === 's');
       const nMv = its.filter(it => !(it.kind === 's' && it.s.ci)).length; let mi = 0;
       const rowsHtml = its.map(it => {
-        if (it.kind === 's' && it.s.ci) return this.stepRow(it.s, ctx, run);
+        if (it.kind === 's' && it.s.ci) return this.sRow(it.s, ctx, run);
         const mv = ctx.edit ? this.moveCtl(it.tok, a.key, mi++, nMv) : '';
-        return it.kind === 's' ? this.stepRow(it.s, ctx, run, mv) : this.gRow(it.e, a, ctx, mv);
+        return it.kind === 's' ? this.sRow(it.s, ctx, run, mv) : this.eRow(it.e, ctx, { check: Req.gKey(it.e.id, a.key), ablauf: true, mv });
       }).join('');
       let gHtml = '';
       if (ge.length && a.typ === 'vor') {
@@ -7120,7 +7157,7 @@ const ReqView = {
           <button class="btn" data-ract="assign" data-ab="${k}">${I('box', 'sm')} Gegenstände zuordnen</button></div>` : ''}
       </details>`;
     });
-    if (lose.length) h += `<div class="rsub">Ohne Abschnitt</div><div class="rsteps">${lose.map(s => this.stepRow(s, ctx, run)).join('')}</div>`;
+    if (lose.length) h += `<div class="rsub">Ohne Abschnitt</div><div class="rsteps">${lose.map(s => this.sRow(s, ctx, run)).join('')}</div>`;
     return h;
   },
   async onClick(ev, showId) {
@@ -7730,7 +7767,7 @@ const App = {
       <div class="home-head"><div><h2>Veranstaltungen</h2><p>${shows.length} ${shows.length === 1 ? 'Produktion' : 'Produktionen'}${this.state.homeSp === 'all' ? ' auf diesem Gerät' : ' · ' + Utils.esc(this.state.homeSp || 'ohne Spielstätte')}</p></div>
         <button class="btn" data-act="import">${I('download')} Import</button></div>${sps.length > 1 ? `
       <div class="spfilter" role="group" aria-label="Spielstätte">${[['all', 'Alle', all.length]].concat(sps.map(x => [x, x || 'Ohne Spielstätte', all.filter(s => this.spOf(s) === x).length])).map(([v, l, n]) =>
-        `<button type="button" data-act="homesp" data-sp="${Utils.esc(v)}" aria-pressed="${this.state.homeSp === v}">${v !== 'all' && v ? I('pin', 'sm') : ''}${Utils.esc(l)} <span class="n">${n}</span></button>`).join('')}</div>` : ''}
+        `<button type="button" data-act="homesp" data-sp="${Utils.esc(v)}" aria-pressed="${this.state.homeSp === v}">${v !== 'all' && v ? `<span class="spdot" style="background:${spColor(v)}"></span>` : ''}${Utils.esc(l)} <span class="n">${n}</span></button>`).join('')}</div>` : ''}
       ${shows.length ? `<div class="shows">${shows.map(s => this.showCard(s)).join('')}</div>` :
         `<div class="empty"><div class="ico">${I('bulb', 'lg')}</div><h3>Noch keine Veranstaltung</h3><p>Lege die erste Produktion an – oder spiele ein Backup bzw. Sync-Paket ein.</p></div>`}
       ${Repo.deletedShows().length ? `<div style="text-align:center;margin-top:18px"><button class="btn ghost" data-act="trash">${I('trash', 'sm')} Papierkorb (${Repo.deletedShows().length})</button></div>` : ''}
@@ -7752,7 +7789,7 @@ const App = {
       if (d === 'R') return `<div class="prog" data-abt="R">${vis.length > 1 ? '<span class="pl">Requisite</span>' : ''}<span class="bar a" title="Eingerichtet"><i style="width:${pct(x.aDone, x.a)}%"></i></span></div>`;
       return `<div class="prog" data-abt="${d}">${vis.length > 1 ? `<span class="pl">${Utils.esc(DEPT[d].short)}</span>` : ''}<span class="bar a" title="${Utils.esc(DEPT[d].done.A)}"><i style="width:${pct(x.aDone, x.a)}%"></i></span><span class="bar e" title="${Utils.esc(DEPT[d].done.E)}"><i style="width:${pct(x.eDone, x.e)}%"></i></span></div>`;
     }).join('');
-    return `<article class="showcard"><button class="open" data-act="open" data-id="${Utils.esc(s.id)}" aria-label="${Utils.esc(s.f.titel)} öffnen">
+    return `<article class="showcard ${this.spOf(s) ? 'hassp' : ''}" style="${this.spOf(s) ? '--sp:' + spColor(this.spOf(s)) : ''}"><button class="open" data-act="open" data-id="${Utils.esc(s.id)}" aria-label="${Utils.esc(s.f.titel)} öffnen">
       <div class="mosaic">${[0, 1, 2].map(i => `<div class="m">${ph[i] ? Views.thumbImg(ph[i].b) : ''}</div>`).join('')}</div>
       <div class="body">${this.spBadge(s)}<h3>${Utils.esc(s.f.titel)}</h3><div class="meta">${Repo.showDepts(s.id).length > 1 || Settings.v.depts.length > 1 ? `<span>${Utils.esc(Repo.showDepts(s.id).map(d => DEPT[d].short).join(' · '))}</span>` : ''}<span>${st.entries} Einträge</span><span>${st.photos} Fotos</span><span>geändert ${Utils.fmtAgo(s.mod)}</span></div>
       ${progs ? `<div class="progs">${progs}</div>` : ''}</div></button>
@@ -8034,7 +8071,7 @@ const App = {
   spChooser(cur) {
     cur = String(cur || '').trim();
     const other = !!cur && !SPIELSTAETTEN.includes(cur);
-    return `<div class="spchoose" data-spc data-val="${Utils.esc(cur)}"><div class="qkeys spkeys">${SPIELSTAETTEN.map(x => `<button type="button" data-spv="${Utils.esc(x)}" aria-pressed="${cur === x}">${Utils.esc(x)}</button>`).join('')}
+    return `<div class="spchoose" data-spc data-val="${Utils.esc(cur)}"><div class="qkeys spkeys">${SPIELSTAETTEN.map(x => `<button type="button" data-spv="${Utils.esc(x)}" aria-pressed="${cur === x}"><span class="spdot" style="background:${spColor(x)};display:inline-block;margin-right:6px;vertical-align:-1px"></span>${Utils.esc(x)}</button>`).join('')}
       <button type="button" data-spv="*" aria-pressed="${other}">Sonstiges …</button></div>
       <input class="${other ? '' : 'hidden'}" data-spt value="${other ? Utils.esc(cur) : ''}" placeholder="Spielstätte eintragen, z. B. Foyer, Gastspiel Ulm" aria-label="Sonstige Spielstätte" autocomplete="off" style="margin-top:8px"></div>`;
   },
