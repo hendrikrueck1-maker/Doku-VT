@@ -783,6 +783,15 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
 .rcard.done .info,.rcard.done .kcol,.rcard.done .thumbs{opacity:.5}
 .rcard.hasg .hit{align-items:center}
 .rcard.hasg{min-height:76px}
+.rqh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 2px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.rqh .btn{min-height:40px;text-transform:none;letter-spacing:0;font-weight:700}
+.rquick .rq{border-style:dashed;font-family:var(--font);font-weight:700}
+.rnewp{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-top:10px}
+.rnewp input{min-width:0}
+.rquickchk{display:flex;align-items:center;gap:10px;margin-top:8px;min-height:44px;font-size:15px;color:var(--text2)}
+.rquickchk input{width:24px;height:24px;flex:none}
+@media (max-width:520px){.rnewp{grid-template-columns:1fr auto}.rnewp input[name=newDarst]{grid-column:1/2}.rnewp .btn{grid-row:1/3;grid-column:2}}
+.rmv{margin-left:auto}
 .rcard.done .rwas{text-decoration:line-through;text-decoration-thickness:2px}
 .rvor{background:var(--surf);border:2px solid color-mix(in srgb,var(--k) 55%,var(--line));border-radius:var(--r);padding:16px;margin:4px 0 14px}
 .rvorh{display:flex;align-items:center;gap:12px}
@@ -814,16 +823,18 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
 .rsafe svg{color:var(--danger)}
 .rsafe.def{background:var(--edit-soft);border-color:var(--edit)} .rsafe.def svg{color:var(--edit)}
 .chip.rflag{font-weight:700}.chip.rflag svg{width:15px;height:15px;align-self:center}
-.rorthead{display:flex;align-items:center;gap:12px;margin:22px 2px 10px;padding-bottom:8px;border-bottom:2px solid color-mix(in srgb,var(--R-a) 60%,var(--line))}
-.rorthead:first-child{margin-top:4px}
-.rorthead h3{margin:0;font-size:20px;letter-spacing:-.01em}
+.rorthead{position:sticky;top:calc(var(--stickytop,0px) - 1px);z-index:4;display:flex;align-items:center;gap:12px;margin:34px 0 12px;padding:10px 14px 10px 12px;border-radius:12px;
+  background:color-mix(in srgb,var(--R-a) 24%,var(--surf2));border:1px solid color-mix(in srgb,var(--R-a) 60%,var(--line));border-left:10px solid var(--R-a);box-shadow:0 6px 10px -8px rgba(0,0,0,.6)}
+.rorthead:first-child{margin-top:6px}
+.rorthead h3{margin:0;font-size:clamp(21px,4.4vw,27px);font-weight:900;letter-spacing:.005em;line-height:1.15;overflow-wrap:anywhere}
+.rorthead.alldone{border-color:var(--ok);border-left-color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,var(--surf2))}
 .rorthead p{margin:2px 0 0;color:var(--text2);font-size:14px;white-space:pre-wrap}
 .rorthead .rorti{flex:1;min-width:0}
 .rorthead .n{font-family:var(--mono);color:var(--muted);font-weight:700}
 .rorthum{all:unset;cursor:zoom-in;flex:none;width:56px;height:56px;border-radius:10px;overflow:hidden;background:var(--surf2);display:grid;place-items:center;color:var(--muted)}
 .rorthum img{width:100%;height:100%;object-fit:cover;filter:var(--photo-filter);opacity:0}.rorthum img.ok{opacity:1}
 .rorthum.none{cursor:default}
-.rsub{display:flex;align-items:center;gap:8px;margin:14px 4px 8px;font-size:15px;font-weight:800;color:var(--text2)}
+.rsub{display:flex;align-items:center;gap:8px;margin:18px 2px 8px;padding:2px 0 2px 10px;border-left:4px solid var(--line2);font-size:16px;font-weight:800;color:var(--text)}
 .rsafeh{display:flex;align-items:center;gap:10px;margin:22px 2px 10px;padding:8px 12px;border-radius:var(--r-sm);background:var(--danger-soft);border:1.5px solid var(--danger);font-size:17px;font-weight:800}
 .rsafeh svg{color:var(--danger)} .rsafeh .n{margin-left:auto;font-family:var(--mono)}
 .rrunbar{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline;margin:4px 0 10px;font-size:16px}
@@ -943,7 +954,7 @@ window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason 
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.6.0';
+const APP_VERSION = '2.6.1';
 const DB_NAME = 'lichtdoku';
 /* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
    bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
@@ -2001,6 +2012,7 @@ const Settings = {
     filterKeys: ['nc', 'L201', 'L202', 'L203', 'L204', 'L205', 'L216', 'L250', 'L132'],  // Filter-Schnelltasten (Licht)
     mikroKeys: ['DPA 4061', 'DPA 4066', 'SM58', 'Beta 91', 'e604', 'MKE 2'],              // Mikrofon-Schnelltasten (Ton)
     ciTemplate: null,                               // Hausvorlage der Vorstellungs-Checkliste [{abt, text}] (null = Beispiele)
+    reqQuick: [],                                   // Schnellauswahl Personen der Requisite [{id, rolle, darsteller}] (ab 2.6.1)
     zustandKeys: REQ_ZUSTAND.slice(),               // Zustand-Schnelltasten der Requisite (ab 2.5.0)
     reqView: 'einrichten',                          // zuletzt gewählte Requisite-Ansicht: einrichten | ablauf | personen
     depts: ['L']                                    // Abteilungen, die DIESES Gerät dokumentiert (bestehende Installationen: nur Licht)
@@ -3296,10 +3308,14 @@ const Pdf = {
           const l = steps.filter(s => s.abschnitt === a.key), g = gIn(a); if (!l.length && !a.notiz && !g.length) return;
           out.push(rsub(a.label.toUpperCase()));
           if (a.notiz) { const ls = this.wrap(a.notiz, 'F1', 10, CW).slice(0, 8); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4 }); }
-          const rows = l.map(s => { const o = s.ortId ? Req.ortByKey(sid, s.ortId) : null, saf1 = Req.stepSafety(s);
-            return { vals: ['', Req.whenLong(s), (saf1 ? `[!] ${Req.safeLabel(saf1).toUpperCase()} · ` : '') + s.text, o ? o.name : '', ''], entry: Req.stepEntry(s) }; });
+          const rows = [];
+          Req.sectionItems(sid, a, steps, es).forEach(it => {                // Reihenfolge wie im Ablauf
+            if (it.kind === 's') { const s = it.s; if (s.ci) return; const o = s.ortId ? Req.ortByKey(sid, s.ortId) : null, saf1 = Req.stepSafety(s);
+              rows.push({ vals: ['', Req.whenLong(s), (saf1 ? `[!] ${Req.safeLabel(saf1).toUpperCase()} · ` : '') + s.text, o ? o.name : '', ''], entry: Req.stepEntry(s) }); return; }
+            if (a.typ === 'vor') return; const e = it.e;
+            rows.push({ vals: ['', 'Gegenstand', `${e.f.menge && String(e.f.menge).trim() !== '1' ? e.f.menge + '× ' : ''}${e.f.was || 'Ohne Namen'}${e.f.wofuer ? ' – für ' + e.f.wofuer : ''}${e.f.sicherheit ? ' [!] ' + Req.safeLabel(e.f.sicherheit).toUpperCase() : ''}`, Req.val(e, 'ort'), ''], entry: e });
+          });
           if (a.typ === 'vor' && g.length) rows.push({ vals: ['', '', `${g.length} Gegenstände einrichten – siehe „Gegenstände“ (Kästchen)`, '', ''], nobox: true });
-          else g.forEach(e => rows.push({ vals: ['', 'Gegenstand', `${e.f.menge && String(e.f.menge).trim() !== '1' ? e.f.menge + '× ' : ''}${e.f.was || 'Ohne Namen'}${e.f.wofuer ? ' – für ' + e.f.wofuer : ''}${e.f.sicherheit ? ' [!] ' + Req.safeLabel(e.f.sicherheit).toUpperCase() : ''}`, Req.val(e, 'ort'), ''], entry: e }));
           if (rows.length) rrows(cols, rows, out, true);
         });
       }
@@ -5488,7 +5504,7 @@ const SetupView = {
    löschen nur im Bearbeitungsmodus.
    ===================================================================== */
 const RunList = {
-  EXAMPLES: [{ abt: 'L', text: 'Notbeleuchtung geprüft' }, { abt: 'T', text: 'Funkakkus voll' }, { abt: 'B', text: 'Sicherungsseile geprüft' }, { abt: 'R', text: 'Waffenschrank verschlossen' }],
+  EXAMPLES: [{ abt: 'L', text: 'Notbeleuchtung geprüft' }, { abt: 'T', text: 'Funkakkus voll' }, { abt: 'B', text: 'Sicherungsseile geprüft' }],
   /** Hausvorlage des Geräts (Einstellungen), sonst Beispiele */
   template() { const t = Settings.v.ciTemplate; return Array.isArray(t) && t.length ? t : this.EXAMPLES; },
   ownOf(showId) {
@@ -5510,9 +5526,11 @@ const RunList = {
         const stepItem = (st, a) => { const w = Req.whenShort(st);
           return { key: st.key, abt: 'R', group: a ? a.label : 'Ohne Abschnitt', text: (w ? w + ' – ' : '') + st.text, entryId: Req.stepEntry(st) ? st.gegenstand : '', vor: !!(a && a.typ === 'vor') }; };
         abs.forEach(a => {
-          steps.filter(st => st.abschnitt === a.key).forEach(st => out.push(stepItem(st, a)));
-          es.filter(e => Req.whenKeys(e).includes(a.key)).forEach(e => { const o = Req.val(e, 'ort'), m = e.f.menge && String(e.f.menge).trim() !== '1' ? e.f.menge + '× ' : '';
-            out.push({ key: Req.gKey(e.id, a.key), abt: 'R', group: a.label + ' · Gegenstände', text: m + (e.f.was || 'Ohne Namen') + (o ? ' – ' + o : ''), entryId: e.id, vor: a.typ === 'vor', gegenstand: true }); });
+          Req.sectionItems(showId, a, steps, es).forEach(it => {               // in der Reihenfolge des Ablaufs (auch von Hand geändert)
+            if (it.kind === 's') { out.push(stepItem(it.s, a)); return; }
+            const e = it.e, o = Req.val(e, 'ort'), m = e.f.menge && String(e.f.menge).trim() !== '1' ? e.f.menge + '× ' : '';
+            out.push({ key: Req.gKey(e.id, a.key), abt: 'R', group: a.label + (a.typ === 'vor' ? ' · Gegenstände' : ''), text: m + (e.f.was || 'Ohne Namen') + (o ? ' – ' + o : ''), entryId: e.id, vor: a.typ === 'vor', gegenstand: true });
+          });
         });
         const ak = new Set(abs.map(a => a.key));
         steps.filter(st => !ak.has(st.abschnitt)).forEach(st => out.push(stepItem(st, null)));
@@ -5859,7 +5877,7 @@ const Req = {
   },
   /* ---------- Duplizieren einer Veranstaltung ---------- */
   copyShowFields(src, sf, idMap) {
-    const rm = { rp: new Map(), ro: new Map(), ra: new Map() };
+    const rm = { rp: new Map(), ro: new Map(), ra: new Map(), rs: new Map() };
     ['dauer', 'einrichtungR', 'fotoR'].forEach(k => { if (src[k]) sf[k] = src[k]; });
     for (const pre of ['rp', 'ro', 'ra']) Object.keys(src).forEach(k => {
       const v = src[k]; if (!k.startsWith(pre + ':') || !v || v.del) return;
@@ -5871,7 +5889,12 @@ const Req = {
       c.abschnitt = rm.ra.get(v.abschnitt) || '';
       c.gegenstand = idMap.get(v.gegenstand) || '';
       if (v.ortId && rm.ro.has(v.ortId)) c.ortId = rm.ro.get(v.ortId);
-      sf['rs:' + Utils.uuid()] = c;
+      const nk = 'rs:' + Utils.uuid(); rm.rs.set(k, nk); sf[nk] = c;
+    });
+    Object.keys(src).forEach(k => {                        // eigene Reihenfolge im Ablauf auf die Kopien umbiegen
+      if (!k.startsWith('rv:') || !Array.isArray(src[k])) return;
+      const na = rm.ra.get(k.slice(3)); if (!na) return;
+      sf['rv:' + na] = src[k].map(t => typeof t !== 'string' ? '' : t.startsWith('g:') ? (idMap.get(t.slice(2)) ? 'g:' + idMap.get(t.slice(2)) : '') : (rm.rs.get(t) || '')).filter(Boolean);
     });
     return rm;
   },
@@ -6062,7 +6085,11 @@ const Req = {
         <div class="fh">„Vor der Vorstellung“ = steht auf der Checkliste „Einrichten“.</div></div>
       ${inp('wofuer', 'Wofür', 'z. B. Szene 3 – Anna raucht')}
       <div class="f"><label>Zu wem</label><div class="qkeys" data-persons></div>
-        <div class="inwrap" style="margin-top:8px"><input name="newPerson" placeholder="Neue Person (Rolle) …" autocomplete="off" enterkeyhint="done"><button type="button" class="btn" data-ract="addperson" aria-label="Person hinzufügen">${I('plus')}</button></div></div>
+        <div class="rqh"><span>Schnellauswahl</span><button type="button" class="btn ghost" data-ract="editquick">${I('edit', 'sm')} bearbeiten</button></div>
+        <div class="qkeys rquick" data-quick></div>
+        <div class="rnewp"><input name="newRolle" placeholder="Rolle, z. B. Mackie" autocomplete="off" enterkeyhint="next" aria-label="Rolle"><input name="newDarst" placeholder="Darsteller/in, z. B. Julian" autocomplete="off" enterkeyhint="done" aria-label="Darsteller/in">
+          <button type="button" class="btn" data-ract="addperson" aria-label="Person hinzufügen">${I('plus')}</button></div>
+        <label class="rquickchk"><input type="checkbox" name="toQuick"> auch in die Schnellauswahl</label></div>
       <div class="f"><label>Zustand</label><div class="qkeys" data-rchips="zustand"></div></div>
       <div class="f"><label>Sicherheit</label><div class="qkeys rsafechips" data-rchips="sicherheit"></div></div>
       <div class="f"><label for="ed-bemerkung">Bemerkung</label><textarea id="ed-bemerkung" name="bemerkung" rows="3" placeholder="Was ist zu beachten?">${v('bemerkung')}</textarea></div>
@@ -6107,7 +6134,14 @@ const Req = {
     const renderPersons = () => {
       const ps = this.persons(showId);
       form.querySelector('[data-persons]').innerHTML = ps.map(p => `<button type="button" data-rper="${Utils.esc(p.key)}" aria-pressed="${rs.personIds.includes(p.key)}">${I('user', 'sm')} ${Utils.esc(this.personLabel(p))}</button>`).join('')
-        || '<span class="muted" style="font-size:14px">Noch keine Personen in diesem Stück – unten eintragen.</span>';
+        || '<span class="muted" style="font-size:14px">Noch keine Personen in diesem Stück – unten antippen oder eintragen.</span>';
+      renderQuick();
+    };
+    const renderQuick = () => {
+      const have = this.persons(showId).map(p => this.personLabel(p).toLowerCase());
+      const q = this.quickList().filter(x => !have.includes(this.personLabel(x).toLowerCase()));
+      form.querySelector('[data-quick]').innerHTML = q.map(x => `<button type="button" class="rq" data-rq="${Utils.esc(x.id)}">${I('plus', 'sm')} ${Utils.esc(this.personLabel(x))}</button>`).join('')
+        || `<span class="muted" style="font-size:14px">${this.quickList().length ? 'Alle Personen der Schnellauswahl sind schon im Stück.' : 'Noch leer – über „bearbeiten“ Personen anlegen.'}</span>`;
     };
     const chipOpts = {
       zustand: () => { const base = (Settings.v.zustandKeys || REQ_ZUSTAND).filter(Boolean); return base.concat(rs.zustand.filter(z => !base.includes(z))).map(z => [z, z]); },
@@ -6147,7 +6181,7 @@ const Req = {
     };
     form.addEventListener('input', e => { if (e.target.name === 'was') renderSugg(); });
     form.addEventListener('click', async e => {
-      const b = e.target.closest('[data-rort],[data-rper],[data-rchip],[data-sugg-i],[data-rwa],[data-ract="addperson"]'); if (!b) return;
+      const b = e.target.closest('[data-rort],[data-rper],[data-rchip],[data-sugg-i],[data-rwa],[data-ract="addperson"],[data-ract="editquick"],[data-rq]'); if (!b) return;
       if (b.dataset.rwa) { const k = b.dataset.rwa, i = rs.abschnitte.indexOf(k); if (i >= 0) rs.abschnitte.splice(i, 1); else rs.abschnitte.push(k); markDirty(); renderWann(); return; }
       if (b.dataset.suggI != null) {
         const x = (this._sugg || [])[+b.dataset.suggI]; if (!x) return;
@@ -6173,21 +6207,32 @@ const Req = {
         if (n === 'zustaendig' && rs.zustaendig === 'andere') setTimeout(() => form.elements.zustAndere.focus(), 30);
         return;
       }
+      if (b.dataset.rq) { const x = this.quickList().find(q => q.id === b.dataset.rq); if (x) takePerson(x.rolle || '', x.darsteller || ''); return; }
+      if (b.dataset.ract === 'editquick') { this.editQuick(() => renderQuick()); return; }
       if (b.dataset.ract === 'addperson') addPerson();
     });
-    const addPerson = async () => {
-      const inp = form.elements.newPerson, name = inp.value.trim(); if (!name) { inp.focus(); return; }
-      const exist = this.persons(showId).find(p => this.personLabel(p).toLowerCase() === name.toLowerCase() || String(p.rolle).toLowerCase() === name.toLowerCase());
+    /** Person im Stück anlegen (falls es sie dort noch nicht gibt) und für diesen Gegenstand wählen */
+    const takePerson = async (rolle, darst) => {
+      const lab = this.personLabel({ rolle, darsteller: darst }).toLowerCase();
+      const exist = this.persons(showId).find(p => this.personLabel(p).toLowerCase() === lab);
       let key = exist && exist.key;
       if (!key) {
         key = 'rp:' + Utils.uuid();
-        try { await Repo.patchShow(showId, { [key]: { rolle: name, darsteller: '', ord: Math.max(0, ...this.persons(showId).map(p => +p.ord || 0)) + 10, del: false } }); }
+        try { await Repo.patchShow(showId, { [key]: { rolle, darsteller: darst, ord: Math.max(0, ...this.persons(showId).map(p => +p.ord || 0)) + 10, del: false } }); }
         catch (err) { App.error(err); return; }
       }
       if (!rs.personIds.includes(key)) rs.personIds.push(key);
-      inp.value = ''; markDirty(); renderPersons();
+      markDirty(); renderPersons();
     };
-    form.elements.newPerson.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); addPerson(); } });
+    const addPerson = async () => {
+      const ri = form.elements.newRolle, di = form.elements.newDarst, rolle = ri.value.trim(), darst = di.value.trim();
+      if (!rolle && !darst) { ri.focus(); return; }
+      if (form.elements.toQuick.checked) { try { await this.quickAdd(rolle, darst); } catch (err) { App.error(err); } }
+      await takePerson(rolle, darst);
+      ri.value = ''; di.value = ''; ri.focus();
+    };
+    form.elements.newRolle.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); form.elements.newDarst.focus(); } });
+    form.elements.newDarst.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); addPerson(); } });
     renderOrts(); renderPersons(); renderWann(); ['zustand', 'sicherheit', 'zustaendig', 'art'].forEach(renderChips); renderInId(); renderSugg();
     return rs;
   },
@@ -6207,7 +6252,7 @@ const Req = {
 Object.assign(Req, {
   /** Listenblatt mit Pfeil-Knöpfen. opts: {title, list(), row(it,i,n) → html, top() → html, onAct(act, key, btn)} */
   listSheet(opts) {
-    const sh = Ui.sheet({ title: opts.title, full: true });
+    const sh = Ui.sheet(Object.assign({ title: opts.title, full: true }, opts.onBack ? { onBack: opts.onBack } : {}));
     sh.el.dataset.editor = '1'; sh.el.dataset.abt = 'R';
     const draw = () => {
       const list = opts.list();
@@ -6277,6 +6322,81 @@ Object.assign(Req, {
   },
 
   /* ---------- Personen des Stücks ---------- */
+  /* ---------- Schnellauswahl Personen (gerätebezogen, Einstellungen) ---------- */
+  quickList() { return (Array.isArray(Settings.v.reqQuick) ? Settings.v.reqQuick : []).filter(x => x && x.id && (x.rolle || x.darsteller)); },
+  async quickAdd(rolle, darsteller) {
+    const lab = this.personLabel({ rolle, darsteller }).toLowerCase();
+    if (this.quickList().some(x => this.personLabel(x).toLowerCase() === lab)) return;
+    await Settings.set({ reqQuick: this.quickList().concat([{ id: Utils.uuid(), rolle, darsteller }]).slice(0, 60) });
+  },
+  /** Schnellauswahl bearbeiten – aus den Einstellungen und direkt aus dem Gegenstand-Editor */
+  editQuick(onDone) {
+    const need = v => (v.rolle.trim() || v.darsteller.trim()) ? '' : 'Bitte Rolle oder Darsteller eintragen.';
+    return this.listSheet({
+      title: 'Schnellauswahl Personen', empty: 'Noch leer. Hier legst du Personen an, die du oft brauchst – im Gegenstand genügt dann ein Tipp.',
+      onBack: () => { if (onDone) Ui.afterBack().then(onDone); return true; },
+      list: () => this.quickList(),
+      top: () => `<button type="button" class="btn big primary" data-la="add">${I('plus')} Person</button><p class="fh" style="flex-basis:100%;margin:6px 0 0">Gilt für alle Stücke auf diesem Gerät. Beim Antippen im Gegenstand wird die Person dem Stück hinzugefügt.</p>`,
+      row: (p, i, n) => `<div class="rrow"><span class="rrl">${I('user', 'sm')}<span><b>${Utils.esc(this.personLabel(p))}</b><small>Rolle · Darsteller/in</small></span></span>
+          ${this.arrows(i, n, p.id)}<button type="button" class="btn icon" data-la="edit" data-key="${Utils.esc(p.id)}" aria-label="Bearbeiten">${I('edit', 'sm')}</button>
+          <button type="button" class="btn icon danger" data-la="del" data-key="${Utils.esc(p.id)}" aria-label="Entfernen">${I('trash', 'sm')}</button></div>`,
+      onAct: async (a, key) => {
+        const list = this.quickList().map(x => Object.assign({}, x)), i = list.findIndex(x => x.id === key);
+        if (a === 'add') { const v = await this.form('Neue Person', this.personFields(), { ok: 'Anlegen', check: need }); if (v) list.push({ id: Utils.uuid(), rolle: v.rolle.trim(), darsteller: v.darsteller.trim() }); else return; }
+        else if (a === 'edit' && i >= 0) { const v = await this.form('Person', this.personFields(list[i]), { check: need }); if (v) { list[i].rolle = v.rolle.trim(); list[i].darsteller = v.darsteller.trim(); } else return; }
+        else if ((a === 'up' || a === 'down') && i >= 0) { const j = i + (a === 'up' ? -1 : 1); if (j < 0 || j >= list.length) return; [list[i], list[j]] = [list[j], list[i]]; }
+        else if (a === 'del' && i >= 0) { if (!await Ui.confirm(`„${this.personLabel(list[i])}“ entfernen?`, 'Nur aus der Schnellauswahl – Stücke und Gegenstände bleiben unverändert.', 'Entfernen', true)) return; list.splice(i, 1); }
+        else return;
+        await Settings.set({ reqQuick: list });
+      }
+    });
+  },
+  /* ---------- Reihenfolge im Ablauf: Schritte und Gegenstände je Abschnitt (ab 2.6.1) ----------
+     Eigene Reihenfolge je Abschnitt im Stück-Feld „rv:<Abschnitt>“ = Liste von Kennungen
+     („rs:…“ Schritt, „g:<Eintrag>“ Gegenstand). Was dort fehlt, steht dahinter: erst Schritte, dann Gegenstände nach Ort. */
+  sectionItems(showId, a, steps = this.steps(showId), es = this.entriesR(showId)) {
+    const ci = steps.filter(s => s.ci && s.abschnitt === a.key).map(s => ({ tok: s.key, kind: 's', s }));
+    const own = steps.filter(s => !s.ci && s.abschnitt === a.key).map(s => ({ tok: s.key, kind: 's', s }));
+    const gs = es.filter(e => this.whenKeys(e).includes(a.key)).sort(this.cmp(showId)).map(e => ({ tok: 'g:' + e.id, kind: 'g', e }));
+    const def = own.concat(gs), saved = this.sh(showId)['rv:' + a.key];
+    if (!Array.isArray(saved)) return ci.concat(def);
+    const by = new Map(def.map(x => [x.tok, x])), out = [];
+    saved.forEach(t => { if (by.has(t)) { out.push(by.get(t)); by.delete(t); } });
+    return ci.concat(out, def.filter(x => by.has(x.tok)));
+  },
+  async moveItem(showId, abKey, tok, dir) {
+    const a = this.abschnitte(showId).find(x => x.key === abKey); if (!a) return;
+    const all = this.sectionItems(showId, a).filter(x => !(x.kind === 's' && x.s.ci)).map(x => x.tok);
+    const vis = a.typ === 'vor' ? all.filter(t => !t.startsWith('g:')) : all;       // in „Vor der Vorstellung“ sind nur die Schritte sichtbar
+    const i = vis.indexOf(tok), j = i + dir; if (i < 0 || j < 0 || j >= vis.length) return;
+    const x = all.indexOf(tok), y = all.indexOf(vis[j]);
+    [all[x], all[y]] = [all[y], all[x]];
+    await Repo.patchShow(showId, { ['rv:' + abKey]: all });
+  },
+  /** Schritt oder Gegenstand in einen anderen Abschnitt verschieben (ans Ende), eine Transaktion */
+  async moveItemTo(showId, tok, fromKey, toKey) {
+    const abs = this.abschnitte(showId), to = abs.find(x => x.key === toKey); if (!to || fromKey === toKey) return;
+    const f = this.sh(showId), patch = {}, entries = [];
+    const tail = this.sectionItems(showId, to).map(x => x.tok).filter(t => t !== tok);
+    if (tok.startsWith('g:')) {
+      const e = Repo.entry(tok.slice(2)); if (!e) return;
+      const nk = this.whenKeys(e).filter(k => k !== fromKey); if (!nk.includes(toKey)) nk.push(toKey);
+      const r = Rec.patch(Repo.entries.get(e.id), { abschnitte: nk }); if (r) entries.push(r);
+    } else {
+      const s = f[tok]; if (!s) return;
+      patch[tok] = Object.assign({}, s, { abschnitt: toKey, ord: Math.max(0, ...this.steps(showId).filter(x => x.abschnitt === toKey).map(x => +x.ord || 0)) + 10 });
+    }
+    patch['rv:' + toKey] = tail.concat([tok]);
+    if (Array.isArray(f['rv:' + fromKey])) patch['rv:' + fromKey] = f['rv:' + fromKey].filter(t => t !== tok);
+    const sr = Rec.patch(Repo.shows.get(showId), patch);
+    await Repo._write({ shows: sr ? [sr] : [], entries });
+  },
+  async moveItemMenu(showId, tok, fromKey) {
+    const abs = this.abschnitte(showId).filter(a => a.key !== fromKey);
+    const to = await Ui.menu('Verschieben nach …', abs.map(a => ({ label: a.label, value: a.key })));
+    await Ui.afterBack();
+    if (to) await this.moveItemTo(showId, tok, fromKey, to);
+  },
   personFields(p = {}) { return [{ k: 'rolle', label: 'Rolle', value: p.rolle || '', ph: 'z. B. Mackie Messer' }, { k: 'darsteller', label: 'Darsteller/in', value: p.darsteller || '', ph: 'z. B. Julian' }]; },
   editPersons(showId) {
     const need = v => (v.rolle.trim() || v.darsteller.trim()) ? '' : 'Bitte Rolle oder Darsteller eintragen.';
@@ -6678,7 +6798,6 @@ Object.assign(Req, {
     step('teil', 'Umbau: Pillendose vom Podest räumen, feuchtes dunkles Handtuch und Crashglas-Flasche bereitlegen', { zeit: { art: 'im', min: 60, bezug: 'stueck' }, ausloeser: [{ typ: 'einruf', anzahl: 1 }], gegenstand: crash });
     step('nach', '2 Sektgläser Vorbühne Portaltür einsammeln'); step('nach', 'Puffreis beim Inspizientenpult wegräumen', { ortId: H('Inspizientenpult') });
     step('nach', 'Brillen kontrollieren'); step('nach', '5 Masken einsammeln'); step('nach', 'Konfetti wegkehren');
-    sf['ci:demo-r-ci1'] = { abt: 'R', text: 'Waffenschrank verschlossen', ord: 10, del: false };
     void pille;
     const show = Rec.create({ id: 'demo-r-show' }, sf);
     const entries = E.map(x => Rec.create({ id: x.id, showId: show.id }, x.f));
@@ -6753,8 +6872,8 @@ const ReqView = {
   vorHead(ctx, all, done) {
     const r = ctx.run;
     return `<section class="rvor"><div class="rvorh">${I('checklist')}<div><h2>Vor der Vorstellung</h2>
-        <p>${r ? `${Utils.esc(r.f.titel || 'Heute')} · <b>${done} von ${all}</b> erledigt` : `${all} Punkte · zum Abhaken einfach antippen`}</p></div>
-        <button type="button" class="btn" data-ract="runs">${I('list', 'sm')}<span class="bl"> Durchgänge &amp; PDF</span></button></div>
+        <p>${r ? `Heute · <b>${done} von ${all}</b> erledigt` : `${all} Punkte · zum Abhaken einfach antippen`}</p></div>
+        ${r && done ? `<button type="button" class="btn" data-ract="run-new">${I('undo', 'sm')}<span class="bl"> Neu beginnen</span></button>` : ''}</div>
       <div class="pbar"><i style="width:${all ? done / all * 100 : 0}%"></i></div>
       ${ctx.edit ? `<div class="rpacts" style="margin:10px 0 0"><button type="button" class="btn" data-ract="vor-step">${I('plus', 'sm')} Vorbereitung</button><button type="button" class="btn" data-ract="ci-edit">${I('edit', 'sm')} Feste Punkte</button></div>` : ''}</section>`;
   },
@@ -6837,7 +6956,14 @@ const ReqView = {
     return h;
   },
   /* ---------- Ablauf ---------- */
-  stepRow(s, ctx, run) {
+  /** Bedienung je Zeile im Ablauf (Bearbeiten): nach oben · unten · in anderen Abschnitt */
+  moveCtl(tok, ab, i, n) {
+    const t = Utils.esc(tok), k = Utils.esc(ab), up = I('arrowL', 'sm').replace('<svg', '<svg style="transform:rotate(90deg)"'), dn = I('arrowR', 'sm').replace('<svg', '<svg style="transform:rotate(90deg)"');
+    return `<span class="rsed rmv"><button type="button" class="btn icon" data-ract="i-up" data-tok="${t}" data-ab="${k}" aria-label="Nach oben" ${i === 0 ? 'disabled' : ''}>${up}</button>
+      <button type="button" class="btn icon" data-ract="i-down" data-tok="${t}" data-ab="${k}" aria-label="Nach unten" ${i === n - 1 ? 'disabled' : ''}>${dn}</button>
+      <button type="button" class="btn icon" data-ract="i-move" data-tok="${t}" data-ab="${k}" aria-label="In anderen Abschnitt verschieben" title="In anderen Abschnitt">${I('layers', 'sm')}</button></span>`;
+  },
+  stepRow(s, ctx, run, mv = '') {
     const e = Req.stepEntry(s), o = s.ortId ? Req.ortByKey(ctx.showId, s.ortId) : null, saf = Req.stepSafety(s);
     const ok = !!run && this.isOk(run, s.key), h = run && run.f['h:' + s.key], when = Req.whenShort(s), k = Utils.esc(s.key);
     const ph = e && Repo.photosOf(e.id, 'A').length;
@@ -6848,11 +6974,11 @@ const ReqView = {
       <button type="button" class="rshit" data-ract="${s.ci ? 'ci-open' : 's-open'}" data-step="${k}">
         ${when ? `<span class="rsz">${Utils.esc(when)}</span>` : ''}<span class="rst">${Utils.esc(s.text)}${ok ? ' <span class="rok">erledigt</span>' : ''}${sub ? `<small>${sub}</small>` : ''}</span></button>
       ${ph ? `<button type="button" class="btn icon" data-ract="s-photo" data-step="${k}" aria-label="Foto ansehen">${I('image')}</button>` : ''}
-      ${ctx.edit && run !== false && !s.ci ? `<span class="rsed">${this.mini('s-up', k, 'arrowL', 'Nach oben', 90)}${this.mini('s-down', k, 'arrowR', 'Nach unten', 90)}</span>` : ''}
+      ${mv}
     </div>`;
   },
   /** kompakte Zeile „Gegenstand wird hier gebraucht“ (im Ablauf) */
-  gRow(e, a, ctx) {
+  gRow(e, a, ctx, mv = '') {
     const key = Req.gKey(e.id, a.key), ok = this.isOk(ctx.run, key), ph = Repo.photosOf(e.id, 'A')[0];
     const sub = [Req.val(e, 'ort') ? `${I('pin', 'sm')} ${Utils.esc(Req.val(e, 'ort'))}` : '', Req.val(e, 'zuWem') ? `${I('user', 'sm')} ${Utils.esc(Req.val(e, 'zuWem'))}` : '', e.f.sicherheit ? Req.safeBadge(e.f.sicherheit) : ''].filter(Boolean).join(' ');
     return `<div class="rstep rg ${ok ? 'done' : ''}">
@@ -6860,6 +6986,7 @@ const ReqView = {
       <button type="button" class="rshit" data-ract="g-open" data-eid="${Utils.esc(e.id)}">
         ${ph ? `<span class="rpot">${Views.thumbImg(ph.b)}</span>` : `<span class="rpot none">${I('box', 'sm')}</span>`}
         <span class="rst"><b>${e.f.menge && String(e.f.menge).trim() !== '1' ? Utils.esc(e.f.menge) + '× ' : ''}${Utils.esc(e.f.was || 'Ohne Namen')}</b>${e.f.wofuer ? ` <span class="rfor">für ${Utils.esc(e.f.wofuer)}</span>` : ''}${ok ? ' <span class="rok">erledigt</span>' : ''}${sub ? `<small>${sub}</small>` : ''}</span></button>
+      ${mv}
     </div>`;
   },
   mini(act, key, ic, label, rot = 0) { return `<button type="button" class="btn icon" data-ract="${act}" data-step="${key}" data-ab="${key}" aria-label="${Utils.esc(label)}">${rot ? I(ic, 'sm').replace('<svg', `<svg style="transform:rotate(${rot}deg)"`) : I(ic, 'sm')}</button>`; },
@@ -6883,16 +7010,24 @@ const ReqView = {
       const isOpen = this.open[a.key] ?? (run ? a.key === first : true);
       const k = Utils.esc(a.key);
       const disabledFirst = s => i === 0 ? s.replace('class="btn icon"', 'class="btn icon" disabled') : s, disabledLast = s => i === abs.length - 1 ? s.replace('class="btn icon"', 'class="btn icon" disabled') : s;
+      // Schritte und Gegenstände in einer Reihenfolge (von Hand verschiebbar); „Vor der Vorstellung“ zeigt die Gegenstände nur als Verweis
+      const its = Req.sectionItems(showId, a, steps, es).filter(it => a.typ !== 'vor' || it.kind === 's');
+      const nMv = its.filter(it => !(it.kind === 's' && it.s.ci)).length; let mi = 0;
+      const rowsHtml = its.map(it => {
+        if (it.kind === 's' && it.s.ci) return this.stepRow(it.s, ctx, run);
+        const mv = ctx.edit ? this.moveCtl(it.tok, a.key, mi++, nMv) : '';
+        return it.kind === 's' ? this.stepRow(it.s, ctx, run, mv) : this.gRow(it.e, a, ctx, mv);
+      }).join('');
       let gHtml = '';
       if (ge.length && a.typ === 'vor') {
         const gd = ge.filter(e => this.isOk(run, Req.gKey(e.id, a.key))).length;
         gHtml = `<button type="button" class="rgo" data-ract="go-einrichten">${I('box')} <span><b>${ge.length} Gegenstände einrichten</b><small>${gd} erledigt · in der Ansicht „Einrichten“ nach Ort</small></span>${I('arrowR', 'sm')}</button>`;
-      } else if (ge.length) gHtml = `<div class="rgsub">${I('box', 'sm')} Gegenstände</div>` + ge.map(e => this.gRow(e, a, ctx)).join('');
+      }
       h += `<details class="rabs ${run && keys.length && d === keys.length ? 'alldone' : ''}" data-ab="${k}" data-typ="${Utils.esc(a.typ)}" ${isOpen ? 'open' : ''}>
         <summary><span class="chev">${I('arrowR', 'sm')}</span><h3>${Utils.esc(a.label)}</h3><span class="mono n">${run ? `${d}/${keys.length}` : keys.length}</span>
           ${ctx.edit ? `<span class="rsed">${disabledFirst(this.mini('a-up', k, 'arrowL', 'Nach oben', 90))}${disabledLast(this.mini('a-down', k, 'arrowR', 'Nach unten', 90))}${this.mini('a-edit', k, 'edit', 'Abschnitt bearbeiten')}${this.mini('a-del', k, 'trash', 'Abschnitt löschen')}</span>` : ''}</summary>
         ${a.notiz ? `<p class="rabn">${Utils.esc(a.notiz)}</p>` : ''}
-        <div class="rsteps">${l.map(s => this.stepRow(s, ctx, run)).join('')}${gHtml}${!l.length && !ge.length && !a.notiz ? '<p class="muted rabn">Noch nichts eingetragen.</p>' : ''}</div>
+        <div class="rsteps">${rowsHtml}${gHtml}${!l.length && !ge.length && !a.notiz ? '<p class="muted rabn">Noch nichts eingetragen.</p>' : ''}</div>
         ${ctx.edit ? `<div class="rpacts" style="margin:4px 12px 12px"><button class="btn" data-ract="s-add" data-ab="${k}">${I('plus', 'sm')} Schritt</button>
           <button class="btn" data-ract="g-add" data-ab="${k}">${I('plus', 'sm')} Gegenstand</button>
           <button class="btn" data-ract="assign" data-ab="${k}">${I('box', 'sm')} Gegenstände zuordnen</button></div>` : ''}
@@ -6910,6 +7045,9 @@ const ReqView = {
       else if (a === 'run-start') { const r = await RunList.create(showId); Ui.toast(`${r.f.titel} angelegt`); }
       else if (a === 's-chk' || a === 'g-chk') await this.tick(showId, key);
       else if (a === 'runs') RunList.open(showId);
+      else if (a === 'run-new') { if (await Ui.confirm('Neu beginnen?', 'Alle Haken sind dann wieder leer. Der bisherige Durchgang bleibt unter „Vorstellungs-Checkliste“ (oben das Listen-Symbol) gespeichert.', 'Neu beginnen')) { await RunList.create(showId); Ui.toast('Neuer Durchgang – alle Haken leer'); } }
+      else if (a === 'i-up' || a === 'i-down') { if (edit) await Req.moveItem(showId, b.dataset.ab, b.dataset.tok, a === 'i-up' ? -1 : 1); }
+      else if (a === 'i-move') { if (edit) await Req.moveItemMenu(showId, b.dataset.tok, b.dataset.ab); }
       else if (a === 'go-einrichten') { App.state.reqSafe = false; await Settings.set({ reqView: 'einrichten' }); App.renderToolbar(); App.renderList(); window.scrollTo(0, 0); }
       else if (a === 'g-open') { const e = Repo.entry(b.dataset.eid); if (!e) return; if (edit) Editor.open({ showId, entryId: e.id }); else if (Repo.photosOf(e.id, 'A').length) this.photos(e); else App.openDetailSheet(e.id); }
       else if (a === 'ci-open') { if (edit) RunList.editItems(showId); }
@@ -7211,6 +7349,7 @@ const SettingsView = {
       </div>
       ${v.depts.includes('R') ? `<div class="group" data-abt="R"><h3>Requisite</h3>
         <button class="item" data-act="house"><span class="lb">Haus-Orte &amp; Vorlagen<small>Orte und häufige Gegenstände für alle Stücke</small></span>${I('arrowR')}</button>
+        <button class="item" data-act="pkeys"><span class="lb">Personen-Schnellauswahl<small>${Utils.esc((v.reqQuick || []).map(x => Req.personLabel(x)).join(', ') || 'noch leer')}</small></span>${I('edit')}</button>
         <button class="item" data-act="zkeys"><span class="lb">Zustand-Schnelltasten<small>${Utils.esc((v.zustandKeys || []).join(', ') || '–')}</small></span>${I('edit')}</button></div>` : ''}
       <div class="group"><h3>Eingabe</h3>
         <button class="item" data-act="fkeys"><span class="lb">Filter-Schnelltasten (Licht)<small class="mono">${Utils.esc((v.filterKeys || []).join('  ') || '–')}</small></span>${I('edit')}</button>
@@ -7240,6 +7379,7 @@ const SettingsView = {
       else if (b.dataset.num) { await Settings.set({ [b.dataset.num]: +b.dataset.val }); render(); }
       else if (b.dataset.act === 'name') { const n = await Ui.prompt('Gerätename', Settings.v.deviceName || Sync.deviceName(), 'z. B. iPad Beleuchtung'); if (n != null) { await Settings.set({ deviceName: n.trim() }); render(); } }
       else if (b.dataset.act === 'house') Req.editHouse(App.state.route === 'show' ? App.state.showId : null);
+      else if (b.dataset.act === 'pkeys') Req.editQuick(() => render());
       else if (b.dataset.act === 'zkeys') {
         const n = await Ui.prompt('Zustand-Schnelltasten', (Settings.v.zustandKeys || []).join(', '), 'z. B. präpariert, beklebt, befüllt', 'Mit Komma trennen. Die Reihenfolge bleibt so erhalten.');
         if (n != null) { await Settings.set({ zustandKeys: [...new Set(n.split(/[,;]+/).map(x => x.trim()).filter(Boolean))].slice(0, 30) }); render(); }

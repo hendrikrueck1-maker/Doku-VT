@@ -1,5 +1,17 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.6.1 – 19.10.2026
+
+Nachbesserungen an der Requisite nach dem ersten Test auf dem Tablet. Kein Datenbank-Update, Paketformat unverändert.
+
+- **Personen: Rolle und Darsteller/in getrennt.** Im Gegenstand stehen unter „Zu wem“ zwei Felder (Rolle, Darsteller/in) statt einem.
+- **Schnellauswahl Personen:** Im Gegenstand erscheint unter den Personen des Stücks die Schnellauswahl; ein Tipp fügt die Person dem Stück hinzu und wählt sie. „bearbeiten“ öffnet die Liste direkt aus dem Gegenstand (anlegen, ändern, sortieren, entfernen), dieselbe Liste gibt es unter Einstellungen → Requisite → „Personen-Schnellauswahl“. Neue Personen lassen sich mit dem Haken „auch in die Schnellauswahl“ gleich mit aufnehmen. Die Schnellauswahl gilt je Gerät für alle Stücke.
+- **„Durchgänge & PDF“ entfernt.** Statt des unklaren Knopfs steht dort „Neu beginnen“ (erscheint, sobald etwas abgehakt ist): leert alle Haken in einem neuen Durchgang; der alte bleibt im Protokoll (Listen-Symbol oben). „Heute · 3 von 28 erledigt“ statt Durchgangs-Titel.
+- **Orte deutlich abgesetzt:** Jeder Ort ist ein kräftiges farbiges Band mit großer Schrift, bleibt beim Scrollen oben stehen (so sieht man immer, wo man gerade einrichtet) und wird grün, wenn alles abgehakt ist. Personen am Requisitentisch sind mit Balken abgesetzt.
+- **Ablauf: Reihenfolge ändern und verschieben.** Im Bearbeitungsmodus hat jede Zeile (Schritt wie Gegenstand) drei Knöpfe: nach oben, nach unten, „in anderen Abschnitt verschieben“. Schritte und Gegenstände eines Abschnitts stehen in einer gemeinsamen Reihenfolge; sie gilt auch für die Checkliste und das PDF und wird beim Duplizieren mitgenommen. Wer nichts verschiebt, sieht wie bisher erst die Schritte, dann die Gegenstände nach Ort.
+- **„Waffenschrank verschlossen“ ist keine Vorauswahl mehr** (weder in der Hausvorlage noch in der Demo). In bestehenden Stücken bleibt der Punkt stehen, bis er unter „Feste Punkte“ (Einrichten, Bearbeitungsmodus) gelöscht wird.
+- Test: 37 Prüfungen (neu: Schnellauswahl, Ablauf verschieben, Neu beginnen).
+
 ## 2.6.0 – 19.10.2026
 
 Requisite übersichtlicher: **„Einrichten“ ist die Checkliste vor der Vorstellung**, jeder Gegenstand weiß, **wann und wofür** er gebraucht wird, und jede Veranstaltung hat eine **Spielstätte**. Kein Datenbank-Update, Paketformat unverändert (2 bzw. 3 mit Requisite).

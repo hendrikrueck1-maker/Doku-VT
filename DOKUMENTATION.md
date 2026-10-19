@@ -1,4 +1,4 @@
-# Doku VT 2.6.0 – Dokumentation
+# Doku VT 2.6.1 – Dokumentation
 
 Die App ist eine Datei (`index.html`, ca. 570 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
 
@@ -43,6 +43,11 @@ Die App ist eine Datei (`index.html`, ca. 570 KB), keine Abhängigkeiten, kein C
 - Gegenstand: `abschnitte` = Liste von `ra:`-Schlüsseln (Feld fehlt = „Vor der Vorstellung“ des Stücks; leere Liste = in keinem Abschnitt), `wofuer` = Freitext. Beim Duplizieren werden die Schlüssel auf die Kopie umgebogen (`remapEntry`). Gelöschte Abschnitte bleiben als toter Schlüssel stehen und werden ignoriert.
 - Checklisten-Punkt „Gegenstand in Abschnitt“: `RunList.items` liefert je Abschnitt erst die Schritte, dann die Gegenstände mit Schlüssel `rg:<Eintrag>:<Abschnitt>` (Haken im Durchgang als `h:rg:…`, `abtOfItem` → R). Die Punkte entstehen aus den Daten – es gibt nichts zusätzlich zu pflegen und nichts Neues abzugleichen.
 - Spielstätte: das bestehende Feld `spielstaette` der Veranstaltung (Text). Feste Werte `SPIELSTAETTEN`, alles andere gilt als „Sonstiges“. Startseiten-Filter `App.state.homeSp` (nur Sitzung).
+
+**Ab 2.6.1:**
+- Reihenfolge im Ablauf: Stück-Feld `rv:<Abschnitt>` = Liste von Kennungen (`rs:…` Schritt, `g:<Eintrag>` Gegenstand). `Req.sectionItems` liefert je Abschnitt feste Punkte (`ci:`) zuerst, dann die gespeicherte Reihenfolge, dann alles Übrige (Schritte, dann Gegenstände nach Ort). `moveItem` tauscht Nachbarn, `moveItemTo` verschiebt in einen anderen Abschnitt (Schritt: `abschnitt` ändern; Gegenstand: Abschnitt in `abschnitte` ersetzen) in einer Transaktion. Checkliste (`RunList.items`), Ablauf-Ansicht und PDF nutzen dieselbe Funktion. `copyShowFields` biegt `rv:` beim Duplizieren auf die Kopien um.
+- Schnellauswahl Personen: `Settings.reqQuick = [{id, rolle, darsteller}]` (gerätebezogen, wird nicht abgeglichen); `Req.quickList`/`quickAdd`/`editQuick`. Die Person wird erst beim Antippen als `rp:` im Stück angelegt.
+- „Neu beginnen“ legt einen weiteren Durchgang für heute an; `ReqView.todayRun` nimmt den neuesten.
 
 **Requisite – Abgleich (ab 2.5.0):** `FORMAT_VERSION = 3` ist das höchste lesbare Format. Ein Paket bekommt Format 3 nur, wenn es Requisite-Gegenstände, deren Fotos oder Haus-Daten enthält (`Sync.hasReq`), sonst `FORMAT_BASE = 2` – reine Licht-/Ton-/Bühnen-Pakete bleiben für 2.0.0–2.4.4 lesbar, und 2.4.4 lehnt Requisite-Pakete mit der vorhandenen Meldung ab (dort würde ein Gegenstand sonst als Licht-Eintrag ohne Kreis erscheinen). `Sync.filterRecs` schickt Gegenstände, ihre Fotos, Haken `h:rs:*` und Haus-Daten nur an Geräte mit Requisite (Datei: Abteilungen des Geräts; Live: Schnittmenge beider Geräte aus `hello.d` – ältere Gegenstellen kennen „R“ nicht). Ein Gerät **ohne** Requisite übernimmt aus einem Sync-Paket keine Requisite-Gegenstände, -Fotos oder Haus-Daten (`Sync.dropReq`); ein Backup übernimmt immer alles. Veranstaltungen gehen immer mit, inklusive `rp:`/`ro:`/`ra:`/`rs:` – ältere Geräte tragen diese Felder unverändert weiter. Backup einer einzelnen Veranstaltung ohne Requisite enthält keine Haus-Daten (bleibt Format 2).
 
@@ -178,6 +183,12 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 - [ ] Gleichzeitig auf zwei Geräten denselben Eintrag ändern, unterschiedliche Felder: Beide Änderungen bleiben erhalten.
 - [ ] Auf A löschen, abgleichen: Der Eintrag ist auch auf B weg und taucht nicht wieder auf.
 
+**Requisite 2.6.1 – iPad, iPhone, Pixel**
+- [ ] Gegenstand → „Zu wem“: Rolle und Darsteller/in getrennt eintragen; „Schnellauswahl bearbeiten“ aus dem Gegenstand heraus; Antippen eines Schnellauswahl-Namens fügt die Person hinzu. Dieselbe Liste unter Einstellungen → Requisite.
+- [ ] Einrichten: Ortsbänder gut lesbar und beim Scrollen oben haftend; „Neu beginnen“ leert die Haken.
+- [ ] Ablauf (Bearbeiten): Gegenstand nach oben/unten, in anderen Abschnitt verschieben; Checkliste und PDF zeigen dieselbe Reihenfolge.
+- [ ] Neues Stück: keine festen Punkte vorbelegt.
+
 **Requisite 2.6.0 – iPad, iPhone, Pixel**
 - [ ] Neue Veranstaltung: Spielstätte antippen (oder „Sonstiges …“ mit Text); Plakette auf der Startseite, Ort in der Kopfzeile, PDF-Kopf „Titel · Spielstätte“. Filter auf der Startseite bei zwei Spielstätten.
 - [ ] Neues Stück mit Requisite: Ablauf = Vor der Vorstellung · Teil 1 · Nach der Vorstellung. „+ Abschnitt → Pause“ legt nur die Pause an; „+ Abschnitt → Teil“ legt „Teil 2“ an.
@@ -209,7 +220,7 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 
 ## 3. Bewusste Designentscheidungen und Abweichungen
 
-0b. **Automatischer Test (ab 2.5.0 neu aufgebaut):** Die Testdatei aus 2.4.3/2.4.4 lag bei der Erweiterung nicht vor; `test/test_dokuvt.py` wurde deshalb neu geschrieben. Aufruf wie bisher (`python3 test/test_dokuvt.py`, `<ordner>`, `-k <teil>`), neu `--alt <ordner>` mit einer Fassung 2.4.4 für den Vergleich. Ab 2.6.0 34 Prüfungen (zusätzlich Einrichten als Checkliste, „Wann gebraucht“/Zuordnen, Spielstätte). Grundfunktionen (Start/Demo, Speichern und Neuladen mit Zusammenführen, Editor über die Oberfläche, Speichern ohne Änderung schreibt nichts, alle Ansichten, PDF mit qpdf, Backup zweimal, Papierkorb, Live-Abgleich per WebRTC, Smartphone-Breite) und die 21 Requisite-Prüfungen aus der Vorgabe plus Duplizieren (u. a. DOM- und PDF-Seitenvergleich mit 2.4.4 für Geräte ohne Requisite, Format 3 wird von echtem 2.4.4 abgelehnt, 2.4.4-Dateien zweimal einlesen, Live mit/ohne Requisite, Aufräumen, Merge-Eigenschaften mit Haus-Daten, PDF-Inhalt, Kontrast, XSS). Die Prüfungen T1–T17 der früheren Suite (Code-Review 2.4.2) sind darin nicht alle enthalten und sollten beim Zusammenführen mit der alten Datei übernommen werden.
+0b. **Automatischer Test (ab 2.5.0 neu aufgebaut):** Die Testdatei aus 2.4.3/2.4.4 lag bei der Erweiterung nicht vor; `test/test_dokuvt.py` wurde deshalb neu geschrieben. Aufruf wie bisher (`python3 test/test_dokuvt.py`, `<ordner>`, `-k <teil>`), neu `--alt <ordner>` mit einer Fassung 2.4.4 für den Vergleich. Ab 2.6.1 37 Prüfungen, ab 2.6.0 34 (zusätzlich Einrichten als Checkliste, „Wann gebraucht“/Zuordnen, Spielstätte). Grundfunktionen (Start/Demo, Speichern und Neuladen mit Zusammenführen, Editor über die Oberfläche, Speichern ohne Änderung schreibt nichts, alle Ansichten, PDF mit qpdf, Backup zweimal, Papierkorb, Live-Abgleich per WebRTC, Smartphone-Breite) und die 21 Requisite-Prüfungen aus der Vorgabe plus Duplizieren (u. a. DOM- und PDF-Seitenvergleich mit 2.4.4 für Geräte ohne Requisite, Format 3 wird von echtem 2.4.4 abgelehnt, 2.4.4-Dateien zweimal einlesen, Live mit/ohne Requisite, Aufräumen, Merge-Eigenschaften mit Haus-Daten, PDF-Inhalt, Kontrast, XSS). Die Prüfungen T1–T17 der früheren Suite (Code-Review 2.4.2) sind darin nicht alle enthalten und sollten beim Zusammenführen mit der alten Datei übernommen werden.
 22. **Requisite ohne Fachbegriffe:** In der Requisite-Oberfläche erscheinen keine Phasen, „Kreis“, „Zug“ oder „Abteilung“. Tag und PDF-Plakette heißen nur „REQUISITE“; intern bleibt die Foto-Kategorie „A“.
 23. **Eigene Ansichten statt Darstellungs-Umschalter:** Bei Requisite ersetzen „Einrichten · Ablauf · Personen“ (bis 2.5.0 „Nach Ort“) die Liste/Kacheln/Großbild-Knöpfe – die Zettel der Requisite sind nach Ort und Person aufgebaut, nicht nach Fotos. Bei „Alle“ erscheint die Requisite als Abschnitt nach Bühne in der normalen Liste.
 24. **Haus-Daten als eigener Datensatz** (nicht in den Einstellungen): Haus-Orte und Vorlagen sollen auf allen Requisite-Geräten gleich sein und werden deshalb abgeglichen; die Einstellungen sind gerätebezogen.
