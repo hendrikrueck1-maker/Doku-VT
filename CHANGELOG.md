@@ -1,5 +1,25 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.5.0 – 19.10.2026
+
+Neue Abteilung **Requisite** (Grün): Was liegt wo, wem gehört es, was ist vor, während und nach der Vorstellung zu tun. Licht, Ton und Bühne bleiben unverändert. Kein Datenbank-Update.
+
+- **Einschalten:** Einstellungen → „Dieses Gerät dokumentiert“ → Requisite. Beim ersten Einschalten kommen die Haus-Orte (Requisitentisch, Gassen, Waffenschrank …), Vorlagen für häufige Gegenstände und die Demo „Einfache Leute“ dazu.
+- **Gegenstand in drei Schritten:** Foto, Name (mit Vorschlägen aus den Vorlagen und dem Stück), Ort antippen (die zuletzt benutzten Orte als große Knöpfe). Ein Foto allein genügt. „+ Nächster am selben Ort“ behält Ort und Person – ein Requisitentisch ist so in einem Zug erfasst.
+- **Am Gegenstand:** Stelle am Ort, zu wem (auch mehrere Personen), Zustand (präpariert, beklebt …), Sicherheit (Waffe, Knall/Pyro, Glas …), Menge, Markierung, Behälter („liegt in …“), Zuständig, Verbrauch/Reserve/Defekt, Pflege, Verbleib. Bildunterschrift je Foto.
+- **Drei Ansichten:** **Nach Ort** (oben „Verbrauch“, am Requisitentisch nach Person gegliedert, Inhalt von Behältern eingerückt), **Ablauf** (Vor der Vorstellung, Vorstellung bzw. Teile und Pausen, Nach der Vorstellung, Abbau – jeder Schritt mit Zeit und Auslöser, z. B. „ca. 35′ · Einruf → 2× Lichtzeichen“) und **Personen**. Dazu der Filter **Sicherheit**. Sicherheit und Defekt immer mit Symbol und Text.
+- **Ablauf abhaken:** „Vorstellung heute beginnen“ und jeden Schritt mit großem Haken abhaken – im Ansichtsmodus. Erledigte Abschnitte werden blass, der erste offene ist aufgeklappt. Gleicher Durchgang wie „Vor der Vorstellung“ und das PDF-Protokoll.
+- **Keine Pause als Standard.** „+ Pause“ fügt Pause und zweiten Teil ein, die Teile heißen dann „Teil 1“, „Teil 2“. Pause entfernen führt die Teile wieder zu „Vorstellung“ zusammen. „+ Abbau“ für die letzte Vorstellung.
+- **Orte:** Haus-Orte gelten für alle Stücke, dazu eigene Orte je Stück (mit Foto, Notiz, Bildunterschrift). „Raster anlegen“ (z. B. A–F × 1–4 = 24 Orte) und „Nummerierte Orte“ („Stuhl n“ 1–6). Ein gelöschter Ort bleibt am Gegenstand lesbar und zeigt „Ort entfernt“.
+- **Waffe markiert?** Die App bietet die Schritte „… aus dem Waffenschrank holen“ und „… im Waffenschrank einschließen“ an.
+- **Einrichtung · Requisite** über der Liste: „Allgemein · Wichtig“ (pinker Rahmen), Dauer, Übersichtsfoto, Personen, Orte des Stücks.
+- **PDF-Kapitel Requisite:** Sicherheit, Personen, Ablauf als Tabelle mit Kästchen und Seitenverweis, Verbrauch als Einkaufszettel, Gegenstände nach Ort (mit Ortsfoto) oder nach Person. Dateiname z. B. `Einfache_Leute_Requisite_2026-10-19.pdf`.
+- **Abgleich:** Requisite-Gegenstände, ihre Fotos und die Haus-Daten gehen nur an Geräte mit Requisite – per Paket und live. Ein Paket mit Requisite-Inhalt hat **Format 3**; Doku VT 2.4.4 lehnt es mit „bitte zuerst aktualisieren“ ab. Pakete ohne Requisite bleiben Format 2 und für ältere Geräte lesbar. **Alle Geräte, die Requisite-Pakete bekommen, zuerst auf 2.5.0 aktualisieren.**
+- „Speicher aufräumen“ behält Übersichts-, Orts- und Vorlagenfotos.
+- Abteilungsleiste mit vier Abteilungen: auf dem Smartphone Kurznamen L / T / B / R.
+- Rotlicht: graue Hinweistexte minimal heller (Kontrast 4,1 : 1 statt 3,99 : 1).
+- **Automatischer Test neu aufgebaut:** `test/test_dokuvt.py`, 31 Prüfungen (Grundfunktionen und Requisite, dazu ein DOM-Vergleich mit 2.4.4 für Geräte ohne Requisite).
+
 ## 2.4.4 – 17.10.2026
 
 Aufbau und 2. Phase (Einleuchten, Soundcheck, Einrichten) sind in jeder Abteilung klar zu unterscheiden.
