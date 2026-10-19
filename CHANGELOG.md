@@ -1,5 +1,17 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.6.2 – 19.10.2026
+
+Zweite Runde Nachbesserungen Requisite. Kein Datenbank-Update, Paketformat unverändert.
+
+- **Ensemble statt Schnellauswahl:** Unter Einstellungen → Requisite → „Ensemble (Personen)“ stehen nur Namen. Im Stück (Allgemeine Infos → Personen) tippst du einen Namen aus dem Ensemble an und gibst die Rolle dazu. Die Schnellauswahl im Gegenstand ist entfernt; dort bleibt das Eintragen (Person, Rolle) mit Namensvorschlägen aus dem Ensemble.
+- **Person vor Rolle:** überall „Julian (Mackie)“, in Formularen erst Person, dann Rolle. Einträge aus 2.6.1 werden als Namen übernommen.
+- **Im Stück gebraucht (Teil, Pause, Sonstiges):** zusätzlich „Lichtzeichen? Ja / Nein“ und „Übergabe-Ort“. Steht im Ablauf, auf der Karte und im PDF.
+- **Zustand „Sonstiges …“** mit eigenem Text.
+- **Einrichten:** jeder Gegenstand hat ein Kästchen (vorher nur die mit „Vor der Vorstellung“). Neue Zeile: Kästchen · Gegenstand · Foto · Angaben (wann, wofür, Person, Stelle, Zustand), ohne Schraffur. „Vor der Vorstellung“ fällt bei „Wann gebraucht?“ weg – eingerichtet wird alles.
+- **Reiter „Personen“ entfernt** (Einrichten · Ablauf).
+- **PDF Requisite neu gegliedert, jeder Teil auf eigener Seite:** 1. Allgemeine Infos, Sicherheit, Personen (kompakt, zweispaltig, Person · Rolle) · 2. Vor der Vorstellung (feste Punkte, Schritte, Verbrauch) · 3. Ablauf in der Vorstellung · 4. Nach der Vorstellung · 5. Gegenstände nach Ort/Person. Ablauf-Tabelle: Kästchen · Wann · Was · Wo · Foto. Überall Kästchen und „Foto S. x“, wenn es ein Foto gibt. Tabellen werden nicht über einen Seitenumbruch getrennt, wenn sie auf eine Seite passen.
+
 ## 2.6.1 – 19.10.2026
 
 Nachbesserungen an der Requisite nach dem ersten Test auf dem Tablet. Kein Datenbank-Update, Paketformat unverändert.

@@ -755,7 +755,7 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
 
 /* ---------- Requisite (ab 2.5.0) ---------- */
 .reqbar{display:flex;gap:8px;align-items:center;flex:1 1 auto;min-width:0}
-.reqbar .rseg{flex:1 1 auto;min-width:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.reqbar .rseg{flex:1 1 auto;min-width:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
 .reqbar .rseg button{justify-content:center;min-height:44px;padding:0 6px;font-size:15px;white-space:nowrap;overflow:hidden}
 .reqbar .rseg .rs{display:none}
 .rsafebtn{flex:none;padding:0 12px;gap:6px}
@@ -792,6 +792,19 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
 .rquickchk input{width:24px;height:24px;flex:none}
 @media (max-width:520px){.rnewp{grid-template-columns:1fr auto}.rnewp input[name=newDarst]{grid-column:1/2}.rnewp .btn{grid-row:1/3;grid-column:2}}
 .rmv{margin-left:auto}
+.card.erow{display:grid;grid-template-columns:76px minmax(0,1.15fr) auto minmax(0,1fr);align-items:stretch;min-height:76px}
+.erow .ename{display:flex;align-items:center;padding:10px 14px;min-width:0;gap:0}
+.erow .rwas{font-size:21px}
+.erow .thumbs{align-self:center;padding:6px 0}
+.erow .th{width:64px;height:64px}
+.erow .edet{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:4px;padding:8px 14px;min-width:0;font-size:15px;color:var(--text2);border-left:1px dashed var(--line)}
+.erow .ed{display:flex;gap:5px;align-items:flex-start;overflow-wrap:anywhere}.erow .ed svg{flex:none;margin-top:3px}
+.erow .note{font-size:14px}
+.erow.done .ename,.erow.done .edet,.erow.done .thumbs{opacity:.5}
+@media (max-width:640px){.card.erow{grid-template-columns:64px minmax(0,1fr) auto}.erow .gchk{grid-row:1/3}.erow .edet{grid-column:2/4;border-left:0;padding-top:0}}
+.rens{flex-basis:100%;margin-top:6px}
+.rteil{border-left:4px solid var(--R-a);padding-left:12px;margin-bottom:6px}
+.rlz{color:var(--text)}
 .rcard.done .rwas{text-decoration:line-through;text-decoration-thickness:2px}
 .rvor{background:var(--surf);border:2px solid color-mix(in srgb,var(--k) 55%,var(--line));border-radius:var(--r);padding:16px;margin:4px 0 14px}
 .rvorh{display:flex;align-items:center;gap:12px}
@@ -954,7 +967,7 @@ window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason 
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.6.1';
+const APP_VERSION = '2.6.2';
 const DB_NAME = 'lichtdoku';
 /* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
    bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
@@ -1066,6 +1079,8 @@ const DEPT = {
       { k: 'zuWem', label: 'Zu wem', hidden: true },
       { k: 'abschnitte', label: 'Wann gebraucht', hidden: true, arr: true },   // Abschnitte (ra:…); fehlt das Feld = „Vor der Vorstellung“
       { k: 'wofuer', label: 'Wofür', ph: 'z. B. Szene 3 – Anna raucht' },
+      { k: 'lichtzeichen', label: 'Lichtzeichen', hidden: true },                // ab 2.6.2: 'ja' | 'nein' | '' (im Stück gebraucht)
+      { k: 'uebergabe', label: 'Übergabe-Ort', ph: 'z. B. Gassenwand links' },
       { k: 'zustand', label: 'Zustand', arr: true },
       { k: 'sicherheit', label: 'Sicherheit' },
       { k: 'bemerkung', label: 'Bemerkung', area: true, ph: 'Was ist zu beachten?' },
@@ -2012,7 +2027,7 @@ const Settings = {
     filterKeys: ['nc', 'L201', 'L202', 'L203', 'L204', 'L205', 'L216', 'L250', 'L132'],  // Filter-Schnelltasten (Licht)
     mikroKeys: ['DPA 4061', 'DPA 4066', 'SM58', 'Beta 91', 'e604', 'MKE 2'],              // Mikrofon-Schnelltasten (Ton)
     ciTemplate: null,                               // Hausvorlage der Vorstellungs-Checkliste [{abt, text}] (null = Beispiele)
-    reqQuick: [],                                   // Schnellauswahl Personen der Requisite [{id, rolle, darsteller}] (ab 2.6.1)
+    reqQuick: [],                                   // Ensemble der Requisite [{id, name}] (ab 2.6.2; 2.6.1: {rolle, darsteller})
     zustandKeys: REQ_ZUSTAND.slice(),               // Zustand-Schnelltasten der Requisite (ab 2.5.0)
     reqView: 'einrichten',                          // zuletzt gewählte Requisite-Ansicht: einrichten | ablauf | personen
     depts: ['L']                                    // Abteilungen, die DIESES Gerät dokumentiert (bestehende Installationen: nur Licht)
@@ -3273,19 +3288,26 @@ const Pdf = {
        Ablauf je Abschnitt (Kästchen, Wann, Text, Ort, Seite), Verbrauch, Gegenstände nach Ort bzw. Person */
     const rhead = text => Object.assign(head(text), { chain: true });          // Requisite: Überschrift bleibt beim Folgenden
     const rsub = text => Object.assign(sub(text), { chain: true });
-    const rrows = (cols, rows, out, box) => {
+    const rrows = (cols, rows, out, box, fs = 10) => {
       const thead = { t: 'thead', cols, h: 18, keep: true, chain: true };
       out.push(thead);
       // box: true = Kästchen, fett ist Spalte 2 (Ablauf); 1 = Kästchen, fett ist Spalte 1 (Gegenstände); Zeile mit nobox ohne Kästchen
       const bc = box === 1 ? 1 : box ? 2 : 0;
       rows.forEach(r => {
-        const cells = r.vals.map((v, i) => this.wrap(v || '', i === bc || r.bold ? 'F2' : 'F1', 10, Math.max(20, cols[i][2] - 10 - (i === bc && r.indent ? 14 : 0))).slice(0, 8));
-        out.push({ t: 'rrow', cols, cells, box: box && !r.nobox, bc, entry: r.entry || null, indent: !!r.indent, bold: r.bold, thead, h: Math.max(...cells.map(x => x.length), 1) * 13 + 9 });
+        const cells = r.vals.map((v, i) => this.wrap(v || '', i === bc || r.bold ? 'F2' : 'F1', fs, Math.max(20, cols[i][2] - 10 - (i === bc && r.indent ? 14 : 0))).slice(0, 8));
+        out.push({ t: 'rrow', cols, cells, fs, box: box && !r.nobox, bc, entry: r.entry || null, indent: !!r.indent, bold: r.bold, thead, h: Math.max(...cells.map(x => x.length), 1) * (fs + 3) + (fs < 10 ? 6 : 9) });
       });
+      thead.grpH = out.slice(out.indexOf(thead)).reduce((n, x) => n + x.h, 0);   // ganze Tabelle – passt sie auf eine Seite, wird sie nicht geteilt
       out.push({ t: 'gap', h: 8 });
     };
+    /* Requisite ab 2.6.2: je Teil eine eigene Seite – 1. Allgemeine Infos, Sicherheit, Personen · 2. Vor der Vorstellung ·
+       3. Ablauf (Teile, Pausen) · 4. Nach der Vorstellung · 5. Gegenstände nach Ort/Person. Überall Kästchen und „Foto S. x“. */
     const reqBlocks = () => {
-      const out = [], sid = showId, es = Req.entriesR(sid), steps = Req.steps(sid), abs = Req.abschnitte(sid);
+      const parts = [], sid = showId, es = Req.entriesR(sid), steps = Req.steps(sid), abs = Req.abschnitte(sid), ps = Req.persons(sid);
+      const mz = e => e.f.menge && String(e.f.menge).trim() !== '1' ? e.f.menge + '× ' : '';
+      const FOTO = ['FOTO', CW - 54, 54];
+      // --- 1. Allgemeine Infos
+      let out = [];
       if (show.f.dauer) out.push({ t: 'text', lines: ['Dauer: ' + show.f.dauer], h: 20, bold: true });
       if (show.f.fotoR) out.push({ t: 'img', b: show.f.fotoR, size: 150, cap: 'Übersicht', h: 164 });
       if (show.f.einrichtungR) { out.push(rhead('ALLGEMEINE INFOS')); const ls = this.wrap(show.f.einrichtungR, 'F2', 11, CW - 20).slice(0, 30); out.push({ t: 'hl', lines: ls, h: ls.length * 14 + 14 }); out.push({ t: 'gap', h: 8 }); }
@@ -3295,46 +3317,62 @@ const Pdf = {
         steps.filter(s => Req.stepSafety(s) === k).forEach(s => saf.push(`[!] ${n.toUpperCase()} – Schritt: ${s.text}${(abs.find(a => a.key === s.abschnitt) || {}).label ? ' (' + abs.find(a => a.key === s.abschnitt).label + ')' : ''}`));
       });
       if (saf.length) { out.push(rhead('SICHERHEIT')); saf.forEach(t => { const ls = this.wrap(t, 'F2', 10.5, CW).slice(0, 6); out.push({ t: 'safe', lines: ls, h: ls.length * 13 + 5 }); }); out.push({ t: 'gap', h: 8 }); }
-      const ps = Req.persons(sid);
-      if (ps.length) { out.push(rhead('PERSONEN')); table([['ROLLE', 0, 220], ['DARSTELLER/IN', 220, CW - 220]], ps.map(p => [p.rolle, p.darsteller]), out); }
-      const own = RunList.ownOf(sid).filter(x => x.abt === 'R');
-      if (own.length) { out.push(rhead('VOR DER VORSTELLUNG')); own.forEach(x => out.push(chk(x.text, 0, null))); out.push({ t: 'gap', h: 8 }); }
-      // Ablauf je Abschnitt: Schritte, dann die dort gebrauchten Gegenstände (ab 2.6.0); „Vor der Vorstellung“ verweist auf die Gegenstandsliste
-      const gIn = a => es.filter(e => Req.whenKeys(e).includes(a.key)).sort(Req.cmp(sid));
-      if (abs.length && (steps.length || abs.some(a => a.typ !== 'vor' && gIn(a).length))) {
-        out.push(rhead('ABLAUF'));
-        const cols = [['', 0, 18], ['WANN', 18, 96], ['WAS IST ZU TUN', 114, CW - 114 - 120 - 40], ['ORT', CW - 160, 120], ['SEITE', CW - 40, 40]];
-        abs.forEach(a => {
-          const l = steps.filter(s => s.abschnitt === a.key), g = gIn(a); if (!l.length && !a.notiz && !g.length) return;
-          out.push(rsub(a.label.toUpperCase()));
-          if (a.notiz) { const ls = this.wrap(a.notiz, 'F1', 10, CW).slice(0, 8); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4 }); }
-          const rows = [];
-          Req.sectionItems(sid, a, steps, es).forEach(it => {                // Reihenfolge wie im Ablauf
-            if (it.kind === 's') { const s = it.s; if (s.ci) return; const o = s.ortId ? Req.ortByKey(sid, s.ortId) : null, saf1 = Req.stepSafety(s);
-              rows.push({ vals: ['', Req.whenLong(s), (saf1 ? `[!] ${Req.safeLabel(saf1).toUpperCase()} · ` : '') + s.text, o ? o.name : '', ''], entry: Req.stepEntry(s) }); return; }
-            if (a.typ === 'vor') return; const e = it.e;
-            rows.push({ vals: ['', 'Gegenstand', `${e.f.menge && String(e.f.menge).trim() !== '1' ? e.f.menge + '× ' : ''}${e.f.was || 'Ohne Namen'}${e.f.wofuer ? ' – für ' + e.f.wofuer : ''}${e.f.sicherheit ? ' [!] ' + Req.safeLabel(e.f.sicherheit).toUpperCase() : ''}`, Req.val(e, 'ort'), ''], entry: e });
-          });
-          if (a.typ === 'vor' && g.length) rows.push({ vals: ['', '', `${g.length} Gegenstände einrichten – siehe „Gegenstände“ (Kästchen)`, '', ''], nobox: true });
-          if (rows.length) rrows(cols, rows, out, true);
-        });
+      if (ps.length) {                                   // klein, zweispaltig: Person – Rolle
+        out.push(rhead('PERSONEN'));
+        const half = Math.ceil(ps.length / 2), w = CW / 2;
+        const rows = []; for (let i = 0; i < half; i++) { const a = ps[i], b = ps[i + half];
+          rows.push({ vals: [a.darsteller || a.rolle, a.darsteller ? a.rolle : '', b ? (b.darsteller || b.rolle) : '', b && b.darsteller ? b.rolle : ''] }); }
+        rrows([['PERSON', 0, w * 0.5], ['ROLLE', w * 0.5, w * 0.5], ['PERSON', w, w * 0.5], ['ROLLE', w * 1.5, w * 0.5]], rows, out, false, 9);
       }
+      parts.push(out);
+      // Ablauf-Tabelle: Kästchen · Wann · Was · Wo · Foto
+      const cols = [['', 0, 18], ['WANN', 18, 92], ['WAS', 110, CW - 110 - 140 - 54], ['WO', CW - 194, 140], FOTO];
+      const stepRow = s => { const o = s.ortId ? Req.ortByKey(sid, s.ortId) : null, saf1 = Req.stepSafety(s), e = Req.stepEntry(s);
+        return { vals: ['', Req.whenLong(s), (saf1 ? `[!] ${Req.safeLabel(saf1).toUpperCase()} · ` : '') + s.text + (e && !s.text.includes(e.f.was || '\u0000') ? ` (${e.f.was || 'Gegenstand'})` : ''), o ? o.name : (e ? Req.val(e, 'ort') : ''), ''], entry: e }; };
+      const gRow = e => ({ vals: ['', e.f.lichtzeichen === 'ja' ? 'auf Lichtzeichen' : '',
+        `${mz(e)}${e.f.was || 'Ohne Namen'}${e.f.wofuer ? ' – für ' + e.f.wofuer : ''}${Req.val(e, 'zuWem') ? ' · zu ' + Req.val(e, 'zuWem') : ''}${e.f.sicherheit ? ' [!] ' + Req.safeLabel(e.f.sicherheit).toUpperCase() : ''}`,
+        [Req.val(e, 'ort'), e.f.uebergabe ? '-> Übergabe: ' + e.f.uebergabe : ''].filter(Boolean).join(' '), ''], entry: e });
+      const section = (a, out) => {
+        const its = Req.sectionItems(sid, a, steps, es).filter(it => it.kind === 's' || a.typ !== 'vor');
+        if (!its.length && !a.notiz) return false;
+        if (!out[0] || out[0].text !== a.label.toUpperCase()) out.push(rsub(a.label.toUpperCase()));   // nicht doppelt unter gleichnamiger Überschrift
+        if (a.notiz) { const ls = this.wrap(a.notiz, 'F1', 10, CW).slice(0, 8); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4, chain: true }); }
+        if (its.length) rrows(cols, its.map(it => it.kind === 's' ? stepRow(it.s) : gRow(it.e)), out, true);
+        return true;
+      };
+      // --- 2. Vor der Vorstellung
+      out = [rhead('VOR DER VORSTELLUNG')];
+      const own = RunList.ownOf(sid).filter(x => x.abt === 'R');
+      if (own.length) { own.forEach(x => out.push(chk(x.text, 0, null))); out.push({ t: 'gap', h: 6 }); }
+      abs.filter(a => a.typ === 'vor').forEach(a => section(a, out));
       const verb = es.filter(e => (e.f.art || []).includes('verbrauch')).sort(Req.cmp(sid));
-      if (verb.length) { out.push(rhead('VERBRAUCH')); verb.forEach(e => out.push(chk(`${e.f.menge && String(e.f.menge).trim() !== '1' ? e.f.menge + '× ' : ''}${e.f.was || 'Ohne Namen'}${Req.val(e, 'ort') ? ' – ' + Req.val(e, 'ort') : ''}`, 0, null))); out.push({ t: 'gap', h: 8 }); }
+      if (verb.length) { out.push(rsub('VERBRAUCH – FRISCH BESORGEN')); verb.forEach(e => out.push(chk(`${mz(e)}${e.f.was || 'Ohne Namen'}${Req.val(e, 'ort') ? ' – ' + Req.val(e, 'ort') : ''}`, 0, null))); out.push({ t: 'gap', h: 6 }); }
+      if (es.length) { const ls = this.wrap(`Alle ${es.length} Gegenstände einrichten: siehe „Gegenstände nach Ort“ (eigene Seite, mit Kästchen).`, 'F1', 10, CW); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4 }); }
+      if (out.length > 1) parts.push(out);
+      // --- 3. Ablauf (Teile, Pausen, Sonstiges) und 4. Nach der Vorstellung (Nach, Abbau)
+      out = [rhead('ABLAUF IN DER VORSTELLUNG')]; let any = false;
+      abs.filter(a => ['teil', 'pause', 'sonst'].includes(a.typ)).forEach(a => { any = section(a, out) || any; });
+      if (any) parts.push(out);
+      out = [rhead('NACH DER VORSTELLUNG')]; any = false;
+      abs.filter(a => ['nach', 'abbau'].includes(a.typ)).forEach(a => { any = section(a, out) || any; });
+      const ak = new Set(abs.map(a => a.key)), lose = steps.filter(s => !ak.has(s.abschnitt));
+      if (lose.length) { out.push(rsub('OHNE ABSCHNITT')); rrows(cols, lose.map(stepRow), out, true); any = true; }
+      if (any) parts.push(out);
+      // --- 5. Gegenstände nach Ort bzw. Person
       if (es.length) {
+        out = [];
         const byP = opts.rsort === 'person';
         out.push(rhead(byP ? 'GEGENSTÄNDE NACH PERSON' : 'GEGENSTÄNDE NACH ORT'));
-        // Kästchen = vor der Vorstellung einrichten; „Wann · wofür“ = die übrigen Abschnitte, in denen er gebraucht wird
-        const cols = [['', 0, 18], ['WAS', 18, 124], ['MENGE', 142, 38], [byP ? 'ORT' : 'ZU WEM', 180, 88], ['STELLE · ZUSTAND', 268, CW - 268 - 40 - 106], ['WANN · WOFÜR', CW - 146, 106], ['SEITE', CW - 40, 40]];
+        const gcols = [['', 0, 18], ['WAS', 18, 114], ['MENGE', 132, 32], [byP ? 'ORT' : 'ZU WEM', 164, 84], ['STELLE · ZUSTAND', 248, CW - 248 - 54 - 104], ['WANN · WOFÜR', CW - 158, 104], FOTO];
         const row = (e, indent) => ({ vals: ['', (indent ? '> ' : '') + (e.f.was || 'Ohne Namen'), e.f.menge || '', byP ? Req.val(e, 'ort') : Req.val(e, 'zuWem'),
           [e.f.stelle, Req.val(e, 'zustand'), e.f.markierung ? 'Markierung ' + e.f.markierung : '', e.f.sicherheit ? '[!] ' + Req.safeLabel(e.f.sicherheit) : '', (e.f.art || []).includes('defekt') ? 'DEFEKT' : ''].filter(Boolean).join(' · '),
-          [Req.whenOf(e).filter(a => a.typ !== 'vor').map(a => a.kurz).join(', '), e.f.wofuer ? 'für ' + e.f.wofuer : ''].filter(Boolean).join(' – '), ''], entry: e, indent, nobox: !Req.needsSetup(e) });
+          [Req.val(e, 'abschnitte'), e.f.wofuer ? 'für ' + e.f.wofuer : '', e.f.lichtzeichen === 'ja' ? 'Lichtzeichen' : '', e.f.uebergabe ? 'Übergabe: ' + e.f.uebergabe : ''].filter(Boolean).join(' – '), ''], entry: e, indent });
         const withIn = (list, rows) => list.forEach(e => { rows.push(row(e, false)); Req.contentsOf(e).sort(Req.cmp(sid)).forEach(c => rows.push(row(c, true))); });
         if (byP) {
           const pk = new Map(ps.map(p => [p.key, p]));
           ps.concat([{ key: '', rolle: 'Ohne Person' }]).forEach(p => {
             const l = es.filter(e => p.key ? (e.f.personIds || []).includes(p.key) : !(e.f.personIds || []).some(i => pk.has(i))).sort(Req.cmp(sid)); if (!l.length) return;
-            out.push(rsub(Req.personLabel(p).toUpperCase() || 'OHNE PERSON')); const rows = []; l.forEach(e => rows.push(row(e, false))); rrows(cols, rows, out, 1);
+            out.push(rsub(Req.personLabel(p).toUpperCase() || 'OHNE PERSON')); const rows = []; l.forEach(e => rows.push(row(e, false))); rrows(gcols, rows, out, 1);
           });
         } else {
           const top = es.filter(e => !Req.containerOf(e)).sort(Req.cmp(sid)), groups = [];
@@ -3343,8 +3381,8 @@ const Pdf = {
           groups.forEach(g => {
             const o = g.o && g.o.ort, name = g.k === '' ? 'Ohne Ort' : (o ? o.name : g.o.name + (g.o.removed ? ' · Ort entfernt' : ''));
             out.push(rsub(name.toUpperCase()));
-            if (o && o.notiz) { const ls = this.wrap(o.notiz, 'F1', 10, CW).slice(0, 6); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4 }); }
-            if (o && o.foto) out.push({ t: 'img', b: o.foto, size: 90, cap: o.cap || '', h: 102 });
+            if (o && o.notiz) { const ls = this.wrap(o.notiz, 'F1', 10, CW).slice(0, 6); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4, chain: true }); }
+            if (o && o.foto) out.push({ t: 'img', b: o.foto, size: 90, cap: o.cap || '', h: 102, chain: true });
             const rows = [];
             if (/requisitentisch/i.test(name)) {
               const pidx = new Map(ps.map((p, i) => [p.key, i])), subs = new Map();
@@ -3354,12 +3392,15 @@ const Pdf = {
                 withIn(s.list, rows);
               });
             } else withIn(g.list, rows);
-            rrows(cols, rows, out, 1);
+            rrows(gcols, rows, out, 1);
           });
         }
+        parts.push(out);
       }
-      while (out.length && out[out.length - 1].t === 'gap') out.pop();
-      return out;
+      // Teile mit Seitenumbruch verbinden
+      const all = [];
+      parts.filter(x => x.length).forEach((x, i) => { while (x.length && x[x.length - 1].t === 'gap') x.pop(); if (i) all.push({ t: 'pb', h: 0 }); all.push(...x); });
+      return all;
     };
     const blocksOf = d => {
       if (d === 'R') return reqBlocks();
@@ -3396,8 +3437,13 @@ const Pdf = {
     const paginate = (list, firstAv) => {
       const out = []; let cur = [], room = firstAv;
       list.forEach((b, i) => {
+        if (b.t === 'pb') { if (cur.length) { out.push(cur); cur = []; room = AV; } return; }       // Requisite: neuer Teil auf neuer Seite
         let need = b.h + (b.keep && list[i + 1] ? list[i + 1].h : 0);
-        if (b.chain) { need = 0; let j = i; while (list[j] && list[j].chain) need += list[j++].h; if (list[j]) need += list[j].h; }   // Requisite: Überschriften, Tabellenkopf und erste Zeile zusammen
+        if (b.chain) {                                   // Requisite: Überschriften mit der ganzen Tabelle (wenn sie auf eine Seite passt), sonst mit Kopf und erster Zeile
+          need = 0; let j = i, grp = false;
+          while (list[j] && list[j].chain) { if (list[j].grpH && list[j].grpH <= AV - 80) { need += list[j].grpH; grp = true; break; } need += list[j++].h; }
+          if (!grp && list[j]) need += list[j].h;
+        }
         if (cur.length && need > room) { out.push(cur); cur = []; room = AV; if (b.t === 'trow' || b.t === 'rrow') { cur.push(b.thead); room -= b.thead.h; } }
         if (!cur.length && b.t === 'gap') return;
         cur.push(b); room -= b.h;
@@ -3614,9 +3660,9 @@ const Pdf = {
           if (b.box) c.rgb(0.3, 0.32, 0.36, true).rect(M + 4, y - 13, 10, 10, 'S');
           const bc = b.bc ?? 0;
           b.cells.forEach((ls, i) => { const col = b.cols[i], x = M + col[1] + 6 + (i === bc && b.indent ? 14 : 0);
-            if (col[0] === 'SEITE') { const pn = b.entry && entryPage.get(b.entry.id); if (pn) c.rgb(0.25, 0.28, 0.33).text(x, y - 13, 'S. ' + pn, 'F1', 10); return; }
-            const bold = b.bold || i === bc;
-            ls.forEach((ln, k) => c.rgb(0.1, 0.11, 0.13).text(x, y - 13 - k * 13, ln, bold ? 'F2' : 'F1', 10)); });
+            if (col[0] === 'SEITE' || col[0] === 'FOTO') { const pn = b.entry && Repo.photosOf(b.entry.id).length && entryPage.get(b.entry.id); if (pn) c.rgb(0.25, 0.28, 0.33).text(x, y - 13, 'Foto S. ' + pn, 'F2', 9); return; }
+            const bold = b.bold || i === bc, fs = b.fs || 10;
+            ls.forEach((ln, k) => c.rgb(0.1, 0.11, 0.13).text(x, y - (fs + 3) - k * (fs + 3), ln, bold ? 'F2' : 'F1', fs)); });
           c.rgb(0.82, 0.84, 0.87, true).line(M, y - b.h, W - M, y - b.h, 0.5);
         } else if (b.t === 'hl') {
           c.rgb(1, 0.93, 0.97).rect(M, y - b.h + 2, CW, b.h - 2); c.rgb(...dk).rect(M, y - b.h + 2, 4, b.h - 2);
@@ -4697,7 +4743,8 @@ const Views = {
     const name = f.was || 'Ohne Namen';
     // Wann gebraucht · wofür (Abschnitte außer „Vor der Vorstellung“ – das zeigt der Haken)
     const wn = showWann && e.showId ? Req.whenOf(e).filter(a => a.typ !== 'vor' || !(check || hideVor)).map(a => a.kurz) : [];
-    const wann = wn.length || f.wofuer ? `<span class="rwhen">${I('clock', 'sm')} <span>${esc(wn.join(' · '))}${wn.length && f.wofuer ? ' – ' : ''}${f.wofuer ? 'für ' + esc(f.wofuer) : ''}</span></span>` : '';
+    const wx = [f.lichtzeichen === 'ja' ? 'auf Lichtzeichen' : '', f.uebergabe ? 'Übergabe: ' + f.uebergabe : ''].filter(Boolean).map(esc).join(' · ');
+    const wann = wn.length || f.wofuer || wx ? `<span class="rwhen">${I('clock', 'sm')} <span>${esc(wn.join(' · '))}${wn.length && f.wofuer ? ' – ' : ''}${f.wofuer ? 'für ' + esc(f.wofuer) : ''}${wx ? ((wn.length || f.wofuer) ? ' · ' : '') + wx : ''}</span></span>` : '';
     const ok = !!(check && check.ok);
     return `<article class="card rcard ${indent ? 'rin' : ''} ${sel ? 'sel' : ''} ${(checklist && f.chkA) || ok ? 'done' : ''} ${check ? 'hasg' : ''}" data-k="${kat}" data-abt="R" data-key="${esc(e.id + ':' + kat)}">
       ${check ? `<button type="button" class="gchk" role="checkbox" aria-checked="${ok}" data-ract="g-chk" data-key="${esc(check.key)}" aria-label="${esc(name)} ${ok ? 'eingerichtet – zurücknehmen' : 'als eingerichtet abhaken'}"><span class="box">${ok ? I('check') : ''}</span></button>` : '<div class="strip"></div>'}
@@ -5525,12 +5572,17 @@ const RunList = {
         const abs = Req.abschnitte(showId), steps = Req.steps(showId), es = Req.entriesR(showId).sort(Req.cmp(showId));
         const stepItem = (st, a) => { const w = Req.whenShort(st);
           return { key: st.key, abt: 'R', group: a ? a.label : 'Ohne Abschnitt', text: (w ? w + ' – ' : '') + st.text, entryId: Req.stepEntry(st) ? st.gegenstand : '', vor: !!(a && a.typ === 'vor') }; };
+        const gItem = (e, a, key) => { const o = Req.val(e, 'ort'), m = e.f.menge && String(e.f.menge).trim() !== '1' ? e.f.menge + '× ' : '';
+          return { key, abt: 'R', group: a ? a.label + (a.typ === 'vor' ? ' · Gegenstände' : '') : 'Vor der Vorstellung · Gegenstände', text: m + (e.f.was || 'Ohne Namen') + (o ? ' – ' + o : ''), entryId: e.id, vor: !a || a.typ === 'vor', gegenstand: true }; };
+        // Einrichten: jeder Gegenstand (ab 2.6.2), im Abschnitt „Vor der Vorstellung“ nach dessen Schritten
+        const setup = () => es.forEach(e => out.push(gItem(e, abs.find(a => a.typ === 'vor') || null, Req.setupKey(e))));
+        if (!abs.some(a => a.typ === 'vor')) setup();
         abs.forEach(a => {
           Req.sectionItems(showId, a, steps, es).forEach(it => {               // in der Reihenfolge des Ablaufs (auch von Hand geändert)
             if (it.kind === 's') { out.push(stepItem(it.s, a)); return; }
-            const e = it.e, o = Req.val(e, 'ort'), m = e.f.menge && String(e.f.menge).trim() !== '1' ? e.f.menge + '× ' : '';
-            out.push({ key: Req.gKey(e.id, a.key), abt: 'R', group: a.label + (a.typ === 'vor' ? ' · Gegenstände' : ''), text: m + (e.f.was || 'Ohne Namen') + (o ? ' – ' + o : ''), entryId: e.id, vor: a.typ === 'vor', gegenstand: true });
+            if (a.typ !== 'vor') out.push(gItem(it.e, a, Req.gKey(it.e.id, a.key)));
           });
+          if (a.typ === 'vor' && a.key === Req.vorKey(showId)) setup();
         });
         const ak = new Set(abs.map(a => a.key));
         steps.filter(st => !ak.has(st.abschnitt)).forEach(st => out.push(stepItem(st, null)));
@@ -5725,7 +5777,7 @@ const Req = {
   },
   ORT_DEF: { name: '', notiz: '', foto: '', cap: '', gruppe: '' },
   persons(showId) { return this._list(this.sh(showId), 'rp:', { rolle: '', darsteller: '' }); },
-  personLabel(p) { if (!p) return ''; const r = String(p.rolle || '').trim(), d = String(p.darsteller || '').trim(); return r && d ? `${r} (${d})` : (r || d); },
+  personLabel(p) { if (!p) return ''; const r = String(p.rolle || '').trim(), d = String(p.darsteller || '').trim(); return r && d ? `${d} (${r})` : (d || r); },   // ab 2.6.2: Person vor Rolle
   showOrts(showId) { return this._list(this.sh(showId), 'ro:', this.ORT_DEF).map(o => Object.assign(o, { src: 'show' })); },
   houseOrts() { return this._list(this.houseF(), 'ho:', this.ORT_DEF).map(o => Object.assign(o, { src: 'house' })); },
   vorlagen() { return this._list(this.houseF(), 'hg:', { was: '', ortName: '', zustand: [], sicherheit: '', bemerkung: '', foto: '' }); },
@@ -5758,7 +5810,8 @@ const Req = {
     const f = e.f || {};
     if (k === 'ort') { const o = this.ortOf(e); return o ? (o.name || '') + (o.removed ? ' · Ort entfernt' : '') : ''; }
     if (k === 'zuWem') return this.personNames(e);
-    if (k === 'abschnitte') return e.showId ? this.whenOf(e).map(a => a.kurz).join(', ') : '';
+    if (k === 'abschnitte') return e.showId ? this.whenOf(e).filter(a => a.typ !== 'vor').map(a => a.kurz).join(', ') : '';
+    if (k === 'lichtzeichen') return f.lichtzeichen === 'ja' ? 'auf Lichtzeichen' : f.lichtzeichen === 'nein' ? 'ohne Lichtzeichen' : '';
     if (k === 'inId') { const c = this.containerOf(e); return c ? (c.f.was || 'Ohne Namen') : ''; }
     if (k === 'sicherheit') return f.sicherheit ? this.safeLabel(f.sicherheit) : '';
     if (k === 'zustaendig') return f.zustaendig ? this.zustLabel(f.zustaendig) : '';
@@ -5811,7 +5864,9 @@ const Req = {
     const v = e.showId ? this.vorKey(e.showId) : ''; return v ? [v] : [];
   },
   whenOf(e) { const abs = e.showId ? this.abschnitte(e.showId) : [], ks = this.whenKeys(e); return abs.filter(a => ks.includes(a.key)); },
-  needsSetup(e) { const v = this.vorKey(e.showId); return !!v && this.whenKeys(e).includes(v); },
+  needsSetup(e) { return true; },                         // ab 2.6.2: jeder Gegenstand wird vor der Vorstellung eingerichtet
+  /** Checklisten-Schlüssel „eingerichtet“ (ohne Abschnitt „Vor der Vorstellung“: fester Ersatz „vor“) */
+  setupKey(e) { return this.gKey(e.id, this.vorKey(e.showId) || 'vor'); },
   /** Schlüssel des Checklisten-Punkts „Gegenstand in Abschnitt“ (Haken im Durchgang: h:rg:<Eintrag>:<Abschnitt>) */
   gKey(entryId, abKey) { return 'rg:' + entryId + ':' + abKey; },
   steps(showId) {
@@ -6082,14 +6137,15 @@ const Req = {
       <div class="f"><label>Ort</label><div class="rorts" data-orts></div></div>
       ${inp('stelle', 'Stelle am Ort', 'z. B. rechts neben Schlagzeug, unter dem Steg')}
       <div class="f rwann"><label>Wann gebraucht?</label><div class="qkeys rwannchips" data-rwann></div>
-        <div class="fh">„Vor der Vorstellung“ = steht auf der Checkliste „Einrichten“.</div></div>
+        <div class="fh">Eingerichtet wird jeder Gegenstand (Checkliste „Einrichten“) – hier steht, wann er im Stück gebraucht wird.</div></div>
       ${inp('wofuer', 'Wofür', 'z. B. Szene 3 – Anna raucht')}
+      <div class="rteil hidden" data-rteil><div class="f"><label>Lichtzeichen?</label><div class="qkeys" data-rlz></div></div>
+        <div class="f"><label for="ed-uebergabe">Übergabe-Ort</label><input id="ed-uebergabe" name="uebergabe" list="rq-orts" value="${Utils.esc(f0.uebergabe || '')}" placeholder="z. B. Gassenwand links" autocomplete="off">
+          <datalist id="rq-orts">${this.allOrts(showId).map(o => `<option value="${Utils.esc(o.name)}">`).join('')}</datalist></div></div>
       <div class="f"><label>Zu wem</label><div class="qkeys" data-persons></div>
-        <div class="rqh"><span>Schnellauswahl</span><button type="button" class="btn ghost" data-ract="editquick">${I('edit', 'sm')} bearbeiten</button></div>
-        <div class="qkeys rquick" data-quick></div>
-        <div class="rnewp"><input name="newRolle" placeholder="Rolle, z. B. Mackie" autocomplete="off" enterkeyhint="next" aria-label="Rolle"><input name="newDarst" placeholder="Darsteller/in, z. B. Julian" autocomplete="off" enterkeyhint="done" aria-label="Darsteller/in">
+        <div class="rnewp"><input name="newDarst" list="rq-ens" placeholder="Person, z. B. Julian" autocomplete="off" enterkeyhint="next" aria-label="Person"><input name="newRolle" placeholder="Rolle, z. B. Mackie" autocomplete="off" enterkeyhint="done" aria-label="Rolle">
           <button type="button" class="btn" data-ract="addperson" aria-label="Person hinzufügen">${I('plus')}</button></div>
-        <label class="rquickchk"><input type="checkbox" name="toQuick"> auch in die Schnellauswahl</label></div>
+        <datalist id="rq-ens">${this.quickList().map(x => `<option value="${Utils.esc(x.name)}">`).join('')}</datalist></div>
       <div class="f"><label>Zustand</label><div class="qkeys" data-rchips="zustand"></div></div>
       <div class="f"><label>Sicherheit</label><div class="qkeys rsafechips" data-rchips="sicherheit"></div></div>
       <div class="f"><label for="ed-bemerkung">Bemerkung</label><textarea id="ed-bemerkung" name="bemerkung" rows="3" placeholder="Was ist zu beachten?">${v('bemerkung')}</textarea></div>
@@ -6113,11 +6169,19 @@ const Req = {
       zustand: Array.isArray(f0.zustand) ? f0.zustand.slice() : [],
       sicherheit: f0.sicherheit || '', zustaendig: f0.zustaendig || '', art: Array.isArray(f0.art) ? f0.art.slice() : [],
       // Wann gebraucht: bestehender Gegenstand wie gespeichert (ohne Angabe = Vor der Vorstellung), neuer = Vorgabe oder Vor der Vorstellung
-      abschnitte: ex ? this.whenKeys(ex) : ((f0.abschnitte || []).length ? f0.abschnitte.slice() : (this.vorKey(showId) ? [this.vorKey(showId)] : []))
+      abschnitte: ex ? this.whenKeys(ex) : (f0.abschnitte || []).slice(),
+      lichtzeichen: f0.lichtzeichen || ''
+    };
+    // Lichtzeichen und Übergabe-Ort nur, wenn der Gegenstand im Stück gebraucht wird (Teil, Pause, Sonstiges)
+    const renderTeil = () => {
+      const abs = this.abschnitte(showId), on = abs.some(a => rs.abschnitte.includes(a.key) && ['teil', 'pause', 'sonst'].includes(a.typ));
+      form.querySelector('[data-rteil]').classList.toggle('hidden', !on);
+      form.querySelector('[data-rlz]').innerHTML = [['ja', 'Ja'], ['nein', 'Nein']].map(([k, n]) => `<button type="button" data-rlz="${k}" aria-pressed="${rs.lichtzeichen === k}">${Utils.esc(n)}</button>`).join('');
     };
     const renderWann = () => {
       const abs = this.abschnitte(showId);
-      form.querySelector('[data-rwann]').innerHTML = abs.map(a => `<button type="button" data-rwa="${Utils.esc(a.key)}" aria-pressed="${rs.abschnitte.includes(a.key)}">${I('clock', 'sm')} ${Utils.esc(a.label)}</button>`).join('')
+      renderTeil();
+      form.querySelector('[data-rwann]').innerHTML = abs.filter(a => a.typ !== 'vor').map(a => `<button type="button" data-rwa="${Utils.esc(a.key)}" aria-pressed="${rs.abschnitte.includes(a.key)}">${I('clock', 'sm')} ${Utils.esc(a.label)}</button>`).join('')
         || '<span class="muted" style="font-size:14px">Dieses Stück hat noch keinen Ablauf.</span>';
     };
     const zk = REQ_NAME(REQ_ZUST);
@@ -6134,14 +6198,7 @@ const Req = {
     const renderPersons = () => {
       const ps = this.persons(showId);
       form.querySelector('[data-persons]').innerHTML = ps.map(p => `<button type="button" data-rper="${Utils.esc(p.key)}" aria-pressed="${rs.personIds.includes(p.key)}">${I('user', 'sm')} ${Utils.esc(this.personLabel(p))}</button>`).join('')
-        || '<span class="muted" style="font-size:14px">Noch keine Personen in diesem Stück – unten antippen oder eintragen.</span>';
-      renderQuick();
-    };
-    const renderQuick = () => {
-      const have = this.persons(showId).map(p => this.personLabel(p).toLowerCase());
-      const q = this.quickList().filter(x => !have.includes(this.personLabel(x).toLowerCase()));
-      form.querySelector('[data-quick]').innerHTML = q.map(x => `<button type="button" class="rq" data-rq="${Utils.esc(x.id)}">${I('plus', 'sm')} ${Utils.esc(this.personLabel(x))}</button>`).join('')
-        || `<span class="muted" style="font-size:14px">${this.quickList().length ? 'Alle Personen der Schnellauswahl sind schon im Stück.' : 'Noch leer – über „bearbeiten“ Personen anlegen.'}</span>`;
+        || '<span class="muted" style="font-size:14px">Noch keine Personen in diesem Stück – unten eintragen.</span>';
     };
     const chipOpts = {
       zustand: () => { const base = (Settings.v.zustandKeys || REQ_ZUSTAND).filter(Boolean); return base.concat(rs.zustand.filter(z => !base.includes(z))).map(z => [z, z]); },
@@ -6149,7 +6206,7 @@ const Req = {
     };
     const multi = { zustand: true, art: true };
     const renderChips = n => {
-      form.querySelector(`[data-rchips="${n}"]`).innerHTML = this.chipRow(n, chipOpts[n](), rs[n], !!multi[n]);
+      form.querySelector(`[data-rchips="${n}"]`).innerHTML = this.chipRow(n, chipOpts[n](), rs[n], !!multi[n]) + (n === 'zustand' ? `<button type="button" class="rq" data-ract="zsonst">${I('plus', 'sm')} Sonstiges …</button>` : '');
       if (n === 'zustaendig') form.elements.zustAndere.classList.toggle('hidden', rs.zustaendig !== 'andere');
     };
     const renderInId = () => {
@@ -6181,7 +6238,7 @@ const Req = {
     };
     form.addEventListener('input', e => { if (e.target.name === 'was') renderSugg(); });
     form.addEventListener('click', async e => {
-      const b = e.target.closest('[data-rort],[data-rper],[data-rchip],[data-sugg-i],[data-rwa],[data-ract="addperson"],[data-ract="editquick"],[data-rq]'); if (!b) return;
+      const b = e.target.closest('[data-rort],[data-rper],[data-rchip],[data-sugg-i],[data-rwa],[data-ract="addperson"],[data-ract="zsonst"],[data-rlz]'); if (!b) return;
       if (b.dataset.rwa) { const k = b.dataset.rwa, i = rs.abschnitte.indexOf(k); if (i >= 0) rs.abschnitte.splice(i, 1); else rs.abschnitte.push(k); markDirty(); renderWann(); return; }
       if (b.dataset.suggI != null) {
         const x = (this._sugg || [])[+b.dataset.suggI]; if (!x) return;
@@ -6207,8 +6264,8 @@ const Req = {
         if (n === 'zustaendig' && rs.zustaendig === 'andere') setTimeout(() => form.elements.zustAndere.focus(), 30);
         return;
       }
-      if (b.dataset.rq) { const x = this.quickList().find(q => q.id === b.dataset.rq); if (x) takePerson(x.rolle || '', x.darsteller || ''); return; }
-      if (b.dataset.ract === 'editquick') { this.editQuick(() => renderQuick()); return; }
+      if (b.dataset.rlz) { rs.lichtzeichen = rs.lichtzeichen === b.dataset.rlz ? '' : b.dataset.rlz; markDirty(); renderTeil(); return; }
+      if (b.dataset.ract === 'zsonst') { Ui.prompt('Zustand', '', 'z. B. geölt, gekühlt').then(v => { v = (v || '').trim(); if (v && !rs.zustand.includes(v)) { rs.zustand.push(v); markDirty(); renderChips('zustand'); } }); return; }
       if (b.dataset.ract === 'addperson') addPerson();
     });
     /** Person im Stück anlegen (falls es sie dort noch nicht gibt) und für diesen Gegenstand wählen */
@@ -6226,19 +6283,19 @@ const Req = {
     };
     const addPerson = async () => {
       const ri = form.elements.newRolle, di = form.elements.newDarst, rolle = ri.value.trim(), darst = di.value.trim();
-      if (!rolle && !darst) { ri.focus(); return; }
-      if (form.elements.toQuick.checked) { try { await this.quickAdd(rolle, darst); } catch (err) { App.error(err); } }
+      if (!rolle && !darst) { di.focus(); return; }
       await takePerson(rolle, darst);
-      ri.value = ''; di.value = ''; ri.focus();
+      ri.value = ''; di.value = ''; di.focus();
     };
-    form.elements.newRolle.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); form.elements.newDarst.focus(); } });
-    form.elements.newDarst.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); addPerson(); } });
+    form.elements.newDarst.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); form.elements.newRolle.focus(); } });
+    form.elements.newRolle.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); addPerson(); } });
     renderOrts(); renderPersons(); renderWann(); ['zustand', 'sicherheit', 'zustaendig', 'art'].forEach(renderChips); renderInId(); renderSugg();
     return rs;
   },
   readForm(form, rs, showId) {
     const g = n => (form.elements[n] ? form.elements[n].value : '');
-    const f = { was: g('was'), stelle: g('stelle'), wofuer: g('wofuer'), abschnitte: rs.abschnitte.slice(), bemerkung: g('bemerkung'), menge: g('menge'), markierung: g('markierung'), pflege: g('pflege'), verbleib: g('verbleib'),
+    const teil = this.abschnitte(showId).some(a => rs.abschnitte.includes(a.key) && ['teil', 'pause', 'sonst'].includes(a.typ));
+    const f = { was: g('was'), stelle: g('stelle'), wofuer: g('wofuer'), abschnitte: rs.abschnitte.slice(), lichtzeichen: teil ? rs.lichtzeichen || '' : '', uebergabe: teil ? g('uebergabe').trim() : '', bemerkung: g('bemerkung'), menge: g('menge'), markierung: g('markierung'), pflege: g('pflege'), verbleib: g('verbleib'),
       ortId: rs.ortId || '', ort: rs.ort || '', personIds: rs.personIds.slice(), zustand: rs.zustand.slice(), sicherheit: rs.sicherheit || '',
       zustaendig: rs.zustaendig === 'andere' ? (g('zustAndere').trim() || 'andere') : (rs.zustaendig || ''), art: rs.art.slice(), inId: form.elements.inId && !form.elements.inId.disabled ? g('inId') : (form.elements.inId ? g('inId') : '') };
     const sf = this.sh(showId);
@@ -6323,31 +6380,29 @@ Object.assign(Req, {
 
   /* ---------- Personen des Stücks ---------- */
   /* ---------- Schnellauswahl Personen (gerätebezogen, Einstellungen) ---------- */
-  quickList() { return (Array.isArray(Settings.v.reqQuick) ? Settings.v.reqQuick : []).filter(x => x && x.id && (x.rolle || x.darsteller)); },
-  async quickAdd(rolle, darsteller) {
-    const lab = this.personLabel({ rolle, darsteller }).toLowerCase();
-    if (this.quickList().some(x => this.personLabel(x).toLowerCase() === lab)) return;
-    await Settings.set({ reqQuick: this.quickList().concat([{ id: Utils.uuid(), rolle, darsteller }]).slice(0, 60) });
+  /** Ensemble (gerätebezogen, Einstellungen): nur Namen; ältere Einträge {rolle, darsteller} werden gelesen */
+  quickList() {
+    return (Array.isArray(Settings.v.reqQuick) ? Settings.v.reqQuick : []).map(x => x && ({ id: x.id || Utils.uuid(), name: String(x.name || x.darsteller || x.rolle || '').trim() })).filter(x => x && x.name);
   },
-  /** Schnellauswahl bearbeiten – aus den Einstellungen und direkt aus dem Gegenstand-Editor */
+  /** Ensemble bearbeiten – aus den Einstellungen und aus „Personen“ des Stücks */
   editQuick(onDone) {
-    const need = v => (v.rolle.trim() || v.darsteller.trim()) ? '' : 'Bitte Rolle oder Darsteller eintragen.';
+    const need = v => v.name.trim() ? '' : 'Bitte einen Namen eintragen.';
     return this.listSheet({
-      title: 'Schnellauswahl Personen', empty: 'Noch leer. Hier legst du Personen an, die du oft brauchst – im Gegenstand genügt dann ein Tipp.',
+      title: 'Ensemble', empty: 'Noch leer. Trag hier das Ensemble ein – im Stück wählst du die Personen dann aus und gibst die Rolle dazu.',
       onBack: () => { if (onDone) Ui.afterBack().then(onDone); return true; },
       list: () => this.quickList(),
-      top: () => `<button type="button" class="btn big primary" data-la="add">${I('plus')} Person</button><p class="fh" style="flex-basis:100%;margin:6px 0 0">Gilt für alle Stücke auf diesem Gerät. Beim Antippen im Gegenstand wird die Person dem Stück hinzugefügt.</p>`,
-      row: (p, i, n) => `<div class="rrow"><span class="rrl">${I('user', 'sm')}<span><b>${Utils.esc(this.personLabel(p))}</b><small>Rolle · Darsteller/in</small></span></span>
+      top: () => `<button type="button" class="btn big primary" data-la="add">${I('plus')} Person</button><p class="fh" style="flex-basis:100%;margin:6px 0 0">Gilt für alle Stücke auf diesem Gerät.</p>`,
+      row: (p, i, n) => `<div class="rrow"><span class="rrl">${I('user', 'sm')}<span><b>${Utils.esc(p.name)}</b></span></span>
           ${this.arrows(i, n, p.id)}<button type="button" class="btn icon" data-la="edit" data-key="${Utils.esc(p.id)}" aria-label="Bearbeiten">${I('edit', 'sm')}</button>
           <button type="button" class="btn icon danger" data-la="del" data-key="${Utils.esc(p.id)}" aria-label="Entfernen">${I('trash', 'sm')}</button></div>`,
       onAct: async (a, key) => {
-        const list = this.quickList().map(x => Object.assign({}, x)), i = list.findIndex(x => x.id === key);
-        if (a === 'add') { const v = await this.form('Neue Person', this.personFields(), { ok: 'Anlegen', check: need }); if (v) list.push({ id: Utils.uuid(), rolle: v.rolle.trim(), darsteller: v.darsteller.trim() }); else return; }
-        else if (a === 'edit' && i >= 0) { const v = await this.form('Person', this.personFields(list[i]), { check: need }); if (v) { list[i].rolle = v.rolle.trim(); list[i].darsteller = v.darsteller.trim(); } else return; }
+        const list = this.quickList(), i = list.findIndex(x => x.id === key);
+        if (a === 'add') { const v = await this.form('Neue Person', [{ k: 'name', label: 'Name', value: '', ph: 'z. B. Julian' }], { ok: 'Anlegen', check: need }); if (v) list.push({ id: Utils.uuid(), name: v.name.trim() }); else return; }
+        else if (a === 'edit' && i >= 0) { const v = await this.form('Person', [{ k: 'name', label: 'Name', value: list[i].name }], { check: need }); if (v) list[i].name = v.name.trim(); else return; }
         else if ((a === 'up' || a === 'down') && i >= 0) { const j = i + (a === 'up' ? -1 : 1); if (j < 0 || j >= list.length) return; [list[i], list[j]] = [list[j], list[i]]; }
-        else if (a === 'del' && i >= 0) { if (!await Ui.confirm(`„${this.personLabel(list[i])}“ entfernen?`, 'Nur aus der Schnellauswahl – Stücke und Gegenstände bleiben unverändert.', 'Entfernen', true)) return; list.splice(i, 1); }
+        else if (a === 'del' && i >= 0) { if (!await Ui.confirm(`„${list[i].name}“ entfernen?`, 'Nur aus dem Ensemble – Stücke und Gegenstände bleiben unverändert.', 'Entfernen', true)) return; list.splice(i, 1); }
         else return;
-        await Settings.set({ reqQuick: list });
+        await Settings.set({ reqQuick: list.slice(0, 80) });
       }
     });
   },
@@ -6397,19 +6452,27 @@ Object.assign(Req, {
     await Ui.afterBack();
     if (to) await this.moveItemTo(showId, tok, fromKey, to);
   },
-  personFields(p = {}) { return [{ k: 'rolle', label: 'Rolle', value: p.rolle || '', ph: 'z. B. Mackie Messer' }, { k: 'darsteller', label: 'Darsteller/in', value: p.darsteller || '', ph: 'z. B. Julian' }]; },
+  personFields(p = {}) { return [{ k: 'darsteller', label: 'Person', value: p.darsteller || '', ph: 'z. B. Julian', quick: this.quickList().map(x => x.name) }, { k: 'rolle', label: 'Rolle', value: p.rolle || '', ph: 'z. B. Mackie Messer' }]; },
   editPersons(showId) {
     const need = v => (v.rolle.trim() || v.darsteller.trim()) ? '' : 'Bitte Rolle oder Darsteller eintragen.';
     this.listSheet({
       title: 'Personen', empty: 'Noch keine Personen. Jeder Gegenstand kann einer oder mehreren Personen gehören.',
       list: () => this.persons(showId),
-      top: () => `<button type="button" class="btn big primary" data-la="add">${I('plus')} Person</button>`,
+      top: () => { const have = this.persons(showId).map(p => String(p.darsteller || '').trim().toLowerCase());
+        const ens = this.quickList().filter(x => !have.includes(x.name.toLowerCase()));
+        return `<button type="button" class="btn big primary" data-la="add">${I('plus')} Person</button>
+          <div class="rens"><div class="rqh"><span>Aus dem Ensemble</span><button type="button" class="btn ghost" data-la="ens">${I('edit', 'sm')} Ensemble bearbeiten</button></div>
+          <div class="qkeys">${ens.map(x => `<button type="button" class="rq" data-la="take" data-key="${Utils.esc(x.id)}">${I('plus', 'sm')} ${Utils.esc(x.name)}</button>`).join('') || `<span class="muted" style="font-size:14px">${this.quickList().length ? 'Alle aus dem Ensemble sind schon im Stück.' : 'Noch leer – über „Ensemble bearbeiten“ eintragen.'}</span>`}</div></div>`; },
       row: (p, i, n) => { const cnt = this.entriesR(showId).filter(e => (e.f.personIds || []).includes(p.key)).length;
         return `<div class="rrow"><span class="rrl">${I('user', 'sm')}<span><b>${Utils.esc(this.personLabel(p) || '–')}</b><small>${cnt} Gegenstand${cnt === 1 ? '' : 'e'}</small></span></span>
           ${this.arrows(i, n, p.key)}<button type="button" class="btn icon" data-la="edit" data-key="${Utils.esc(p.key)}" aria-label="Bearbeiten">${I('edit', 'sm')}</button>
           <button type="button" class="btn icon danger" data-la="del" data-key="${Utils.esc(p.key)}" aria-label="Entfernen">${I('trash', 'sm')}</button></div>`; },
       onAct: async (a, key) => {
         const f = this.sh(showId);
+        if (a === 'ens') { this.editQuick(); return; }
+        if (a === 'take') { const x = this.quickList().find(q => q.id === key); if (!x) return;
+          const v = await this.form(x.name, [{ k: 'rolle', label: 'Rolle', value: '', ph: 'z. B. Mackie Messer' }], { ok: 'Hinzufügen' }); if (!v) return;
+          await Repo.patchShow(showId, { ['rp:' + Utils.uuid()]: { rolle: v.rolle.trim(), darsteller: x.name, ord: Math.max(0, ...this.persons(showId).map(p => +p.ord || 0)) + 10, del: false } }); return; }
         if (a === 'add') { const v = await this.form('Neue Person', this.personFields(), { ok: 'Anlegen', check: need }); if (v) await Repo.patchShow(showId, { ['rp:' + Utils.uuid()]: { rolle: v.rolle.trim(), darsteller: v.darsteller.trim(), ord: Math.max(0, ...this.persons(showId).map(p => +p.ord || 0)) + 10, del: false } }); }
         else if (a === 'edit') { const p = f[key]; const v = await this.form('Person', this.personFields(p), { check: need }); if (v) await Repo.patchShow(showId, { [key]: Object.assign({}, p, { rolle: v.rolle.trim(), darsteller: v.darsteller.trim() }) }); }
         else if (a === 'up' || a === 'down') await this.move(this.persons(showId), key, a === 'up' ? -1 : 1, f, p => Repo.patchShow(showId, p));
@@ -6817,7 +6880,7 @@ Object.assign(Req, {
    ===================================================================== */
 const ReqView = {
   open: {},                   // aufgeklappte Abschnitte im Ablauf (diese Sitzung)
-  mode() { const m = Settings.v.reqView === 'ort' ? 'einrichten' : Settings.v.reqView; return ['einrichten', 'ablauf', 'personen'].includes(m) ? m : 'einrichten'; },
+  mode() { const m = Settings.v.reqView === 'ort' ? 'einrichten' : Settings.v.reqView; return ['einrichten', 'ablauf'].includes(m) ? m : 'einrichten'; },   // „Personen“ entfällt ab 2.6.2
   safetyCount(showId) {
     return Req.entriesR(showId).filter(e => e.f.sicherheit).length + Req.steps(showId).filter(s => Req.stepSafety(s)).length;
   },
@@ -6847,9 +6910,31 @@ const ReqView = {
   },
   /** Karte; check = Schlüssel des Checklisten-Punkts (großer Haken links) */
   card(e, ctx, opts = {}) {
+    if (ctx.erow && opts.check) return this.eRow(e, ctx, opts);
     ctx.push(e);
     const check = opts.check ? { key: opts.check, ok: this.isOk(ctx.run, opts.check) } : null;
     return Views.cardHtmlR(e, Object.assign({ sel: ctx.st.sel === e.id + ':' + (Repo.photosOf(e.id, 'A').length ? 'A' : 'N'), hideVor: !!ctx.hideVor }, opts, { check }));
+  },
+  /** Zeile in „Einrichten“: Kästchen · Gegenstand · Foto · Angaben (ab 2.6.2, ohne Schraffur) */
+  eRow(e, ctx, opts) {
+    ctx.push(e);
+    const esc = Utils.esc, f = e.f, ph = Repo.photosOf(e.id, 'A'), key = opts.check, ok = this.isOk(ctx.run, key), name = f.was || 'Ohne Namen';
+    const menge = f.menge && String(f.menge).trim() && String(f.menge).trim() !== '1' ? `<span class="rmenge">${esc(String(f.menge).trim())}×</span> ` : '';
+    const wn = Req.whenOf(e).filter(a => a.typ !== 'vor').map(a => a.kurz), zw = opts.hidePerson ? '' : Req.val(e, 'zuWem');
+    const line = (ic, t) => `<span class="ed">${I(ic, 'sm')}<span>${t}</span></span>`;
+    const det = [
+      wn.length || f.wofuer ? line('clock', `${esc(wn.join(' · '))}${wn.length && f.wofuer ? ' – ' : ''}${f.wofuer ? 'für ' + esc(f.wofuer) : ''}`) : '',
+      f.lichtzeichen === 'ja' ? line('bulb', 'auf Lichtzeichen') : '',
+      f.uebergabe ? line('pin', 'Übergabe: ' + esc(f.uebergabe)) : '',
+      zw ? line('user', esc(zw)) : '', f.stelle ? line('pin', esc(f.stelle)) : '',
+      f.sicherheit || (Array.isArray(f.zustand) && f.zustand.length) || f.markierung ? `<span class="chips">${f.sicherheit ? Req.safeBadge(f.sicherheit) : ''}${(f.zustand || []).map(z => `<span class="chip"><span>${esc(z)}</span></span>`).join('')}${f.markierung ? `<span class="chip"><b>Markierung</b><span>${esc(f.markierung)}</span></span>` : ''}</span>` : '',
+      f.bemerkung ? `<span class="note">${esc(f.bemerkung)}</span>` : ''].filter(Boolean).join('');
+    return `<article class="card rcard erow ${opts.indent ? 'rin' : ''} ${ok ? 'done' : ''}" data-k="A" data-abt="R" data-key="${esc(e.id + ':' + (ph.length ? 'A' : 'N'))}">
+      <button type="button" class="gchk" role="checkbox" aria-checked="${ok}" data-ract="g-chk" data-key="${esc(key)}" aria-label="${esc(name)} ${ok ? 'eingerichtet – zurücknehmen' : 'als eingerichtet abhaken'}"><span class="box">${ok ? I('check') : ''}</span></button>
+      <button class="hit ename" data-act="open" aria-label="${esc(name)}"><span class="rwas">${menge}${f.was ? esc(f.was) : '<span class="muted">Ohne Namen</span>'}</span></button>
+      ${ph.length ? `<span class="thumbs"><span class="th" data-act="lb" data-i="0">${Views.thumbImg(ph[0].b)}${ph.length > 1 ? `<span class="more">+${ph.length - 1}</span>` : ''}</span></span>` : '<span class="nothumb"></span>'}
+      ${det ? `<button class="hit edet" data-act="open" tabindex="-1" aria-hidden="true">${det}</button>` : '<span></span>'}
+    </article>`;
   },
   withContents(e, ctx, opts = {}, checkFn = null) {
     let h = this.card(e, ctx, Object.assign({}, opts, { check: checkFn ? checkFn(e) : null }));
@@ -6885,8 +6970,8 @@ const ReqView = {
     const items = RunList.items(showId, ['R']).filter(i => i.vor || i.key.startsWith('ci:'));
     const done = items.filter(i => this.isOk(ctx.run, i.key)).length;
     let h = this.vorHead(ctx, items.length, done);
-    if (!vor) h += `<p class="rhint">${I('info', 'sm')} Dieses Stück hat keinen Abschnitt „Vor der Vorstellung“ – die Gegenstände stehen deshalb ohne Haken da.${ctx.edit ? ' Im Ablauf über „+ Abschnitt“ anlegen.' : ''}</p>`;
-    const chk = e => vor && Req.needsSetup(e) ? Req.gKey(e.id, vor) : null;
+    const chk = e => Req.setupKey(e);
+    ctx.erow = true;
     // 1. Vorbereitung: feste Punkte und Schritte aus „Vor der Vorstellung“
     const prep = items.filter(i => !i.gegenstand);
     if (prep.length) {
@@ -6898,8 +6983,8 @@ const ReqView = {
       }).join('')}</div>`;
     }
     // 2. Verbrauch (einkaufen / frisch machen)
-    const verb = es.filter(e => (e.f.art || []).includes('verbrauch'));
-    if (verb.length) h += `<div class="rgh">${I('box')} Verbrauch <span class="n">${verb.length}</span></div><div class="cards">${verb.map(e => this.card(e, ctx, { check: null, compact: true })).join('')}</div>`;
+    const verb = es.filter(e => (e.f.art || []).includes('verbrauch'));   // eingerichtet wird er unten beim Ort
+    if (verb.length) h += `<div class="rgh">${I('box')} Verbrauch (frisch besorgen) <span class="n">${verb.length}</span></div>`;
     // 3. Gegenstände nach Ort
     const top = es.filter(e => !Req.containerOf(e));
     const groups = new Map(), order = Req.allOrts(showId).map(o => o.key);
@@ -6980,7 +7065,8 @@ const ReqView = {
   /** kompakte Zeile „Gegenstand wird hier gebraucht“ (im Ablauf) */
   gRow(e, a, ctx, mv = '') {
     const key = Req.gKey(e.id, a.key), ok = this.isOk(ctx.run, key), ph = Repo.photosOf(e.id, 'A')[0];
-    const sub = [Req.val(e, 'ort') ? `${I('pin', 'sm')} ${Utils.esc(Req.val(e, 'ort'))}` : '', Req.val(e, 'zuWem') ? `${I('user', 'sm')} ${Utils.esc(Req.val(e, 'zuWem'))}` : '', e.f.sicherheit ? Req.safeBadge(e.f.sicherheit) : ''].filter(Boolean).join(' ');
+    const sub = [e.f.lichtzeichen === 'ja' ? `<b class="rlz">${I('bulb', 'sm')} auf Lichtzeichen</b>` : '', Req.val(e, 'ort') ? `${I('pin', 'sm')} ${Utils.esc(Req.val(e, 'ort'))}` : '', e.f.uebergabe ? `<b>→ Übergabe: ${Utils.esc(e.f.uebergabe)}</b>` : '',
+      Req.val(e, 'zuWem') ? `${I('user', 'sm')} ${Utils.esc(Req.val(e, 'zuWem'))}` : '', e.f.sicherheit ? Req.safeBadge(e.f.sicherheit) : ''].filter(Boolean).join(' ');
     return `<div class="rstep rg ${ok ? 'done' : ''}">
       <button type="button" class="rchk" role="checkbox" aria-checked="${ok}" data-ract="g-chk" data-key="${Utils.esc(key)}" aria-label="${ok ? 'Erledigt' : 'Abhaken'}"><span class="box">${ok ? I('check') : ''}</span></button>
       <button type="button" class="rshit" data-ract="g-open" data-eid="${Utils.esc(e.id)}">
@@ -6999,14 +7085,15 @@ const ReqView = {
     const own = vorKey ? RunList.ownOf(showId).filter(x => x.abt === 'R').map(x => ({ key: x.key, text: x.text, abschnitt: vorKey, ci: true, zeit: null, ausloeser: [], gegenstand: '', ortId: '', sicherheit: '' })) : [];
     const steps = own.concat(Req.steps(showId)), es = Req.entriesR(showId).sort(Req.cmp(showId));
     const all = RunList.items(showId, ['R']), doneAll = all.filter(i => this.isOk(run, i.key)).length;
-    const keysOf = a => steps.filter(s => s.abschnitt === a.key).map(s => s.key).concat(es.filter(e => Req.whenKeys(e).includes(a.key)).map(e => Req.gKey(e.id, a.key)));
+    const gOf = a => a.typ === 'vor' ? (a.key === vorKey ? es : []) : es.filter(e => Req.whenKeys(e).includes(a.key));
+    const keysOf = a => steps.filter(s => s.abschnitt === a.key).map(s => s.key).concat(gOf(a).map(e => a.typ === 'vor' ? Req.setupKey(e) : Req.gKey(e.id, a.key)));
     let first = null;
     if (run) for (const a of abs) { const l = keysOf(a); if (l.length && l.some(k => !this.isOk(run, k))) { first = a.key; break; } }
     let h = `<div class="rrunbar"><b>${run ? Utils.esc(run.f.titel || 'Heute') : 'Ablauf'}</b><span class="mono">${run ? `${doneAll} von ${all.length} erledigt` : `${all.length} Punkte · Antippen hakt ab`}</span><div class="pbar"><i style="width:${all.length ? doneAll / all.length * 100 : 0}%"></i></div></div>` + addBtn;
     const ai = new Set(abs.map(a => a.key));
     const lose = steps.filter(s => !ai.has(s.abschnitt));
     abs.forEach((a, i) => {
-      const l = steps.filter(s => s.abschnitt === a.key), ge = es.filter(e => Req.whenKeys(e).includes(a.key)), keys = keysOf(a), d = keys.filter(k => this.isOk(run, k)).length;
+      const l = steps.filter(s => s.abschnitt === a.key), ge = gOf(a), keys = keysOf(a), d = keys.filter(k => this.isOk(run, k)).length;
       const isOpen = this.open[a.key] ?? (run ? a.key === first : true);
       const k = Utils.esc(a.key);
       const disabledFirst = s => i === 0 ? s.replace('class="btn icon"', 'class="btn icon" disabled') : s, disabledLast = s => i === abs.length - 1 ? s.replace('class="btn icon"', 'class="btn icon" disabled') : s;
@@ -7020,7 +7107,7 @@ const ReqView = {
       }).join('');
       let gHtml = '';
       if (ge.length && a.typ === 'vor') {
-        const gd = ge.filter(e => this.isOk(run, Req.gKey(e.id, a.key))).length;
+        const gd = ge.filter(e => this.isOk(run, Req.setupKey(e))).length;
         gHtml = `<button type="button" class="rgo" data-ract="go-einrichten">${I('box')} <span><b>${ge.length} Gegenstände einrichten</b><small>${gd} erledigt · in der Ansicht „Einrichten“ nach Ort</small></span>${I('arrowR', 'sm')}</button>`;
       }
       h += `<details class="rabs ${run && keys.length && d === keys.length ? 'alldone' : ''}" data-ab="${k}" data-typ="${Utils.esc(a.typ)}" ${isOpen ? 'open' : ''}>
@@ -7349,7 +7436,7 @@ const SettingsView = {
       </div>
       ${v.depts.includes('R') ? `<div class="group" data-abt="R"><h3>Requisite</h3>
         <button class="item" data-act="house"><span class="lb">Haus-Orte &amp; Vorlagen<small>Orte und häufige Gegenstände für alle Stücke</small></span>${I('arrowR')}</button>
-        <button class="item" data-act="pkeys"><span class="lb">Personen-Schnellauswahl<small>${Utils.esc((v.reqQuick || []).map(x => Req.personLabel(x)).join(', ') || 'noch leer')}</small></span>${I('edit')}</button>
+        <button class="item" data-act="pkeys"><span class="lb">Ensemble (Personen)<small>${Utils.esc(Req.quickList().map(x => x.name).join(', ') || 'noch leer')}</small></span>${I('edit')}</button>
         <button class="item" data-act="zkeys"><span class="lb">Zustand-Schnelltasten<small>${Utils.esc((v.zustandKeys || []).join(', ') || '–')}</small></span>${I('edit')}</button></div>` : ''}
       <div class="group"><h3>Eingabe</h3>
         <button class="item" data-act="fkeys"><span class="lb">Filter-Schnelltasten (Licht)<small class="mono">${Utils.esc((v.filterKeys || []).join('  ') || '–')}</small></span>${I('edit')}</button>
@@ -7778,7 +7865,7 @@ const App = {
     if (!isR && rb) rb.remove();
     if (isR) {
       const m = ReqView.mode(), n = ReqView.safetyCount(st.showId);
-      rb.innerHTML = `<div class="seg rseg" role="group" aria-label="Ansicht">${[['einrichten', 'Einrichten', 'Einrichten'], ['ablauf', 'Ablauf', 'Ablauf'], ['personen', 'Personen', 'Personen']].map(([k, l, s]) =>
+      rb.innerHTML = `<div class="seg rseg" role="group" aria-label="Ansicht">${[['einrichten', 'Einrichten', 'Einrichten'], ['ablauf', 'Ablauf', 'Ablauf']].map(([k, l, s]) =>
         `<button data-rview="${k}" aria-pressed="${!st.reqSafe && m === k}"><span class="rl">${l}</span><span class="rs">${s}</span></button>`).join('')}</div>
         <button class="btn rsafebtn" data-act="rsafe" aria-pressed="${!!st.reqSafe}" aria-label="Sicherheit: ${n} Einträge">${I('shield', 'sm')}<span class="cl">Sicherheit</span> <span class="cnt mono">${n}</span></button>`;
     }
