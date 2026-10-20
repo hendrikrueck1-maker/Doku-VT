@@ -1,5 +1,12 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.6.5 – 20.10.2026
+
+- **Ablauf neu geordnet (teils nebeneinander, teils untereinander):** oben der Name groß und daneben „für …“, darunter eine Leiste mit festen Feldern nebeneinander – Ort · Zu wem · Lichtzeichen · Übergabe (leere Felder mit „–“, damit alles immer an derselben Stelle steht). Schritte genauso: Wann + Text, darunter Ort · Zu wem · Lichtzeichen · Gegenstand. Auf dem Smartphone 2 × 2.
+- **Einrichten nur mit Einrichte-Angaben:** Name, darunter Stelle · Zu wem · Zustand/Markierung, dazu Sicherheit und Bemerkung. Wann, wofür, Lichtzeichen und Übergabe stehen nur noch im Ablauf.
+- **„Ohne Person“ obwohl „Zu wem“ ausgefüllt:** behoben. Namen aus „Zu wem sonst“ und Verweise auf gelöschte/neu angelegte Personen werden über Person oder Rolle der richtigen Person des Stücks zugeordnet (Gliederung am Requisitentisch, PDF, Sortierung).
+- **Testvorstellung „Kabale und Liebe“** (Großes Haus): 8 Personen, 50 Gegenstände, 15 Übergaben mit Übergabe-Orten (Gassen, Hinterbühne, Unterbühne, Inspizientenpult, Unter dem Podest), 7 mit Sicherheit (Waffe, Glas, Pyro, Nebel, Akku), Übergaben an Bühnentechnik, Inspizient/in und Beleuchtung, 12 Requisiten im Bühnenbild, 2 in Kostümen, Pause mit Umbau, 9 Schritte. Wird einmalig angelegt; jederzeit neu unter Einstellungen → Requisite → „Testvorstellung anlegen“.
+
 ## 2.6.4 – 19.10.2026
 
 - **Ablauf und Einrichten lesbar:** Statt gequetschter Spalten steht unter dem Namen eine Angabenliste in fester Reihenfolge – Ort/Stelle · Zu wem · Lichtzeichen · Übergabe (nur ausgefüllte Angaben). Große Schrift, „Lichtzeichen JA“ hervorgehoben, ein Foto rechts. Auf dem Tablet zweispaltig, auf dem Smartphone untereinander.

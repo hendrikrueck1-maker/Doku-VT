@@ -808,19 +808,20 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
 .erow .rwas{font-size:21px;line-height:1.2}
 .erow .rst{font-size:19px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
 .erow .rsz{align-self:flex-start;font-size:14px}
-.rwhy{display:flex;gap:6px;align-items:flex-start;font-size:17px;font-weight:700;color:var(--text)}.rwhy svg{flex:none;margin-top:3px;color:var(--k)}
-.rdl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;align-items:baseline}
-.rdt{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.rdd{font-size:17px;color:var(--text);overflow-wrap:anywhere;line-height:1.3}
-.rdd.hot{font-weight:900;color:var(--edit)}
-.rdd.strong{font-weight:700}
+.rtl{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.rfor2{font-size:17px;font-weight:700;color:var(--k)}
+.rbar{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:6px 14px;border-top:1px solid var(--line);padding-top:8px;width:100%}
+.rbc{display:flex;flex-direction:column;gap:2px;min-width:0}
+.rbc small{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.rbc .v{font-size:16px;font-weight:600;color:var(--text);overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto;line-height:1.25}
+.rbc.hot .v{font-weight:900;color:var(--edit)}
+.rbc.strong .v{font-weight:800}
 .erow .note{font-size:16px;color:var(--text2);-webkit-line-clamp:4}
 .erow.done .ename,.erow.done .thumbs{opacity:.5}
 .arow{background:var(--surf2)}
-@media (min-width:900px){.rdl{grid-template-columns:max-content minmax(0,1fr) max-content minmax(0,1fr)}}
 @media (max-width:600px){.card.erow{grid-template-columns:58px minmax(0,1fr) auto}.erow .gchk{width:58px}.erow .gchk .box{width:38px;height:38px}
   .erow .ename{padding:10px 10px}.erow .thumbs{padding:10px 8px 0 0}.erow .th{width:60px;height:60px}.erow .rwas{font-size:19px}.erow .rst{font-size:17px}
-  .rdl{grid-template-columns:minmax(0,1fr);gap:0}.rdt{font-size:11px}.rdd{font-size:16px;margin-bottom:6px}}
+  .rbar{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .rens{flex-basis:100%;margin-top:6px}
 .rteil{border-left:4px solid var(--R-a);padding-left:12px;margin-bottom:6px}
 .rlz{color:var(--text)}
@@ -986,7 +987,7 @@ window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason 
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.6.4';
+const APP_VERSION = '2.6.5';
 const DB_NAME = 'lichtdoku';
 /* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
    bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
@@ -3401,7 +3402,7 @@ const Pdf = {
         if (byP) {
           const pk = new Map(ps.map(p => [p.key, p]));
           ps.concat([{ key: '', rolle: 'Ohne Person' }]).forEach(p => {
-            const l = es.filter(e => p.key ? (e.f.personIds || []).includes(p.key) : !(e.f.personIds || []).some(i => pk.has(i))).sort(cmp); if (!l.length) return;
+            const l = es.filter(e => p.key ? Req.pids(e).includes(p.key) : !Req.pids(e).some(i => pk.has(i))).sort(cmp); if (!l.length) return;
             out.push(rsub(Req.personLabel(p).toUpperCase() || 'OHNE PERSON')); rrows(gcols, l.map(e => row(e, false)), out, 1, 11);
           });
           return;
@@ -3417,7 +3418,7 @@ const Pdf = {
           const rows = [];
           if (/requisitentisch/i.test(name)) {
             const pidx = new Map(ps.map((p, i) => [p.key, i])), subs = new Map();
-            g.list.forEach(e => { const ids = (e.f.personIds || []).filter(i => pidx.has(i)).sort((a, b) => pidx.get(a) - pidx.get(b)); const k = ids.join('+'); if (!subs.has(k)) subs.set(k, { ids, list: [] }); subs.get(k).list.push(e); });
+            g.list.forEach(e => { const ids = Req.pids(e).filter(i => pidx.has(i)).sort((a, b) => pidx.get(a) - pidx.get(b)); const k = ids.join('+'); if (!subs.has(k)) subs.set(k, { ids, list: [] }); subs.get(k).list.push(e); });
             [...subs.values()].sort((a, b) => (a.ids.length ? pidx.get(a.ids[0]) : 999) - (b.ids.length ? pidx.get(b.ids[0]) : 999)).forEach(s => {
               rows.push({ vals: ['', s.ids.length ? s.ids.map(i => Req.personLabel(Req.sh(sid)[i])).join(' + ') : 'Ohne Person', '', '', ''], bold: true, nobox: true });
               withIn(s.list.sort(cmp), rows);
@@ -5864,18 +5865,33 @@ const Req = {
     if (k && e.showId && this.KEY.test(String(k))) { const f = String(k).startsWith('ho:') ? this.houseF() : this.sh(e.showId); removed = !!(f[k] && f[k].del); }
     return { name: e.f.ort || '', removed, key: k || '' };
   },
+  /** Personen eines Gegenstands (ab 2.6.5 robust): gültige Verweise; Verweise auf gelöschte Personen und Namen im Feld
+      „Zu wem sonst“ werden über den Namen (Person, Rolle) einer Person des Stücks zugeordnet */
+  pids(e) {
+    if (!e.showId) return [];
+    const f = this.sh(e.showId), ps = this.persons(e.showId), out = [];
+    const byName = n => { n = String(n || '').trim().toLowerCase(); return n ? ps.find(p => [this.personLabel(p), p.darsteller, p.rolle].some(x => String(x || '').trim().toLowerCase() === n)) : null; };
+    (Array.isArray(e.f.personIds) ? e.f.personIds : []).forEach(id => { const p = f[id]; const q = p && !p.del ? { key: id } : p ? (byName(p.darsteller) || byName(p.rolle)) : null; if (q && !out.includes(q.key)) out.push(q.key); });
+    this.splitNames(e.f.zuAndere).forEach(n => { const q = byName(n); if (q && !out.includes(q.key)) out.push(q.key); });
+    return out;
+  },
+  splitNames(v) { return String(v || '').split(/\s*[,+;]\s*/).map(x => x.trim()).filter(Boolean); },
+  /** „Zu wem sonst“ ohne die Namen, die schon Personen des Stücks sind (z. B. Bühnentechnik, Inspizient/in) */
+  others(e) {
+    const ps = e.showId ? this.persons(e.showId) : [];
+    return this.splitNames(e.f.zuAndere).filter(n => !ps.some(p => [this.personLabel(p), p.darsteller, p.rolle].some(x => String(x || '').trim().toLowerCase() === n.toLowerCase())));
+  },
   personNames(e) {
-    const ids = Array.isArray(e.f.personIds) ? e.f.personIds : [];
     if (!e.showId) return e.f.zuWem || '';
-    const f = this.sh(e.showId);
-    const names = ids.map(id => f[id] && !f[id].del ? this.personLabel(f[id]) : '').filter(Boolean);
-    return names.length ? names.join(', ') : (ids.length && !e.f.zuAndere ? (e.f.zuWem || '') : '');
+    const f = this.sh(e.showId), ids = this.pids(e);
+    const names = ids.map(id => this.personLabel(f[id])).filter(Boolean);
+    return names.length ? names.join(', ') : ((e.f.personIds || []).length && !e.f.zuAndere ? (e.f.zuWem || '') : '');
   },
   /** Anzeigewert eines Requisite-Felds */
   val(e, k) {
     const f = e.f || {};
     if (k === 'ort') { const o = this.ortOf(e); return o ? (o.name || '') + (o.removed ? ' · Ort entfernt' : '') : ''; }
-    if (k === 'zuWem') return [this.personNames(e), String(f.zuAndere || '').trim()].filter(Boolean).join(', ');
+    if (k === 'zuWem') return [this.personNames(e)].concat(this.others(e)).filter(Boolean).join(', ');
     if (k === 'abschnitte') return e.showId ? this.whenOf(e).filter(a => a.typ !== 'vor').map(a => a.kurz).join(', ') : '';
     if (k === 'lichtzeichen') return f.lichtzeichen === 'ja' ? 'auf Lichtzeichen' : f.lichtzeichen === 'nein' ? 'ohne Lichtzeichen' : '';
     if (k === 'inId') { const c = this.containerOf(e); return c ? (c.f.was || 'Ohne Namen') : ''; }
@@ -5906,7 +5922,7 @@ const Req = {
   },
   personCmp(showId) {
     const ps = this.persons(showId), idx = new Map(ps.map((p, i) => [p.key, i])), byOrt = this.cmp(showId);
-    const pi = e => { const ids = Array.isArray(e.f.personIds) ? e.f.personIds : []; const v = ids.map(i => idx.has(i) ? idx.get(i) : 999); return v.length ? Math.min(...v) : 9999; };
+    const pi = e => { const ids = this.pids(e); const v = ids.map(i => idx.has(i) ? idx.get(i) : 999); return v.length ? Math.min(...v) : 9999; };
     return (a, b) => (pi(a) - pi(b)) || byOrt(a, b);
   },
   /* ---------- Abschnitte und Schritte ---------- */
@@ -6879,6 +6895,107 @@ Object.assign(Req, {
     if (!key) setTimeout(() => sh.body.querySelector('#rs-text').focus(), 80);
   },
 
+  /* ---------- Testvorstellung (ab 2.6.5): 8 Personen, 50 Gegenstände, 15 Übergaben, 7 mit Sicherheit,
+     Bühnenbild- und Kostüm-Requisiten, Übergaben an Technik/Inspizienz. Feste IDs (kein Doppeln beim Abgleich). ---------- */
+  async maybeTest() {
+    if (await Store.metaGet('testR265', false) || Repo.shows.has('test-r-show')) return false;
+    await this.testShow(); await Store.metaSet('testR265', true); return true;
+  },
+  async testShow() {
+    if (Repo.shows.has('test-r-show') && !Repo.shows.get('test-r-show').f.del) return Repo.shows.get('test-r-show');
+    const H = n => this.houseKey(n), sl = n => this.slug(n);
+    const sf = { titel: 'Testvorstellung: Kabale und Liebe', spielstaette: 'Großes Haus', notiz: 'Testdaten der Requisite (50 Gegenstände) – kann jederzeit gelöscht werden.', abteilungen: ['R'], del: false,
+      dauer: '2:30 mit Pause', einrichtungR: 'Degen und Pistole erst 30 min vor Beginn aus dem Waffenschrank. Brief Szene 3 jeden Abend neu falten. Kostüm-Requisiten mit der Garderobe absprechen.' };
+    const PERS = [['Anna Berger', 'Lady Milford'], ['Jonas Keller', 'Ferdinand'], ['Lea Wolf', 'Luise'], ['Tim Brandt', 'Wurm'], ['Sara Neumann', 'Präsident'], ['Paul Fischer', 'Miller'], ['Mia Roth', 'Millerin'], ['Ben Hartmann', 'Kammerdiener']];
+    const P = {}; PERS.forEach(([d, r], i) => { const k = 'rp:test-' + sl(d); P[d.split(' ')[0]] = k; sf[k] = { rolle: r, darsteller: d, ord: (i + 1) * 10, del: false }; });
+    const AB = { vor: 'ra:test-vor', t1: 'ra:test-t1', p: 'ra:test-pause', t2: 'ra:test-t2', nach: 'ra:test-nach' };
+    [['vor', 'vor', 10], ['t1', 'teil', 20], ['p', 'pause', 30], ['t2', 'teil', 40], ['nach', 'nach', 50]].forEach(([k, typ, ord]) => { sf[AB[k]] = { typ, name: '', notiz: '', ord, del: false }; });
+    sf[AB.p].notiz = 'Umbau Wohnung Miller → Palais: Esstisch abräumen, Schreibtisch Präsident bestücken.';
+    // eigene Orte: Bühnenbild, Kostüme, Übergabe-Punkte
+    const ORTE = [['Bühnenbild: Esstisch Miller', 'Bühnenbild'], ['Bühnenbild: Schreibtisch Präsident', 'Bühnenbild'], ['Bühnenbild: Kommode Luise', 'Bühnenbild'], ['Bühnenbild: Bücherregal', 'Bühnenbild'],
+      ['Bühnenbild: Kaminsims', 'Bühnenbild'], ['Bühnenbild: Cembalo', 'Bühnenbild'], ['Kostüm: Uniformjacke Ferdinand', 'Kostüm'], ['Kostüm: Schürze Luise', 'Kostüm'], ['Gasse 1 links', 'Gassen'], ['Gasse 3 rechts', 'Gassen'], ['Unter dem Podest', 'Bühne']];
+    const O = {}; ORTE.forEach(([n, g], i) => { const k = 'ro:test-' + sl(n); O[n] = k; sf[k] = { name: n, notiz: g === 'Kostüm' ? 'Steckt im Kostüm – mit der Garderobe abstimmen' : '', foto: '', cap: '', gruppe: g, ord: (i + 1) * 10, del: false }; });
+    const E = []; let n = 0;
+    const add = (was, ort, x = {}) => {
+      const id = 'test-r-e' + String(++n).padStart(2, '0'), house = Req.STD_ORTS.some(g => g[1].includes(ort));
+      const f = Object.assign({ abt: 'R', was, ortId: house ? H(ort) : (O[ort] || ''), ort, chkA: false, chkE: false, del: false }, x);
+      if (x.p) { f.personIds = x.p.map(q => P[q]); delete f.p; }
+      if (x.ab) { f.abschnitte = x.ab.map(q => AB[q]); delete f.ab; }
+      E.push({ id, f }); return id;
+    };
+    const RT = 'Requisitentisch', IP = 'Requisitenfach beim Inspizientenpult';
+    // 1–12 Requisitentisch nach Person
+    add('Brief an Ferdinand', RT, { p: ['Lea'], ab: ['t1'], wofuer: 'Szene 3 – Luise liest', zustand: ['präpariert'], bemerkung: 'Jeden Abend neu falten, Siegel aufkleben' });
+    add('Lesebrille', RT, { p: ['Paul'] });
+    add('Taschentuch', RT, { p: ['Mia'], ab: ['t1'], wofuer: 'Szene 5 – weint' });
+    add('Geldbeutel mit Münzen', RT, { p: ['Tim'], ab: ['t1'], wofuer: 'Bestechung Szene 4', uebergabe: 'Gasse 1 links', lichtzeichen: 'ja' });
+    add('Spazierstock', RT, { p: ['Sara'] });
+    add('Fächer', RT, { p: ['Anna'], ab: ['t2'], wofuer: 'Auftritt Palais' });
+    add('Notenblätter', RT, { p: ['Paul'], ab: ['t1'], wofuer: 'Miller am Cembalo' });
+    add('Taschenuhr', RT, { p: ['Sara'], zustand: ['aufgezogen'] });
+    add('Haarband', RT, { p: ['Lea'] });
+    add('Tablett mit 2 Tassen', RT, { p: ['Ben'], ab: ['t2'], wofuer: 'Kammerdiener serviert', uebergabe: 'Gasse 3 rechts' });
+    add('Schmuckkästchen', RT, { p: ['Ben'], ab: ['t2'], wofuer: 'Geschenk an Lady Milford', zustand: ['präpariert'], bemerkung: 'Deckel klemmt – vor Beginn prüfen' });
+    add('Rosenkranz', RT, { p: ['Mia'] });
+    // 13–16 Inspizientenpult / Übergaben an Technik
+    add('Pistole (Schreckschuss)', 'Waffenschrank', { p: ['Jonas'], sicherheit: 'waffe', ab: ['t2'], wofuer: 'Schuss Szene 7', zustand: ['geladen'], uebergabe: 'Gasse 1 links', lichtzeichen: 'ja', bemerkung: 'Nur Platzpatronen, Übergabe persönlich' });
+    add('Degen', 'Waffenschrank', { p: ['Jonas'], sicherheit: 'waffe', ab: ['t1'], wofuer: 'Duell', uebergabe: 'Gasse 3 rechts' });
+    add('Giftfläschchen', IP, { p: ['Jonas'], ab: ['t2'], wofuer: 'Limonade vergiften', zustand: ['befüllt'], uebergabe: 'Inspizientenpult', bemerkung: 'Mit Holundersaft befüllt' });
+    add('Limonadenkrug', IP, { p: ['Lea'], sicherheit: 'glas', ab: ['t2'], wofuer: 'Schlussszene', zustand: ['befüllt'], uebergabe: 'Unter dem Podest', lichtzeichen: 'ja' });
+    add('2 Gläser', IP, { menge: '2', sicherheit: 'glas', ab: ['t2'], wofuer: 'Schlussszene', zuAndere: 'Inspizient/in', uebergabe: 'Inspizientenpult' });
+    add('Funkenschläger (Effekt)', IP, { sicherheit: 'pyro', ab: ['t2'], wofuer: 'Blitz Szene 6', zuAndere: 'Bühnentechnik', uebergabe: 'Gasse 1 links', lichtzeichen: 'ja', bemerkung: 'Nur nach Freigabe Pyrotechniker' });
+    add('Nebelfluid-Kanister', 'Unterbühne', { sicherheit: 'nebel', ab: ['p'], wofuer: 'Nebel Teil 2', zuAndere: 'Bühnentechnik', uebergabe: 'Unterbühne' });
+    add('Akkuleuchte Laterne', IP, { sicherheit: 'strom', ab: ['t2'], wofuer: 'Nachtszene', zuAndere: 'Beleuchtung', uebergabe: 'Hinterbühne', zustand: ['aufgeladen'] });
+    // 21–32 Bühnenbild
+    add('Tischdecke', 'Bühnenbild: Esstisch Miller', { stelle: 'glatt, Saum zum Publikum' });
+    add('4 Teller', 'Bühnenbild: Esstisch Miller', { menge: '4', stelle: 'vor jedem Stuhl' });
+    add('Brotkorb mit Brot', 'Bühnenbild: Esstisch Miller', { zustand: ['frisch'], art: ['verbrauch'] });
+    add('Kerzenleuchter (LED)', 'Bühnenbild: Esstisch Miller', { stelle: 'Mitte', zustand: ['aufgeladen'] });
+    add('Tintenfass mit Feder', 'Bühnenbild: Schreibtisch Präsident', { stelle: 'rechts vorne' });
+    add('Aktenstapel', 'Bühnenbild: Schreibtisch Präsident', { stelle: 'links', ab: ['p'], wofuer: 'Umbau: auf Schreibtisch' });
+    add('Siegel und Lack', 'Bühnenbild: Schreibtisch Präsident', { stelle: 'Schublade oben' });
+    add('Spiegel', 'Bühnenbild: Kommode Luise', { stelle: 'an die Wand gelehnt' });
+    add('Gebetbuch', 'Bühnenbild: Kommode Luise', { stelle: 'Schublade links' });
+    add('Bücher (12 Stück)', 'Bühnenbild: Bücherregal', { menge: '12', stelle: 'oberes Fach' });
+    add('Porträt im Rahmen', 'Bühnenbild: Kaminsims', { stelle: 'Mitte, leicht schräg' });
+    add('Notenständer mit Noten', 'Bühnenbild: Cembalo', { stelle: 'Noten aufgeschlagen S. 3' });
+    // 33–34 Kostüm
+    add('Liebesbrief (gefaltet)', 'Kostüm: Uniformjacke Ferdinand', { p: ['Jonas'], stelle: 'Innentasche links', ab: ['t1'], wofuer: 'Szene 2 – zieht Brief', bemerkung: 'Mit Garderobe abstimmen' });
+    add('Medaillon', 'Kostüm: Schürze Luise', { p: ['Lea'], stelle: 'Schürzentasche rechts', ab: ['t1'], wofuer: 'Szene 3' });
+    // 35–42 Gassen / Übergaben
+    add('Reisekoffer', 'Gasse 1 links', { p: ['Anna'], ab: ['t2'], wofuer: 'Abreise Lady Milford', uebergabe: 'Gasse 1 links', lichtzeichen: 'ja' });
+    add('Mantel', 'Gasse 3 rechts', { p: ['Ben'], ab: ['p'], wofuer: 'Auftritt nach Pause', uebergabe: 'Gasse 3 rechts' });
+    add('Blumenstrauß', 'Gasse 3 rechts', { p: ['Jonas'], ab: ['t1'], wofuer: 'Für Luise', zustand: ['frisch'], art: ['verbrauch'], uebergabe: 'Gasse 3 rechts', lichtzeichen: 'nein' });
+    add('Laterne', 'Gasse 1 links', { p: ['Tim'], ab: ['t2'], wofuer: 'Nachtszene', zustand: ['aufgeladen'] });
+    add('Brief des Präsidenten', 'Gasse 1 links', { p: ['Tim'], ab: ['t1'], wofuer: 'Diktat Szene 4', uebergabe: 'Hinterbühne', lichtzeichen: 'ja' });
+    add('Weinflasche', 'Gasse 3 rechts', { p: ['Paul'], ab: ['t1'], zustand: ['befüllt'], bemerkung: 'Traubensaft' });
+    add('Stuhl (Spielstuhl)', 'Bühne hinten', { zuAndere: 'Bühnentechnik', ab: ['p'], wofuer: 'Umbau Pause', uebergabe: 'Hinterbühne' });
+    add('Hutschachtel', 'Bühne links', { p: ['Anna'], ab: ['t2'] });
+    // 43–50 Unterbühne / Sonstiges
+    add('Konfetti (Ersatz)', 'Unterbühne', { art: ['reserve'] });
+    add('Ersatz-Brief', IP, { art: ['reserve'], bemerkung: 'Falls Brief reißt' });
+    add('Gaffa-Tape', IP, {});
+    add('Wasserflaschen Darsteller', 'Bühne links', { menge: '6', art: ['verbrauch'] });
+    add('Holundersaft (Nachfüllen)', 'Kühlschrank Technikaufenthalt', { art: ['verbrauch'] });
+    add('Kissen', 'Unter dem Podest', { stelle: 'hinter der Klappe' });
+    add('Decke', 'Unter dem Podest', { stelle: 'gefaltet' });
+    add('Requisitenliste (laminiert)', IP, { zuAndere: 'Inspizient/in' });
+    let so = 0; const step = (ab, text, x = {}) => { sf['rs:test-s' + String(++so).padStart(2, '0')] = Object.assign({ abschnitt: AB[ab], text, zeit: null, ausloeser: [], gegenstand: '', ortId: '', sicherheit: '', ord: so * 10, del: false }, x); };
+    step('vor', 'Pistole und Degen aus dem Waffenschrank holen', { zeit: { art: 'vor', min: 30, frist: true, bezug: 'stueck' }, ortId: H('Waffenschrank'), sicherheit: 'waffe' });
+    step('vor', 'Limonadenkrug und Giftfläschchen befüllen', { zeit: { art: 'vor', min: 45, bezug: 'stueck' }, gegenstand: 'test-r-e15' });
+    step('vor', 'Brief neu falten und siegeln', { zeit: { art: 'vor', min: 60, bezug: 'stueck' }, gegenstand: 'test-r-e01' });
+    step('t1', 'Degen an Ferdinand übergeben', { zeit: { art: 'im', min: 35, bezug: 'stueck' }, ausloeser: [{ typ: 'licht', anzahl: 1 }], gegenstand: 'test-r-e14', ortId: O['Gasse 3 rechts'] });
+    step('p', 'Umbau: Esstisch abräumen, Aktenstapel auf Schreibtisch', { ausloeser: [{ typ: 'einruf', anzahl: 1 }] });
+    step('t2', 'Pistole an Ferdinand übergeben', { zeit: { art: 'im', min: 110, bezug: 'stueck' }, ausloeser: [{ typ: 'einruf', anzahl: 1 }, { typ: 'licht', anzahl: 2 }], gegenstand: 'test-r-e13', ortId: O['Gasse 1 links'], sicherheit: 'waffe' });
+    step('nach', 'Pistole und Degen in den Waffenschrank einschließen', { ortId: H('Waffenschrank'), sicherheit: 'waffe' });
+    step('nach', 'Gläser und Krug spülen');
+    step('nach', 'Kostüm-Requisiten aus den Taschen nehmen', { ortId: O['Kostüm: Uniformjacke Ferdinand'] });
+    const show = Rec.create({ id: 'test-r-show' }, sf);
+    const entries = E.map(x => Rec.create({ id: x.id, showId: show.id }, x.f));
+    await Repo._write({ shows: [show], entries });
+    return show;
+  },
+
   /* ---------- Demo „Einfache Leute“ (feste IDs: zwei Geräte legen sie beim Abgleich nicht doppelt an) ---------- */
   async maybeDemo() {
     if (!Settings.v.demoOnFirstStart || await Store.metaGet('demoRDone', false) || Repo.shows.has('demo-r-show')) return false;
@@ -6976,43 +7093,45 @@ const ReqView = {
     const check = opts.check ? { key: opts.check, ok: this.isOk(ctx.run, opts.check) } : null;
     return Views.cardHtmlR(e, Object.assign({ sel: ctx.st.sel === e.id + ':' + (Repo.photosOf(e.id, 'A').length ? 'A' : 'N'), hideVor: !!ctx.hideVor }, opts, { check }));
   },
-  /** Angaben als Liste „Bezeichnung – Wert“ in fester Reihenfolge (Ort/Stelle · Zu wem · Lichtzeichen · Übergabe), ab 2.6.4
-      groß und untereinander statt gequetschter Spalten – lesbar auf Smartphone und Tablet */
-  dl(rows) {
-    const r = rows.filter(x => x && x[1]);
-    return r.length ? `<span class="rdl">${r.map(([l, v, cls]) => `<span class="rdt">${Utils.esc(l)}</span><span class="rdd ${cls || ''}">${v}</span>`).join('')}</span>` : '';
+  /** Angaben-Leiste (ab 2.6.5): feste Felder nebeneinander unter dem Namen – immer gleiche Stelle, leere Felder mit „–“ */
+  bar(cells) {
+    return `<span class="rbar" style="--n:${cells.length}">${cells.map(([l, v, cls]) => `<span class="rbc ${cls || ''}"><small>${Utils.esc(l)}</small><span class="v">${v || '<span class="muted">–</span>'}</span></span>`).join('')}</span>`;
   },
-  gInfo(e, first) {
-    const f = e.f, esc = Utils.esc;
-    const ort = first === 'stelle' ? f.stelle || '' : [Req.val(e, 'ort'), f.stelle].filter(Boolean).join(' · ');
-    return this.dl([[first === 'stelle' ? 'Stelle' : 'Ort', esc(ort)], ['Zu wem', esc(Req.val(e, 'zuWem'))],
-      ['Lichtzeichen', f.lichtzeichen === 'ja' ? 'JA' : f.lichtzeichen === 'nein' ? 'nein' : '', f.lichtzeichen === 'ja' ? 'hot' : ''], ['Übergabe', esc(f.uebergabe || ''), 'strong']]);
+  safeChips(f, withZustand) {
+    const esc = Utils.esc, z = withZustand ? (f.zustand || []).map(x => `<span class="chip"><span>${esc(x)}</span></span>`).join('') : '';
+    return f.sicherheit || z ? `<span class="chips">${f.sicherheit ? Req.safeBadge(f.sicherheit) : ''}${z}</span>` : '';
   },
-  /** Zeile eines Gegenstands (Einrichten und Ablauf): Kästchen · Gegenstand mit Angaben · ein Foto */
+  /** Zeile eines Gegenstands.
+      Einrichten: nur was zum Einrichten nötig ist – Name · Stelle · Zu wem · Zustand/Markierung, Sicherheit, Bemerkung.
+      Ablauf: Name und wofür, darunter Ort · Zu wem · Lichtzeichen · Übergabe nebeneinander. Rechts ein Foto. */
   eRow(e, ctx, opts) {
     ctx.push(e);
     const esc = Utils.esc, f = e.f, ph = Repo.photosOf(e.id, 'A'), key = opts.check, ok = this.isOk(ctx.run, key), name = f.was || 'Ohne Namen';
     const menge = f.menge && String(f.menge).trim() && String(f.menge).trim() !== '1' ? `<span class="rmenge">${esc(String(f.menge).trim())}×</span> ` : '';
-    const wn = opts.ablauf ? [] : Req.whenOf(e).filter(a => a.typ !== 'vor').map(a => a.kurz);
-    const why = wn.length || f.wofuer ? `<span class="rwhy">${I('clock', 'sm')}<span>${esc(wn.join(' · '))}${wn.length && f.wofuer ? ' – ' : ''}${f.wofuer ? 'für ' + esc(f.wofuer) : ''}</span></span>` : '';
-    const chips = f.sicherheit || (Array.isArray(f.zustand) && f.zustand.length) || f.markierung ? `<span class="chips">${f.sicherheit ? Req.safeBadge(f.sicherheit) : ''}${(f.zustand || []).map(z => `<span class="chip"><span>${esc(z)}</span></span>`).join('')}${f.markierung ? `<span class="chip"><b>Markierung</b><span>${esc(f.markierung)}</span></span>` : ''}</span>` : '';
+    const title = `<span class="rtl"><span class="rwas">${menge}${f.was ? esc(f.was) : '<span class="muted">Ohne Namen</span>'}</span>${opts.ablauf && f.wofuer ? `<span class="rfor2">für ${esc(f.wofuer)}</span>` : ''}</span>`;
+    const zu = Req.val(e, 'zuWem');
+    const bar = opts.ablauf
+      ? this.bar([['Ort', esc([Req.val(e, 'ort'), f.stelle].filter(Boolean).join(' · '))], ['Zu wem', esc(zu)],
+          ['Lichtzeichen', f.lichtzeichen === 'ja' ? 'JA' : f.lichtzeichen === 'nein' ? 'nein' : '', f.lichtzeichen === 'ja' ? 'hot' : ''], ['Übergabe', esc(f.uebergabe || ''), f.uebergabe ? 'strong' : '']])
+      : this.bar([['Stelle', esc(f.stelle || '')], ['Zu wem', esc(zu)],
+          ['Zustand', esc([...(f.zustand || []), f.markierung ? 'Markierung ' + f.markierung : ''].filter(Boolean).join(', '))]]);
     return `<article class="card rcard erow ${opts.ablauf ? 'arow rg' : ''} ${opts.indent ? 'rin' : ''} ${ok ? 'done' : ''}" data-k="A" data-abt="R" data-key="${esc(e.id + ':' + (ph.length ? 'A' : 'N'))}">
       <button type="button" class="gchk" role="checkbox" aria-checked="${ok}" data-ract="g-chk" data-key="${esc(key)}" aria-label="${esc(name)} ${ok ? 'erledigt – zurücknehmen' : 'abhaken'}"><span class="box">${ok ? I('check') : ''}</span></button>
-      <button class="hit ename" data-act="open" aria-label="${esc(name)}"><span class="rwas">${menge}${f.was ? esc(f.was) : '<span class="muted">Ohne Namen</span>'}</span>${why}${this.gInfo(e, opts.ablauf ? 'ort' : 'stelle')}${chips}${f.bemerkung ? `<span class="note">${esc(f.bemerkung)}</span>` : ''}</button>
+      <button class="hit ename" data-act="open" aria-label="${esc(name)}">${title}${bar}${this.safeChips(f, false)}${f.bemerkung ? `<span class="note">${esc(f.bemerkung)}</span>` : ''}</button>
       ${ph.length ? `<span class="thumbs"><span class="th" data-act="lb" data-i="0">${Views.thumbImg(ph[0].b)}</span></span>` : ''}
       ${opts.mv ? `<span class="rmvw">${opts.mv}</span>` : ''}
     </article>`;
   },
-  /** Schritt im Ablauf – gleicher Aufbau wie ein Gegenstand */
+  /** Schritt im Ablauf – gleicher Aufbau: Wann + Text, darunter Ort · Zu wem · Lichtzeichen · Gegenstand */
   sRow(s, ctx, run, mv = '') {
     const esc = Utils.esc, e = Req.stepEntry(s), o = s.ortId ? Req.ortByKey(ctx.showId, s.ortId) : null, saf = Req.stepSafety(s), k = esc(s.key);
     const ok = this.isOk(run, s.key), when = Req.whenShort(s), ph = e && Repo.photosOf(e.id, 'A')[0];
     const lz = (s.ausloeser || []).filter(x => x && x.typ === 'licht').reduce((n, x) => n + Math.max(1, +x.anzahl || 1), 0);
-    const info = this.dl([['Ort', esc(o ? o.name : s.ortId ? 'Ort entfernt' : e ? Req.val(e, 'ort') : '')], ['Zu wem', esc(e ? Req.val(e, 'zuWem') : '')],
-      ['Lichtzeichen', lz ? 'JA' + (lz > 1 ? ` (${lz}×)` : '') : '', 'hot'], ['Gegenstand', e ? esc(e.f.was || 'Ohne Namen') : '']]);
+    const bar = this.bar([['Ort', esc(o ? o.name : s.ortId ? 'Ort entfernt' : e ? Req.val(e, 'ort') : '')], ['Zu wem', esc(e ? Req.val(e, 'zuWem') : '')],
+      ['Lichtzeichen', lz ? 'JA' + (lz > 1 ? ` (${lz}×)` : '') : '', lz ? 'hot' : ''], ['Gegenstand', e ? esc(e.f.was || 'Ohne Namen') : '']]);
     return `<article class="card rcard erow arow as ${ok ? 'done' : ''}" data-k="A" data-abt="R">
       <button type="button" class="gchk" role="checkbox" aria-checked="${ok}" data-ract="s-chk" data-step="${k}" aria-label="${ok ? 'Erledigt – zurücknehmen' : 'Abhaken'}"><span class="box">${ok ? I('check') : ''}</span></button>
-      <button type="button" class="hit ename" data-ract="${s.ci ? 'ci-open' : 's-open'}" data-step="${k}">${when ? `<span class="rsz">${esc(when)}</span>` : ''}<span class="rst">${esc(s.text)}</span>${info}${saf ? `<span class="chips">${Req.safeBadge(saf)}</span>` : ''}</button>
+      <button type="button" class="hit ename" data-ract="${s.ci ? 'ci-open' : 's-open'}" data-step="${k}"><span class="rtl">${when ? `<span class="rsz">${esc(when)}</span>` : ''}<span class="rst">${esc(s.text)}</span></span>${s.ci ? '' : bar}${saf ? `<span class="chips">${Req.safeBadge(saf)}</span>` : ''}</button>
       ${ph ? `<span class="thumbs"><button type="button" class="th" data-ract="s-photo" data-step="${k}" aria-label="Foto ansehen">${Views.thumbImg(ph.b)}</button></span>` : ''}
       ${mv ? `<span class="rmvw">${mv}</span>` : ''}
     </article>`;
@@ -7083,7 +7202,7 @@ const ReqView = {
       if (/requisitentisch/i.test(name)) {
         // Requisitentisch: nach Person gegliedert – so sind die Zettel heute aufgebaut
         const ps = Req.persons(showId), pidx = new Map(ps.map((p, i) => [p.key, i])), sub = new Map();
-        g.list.forEach(e => { const ids = (e.f.personIds || []).filter(i => pidx.has(i)).sort((a, b) => pidx.get(a) - pidx.get(b)); const key = ids.join('+'); if (!sub.has(key)) sub.set(key, { ids, list: [] }); sub.get(key).list.push(e); });
+        g.list.forEach(e => { const ids = Req.pids(e).filter(i => pidx.has(i)).sort((a, b) => pidx.get(a) - pidx.get(b)); const key = ids.join('+'); if (!sub.has(key)) sub.set(key, { ids, list: [] }); sub.get(key).list.push(e); });
         const sk = [...sub.keys()].sort((a, b) => { const A = sub.get(a).ids, B = sub.get(b).ids; return (A.length ? pidx.get(A[0]) : 999) - (B.length ? pidx.get(B[0]) : 999) || a.localeCompare(b); });
         for (const key of sk) {
           const s = sub.get(key), lbl = s.ids.length ? s.ids.map(i => Req.personLabel(Req.sh(showId)[i])).join(' + ') : 'Ohne Person';
@@ -7099,7 +7218,7 @@ const ReqView = {
     if (!ps.length) return this.empty('Noch keine Personen', ctx.edit ? '<p>Über „Allgemeine Infos → Personen“ anlegen – oder im Gegenstand unter „Zu wem“.</p>' : '');
     let h = '';
     for (const p of ps) {
-      const mine = es.filter(e => (e.f.personIds || []).includes(p.key)), ids = new Set(mine.map(e => e.id));
+      const mine = es.filter(e => Req.pids(e).includes(p.key)), ids = new Set(mine.map(e => e.id));
       const st = steps.filter(s => ids.has(s.gegenstand));
       h += `<div class="rorthead"><span class="rorthum none">${I('user')}</span><div class="rorti"><h3>${Utils.esc(Req.personLabel(p))}</h3></div><span class="n">${mine.length}</span></div>`;
       h += mine.length ? `<div class="cards">${mine.map(e => this.card(e, ctx, { hidePerson: true })).join('')}</div>` : '<p class="muted" style="margin:6px 4px 0">Keine Gegenstände.</p>';
@@ -7517,6 +7636,7 @@ const SettingsView = {
       </div>
       ${v.depts.includes('R') ? `<div class="group" data-abt="R"><h3>Requisite</h3>
         <button class="item" data-act="house"><span class="lb">Haus-Orte &amp; Vorlagen<small>Orte und häufige Gegenstände für alle Stücke</small></span>${I('arrowR')}</button>
+        <button class="item" data-act="testshow"><span class="lb">Testvorstellung anlegen<small>„Kabale und Liebe“ mit 50 Gegenständen, 8 Personen, 15 Übergaben</small></span>${I('plus')}</button>
         <button class="item" data-act="pkeys"><span class="lb">Ensemble (Personen)<small>${Utils.esc(Req.quickList().map(x => x.name).join(', ') || 'noch leer')}</small></span>${I('edit')}</button>
         <button class="item" data-act="zkeys"><span class="lb">Zustand-Schnelltasten<small>${Utils.esc((v.zustandKeys || []).join(', ') || '–')}</small></span>${I('edit')}</button></div>` : ''}
       <div class="group"><h3>Eingabe</h3>
@@ -7548,6 +7668,7 @@ const SettingsView = {
       else if (b.dataset.act === 'name') { const n = await Ui.prompt('Gerätename', Settings.v.deviceName || Sync.deviceName(), 'z. B. iPad Beleuchtung'); if (n != null) { await Settings.set({ deviceName: n.trim() }); render(); } }
       else if (b.dataset.act === 'house') Req.editHouse(App.state.route === 'show' ? App.state.showId : null);
       else if (b.dataset.act === 'pkeys') Req.editQuick(() => render());
+      else if (b.dataset.act === 'testshow') { const t = await Req.testShow(); Ui.toast(`„${t.f.titel}“ ist angelegt`); }
       else if (b.dataset.act === 'zkeys') {
         const n = await Ui.prompt('Zustand-Schnelltasten', (Settings.v.zustandKeys || []).join(', '), 'z. B. präpariert, beklebt, befüllt', 'Mit Komma trennen. Die Reihenfolge bleibt so erhalten.');
         if (n != null) { await Settings.set({ zustandKeys: [...new Set(n.split(/[,;]+/).map(x => x.trim()).filter(Boolean))].slice(0, 30) }); render(); }
@@ -7582,7 +7703,7 @@ const SettingsView = {
         const addR = t.dataset.dept === 'R' && t.checked;
         await Settings.set({ depts: DEPT_ORDER.filter(d => cur.has(d)) });
         if (addR) {                      // Requisite eingeschaltet: Haus-Orte und Vorlagen (einmalig), Demo „Einfache Leute“
-          try { const h = await Req.ensureHouse(), d = await Req.maybeDemo(); if (h || d) Ui.toast(d ? 'Requisite eingeschaltet – Haus-Orte, Vorlagen und die Demo „Einfache Leute“ sind angelegt.' : 'Requisite eingeschaltet – Haus-Orte und Vorlagen sind angelegt.'); }
+          try { const h = await Req.ensureHouse(), d = await Req.maybeDemo(); await Req.maybeTest(); if (h || d) Ui.toast(d ? 'Requisite eingeschaltet – Haus-Orte, Vorlagen und die Demo „Einfache Leute“ sind angelegt.' : 'Requisite eingeschaltet – Haus-Orte und Vorlagen sind angelegt.'); }
           catch (err) { App.error(err); }
         }
         render();
@@ -7734,7 +7855,7 @@ const App = {
       try { await Demo.create(); } catch (e) { console.warn('Demo nicht angelegt', e); }
     }
     if (Settings.v.depts.includes('R')) {          // Requisite: Haus-Standard und Demo „Einfache Leute“ (nur einmal)
-      try { await Req.ensureHouse(); await Req.maybeDemo(); } catch (e) { console.warn('Requisite-Standard nicht angelegt', e); }
+      try { await Req.ensureHouse(); await Req.maybeDemo(); await Req.maybeTest(); } catch (e) { console.warn('Requisite-Standard nicht angelegt', e); }
     }
     Repo.on(() => this.requestRender());
     Sync.on(() => this.updatePill());
