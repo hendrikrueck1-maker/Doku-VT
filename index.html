@@ -447,6 +447,10 @@ ol.abl li .btn.icon{flex:none;width:var(--tap);height:var(--tap)}
 .setup>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:52px;padding:0 10px 0 14px}
 .setup>summary::-webkit-details-marker{display:none}
 .setup>summary h3{margin:0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);flex:1}
+.setup[data-abt="R"]>summary{min-height:64px}
+.setup[data-abt="R"]>summary h3{font-size:18px;color:var(--text)}
+.setup[data-abt="R"]>summary .sum{font-size:16px}
+.setup[data-abt="R"] .allg{font-size:19px;line-height:1.45;font-weight:600}
 .setup>summary .sum{font-size:13px;color:var(--muted);font-weight:500;letter-spacing:0;text-transform:none;margin-left:8px}
 .setup>summary .chev{transition:transform .2s;color:var(--muted)}
 .setup[open]>summary .chev{transform:rotate(90deg)}
@@ -795,25 +799,28 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
 .rquickchk input{width:24px;height:24px;flex:none}
 @media (max-width:520px){.rnewp{grid-template-columns:1fr auto}.rnewp input[name=newDarst]{grid-column:1/2}.rnewp .btn{grid-row:1/3;grid-column:2}}
 .rmv{margin-left:auto}
-.card.erow{display:grid;grid-template-columns:76px minmax(0,1.15fr) 76px minmax(0,1.7fr);align-items:stretch;min-height:76px}
-.card.erow.hasmv{grid-template-columns:76px minmax(0,1.15fr) 76px minmax(0,1.7fr) auto}
-.erow .ename{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:5px;padding:10px 14px;min-width:0}
-.erow .rwas{font-size:20px}
-.erow .rst{font-size:17px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
-.erow .ed{display:flex;gap:5px;align-items:flex-start;font-size:15px;color:var(--text);font-weight:600}.erow .ed svg{flex:none;margin-top:3px;color:var(--k)}
-.erow .note{font-size:14px;color:var(--text2)}
-.erow .thumbs{align-self:center;justify-self:center;padding:6px 0}
-.erow .th{width:64px;height:64px;border:0;padding:0;display:block}
-.erow .edet{display:flex;align-items:center;padding:8px 12px;min-width:0;border-left:1px dashed var(--line)}
-.fx{display:grid;grid-template-columns:1.3fr 1.1fr .8fr 1fr;gap:4px 12px;width:100%}
-.fc{display:flex;flex-direction:column;gap:1px;min-width:0}
-.fc small{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.fv{font-size:14px;color:var(--text);overflow-wrap:anywhere;line-height:1.25}
-.erow .rmv{align-self:center;padding-right:6px}
-.erow.done .ename,.erow.done .edet,.erow.done .thumbs{opacity:.5}
+.card.erow{display:grid;grid-template-columns:76px minmax(0,1fr) auto;grid-template-areas:"chk main pic" "chk mv mv";align-items:stretch;min-height:80px}
+.erow .gchk{grid-area:chk}
+.erow .ename{grid-area:main;display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:8px;padding:12px 14px;min-width:0}
+.erow .thumbs{grid-area:pic;align-self:start;padding:12px 12px 0 0}
+.erow .th{width:84px;height:84px;border:0;padding:0;display:block;border-radius:10px}
+.erow .rmvw{grid-area:mv;display:flex;justify-content:flex-end;padding:0 10px 10px}
+.erow .rwas{font-size:21px;line-height:1.2}
+.erow .rst{font-size:19px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.erow .rsz{align-self:flex-start;font-size:14px}
+.rwhy{display:flex;gap:6px;align-items:flex-start;font-size:17px;font-weight:700;color:var(--text)}.rwhy svg{flex:none;margin-top:3px;color:var(--k)}
+.rdl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;align-items:baseline}
+.rdt{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.rdd{font-size:17px;color:var(--text);overflow-wrap:anywhere;line-height:1.3}
+.rdd.hot{font-weight:900;color:var(--edit)}
+.rdd.strong{font-weight:700}
+.erow .note{font-size:16px;color:var(--text2);-webkit-line-clamp:4}
+.erow.done .ename,.erow.done .thumbs{opacity:.5}
 .arow{background:var(--surf2)}
-@media (max-width:700px){.card.erow,.card.erow.hasmv{grid-template-columns:64px minmax(0,1fr) 70px}.erow .gchk{grid-row:1/3}.erow .edet{grid-column:2/4;border-left:0;padding-top:0}
-  .fx{grid-template-columns:repeat(2,minmax(0,1fr))}.erow .rmv{grid-column:2/4;justify-self:end;padding-bottom:6px}}
+@media (min-width:900px){.rdl{grid-template-columns:max-content minmax(0,1fr) max-content minmax(0,1fr)}}
+@media (max-width:600px){.card.erow{grid-template-columns:58px minmax(0,1fr) auto}.erow .gchk{width:58px}.erow .gchk .box{width:38px;height:38px}
+  .erow .ename{padding:10px 10px}.erow .thumbs{padding:10px 8px 0 0}.erow .th{width:60px;height:60px}.erow .rwas{font-size:19px}.erow .rst{font-size:17px}
+  .rdl{grid-template-columns:minmax(0,1fr);gap:0}.rdt{font-size:11px}.rdd{font-size:16px;margin-bottom:6px}}
 .rens{flex-basis:100%;margin-top:6px}
 .rteil{border-left:4px solid var(--R-a);padding-left:12px;margin-bottom:6px}
 .rlz{color:var(--text)}
@@ -979,7 +986,7 @@ window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason 
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.6.3';
+const APP_VERSION = '2.6.4';
 const DB_NAME = 'lichtdoku';
 /* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
    bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
@@ -3277,7 +3284,10 @@ const Pdf = {
     const show = Repo.show(showId); if (!show) throw new Error('Veranstaltung nicht gefunden');
     const { W, H, M } = this, CW = W - 2 * M;
     const inDepts = opts.depts || App.visibleDepts(showId);
-    const items = Views.sortedItems(showId, { kat: opts.kat, sort: 'kreis', q: '', depts: inDepts, rsort: opts.rsort === 'person' ? 'person' : 'ort' });
+    const items0 = Views.sortedItems(showId, { kat: opts.kat, sort: 'kreis', q: '', depts: inDepts, rsort: opts.rsort === 'person' ? 'person' : 'ort' });
+    // Requisite: Gegenstände mit Foto zuerst, dann ohne (Reihenfolge sonst unverändert) – ab 2.6.4
+    const hasPh = it => Repo.photosOf(it.entry.id).length > 0;
+    const items = items0.filter(it => abtOf(it.entry) !== 'R').concat(items0.filter(it => abtOf(it.entry) === 'R' && hasPh(it)), items0.filter(it => abtOf(it.entry) === 'R' && !hasPh(it)));
     const abts = [...new Set(items.map(it => abtOf(it.entry)))];
     const tocAbt = abts.length <= 1 ? (abts[0] || inDepts[0] || 'L') : null;
 
@@ -3328,7 +3338,7 @@ const Pdf = {
       let out = [];
       if (show.f.dauer) out.push({ t: 'text', lines: ['Dauer: ' + show.f.dauer], h: 20, bold: true });
       if (show.f.fotoR) out.push({ t: 'img', b: show.f.fotoR, size: 150, cap: 'Übersicht', h: 164 });
-      if (show.f.einrichtungR) { out.push(rhead('ALLGEMEINE INFOS')); const ls = this.wrap(show.f.einrichtungR, 'F2', 11, CW - 20).slice(0, 30); out.push({ t: 'hl', lines: ls, h: ls.length * 14 + 14 }); out.push({ t: 'gap', h: 8 }); }
+      if (show.f.einrichtungR) { out.push(Object.assign(rhead('ALLGEMEINE INFOS'), { big: true, h: 38 })); const ls = this.wrap(show.f.einrichtungR, 'F2', 14, CW - 24).slice(0, 30); out.push({ t: 'hl', lines: ls, fs: 14, h: ls.length * 18 + 16 }); out.push({ t: 'gap', h: 8 }); }
       const saf = [];
       REQ_SICHER.forEach(([k, n]) => {
         es.filter(e => e.f.sicherheit === k).forEach(e => saf.push(`[!] ${n.toUpperCase()} – ${e.f.was || 'Ohne Namen'}${Req.val(e, 'ort') ? ' (' + Req.val(e, 'ort') + ')' : ''}`));
@@ -3355,27 +3365,44 @@ const Pdf = {
         return { vals: ['', s.text, o ? o.name : (e ? Req.val(e, 'ort') : ''), e ? Req.val(e, 'zuWem') : '', lz ? 'Ja' + (lz > 1 ? ` (${lz}x)` : '') : '', '', ''],
           sub: [Req.whenLong(s), saf1 ? `[!] ${Req.safeLabel(saf1).toUpperCase()}` : '', e ? 'Gegenstand: ' + (e.f.was || 'Ohne Namen') : ''].filter(Boolean).join(' · '), entry: e }; };
       const gRow = e => ({ vals: ['', mz(e) + (e.f.was || 'Ohne Namen'), [Req.val(e, 'ort'), e.f.stelle].filter(Boolean).join(' · '), Req.val(e, 'zuWem'), lzOf(e), e.f.uebergabe || '', ''], sub: gDet(e, false), entry: e });
+      // Ablauf ab 2.6.4: je Schritt/Gegenstand ein großer Eintrag (lesbar im Halbdunkel): Kästchen, Wann, Was groß, Angaben darunter
+      const TW = CW - 30 - 64;
+      const ritem = (when, title, info, more, entry) => {
+        const wl = when ? this.wrap(when, 'F2', 11.5, TW) : [], tl = this.wrap(title, 'F2', 14, TW).slice(0, 6);
+        const il = info ? this.wrap(info, 'F1', 12, TW).slice(0, 8) : [], ml = more ? this.wrap(more, 'F1', 11, TW).slice(0, 8) : [];
+        return { t: 'ritem', wl, tl, il, ml, entry, h: 10 + wl.length * 14 + tl.length * 17 + il.length * 15 + ml.length * 14 + 10 };
+      };
+      const sItem = s => { const o = s.ortId ? Req.ortByKey(sid, s.ortId) : null, saf1 = Req.stepSafety(s), e = Req.stepEntry(s);
+        const lz = (s.ausloeser || []).filter(x => x && x.typ === 'licht').reduce((n, x) => n + Math.max(1, +x.anzahl || 1), 0);
+        const info = [(o || e) ? 'Ort: ' + (o ? o.name : Req.val(e, 'ort')) : '', e && Req.val(e, 'zuWem') ? 'Zu wem: ' + Req.val(e, 'zuWem') : '', lz ? 'LICHTZEICHEN: JA' + (lz > 1 ? ` (${lz}x)` : '') : '', e ? 'Gegenstand: ' + (e.f.was || 'Ohne Namen') : ''].filter(Boolean).join('   |   ');
+        return ritem(Req.whenLong(s), s.text, info, saf1 ? `[!] ${Req.safeLabel(saf1).toUpperCase()}` : '', e); };
+      const gItem = e => {
+        const info = [Req.val(e, 'ort') || e.f.stelle ? 'Ort: ' + [Req.val(e, 'ort'), e.f.stelle].filter(Boolean).join(' · ') : '', Req.val(e, 'zuWem') ? 'Zu wem: ' + Req.val(e, 'zuWem') : '',
+          e.f.lichtzeichen === 'ja' ? 'LICHTZEICHEN: JA' : e.f.lichtzeichen === 'nein' ? 'Lichtzeichen: nein' : '', e.f.uebergabe ? 'ÜBERGABE: ' + e.f.uebergabe : ''].filter(Boolean).join('   |   ');
+        return ritem(e.f.wofuer ? 'für ' + e.f.wofuer : '', mz(e) + (e.f.was || 'Ohne Namen'), info, gDet(e, false).replace(e.f.wofuer ? 'für ' + e.f.wofuer : '\u0000', '').replace(/^ · /, ''), e); };
       const section = (a, out) => {
         const its = Req.sectionItems(sid, a, steps, es).filter(it => it.kind === 's' || a.typ !== 'vor');
         if (!its.length && !a.notiz) return false;
-        if (!out[0] || out[0].text !== a.label.toUpperCase()) out.push(rsub(a.label.toUpperCase()));   // nicht doppelt unter gleichnamiger Überschrift
-        if (a.notiz) { const ls = this.wrap(a.notiz, 'F1', 10, CW).slice(0, 8); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4, chain: true }); }
-        if (its.length) rrows(cols, its.map(it => it.kind === 's' ? stepRow(it.s) : gRow(it.e)), out, 1, 9);
+        if (!out[0] || out[0].text !== a.label.toUpperCase()) out.push(Object.assign(rhead(a.label.toUpperCase()), { big: true, h: 38 }));   // nicht doppelt unter gleichnamiger Überschrift
+        if (a.notiz) { const ls = this.wrap(a.notiz, 'F1', 12, CW).slice(0, 8); out.push({ t: 'note', lines: ls, big: true, h: ls.length * 15 + 6, chain: true }); }
+        its.forEach(it => out.push(it.kind === 's' ? sItem(it.s) : gItem(it.e)));
+        out.push({ t: 'gap', h: 10 });
         return true;
       };
       // Gegenstände nach Ort bzw. Person – je Gruppe erst die mit Foto, dann ohne
       const byPhoto = cmp => (x, y) => (Repo.photosOf(y.id).length > 0) - (Repo.photosOf(x.id).length > 0) || cmp(x, y);
       const gegenstaende = out => {
-        const byP = opts.rsort === 'person', gcols = tcols(byP ? 'ORT' : 'STELLE');
+        const byP = opts.rsort === 'person', gcols = [['', 0, 20], ['WAS', 20, CW - 20 - 128 - 112 - 56], [byP ? 'ORT' : 'STELLE', CW - 296, 128], ['ZU WEM', CW - 168, 112], ['FOTO', CW - 56, 56]];
         out.push(rhead(byP ? 'GEGENSTÄNDE EINRICHTEN – NACH PERSON' : 'GEGENSTÄNDE EINRICHTEN – NACH ORT'));
-        const row = (e, indent) => ({ vals: ['', (indent ? '> ' : '') + mz(e) + (e.f.was || 'Ohne Namen'), byP ? [Req.val(e, 'ort'), e.f.stelle].filter(Boolean).join(' · ') : e.f.stelle || '', Req.val(e, 'zuWem'), lzOf(e), e.f.uebergabe || '', ''], sub: gDet(e, true), entry: e, indent });
+        const row = (e, indent) => ({ vals: ['', (indent ? '> ' : '') + mz(e) + (e.f.was || 'Ohne Namen'), byP ? [Req.val(e, 'ort'), e.f.stelle].filter(Boolean).join(' · ') : e.f.stelle || '', Req.val(e, 'zuWem'), ''],
+          sub: [gDet(e, true), e.f.lichtzeichen === 'ja' ? 'LICHTZEICHEN' : '', e.f.uebergabe ? 'Übergabe: ' + e.f.uebergabe : ''].filter(Boolean).join(' · '), entry: e, indent });
         const withIn = (list, rows) => list.forEach(e => { rows.push(row(e, false)); Req.contentsOf(e).sort(Req.cmp(sid)).forEach(c => rows.push(row(c, true))); });
         const cmp = byPhoto(Req.cmp(sid));
         if (byP) {
           const pk = new Map(ps.map(p => [p.key, p]));
           ps.concat([{ key: '', rolle: 'Ohne Person' }]).forEach(p => {
             const l = es.filter(e => p.key ? (e.f.personIds || []).includes(p.key) : !(e.f.personIds || []).some(i => pk.has(i))).sort(cmp); if (!l.length) return;
-            out.push(rsub(Req.personLabel(p).toUpperCase() || 'OHNE PERSON')); rrows(gcols, l.map(e => row(e, false)), out, 1, 9);
+            out.push(rsub(Req.personLabel(p).toUpperCase() || 'OHNE PERSON')); rrows(gcols, l.map(e => row(e, false)), out, 1, 11);
           });
           return;
         }
@@ -3392,11 +3419,11 @@ const Pdf = {
             const pidx = new Map(ps.map((p, i) => [p.key, i])), subs = new Map();
             g.list.forEach(e => { const ids = (e.f.personIds || []).filter(i => pidx.has(i)).sort((a, b) => pidx.get(a) - pidx.get(b)); const k = ids.join('+'); if (!subs.has(k)) subs.set(k, { ids, list: [] }); subs.get(k).list.push(e); });
             [...subs.values()].sort((a, b) => (a.ids.length ? pidx.get(a.ids[0]) : 999) - (b.ids.length ? pidx.get(b.ids[0]) : 999)).forEach(s => {
-              rows.push({ vals: ['', s.ids.length ? s.ids.map(i => Req.personLabel(Req.sh(sid)[i])).join(' + ') : 'Ohne Person', '', '', '', '', ''], bold: true, nobox: true });
+              rows.push({ vals: ['', s.ids.length ? s.ids.map(i => Req.personLabel(Req.sh(sid)[i])).join(' + ') : 'Ohne Person', '', '', ''], bold: true, nobox: true });
               withIn(s.list.sort(cmp), rows);
             });
           } else withIn(g.list.sort(cmp), rows);
-          rrows(gcols, rows, out, 1, 9);
+          rrows(gcols, rows, out, 1, 11);
         });
       };
       // --- 2. Vor der Vorstellung: feste Punkte, Schritte, Verbrauch, alle Gegenstände nach Ort
@@ -3415,7 +3442,7 @@ const Pdf = {
       out = [rhead('NACH DER VORSTELLUNG')]; any = false;
       abs.filter(a => ['nach', 'abbau'].includes(a.typ)).forEach(a => { any = section(a, out) || any; });
       const ak = new Set(abs.map(a => a.key)), lose = steps.filter(s => !ak.has(s.abschnitt));
-      if (lose.length) { out.push(rsub('OHNE ABSCHNITT')); rrows(cols, lose.map(stepRow), out, 1, 9); any = true; }
+      if (lose.length) { out.push(rhead('OHNE ABSCHNITT')); lose.forEach(x => out.push(sItem(x))); any = true; }
       if (any) parts.push(out);
       // Teile mit Seitenumbruch verbinden
       const all = [];
@@ -3659,7 +3686,19 @@ const Pdf = {
       }
       if (!pg.blocks.length && pg.band) c.rgb(0.45, 0.48, 0.53).text(M, y - 12, 'Keine Einrichtung und keine Punkte für vor der Vorstellung eingetragen.', 'F1', 10.5);
       for (const b of pg.blocks) {
-        if (b.t === 'head') {
+        if (b.t === 'head' && b.big) {                 // Requisite: große Abschnitts-Überschrift (Ablauf, Allgemeine Infos)
+          c.rgb(...dk).text(M, y - 18, b.text, 'F2', 16); c.rgb(...dk, true).line(M, y - 26, W - M, y - 26, 1.5);
+        } else if (b.t === 'ritem') {                  // Requisite: ein Ablauf-Eintrag, groß gesetzt
+          c.rgb(0.2, 0.22, 0.26, true).rect(M + 2, y - 26, 16, 16, 'S');
+          const x = M + 30; let yy = y - 10;
+          b.wl.forEach(ln => { yy -= 14; c.rgb(0.42, 0.25, 0.02).text(x, yy + 3, ln, 'F2', 11.5); });
+          b.tl.forEach(ln => { yy -= 17; c.rgb(0.05, 0.06, 0.08).text(x, yy + 3, ln, 'F2', 14); });
+          b.il.forEach(ln => { yy -= 15; c.rgb(0.12, 0.13, 0.16).text(x, yy + 2, ln, 'F1', 12); });
+          b.ml.forEach(ln => { yy -= 14; c.rgb(0.32, 0.34, 0.38).text(x, yy + 2, ln, 'F1', 11); });
+          const pn = b.entry && Repo.photosOf(b.entry.id).length && entryPage.get(b.entry.id);
+          if (pn) c.rgb(0.2, 0.22, 0.26).textR(W - M, y - 22, 'Foto S. ' + pn, 'F2', 11);
+          c.rgb(0.78, 0.8, 0.84, true).line(M, y - b.h + 2, W - M, y - b.h + 2, 0.6);
+        } else if (b.t === 'head') {
           c.rgb(...dk).text(M, y - 12, b.text, 'F2', 10.5); c.rgb(...dk, true).line(M, y - 18, W - M, y - 18, 1);
         } else if (b.t === 'sub') {
           c.rgb(0.4, 0.43, 0.48).text(M, y - 12, b.text, 'F2', 8.5);
@@ -3690,9 +3729,12 @@ const Pdf = {
           c.rgb(0.82, 0.84, 0.87, true).line(M, y - b.h, W - M, y - b.h, 0.5);
         } else if (b.t === 'hl') {
           c.rgb(1, 0.93, 0.97).rect(M, y - b.h + 2, CW, b.h - 2); c.rgb(...dk).rect(M, y - b.h + 2, 4, b.h - 2);
-          b.lines.forEach((ln, k) => c.rgb(0.1, 0.11, 0.13).text(M + 12, y - 14 - k * 14, ln, 'F2', 11));
+          const fs = b.fs || 11, lh = fs + (fs > 11 ? 4 : 3);
+          b.lines.forEach((ln, k) => c.rgb(0.1, 0.11, 0.13).text(M + 12, y - fs - 4 - k * lh, ln, 'F2', fs));
         } else if (b.t === 'safe') {
           b.lines.forEach((ln, k) => c.rgb(0.62, 0.1, 0.3).text(M, y - 11 - k * 13, ln, 'F2', 10.5));
+        } else if (b.t === 'note' && b.big) {
+          b.lines.forEach((ln, k) => c.rgb(0.22, 0.24, 0.28).text(M, y - 13 - k * 15, ln, 'F1', 12));
         } else if (b.t === 'note') {
           b.lines.forEach((ln, k) => c.rgb(0.3, 0.33, 0.38).text(M, y - 11 - k * 13, ln, 'F1', 10));
         } else if (b.t === 'img') {
@@ -6934,29 +6976,31 @@ const ReqView = {
     const check = opts.check ? { key: opts.check, ok: this.isOk(ctx.run, opts.check) } : null;
     return Views.cardHtmlR(e, Object.assign({ sel: ctx.st.sel === e.id + ':' + (Repo.photosOf(e.id, 'A').length ? 'A' : 'N'), hideVor: !!ctx.hideVor }, opts, { check }));
   },
-  /** feste Spalten – Ort, Zu wem, Lichtzeichen, Übergabe stehen in Einrichten und Ablauf immer an derselben Stelle (ab 2.6.3) */
-  fx(cells) { return `<span class="fx">${cells.map(([l, v]) => `<span class="fc"><small>${Utils.esc(l)}</small><span class="fv">${v || '<span class="muted">–</span>'}</span></span>`).join('')}</span>`; },
-  gCells(e, first) {
-    const f = e.f, esc = Utils.esc;
-    return this.fx([[first === 'stelle' ? 'Stelle' : 'Ort', esc(first === 'stelle' ? (f.stelle || '') : [Req.val(e, 'ort'), f.stelle].filter(Boolean).join(' · '))],
-      ['Zu wem', esc(Req.val(e, 'zuWem'))], ['Lichtzeichen', f.lichtzeichen === 'ja' ? '<b class="rlz">Ja</b>' : f.lichtzeichen === 'nein' ? 'Nein' : ''], ['Übergabe', esc(f.uebergabe || '')]]);
+  /** Angaben als Liste „Bezeichnung – Wert“ in fester Reihenfolge (Ort/Stelle · Zu wem · Lichtzeichen · Übergabe), ab 2.6.4
+      groß und untereinander statt gequetschter Spalten – lesbar auf Smartphone und Tablet */
+  dl(rows) {
+    const r = rows.filter(x => x && x[1]);
+    return r.length ? `<span class="rdl">${r.map(([l, v, cls]) => `<span class="rdt">${Utils.esc(l)}</span><span class="rdd ${cls || ''}">${v}</span>`).join('')}</span>` : '';
   },
-  /** Zeile eines Gegenstands (Einrichten und Ablauf): Kästchen · Gegenstand · ein Foto · feste Spalten */
+  gInfo(e, first) {
+    const f = e.f, esc = Utils.esc;
+    const ort = first === 'stelle' ? f.stelle || '' : [Req.val(e, 'ort'), f.stelle].filter(Boolean).join(' · ');
+    return this.dl([[first === 'stelle' ? 'Stelle' : 'Ort', esc(ort)], ['Zu wem', esc(Req.val(e, 'zuWem'))],
+      ['Lichtzeichen', f.lichtzeichen === 'ja' ? 'JA' : f.lichtzeichen === 'nein' ? 'nein' : '', f.lichtzeichen === 'ja' ? 'hot' : ''], ['Übergabe', esc(f.uebergabe || ''), 'strong']]);
+  },
+  /** Zeile eines Gegenstands (Einrichten und Ablauf): Kästchen · Gegenstand mit Angaben · ein Foto */
   eRow(e, ctx, opts) {
     ctx.push(e);
     const esc = Utils.esc, f = e.f, ph = Repo.photosOf(e.id, 'A'), key = opts.check, ok = this.isOk(ctx.run, key), name = f.was || 'Ohne Namen';
     const menge = f.menge && String(f.menge).trim() && String(f.menge).trim() !== '1' ? `<span class="rmenge">${esc(String(f.menge).trim())}×</span> ` : '';
     const wn = opts.ablauf ? [] : Req.whenOf(e).filter(a => a.typ !== 'vor').map(a => a.kurz);
-    const under = [
-      wn.length || f.wofuer ? `<span class="ed">${I('clock', 'sm')}<span>${esc(wn.join(' · '))}${wn.length && f.wofuer ? ' – ' : ''}${f.wofuer ? 'für ' + esc(f.wofuer) : ''}</span></span>` : '',
-      f.sicherheit || (Array.isArray(f.zustand) && f.zustand.length) || f.markierung ? `<span class="chips">${f.sicherheit ? Req.safeBadge(f.sicherheit) : ''}${(f.zustand || []).map(z => `<span class="chip"><span>${esc(z)}</span></span>`).join('')}${f.markierung ? `<span class="chip"><b>Markierung</b><span>${esc(f.markierung)}</span></span>` : ''}</span>` : '',
-      f.bemerkung ? `<span class="note">${esc(f.bemerkung)}</span>` : ''].join('');
-    return `<article class="card rcard erow ${opts.ablauf ? 'arow rg' : ''} ${opts.mv ? 'hasmv' : ''} ${opts.indent ? 'rin' : ''} ${ok ? 'done' : ''}" data-k="A" data-abt="R" data-key="${esc(e.id + ':' + (ph.length ? 'A' : 'N'))}">
+    const why = wn.length || f.wofuer ? `<span class="rwhy">${I('clock', 'sm')}<span>${esc(wn.join(' · '))}${wn.length && f.wofuer ? ' – ' : ''}${f.wofuer ? 'für ' + esc(f.wofuer) : ''}</span></span>` : '';
+    const chips = f.sicherheit || (Array.isArray(f.zustand) && f.zustand.length) || f.markierung ? `<span class="chips">${f.sicherheit ? Req.safeBadge(f.sicherheit) : ''}${(f.zustand || []).map(z => `<span class="chip"><span>${esc(z)}</span></span>`).join('')}${f.markierung ? `<span class="chip"><b>Markierung</b><span>${esc(f.markierung)}</span></span>` : ''}</span>` : '';
+    return `<article class="card rcard erow ${opts.ablauf ? 'arow rg' : ''} ${opts.indent ? 'rin' : ''} ${ok ? 'done' : ''}" data-k="A" data-abt="R" data-key="${esc(e.id + ':' + (ph.length ? 'A' : 'N'))}">
       <button type="button" class="gchk" role="checkbox" aria-checked="${ok}" data-ract="g-chk" data-key="${esc(key)}" aria-label="${esc(name)} ${ok ? 'erledigt – zurücknehmen' : 'abhaken'}"><span class="box">${ok ? I('check') : ''}</span></button>
-      <button class="hit ename" data-act="open" aria-label="${esc(name)}"><span class="rwas">${menge}${f.was ? esc(f.was) : '<span class="muted">Ohne Namen</span>'}</span>${under}</button>
-      ${ph.length ? `<span class="thumbs"><span class="th" data-act="lb" data-i="0">${Views.thumbImg(ph[0].b)}</span></span>` : '<span class="nothumb"></span>'}
-      <button class="hit edet" data-act="open" tabindex="-1" aria-hidden="true">${this.gCells(e, opts.ablauf ? 'ort' : 'stelle')}</button>
-      ${opts.mv || ''}
+      <button class="hit ename" data-act="open" aria-label="${esc(name)}"><span class="rwas">${menge}${f.was ? esc(f.was) : '<span class="muted">Ohne Namen</span>'}</span>${why}${this.gInfo(e, opts.ablauf ? 'ort' : 'stelle')}${chips}${f.bemerkung ? `<span class="note">${esc(f.bemerkung)}</span>` : ''}</button>
+      ${ph.length ? `<span class="thumbs"><span class="th" data-act="lb" data-i="0">${Views.thumbImg(ph[0].b)}</span></span>` : ''}
+      ${opts.mv ? `<span class="rmvw">${opts.mv}</span>` : ''}
     </article>`;
   },
   /** Schritt im Ablauf – gleicher Aufbau wie ein Gegenstand */
@@ -6964,13 +7008,13 @@ const ReqView = {
     const esc = Utils.esc, e = Req.stepEntry(s), o = s.ortId ? Req.ortByKey(ctx.showId, s.ortId) : null, saf = Req.stepSafety(s), k = esc(s.key);
     const ok = this.isOk(run, s.key), when = Req.whenShort(s), ph = e && Repo.photosOf(e.id, 'A')[0];
     const lz = (s.ausloeser || []).filter(x => x && x.typ === 'licht').reduce((n, x) => n + Math.max(1, +x.anzahl || 1), 0);
-    return `<article class="card rcard erow arow as ${mv ? 'hasmv' : ''} ${ok ? 'done' : ''}" data-k="A" data-abt="R">
+    const info = this.dl([['Ort', esc(o ? o.name : s.ortId ? 'Ort entfernt' : e ? Req.val(e, 'ort') : '')], ['Zu wem', esc(e ? Req.val(e, 'zuWem') : '')],
+      ['Lichtzeichen', lz ? 'JA' + (lz > 1 ? ` (${lz}×)` : '') : '', 'hot'], ['Gegenstand', e ? esc(e.f.was || 'Ohne Namen') : '']]);
+    return `<article class="card rcard erow arow as ${ok ? 'done' : ''}" data-k="A" data-abt="R">
       <button type="button" class="gchk" role="checkbox" aria-checked="${ok}" data-ract="s-chk" data-step="${k}" aria-label="${ok ? 'Erledigt – zurücknehmen' : 'Abhaken'}"><span class="box">${ok ? I('check') : ''}</span></button>
-      <button type="button" class="hit ename" data-ract="${s.ci ? 'ci-open' : 's-open'}" data-step="${k}"><span class="rst">${when ? `<span class="rsz">${esc(when)}</span> ` : ''}${esc(s.text)}</span>
-        ${saf || e ? `<span class="chips">${saf ? Req.safeBadge(saf) : ''}${e ? `<span class="chip">${I('box', 'sm')}<span>${esc(e.f.was || 'Ohne Namen')}</span></span>` : ''}</span>` : ''}</button>
-      ${ph ? `<span class="thumbs"><button type="button" class="th" data-ract="s-photo" data-step="${k}" aria-label="Foto ansehen">${Views.thumbImg(ph.b)}</button></span>` : '<span class="nothumb"></span>'}
-      <button type="button" class="hit edet" data-ract="${s.ci ? 'ci-open' : 's-open'}" data-step="${k}" tabindex="-1" aria-hidden="true">${this.fx([['Ort', esc(o ? o.name : s.ortId ? 'Ort entfernt' : e ? Req.val(e, 'ort') : '')], ['Zu wem', esc(e ? Req.val(e, 'zuWem') : '')], ['Lichtzeichen', lz ? `<b class="rlz">Ja${lz > 1 ? ` (${lz}×)` : ''}</b>` : ''], ['Übergabe', '']])}</button>
-      ${mv}
+      <button type="button" class="hit ename" data-ract="${s.ci ? 'ci-open' : 's-open'}" data-step="${k}">${when ? `<span class="rsz">${esc(when)}</span>` : ''}<span class="rst">${esc(s.text)}</span>${info}${saf ? `<span class="chips">${Req.safeBadge(saf)}</span>` : ''}</button>
+      ${ph ? `<span class="thumbs"><button type="button" class="th" data-ract="s-photo" data-step="${k}" aria-label="Foto ansehen">${Views.thumbImg(ph.b)}</button></span>` : ''}
+      ${mv ? `<span class="rmvw">${mv}</span>` : ''}
     </article>`;
   },
   withContents(e, ctx, opts = {}, checkFn = null) {

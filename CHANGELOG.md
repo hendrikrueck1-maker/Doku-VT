@@ -1,5 +1,12 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.6.4 – 19.10.2026
+
+- **Ablauf und Einrichten lesbar:** Statt gequetschter Spalten steht unter dem Namen eine Angabenliste in fester Reihenfolge – Ort/Stelle · Zu wem · Lichtzeichen · Übergabe (nur ausgefüllte Angaben). Große Schrift, „Lichtzeichen JA“ hervorgehoben, ein Foto rechts. Auf dem Tablet zweispaltig, auf dem Smartphone untereinander.
+- **PDF-Ablauf groß gesetzt:** jeder Schritt/Gegenstand als eigener Eintrag mit großem Kästchen, Wann (farbig), Was in 14 pt, Angaben in 12 pt und „Foto S. x“; Abschnitts-Überschriften groß. Gegenstandsliste mit größerer Schrift und weniger, breiteren Spalten (Was · Stelle · Zu wem · Foto, Details darunter).
+- **PDF:** Requisite-Gegenstände mit Foto kommen jetzt automatisch vor denen ohne – im Inhaltsverzeichnis, auf den Fotoseiten und in den Listen.
+- **Allgemeine Infos** größer (App und PDF).
+
 ## 2.6.3 – 19.10.2026
 
 - **Ablauf:** Teile und Pausen sind beim Öffnen aufgeklappt, Vor/Nach der Vorstellung zugeklappt.
