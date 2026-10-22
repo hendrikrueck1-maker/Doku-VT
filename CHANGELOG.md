@@ -1,5 +1,24 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.8.0 – 22.10.2026
+
+Neuer Bereich **Cue-Fotos**: Lichtstimmungen vom Stellwerk/FOH fotografieren, mit Cue-Nummer, Notizen und Hinweisen ablegen und als PDF exportieren. Eigenständig neben den Dokumentationen – Licht, Ton, Bühne und Requisite bleiben unverändert. Kein Datenbank-Update. **Alle Geräte, die miteinander abgleichen, auf 2.8.0 aktualisieren** – ein Paket mit Cue-Fotos hat Format 4, Doku VT 2.7.0 lehnt es mit „bitte zuerst aktualisieren“ ab. Pakete ohne Cue-Fotos bleiben für ältere Geräte lesbar.
+
+- **Einstieg:** Auf der Startseite oben der Umschalter **Dokumentation | Cue-Fotos**. Unter Cue-Fotos stehen die Cue-Listen (je Probe oder Vorstellung eine) mit Titel, Spielstätte, Datum und Notiz; beim Anlegen lässt sich der Titel einer Veranstaltung antippen.
+- **Zwei Arbeitsweisen:** *Vorbereiten* – „+ Cue“ oder „Mehrere“ (von–bis, Schritt, z. B. 1–40 oder 0,5), später fotografieren. *Live* – „Kamera“ antippen und loslegen, Nummer, Notiz und Hinweis gleich oder danach ergänzen.
+- **Cue-Kamera** (die Doku-Kamera bleibt, wie sie ist): Groß die aktuelle Cue („Cue 12 · Bild B“, antippen = Nummer ändern). Der **Auslöser** macht das nächste Bild dieser Cue – A, B, C … **„Nächster Cue“** springt zur nächsten vorbereiteten Cue (gibt es keine, zur nächsten ganzen Nummer: 12 → 13, 12.5 → 13) und löst sofort aus.
+- **Schnelle Folgen ohne Warten:** Das Bild wird sofort aus dem Sucher kopiert; Komprimieren und Speichern laufen im Hintergrund nacheinander („2 wird gespeichert …“ / „✓ 34 gespeichert“). Jedes Foto wird einzeln gespeichert, auch nach dem Schließen der Kamera läuft die Warteschlange weiter.
+- **Dunkler Saal:** kein weißes Aufblitzen beim Auslösen, dunkle Knöpfe, im Rotlicht-Modus rot. Die Taschenlampe startet immer aus. Der Bildschirm bleibt an, solange die Kamera offen ist (wo der Browser es kann). Belichtungskorrektur (−/+), wo das Gerät sie anbietet (z. B. Pixel). Das Objektiv der Cue-Kamera wird getrennt gemerkt (vom FOH oft Tele).
+- **Fotos:** 1:1, 1200 px, JPEG 0,75 – dunkle Bühnenbilder meist 100–200 KB.
+- **Je Bild eigene Notiz und eigener Hinweis**, die Cue (Nummer, Name, Notiz) ist gemeinsam. Hinweise auffällig mit Symbol wie der Warnhinweis.
+- **Bearbeiten nur im Bearbeitungsmodus:** Cue antippen = Nummer, Name, Notiz und je Bild Notiz/Hinweis. Foto antippen = Ansehen, Notiz & Hinweis, **Markieren** (gleiche Bedienung wie bei den Doku-Fotos), **Original wiederherstellen** (das Original bleibt beim Markieren erhalten), nach vorn/hinten, zu anderer Cue, löschen. Wird eine Nummer auf eine vorhandene geändert, fragt die App: zusammenführen oder zwei behalten. Doppelte Nummern sind markiert.
+- **Ansichtsmodus:** Foto antippen öffnet die Bildansicht mit Cue, Bild, Name, Hinweis und Notizen; „Nächster Cue“ springt weiter.
+- **PDF** (A4 hoch): Deckblatt mit Übersicht aller Cues – auch ohne Foto („kein Foto“) – und Seitenzahlen, dann je Foto eine Seite: Kopfzeile Stück · Spielstätte · Datum, Plakette „CUE 12 · A“, Foto groß, darunter Cue-Nummer, „Bild B von 3“, Name, Hinweis (rosa), Notiz zum Bild, Notiz zur Cue. Sortiert nach Cue-Nummer. Option „Kompakt“ zum Mailen. Nach dem Export fragt die App, ob die Liste gelöscht werden soll.
+- **Löschen:** Papierkorb (wiederherstellbar, Speicher bleibt belegt) oder **endgültig** (gibt den Speicher sofort frei; andere Geräte geben ihn nach dem Abgleich mit „Speicher aufräumen“ frei). „Speicher aufräumen“ fasst Cue-Fotos lebender Listen und im Papierkorb nicht an.
+- **Abgleich:** Cue-Fotos gehen an jedes abgeglichene Gerät – unabhängig von dessen Abteilungen – per Sync-Paket und live. Notiz auf dem einen und Foto auf dem anderen Gerät gehen beide durch. Das Backup einer einzelnen Veranstaltung enthält keine Cue-Fotos, das Komplett-Backup schon.
+- **Behoben:** „Sync-Paket senden → Nur Änderungen“ meldete „Keine Änderungen“, wenn sich nur Durchgänge der Vorstellungs-Checkliste oder Haus-Daten der Requisite geändert hatten.
+- **Test:** `test_cues.py` (43 Prüfungen mit simulierter Kamera, u. a. Auslöser A/B/C, „Nächster Cue“, PDF mit qpdf, Paket an ein Gerät nur mit Ton, Ablehnung durch 2.7.0, Live-Abgleich, Papierkorb und endgültiges Löschen, Smartphone-Breite); `test_280.py` (die Prüfungen aus 2.7.0) läuft unverändert durch.
+
 ## 2.7.0 – 22.10.2026
 
 Licht überarbeitet, Ton und Bühne angeglichen, Bildübertragung repariert. Kein Datenbank-Update, Paketformat unverändert. **Alle Geräte auf 2.7.0 aktualisieren** – 2.6.5 behält die neuen Angaben (Zug, Warnhinweis, Ablauf Licht/Ton) beim Abgleich, zeigt sie aber nicht an (Bühnen-Schritte „Während der Vorstellung“ erscheinen dort nicht bzw. unter „Grundeinrichtung“).

@@ -1,6 +1,6 @@
 # Doku VT – Technikdokumentation
 
-**Version 2.7.0** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton, Bühnentechnik und Requisite: Einträge mit Fotos, Abläufe zum Abhaken, PDF-Export und Geräte-Abgleich. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
+**Version 2.8.0** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton, Bühnentechnik und Requisite: Einträge mit Fotos, Abläufe zum Abhaken, PDF-Export und Geräte-Abgleich. Dazu **Cue-Fotos**: Lichtstimmungen vom Stellwerk aus fotografieren und als PDF ablegen. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
 
 ## Auf GitHub veröffentlichen
 
@@ -22,6 +22,17 @@ Installiert startet Doku VT auch ohne Internet, und der Browser behandelt die Da
 Unter *Einstellungen → Dieses Gerät dokumentiert* festlegen, welche Abteilungen das Gerät führt (Standard nach dem Update: nur Licht). Jede Veranstaltung hat zusätzlich eigene Abteilungen. Sichtbar ist, was beide gemeinsam haben. Beim Abgleich gehen Einträge nur für die Abteilungen des Geräts mit; Veranstaltungen, Einrichtung und Züge immer.
 
 Die Daten liegen **nur lokal auf dem jeweiligen Gerät** (IndexedDB). Das Repository enthält keine Daten. Regelmäßig über *Abgleich → Komplett-Backup* sichern und das Backup auf einem zweiten Ort ablegen (z. B. Fritzbox-Speicher).
+
+## Cue-Fotos (ab 2.8.0)
+
+Startseite → **Cue-Fotos**. Je Probe oder Vorstellung eine Cue-Liste anlegen (Stück, Spielstätte, Datum). In den Bearbeitungsmodus schalten, dann:
+
+- **Live:** „Kamera“. Der Auslöser macht das nächste Bild der angezeigten Cue (A, B, C …). „Nächster Cue“ springt zur nächsten vorbereiteten Cue bzw. zur nächsten ganzen Nummer (12.5 → 13) und löst aus. Nummer oben antippen = ändern.
+- **Vorbereiten:** „+ Cue“ oder „Mehrere“ (z. B. 1–40), später fotografieren.
+- Notiz und Hinweis je Bild; Markieren wie bei den Doku-Fotos, das Original bleibt erhalten.
+- **PDF:** Deckblatt mit Übersicht, dann ein Foto je Seite (A4 hoch). Danach lässt sich die Liste löschen – „endgültig“ gibt den Speicher frei.
+
+**Wichtig:** Ein Paket mit Cue-Fotos hat Format 4. **Alle Geräte, die miteinander abgleichen, zuerst auf 2.8.0 aktualisieren** – 2.7.0 lehnt es mit „bitte zuerst aktualisieren“ ab.
 
 ## Spielstätte (ab 2.6.0)
 
@@ -53,6 +64,6 @@ Jede Veranstaltung kann eine Spielstätte haben: Großes Haus, Werkstattbühne, 
 | `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png` | App-Icons |
 | `DOKUMENTATION.md` | Architektur, Testcheckliste, Designentscheidungen, Ausblick |
 | `CHANGELOG.md` | Änderungen je Version |
-| `test/test_dokuvt.py` | Automatischer Test (Python + Playwright/Chromium): `python3 test/test_dokuvt.py` (mit `--alt <ordner mit 2.4.4>` zusätzlich der Vergleich mit der Vorversion). Nicht nötig für den Betrieb; muss nicht hochgeladen werden. |
+| `test_280.py`, `test_cues.py` | Automatische Tests (Python + Playwright/Chromium): `python3 test_280.py <ordner>` (Grundfunktionen, Licht/Ton/Bühne/Requisite), `python3 test_cues.py <ordner> [<ordner mit 2.7.0>]` (Cue-Fotos mit simulierter Kamera, optional Ablehnung durch 2.7.0). Nicht nötig für den Betrieb; müssen nicht hochgeladen werden. |
 
 Kamera, Teilen und Live-Abgleich brauchen **https**. Das bietet GitHub Pages automatisch. Per Doppelklick (`file://`) geöffnet funktioniert die App ebenfalls, aber ohne Kamera-Live-Vorschau und ohne Offline-Installation.

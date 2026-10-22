@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Doku VT</title>
-<meta name="description" content="Technikdokumentation (Licht, Ton, Bühne, Requisite) für den Theaterbetrieb – offline, mit Fotos, PDF-Export und Geräte-Abgleich.">
+<meta name="description" content="Technikdokumentation (Licht, Ton, Bühne, Requisite) und Cue-Fotos für den Theaterbetrieb – offline, mit Fotos, PDF-Export und Geräte-Abgleich.">
 <meta name="theme-color" content="#0b0d10">
 <meta name="color-scheme" content="dark light">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1017,6 +1017,75 @@ html[data-theme="red"] .cards.big .card .bigsticky{background:var(--surf2);-webk
 .qb.warn{border-color:var(--pink);background:var(--pink-soft)}
 .qb .mono{font-size:12px;opacity:.85}
 
+/* ---------- 2.8.0: Cue-Fotos ---------- */
+.hometabs{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:520px;margin:2px 0 16px}
+.hometabs button{justify-content:center;min-height:46px;font-size:15px}
+.cuewrap{padding-top:12px}
+.cuetb .row{justify-content:flex-start}
+.cuehint{font-size:13px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cuelist{display:flex;flex-direction:column;gap:14px}
+.cue{background:var(--surf);border:1px solid var(--line);border-left:8px solid var(--L-a);border-radius:var(--r);overflow:hidden}
+.cue.nopic{border-left-style:dashed}
+.cqh{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:8px 12px;background:color-mix(in srgb,var(--L-a) 10%,var(--surf))}
+.cqh:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+.cqh>svg{flex:none;color:var(--muted)}
+.cqnr{flex:none;font-family:var(--mono);font-weight:800;font-size:clamp(26px,6vw,34px);line-height:1;min-width:2.4em;overflow-wrap:anywhere}
+.cqnr small{display:block;font-family:var(--font);font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--muted);margin-bottom:3px}
+.cqname{flex:1;min-width:0;font-size:17px;font-weight:700;overflow-wrap:anywhere}
+.cqname small{display:block;font-size:14px;font-weight:500;color:var(--text2);white-space:pre-wrap}
+.cqn{flex:none;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.cqdup{flex:none;font-size:11px;font-weight:700;color:var(--edit);background:var(--edit-soft);padding:2px 6px;border-radius:5px}
+.cqimgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,130px),1fr));gap:10px;padding:10px}
+.cqimgs .cqi:only-child .th.add{aspect-ratio:auto;min-height:88px;flex-direction:row}
+.cqimgs .cqi:only-child{grid-column:1/-1}
+.cqi{display:flex;flex-direction:column;gap:6px;min-width:0}
+.cqi .th{position:relative;display:block;width:100%;aspect-ratio:1;border:0;padding:0;border-radius:10px;overflow:hidden;background:var(--surf2);cursor:pointer;color:inherit}
+.cqi .th img{width:100%;height:100%;object-fit:cover;filter:var(--photo-filter);opacity:0;transition:opacity .2s}
+.cqi .th img.ok{opacity:1}
+.cqi .th:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.cqi .lt{position:absolute;left:6px;top:6px;min-width:30px;text-align:center;background:rgba(0,0,0,.78);color:#fff;font-family:var(--mono);font-weight:800;font-size:15px;padding:2px 8px;border-radius:7px}
+.cqi .mk{position:absolute;right:6px;top:6px;background:rgba(0,0,0,.72);color:#fff;border-radius:7px;padding:3px;display:grid}
+.cqi .th.add{border:2px dashed var(--line2);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--text2);font-weight:700;font-size:15px}
+.cqi .nt{font-size:15px;line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere}
+.cqi .wbadge{font-size:13px}
+.cqed{border:1px solid var(--line);border-left:6px solid var(--L-a);border-radius:var(--r);background:var(--surf);padding:10px 12px;display:grid;gap:10px}
+.cqedh{display:flex;align-items:center;gap:10px;font-size:17px}
+.cqedth{width:64px;height:64px;border-radius:8px;overflow:hidden;background:var(--surf2);flex:none}
+.cqedth img{width:100%;height:100%;object-fit:cover;filter:var(--photo-filter);opacity:0}.cqedth img.ok{opacity:1}
+.qkeys.ttl button{font-family:var(--font);font-weight:600}
+.fab.cuefab{padding:0 22px}
+@media (max-width:560px){.cuetb [data-cact=addmany] .bl{display:none}.cuetb [data-cact=addmany]{padding:0;width:var(--tap)}.cuetb .row>.btn{padding:0 12px}.cuetb .modesw{padding:0 8px;gap:4px}}
+/* Cue-Kamera: dunkel, kein weißes Aufblitzen, große Knöpfe für den Daumen */
+.ccam .vf{width:min(100vw,calc(var(--vh)*100 - 400px));width:min(100vw,calc(100dvh - 400px));border-color:#2a2d33}
+.ccam .vf.go{animation:cpulse .3s ease}
+@keyframes cpulse{40%{box-shadow:inset 0 0 0 10px rgba(255,255,255,.28)}}
+.ccam .hintlbl{background:rgba(0,0,0,.65)!important;color:#e9ecf1!important}
+.ccam .cnr{border:0;background:transparent;color:#e9ecf1;font-family:var(--mono);font-size:32px;font-weight:800;min-height:52px;display:inline-flex;align-items:baseline;gap:8px;margin-top:6px;padding:0 14px;border-radius:12px}
+.ccam .cnr small{font-family:var(--font);font-size:12px;letter-spacing:.12em;color:#9aa0a8}
+.ccam .cnr span{font-family:var(--font);font-size:18px;font-weight:700;color:#c9ccd2}
+.ccam .cnr:active{background:rgba(255,255,255,.08)}
+.ccam .cctrl{padding-top:6px;align-items:center}
+.ccam .cside{display:flex;flex-direction:column;gap:8px;min-width:56px}
+.ccam .shutter{width:96px;height:96px;background:#24272c;border:6px solid #8f949b;box-shadow:inset 0 0 0 4px #000}
+.ccam .shutter:active{background:#3a3e45}
+.ccam .cnext{min-width:116px;min-height:88px;border-radius:20px;border:2px solid #8a2a22;background:#3a0f0c;color:#ffd9d4;font-weight:800;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 12px}
+.ccam .cnext b{font-family:var(--mono);font-size:22px}
+.ccam .cnext:active{background:#5a1712}
+.ccam .tbtn.done{background:#2b2f35;color:#e9ecf1}
+.ccam .cexp{display:flex;align-items:center;gap:10px;color:#ccc;font-size:13px;margin-top:4px}
+.ccam .cexp .cbtn{width:44px;height:44px;font-size:22px;font-weight:700}
+.ccam .cstat{min-height:18px;font-size:13px;color:#aab;margin-top:6px;text-align:center}
+.ccam .cstat.err{color:var(--danger);font-weight:700}
+.ccam .strip .cth{position:relative;flex:none;width:52px;height:52px;border-radius:6px;overflow:hidden;background:#1d2025;border:2px solid #4a4f57}
+.ccam .strip .cth img{width:100%;height:100%;object-fit:cover;border:0;border-radius:0}
+.ccam .strip .cth span{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.72);color:#fff;font:700 10px var(--mono);text-align:center;white-space:nowrap;overflow:hidden}
+.ccam .strip .cth.err{border-color:var(--danger)}
+@media (max-width:380px){.ccam .cnext{min-width:96px}.ccam .shutter{width:84px;height:84px}}
+html[data-theme="red"] .ccam .cnext{border-color:#7a1c16;background:#1a0303;color:#ff5a4a}
+html[data-theme="red"] .ccam .cnr,html[data-theme="red"] .ccam .cnr span,html[data-theme="red"] .ccam .cstat,html[data-theme="red"] .ccam .tbtn,html[data-theme="red"] .ccam .cbtn,html[data-theme="red"] .ccam .top .ttl{color:#ff5a4a}
+html[data-theme="red"] .ccam .shutter{border-color:#7a1c16;background:#1a0303}
+html[data-theme="red"] .ccam video{filter:var(--photo-filter)}
+
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
 @media print{.appbar,.toolbar,.fabbar{display:none}}
 </style>
@@ -1051,15 +1120,18 @@ window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason 
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.7.0';
+const APP_VERSION = '2.8.0';
 const DB_NAME = 'lichtdoku';
 /* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
    bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
    aber eingefroren und gibt sie nie frei → der Start hing (schwarzes Bild). Deshalb: nie wieder ein Update.
    Neue Datensatzarten kommen in den vorhandenen Speicher „meta“ (Durchgänge: Schlüssel „run:<id>“). */
 const DB_STORES = ['shows', 'entries', 'photos', 'fulls', 'thumbs', 'meta'];
-const FORMAT_VERSION = 3;              // höchstes lesbares Paketformat (2: Abteilungen · 3: Requisite – nur, wenn Requisite-Inhalt im Paket ist)
+const FORMAT_VERSION = 4;              // höchstes lesbares Paketformat (2: Abteilungen · 3: Requisite · 4: Cue-Fotos – jeweils nur, wenn solcher Inhalt im Paket ist)
 const FORMAT_BASE = 2;                 // Pakete ohne Requisite-Inhalt bleiben Format 2 (lesbar für 2.0.0–2.4.4)
+/* Cue-Fotos (ab 2.8.0): eigene Datensätze im Speicher „meta“ (Schlüssel-Präfix → Speicher im RAM) und Fotogröße */
+const CUE_KEYS = { 'cl:': 'cuelists', 'cq:': 'cues', 'cb:': 'cueimgs' };
+const CUE_PX = 1200, CUE_Q = 0.75;     // Gedächtnisstütze: 1200 px, JPEG 0,75 – dunkle Bühnenbilder meist 100–200 KB
 
 /* =====================================================================
    DEPT – zentrale Konfiguration der Abteilungen. Felder, Beschriftungen,
@@ -1649,6 +1721,11 @@ const Rec = {
       if (typeof r.b !== 'string' || !this.ID.test(r.b)) return false;
       const en = r.f.entryId; if (en != null && en !== '' && (typeof en !== 'string' || !this.ID.test(en))) return false;
     }
+    if ((type === 'cue' || type === 'cueimg') && (typeof r.listId !== 'string' || !this.ID.test(r.listId))) return false;
+    if (type === 'cueimg') {          // Cue-Foto (ab 2.8.0): Bild, Original und Cue sind Kennungen
+      if (typeof r.f.b !== 'string' || !this.ID.test(r.f.b) || typeof r.f.cueId !== 'string' || !this.ID.test(r.f.cueId)) return false;
+      if (r.f.o != null && r.f.o !== '' && (typeof r.f.o !== 'string' || !this.ID.test(r.f.o))) return false;
+    }
     const fk = Object.keys(r.f), tk = Object.keys(r.t);
     if (fk.length > this.MAX_FIELDS || tk.length > this.MAX_FIELDS) return false;
     for (const k of fk.concat(tk)) if (this.BAD_KEYS.has(k) || k.length > 120) return false;
@@ -1667,6 +1744,7 @@ const Rec = {
    ===================================================================== */
 const Repo = {
   shows: new Map(), entries: new Map(), photos: new Map(), runs: new Map(),
+  cuelists: new Map(), cues: new Map(), cueimgs: new Map(),   // Cue-Fotos (ab 2.8.0), im Store meta unter cl:/cq:/cb:
   house: new Map(),       // Haus-Daten (ab 2.5.0): „requisite“ = Haus-Orte (ho:) und Gegenstand-Vorlagen (hg:), im Store meta unter „house:<id>“
   _byEntry: null,         // Index: entryId → [photo]
   listeners: new Set(),
@@ -1679,6 +1757,8 @@ const Repo = {
     for (const r of [...u0, ...u]) { const cur = this.runs.get(r.id); this.runs.set(r.id, cur ? Rec.merge(cur, r).rec : r); }
     const hs = m.filter(x => typeof x.k === 'string' && x.k.startsWith('house:') && x.v && x.v.id).map(x => x.v);
     hs.forEach(r => this.house.set(r.id, r));
+    // Cue-Fotos (ab 2.8.0): Listen, Cues und Bilder liegen im Speicher „meta“
+    m.forEach(x => { const n = typeof x.k === 'string' && CUE_KEYS[x.k.slice(0, 3)]; if (n && x.v && x.v.id) { this[n].set(x.v.id, x.v); Clock.observe(x.v.mod || 0); } });
     [...s, ...e, ...p, ...u, ...hs].forEach(r => Clock.observe(r.mod || 0));
     this._byEntry = null;
   },
@@ -1753,11 +1833,11 @@ const Repo = {
   },
 
   /* ---------- Schreiben (jeweils eine atomare Transaktion) ---------- */
-  async _write({ shows = [], entries = [], photos = [], fulls = [], thumbs = [], runs = [], house = [] }, local = true) {
+  async _write({ shows = [], entries = [], photos = [], fulls = [], thumbs = [], runs = [], house = [], cuelists = [], cues = [], cueimgs = [] }, local = true) {
     // Eingangszeit auf DIESEM Gerät (ab 2.4.3, kein Feld in f/t → kein Merge-Zeitstempel). Sie entscheidet,
     // was ein „Nur Änderungen“-Paket weitergibt – auch Daten, die von einem anderen Gerät übernommen wurden.
     const rx = Date.now();
-    const sets = [['shows', shows], ['entries', entries], ['photos', photos], ['runs', runs], ['house', house]];
+    const sets = [['shows', shows], ['entries', entries], ['photos', photos], ['runs', runs], ['house', house], ['cuelists', cuelists], ['cues', cues], ['cueimgs', cueimgs]];
     sets.forEach(([, list]) => list.forEach(r => { r.rx = rx; }));
     // Cache SOFORT setzen (ab 2.4.3): Wer danach Rec.patch/merge rechnet, sieht diesen Stand – zwei schnelle
     // Schreibvorgänge überschreiben sich nicht mehr gegenseitig (Lost Update). IndexedDB führt die
@@ -1770,6 +1850,7 @@ const Repo = {
       await Store.tx(names, 'readwrite', s => {
         shows.forEach(r => s.shows.put(r)); entries.forEach(r => s.entries.put(r)); photos.forEach(r => s.photos.put(r)); runs.forEach(r => s.meta.put({ k: 'run:' + r.id, v: r }));
         house.forEach(r => s.meta.put({ k: 'house:' + r.id, v: r }));
+        cuelists.forEach(r => s.meta.put({ k: 'cl:' + r.id, v: r })); cues.forEach(r => s.meta.put({ k: 'cq:' + r.id, v: r })); cueimgs.forEach(r => s.meta.put({ k: 'cb:' + r.id, v: r }));
         fulls.forEach(r => s.fulls.put(r)); thumbs.forEach(r => s.thumbs.put(r));
       });
     } catch (err) {
@@ -1782,7 +1863,7 @@ const Repo = {
       throw err;
     }
     if (local) Sync.noteLocalChange();
-    this.emit({ local, records: { shows, entries, photos, runs, house }, blobIds: fulls.map(f => f.id) });
+    this.emit({ local, records: { shows, entries, photos, runs, house, cuelists, cues, cueimgs }, blobIds: fulls.map(f => f.id) });
     App.ensurePersist();
   },
   async createShow(titel, abteilungen = null, spielstaette = '') {
@@ -2062,6 +2143,7 @@ const Repo = {
     }
     // Requisite (ab 2.5.0): Übersichtsfotos, Fotos der Stück-Orte (auch im Papierkorb), Haus-Orte und Vorlagen
     Req.blobRefs([...this.shows.values()], [...this.house.values()], true).forEach(b => used.add(b));
+    Cues.blobRefs(true).forEach(b => used.add(b));          // Cue-Fotos (ab 2.8.0), Listen im Papierkorb behalten ihre Bilder
     return used;
   },
   /** Anzahl der Bilddaten, die „Speicher aufräumen“ entfernen würde */
@@ -2083,12 +2165,12 @@ const Repo = {
    * Es wird nie blind überschrieben – jedes Feld wird einzeln per Zeitstempel zusammengeführt.
    */
   async applyRemote(data, blobs = []) {
-    const out = { shows: [], entries: [], photos: [], fulls: [], thumbs: [], runs: [], house: [] };
+    const out = { shows: [], entries: [], photos: [], fulls: [], thumbs: [], runs: [], house: [], cuelists: [], cues: [], cueimgs: [] };
     const stat = { neu: 0, geaendert: 0, unveraendert: 0, bilder: 0, ungueltig: 0 };
     // Blob-Liste VOR dem Zusammenführen holen: zwischen Merge und _write darf kein await liegen,
     // sonst rechnet ein paralleler Aufruf aus demselben alten Stand (Lost Update)
     const have = blobs.length ? await this.blobIds() : null;
-    for (const [name, type] of [['shows', 'show'], ['entries', 'entry'], ['photos', 'photo'], ['runs', 'run'], ['house', 'house']]) {
+    for (const [name, type] of [['shows', 'show'], ['entries', 'entry'], ['photos', 'photo'], ['runs', 'run'], ['house', 'house'], ['cuelists', 'cuelist'], ['cues', 'cue'], ['cueimgs', 'cueimg']]) {
       const list = Array.isArray(data[name]) ? data[name] : [];
       for (const r0 of list) {
         if (!Rec.valid(r0, type)) { stat.ungueltig++; continue; }
@@ -2107,7 +2189,7 @@ const Repo = {
         out.fulls.push({ id: bl.id, d: bl.full }); out.thumbs.push({ id: bl.id, d: bl.thumb || bl.full }); stat.bilder++;
       }
     }
-    if (out.shows.length + out.entries.length + out.photos.length + out.fulls.length + out.runs.length + out.house.length) await this._write(out, false);
+    if (out.shows.length + out.entries.length + out.photos.length + out.fulls.length + out.runs.length + out.house.length + out.cuelists.length + out.cues.length + out.cueimgs.length) await this._write(out, false);
     return stat;
   },
   /** Fotos, deren Bilddaten lokal fehlen (z. B. nach inkrementellem Paket) */
@@ -2115,6 +2197,7 @@ const Repo = {
     const have = await this.blobIds(); const miss = new Set();
     for (const p of this.photos.values()) if (!p.f.del && !have.has(p.b)) miss.add(p.b);
     if (Settings.v.depts.includes('R')) Req.blobRefs(this.liveShows(), [...this.house.values()]).forEach(b => { if (!have.has(b)) miss.add(b); });
+    Cues.blobRefs(false).forEach(b => { if (!have.has(b)) miss.add(b); });
     return [...miss];
   }
 };
@@ -2134,6 +2217,7 @@ const Settings = {
     reqQuick: [],                                   // Ensemble der Requisite [{id, name}] (ab 2.6.2; 2.6.1: {rolle, darsteller})
     zustandKeys: REQ_ZUSTAND.slice(),               // Zustand-Schnelltasten der Requisite (ab 2.5.0)
     reqView: 'einrichten',                          // zuletzt gewählte Requisite-Ansicht: einrichten | ablauf | personen
+    cueCamId: '',                                   // Objektiv der Cue-Kamera (ab 2.8.0, getrennt von der Doku-Kamera – vom FOH oft Tele)
     depts: ['L']                                    // Abteilungen, die DIESES Gerät dokumentiert (bestehende Installationen: nur Licht)
   },
   async load() {
@@ -2181,8 +2265,8 @@ const Photo = {
     try { return await this.fromCanvas(c); } finally { c.width = c.height = 0; }
   },
   /** Quadratischer Canvas → {b, w, h, full, thumb} */
-  async fromCanvas(c) {
-    const full = await this._jpeg(c, Settings.v.quality);
+  async fromCanvas(c, q = Settings.v.quality) {
+    const full = await this._jpeg(c, q);
     const t = document.createElement('canvas'); t.width = t.height = this.THUMB_PX;
     const tctx = t.getContext('2d'); tctx.imageSmoothingQuality = 'high';
     tctx.drawImage(c, 0, 0, this.THUMB_PX, this.THUMB_PX);
@@ -2564,7 +2648,7 @@ const Annotator = {
    items: [{b, entryId, kat, idx, n}]
    ===================================================================== */
 const Lightbox = {
-  open(items, start = 0) {
+  open(items, start = 0, opts = {}) {
     if (!items.length) return;
     let i = start, st = { s: 1, x: 0, y: 0 }, fullUrl = null;
     const el = document.createElement('div'); el.className = 'lbx'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Fotoansicht');
@@ -2575,7 +2659,7 @@ const Lightbox = {
       <button class="nav prev" data-a="prev" aria-label="Vorheriges Foto">${I('arrowL')}</button>
       <button class="nav next" data-a="next" aria-label="Nächstes Foto">${I('arrowR')}</button>
       <div class="infos"></div>
-      <button class="nextk" data-a="nextk" aria-label="Zum nächsten Eintrag">Nächster Eintrag ${I('arrowR', 'sm')}</button>`;
+      <button class="nextk" data-a="nextk" aria-label="Zum nächsten Eintrag">${Utils.esc(opts.nextLabel || 'Nächster Eintrag')} ${I('arrowR', 'sm')}</button>`;
     const img = el.querySelector('img'), stage = el.querySelector('.stage'), infos = el.querySelector('.infos'), pos = el.querySelector('.pos');
     const apply = (anim) => {
       img.style.transition = anim ? 'transform .22s ease' : 'none';
@@ -2593,6 +2677,7 @@ const Lightbox = {
       el.querySelector('.nav.prev').disabled = i === 0; el.querySelector('.nav.next').disabled = i === items.length - 1;
       el.querySelectorAll('.nav').forEach(n => n.classList.toggle('hidden', items.length < 2));
       el.querySelector('.nextk').classList.toggle('hidden', nextKreisIdx() < 0);
+      if (typeof it.infoHtml === 'function') { el.dataset.abt = 'L'; infos.innerHTML = it.infoHtml(); } else {     // Cue-Fotos (ab 2.8.0): eigene Einblendung
       const e = it.draftF ? { f: Object.assign({ abt: it.draftAbt }, it.draftF), showId: it.entryId && Repo.entries.get(it.entryId) ? Repo.entries.get(it.entryId).showId : App.state.showId } : (Repo.entries.get(it.entryId) || { f: {} });
       const abt = abtOf(e), D = DEPT[abt], mv = mainVal(e);
       el.dataset.abt = abt;
@@ -2606,6 +2691,7 @@ const Lightbox = {
         ${abt !== 'R' && e.id ? Views.stepsHtml(e) : ''}
         ${chips ? `<div class="chips" style="margin-top:8px">${chips}</div>` : ''}
         ${e.f.bemerkung ? `<div class="note">${Utils.esc(e.f.bemerkung)}</div>` : ''}`;
+      }
       fitStage();
       // Vorschaubild erst vollständig dekodieren, dann tauschen – kein Aufblitzen, kein halbes Bild
       const tu = it.thumbUrl || await Thumbs.url(it.b); if (my !== seq) return;
@@ -4112,7 +4198,7 @@ const Sync = {
   async markSynced(msg) { this.state.lastSyncAt = Date.now(); this.state.lastError = ''; await this.log(msg, 'ok'); },
   pending() {
     const since = this.state.lastSyncAt; let n = 0;
-    for (const m of [Repo.shows, Repo.entries, Repo.photos, Repo.runs, Repo.house]) for (const r of m.values()) if (r.mod > since) n++;
+    for (const m of [Repo.shows, Repo.entries, Repo.photos, Repo.runs, Repo.house, Repo.cuelists, Repo.cues, Repo.cueimgs]) for (const r of m.values()) if (r.mod > since) n++;
     return n;
   },
   status() {
@@ -4134,7 +4220,11 @@ const Sync = {
     // Haus-Datensätze (Requisite) gehören zu keiner Veranstaltung – nur ohne Auswahl einzelner Veranstaltungen
     // oder wenn die Requisite dabei ist; inkrementell nach rx wie alle anderen
     const house = [...Repo.house.values()].filter(r => (r.rx || r.mod) > since);
-    return this.filterRecs({ shows: pick(Repo.shows), entries: pick(Repo.entries), photos: pick(Repo.photos), runs: pick(Repo.runs), house }, depts);
+    // Cue-Fotos (ab 2.8.0) gehören zu keiner Veranstaltung und keiner Abteilung: Sie gehen an jedes abgeglichene Gerät,
+    // aber nicht in das Backup einzelner Veranstaltungen
+    const cuePick = m => showIds ? [] : [...m.values()].filter(r => (r.rx || r.mod) > since);
+    return this.filterRecs({ shows: pick(Repo.shows), entries: pick(Repo.entries), photos: pick(Repo.photos), runs: pick(Repo.runs), house,
+      cuelists: cuePick(Repo.cuelists), cues: cuePick(Repo.cues), cueimgs: cuePick(Repo.cueimgs) }, depts);
   },
   /** Einträge und Fotos auf Abteilungen beschränken. Ein Foto gehört zur Abteilung seines Eintrags. */
   filterRecs(recs, depts) {
@@ -4151,7 +4241,8 @@ const Sync = {
       return Object.assign({}, r, { f, t });
     });
     // Haus-Datensätze der Requisite nur an/aus Geräten mit Requisite (ältere Gegenstellen kennen „R“ nicht)
-    return { shows: recs.shows || [], entries: (recs.entries || []).filter(okE), photos: (recs.photos || []).filter(okP), runs, house: depts.includes('R') ? (recs.house || []) : [] };
+    return { shows: recs.shows || [], entries: (recs.entries || []).filter(okE), photos: (recs.photos || []).filter(okP), runs, house: depts.includes('R') ? (recs.house || []) : [],
+      cuelists: recs.cuelists || [], cues: recs.cues || [], cueimgs: recs.cueimgs || [] };
   },
   /** Requisite-Inhalt aus einem eingehenden Paket entfernen (Gerät ohne Requisite) */
   dropReq(data) {
@@ -4161,6 +4252,7 @@ const Sync = {
     data.entries = ents.filter(e => !rIds.has(e && e.id));
     const ph = Array.isArray(data.photos) ? data.photos : [];
     const keepB = new Set(ph.filter(p => p && p.f && !rIds.has(p.f.entryId)).map(p => p.b));
+    Cues.blobRefsOf(Array.isArray(data.cueimgs) ? data.cueimgs : []).forEach(b => keepB.add(b));     // Cue-Fotos (ab 2.8.0) behalten
     data.photos = ph.filter(p => p && p.f && !rIds.has(p.f.entryId));
     data.house = [];
     if (Array.isArray(data.blobs)) data.blobs = data.blobs.filter(b => b && keepB.has(b.id));
@@ -4172,6 +4264,10 @@ const Sync = {
     return (recs.house || []).length > 0 || (recs.entries || []).some(isR)
       || (recs.photos || []).some(p => isR(Repo.entries.get(p.f.entryId) || (recs.entries || []).find(x => x.id === p.f.entryId)));
   },
+  /** Enthält das Paket Cue-Fotos? → Paketformat 4 (2.7.0 lehnt es mit „bitte zuerst aktualisieren“ ab) */
+  hasCue(recs) { return ['cuelists', 'cues', 'cueimgs'].some(k => (recs[k] || []).length > 0); },
+  /** Cue-Fotos aus einer Sendung entfernen (Gegenstelle ohne Cue-Fotos) */
+  stripCues(recs) { recs.cuelists = []; recs.cues = []; recs.cueimgs = []; return recs; },
   /** Abteilungen dieses Geräts als Text, z. B. „Licht, Ton“ */
   deptLabel(depts = Settings.v.depts) { return depts.map(d => DEPT[d].short).join(', '); },
   /** Paket als Blob – stückweise zusammengesetzt (kein Riesen-String im Speicher) */
@@ -4182,14 +4278,14 @@ const Sync = {
     if (showIds && !showIds.some(id => Repo.showDepts(id).includes('R'))) recs.house = [];
     // Format 3 nur bei Requisite-Inhalt: 2.4.4 lehnt solche Pakete mit „bitte zuerst aktualisieren“ ab,
     // alle anderen Pakete bleiben für ältere Geräte lesbar (Format 2)
-    const fv = this.hasReq(recs) ? FORMAT_VERSION : FORMAT_BASE;
+    const fv = this.hasCue(recs) ? 4 : this.hasReq(recs) ? 3 : FORMAT_BASE;
     const head = { format: 'lichtdoku', type, formatVersion: fv, appVersion: APP_VERSION, deviceId: this.deviceId, deviceName: this.deviceName(), createdAt: Date.now(), since, showIds, depts, ...recs, blobs: [] };
     const json = JSON.stringify(head);
     const parts = [json.slice(0, -2)];
     let n = 0;
     if (withBlobs) {
       const withR = !depts || depts.includes('R');
-      const ids = [...new Set(recs.photos.filter(p => !p.f.del).map(p => p.b).concat(withR ? Req.blobRefs(recs.shows.filter(s => !s.f.del), recs.house) : []))];
+      const ids = [...new Set(recs.photos.filter(p => !p.f.del).map(p => p.b).concat(withR ? Req.blobRefs(recs.shows.filter(s => !s.f.del), recs.house) : [], Cues.blobRefsOf(recs.cueimgs)))];
       for (const id of ids) {
         const full = await Repo.full(id), thumb = await Repo.thumb(id);
         if (!full) continue;
@@ -4199,7 +4295,7 @@ const Sync = {
       }
     }
     parts.push(']}');
-    return { blob: new Blob(parts, { type: 'application/json' }), counts: { shows: recs.shows.length, entries: recs.entries.length, photos: recs.photos.length, runs: recs.runs.length, house: recs.house.length, blobs: n }, formatVersion: fv };
+    return { blob: new Blob(parts, { type: 'application/json' }), counts: { shows: recs.shows.length, entries: recs.entries.length, photos: recs.photos.length, runs: recs.runs.length, house: recs.house.length, cues: recs.cues.length, cueimgs: recs.cueimgs.length, blobs: n }, formatVersion: fv };
   },
   async importPackage(file, onProgress) {
     let data;
@@ -4465,7 +4561,7 @@ class PeerSession {
     this.dc = dc; dc.bufferedAmountLowThreshold = 1 << 20;
     dc.onopen = () => {
       this.open = true; Sync.peer = this; Sync.changed(); this.onstate('open');
-      this.send({ t: 'hello', id: Sync.deviceId, n: Sync.deviceName(), v: APP_VERSION, d: Settings.v.depts });
+      this.send({ t: 'hello', id: Sync.deviceId, n: Sync.deviceName(), v: APP_VERSION, d: Settings.v.depts, c: 1 });   // c: kennt Cue-Fotos (ab 2.8.0)
     };
     dc.onclose = () => this._closed();
     dc.onmessage = ev => this._recv(ev.data);
@@ -4530,8 +4626,9 @@ class PeerSession {
           // Abteilungen: Schnittmenge beider Geräte (ältere Versionen ohne Angabe = nur Licht)
           this.peerDepts = Array.isArray(msg.d) ? msg.d : ['L'];
           this.depts = Settings.v.depts.filter(d => this.peerDepts.includes(d));
+          this.peerCues = !!msg.c;                  // ältere Gegenstellen kennen keine Cue-Fotos
           await Sync.log(`Live-Verbindung mit ${msg.n} hergestellt (Einträge: ${this.depts.length ? Sync.deptLabel(this.depts) : 'keine gemeinsame Abteilung – nur Veranstaltungen'})`, 'ok');
-          await this.send({ t: 'meta', ...Sync.collect({ since: 0, depts: this.depts }) });
+          { const meta = Sync.collect({ since: 0, depts: this.depts }); if (!this.peerCues) Sync.stripCues(meta); await this.send({ t: 'meta', ...meta }); }
           this.unsub = Repo.on(ev => this._local(ev));
           break;
         case 'meta': {
@@ -4557,7 +4654,7 @@ class PeerSession {
         case 'delta': {
           await Repo.applyRemote(msg);
           const ids = (msg.photos || []).filter(p => !p.f.del).map(p => p.b)
-            .concat(Settings.v.depts.includes('R') ? Req.blobRefs((msg.shows || []).filter(s => s && s.f && !s.f.del), msg.house || []) : []);
+            .concat(Settings.v.depts.includes('R') ? Req.blobRefs((msg.shows || []).filter(s => s && s.f && !s.f.del), msg.house || []) : [], Cues.blobRefsOf(msg.cueimgs || []));
           const have = await Repo.blobIds(); const miss = ids.filter(b => !have.has(b) && !this.need.has(b));
           miss.forEach(b => this.need.add(b));
           if (miss.length) await this.send({ t: 'need', ids: miss }); else await Sync.markSynced(`Live-Änderung von ${this.peerName} übernommen`);
@@ -4581,9 +4678,11 @@ class PeerSession {
   async _local(ev) {
     if (!ev.local || !this.open) return;
     const recs = Sync.filterRecs(ev.records, this.depts || Settings.v.depts);
-    if (!recs.shows.length && !recs.entries.length && !recs.photos.length && !(recs.runs || []).length && !(recs.house || []).length) return;
+    if (!this.peerCues) Sync.stripCues(recs);
+    if (!recs.shows.length && !recs.entries.length && !recs.photos.length && !(recs.runs || []).length && !(recs.house || []).length && !Sync.hasCue(recs)) return;
     await this.send({ t: 'delta', ...recs });
     const okBlobs = new Set(recs.photos.map(p => p.b));
+    Cues.blobRefsOf(recs.cueimgs).forEach(b => okBlobs.add(b));
     if ((this.depts || Settings.v.depts).includes('R')) Req.blobRefs(recs.shows, recs.house || []).forEach(b => okBlobs.add(b));
     for (const id of (ev.blobIds || []).filter(b => okBlobs.has(b))) {
       const full = await Repo.full(id), thumb = await Repo.thumb(id);
@@ -6305,7 +6404,7 @@ const Req = {
     if (fd.type === 'area') return `<div class="f">${lab}<textarea id="${id}" name="${Utils.esc(fd.k)}" rows="${fd.rows || 3}" placeholder="${Utils.esc(fd.ph || '')}">${Utils.esc(v)}</textarea>
       ${(fd.quick || []).length ? `<div class="qkeys">${fd.quick.map(q => `<button type="button" data-quick="${Utils.esc(fd.k)}" data-qv="${Utils.esc(q)}">${Utils.esc(q)}</button>`).join('')}</div>` : ''}${fd.hint ? `<div class="fh">${Utils.esc(fd.hint)}</div>` : ''}</div>`;
     if (fd.type === 'select') return `<div class="f">${lab}<select id="${id}" name="${Utils.esc(fd.k)}">${fd.opts.map(([k, n]) => `<option value="${Utils.esc(k)}" ${String(k) === String(v) ? 'selected' : ''}>${Utils.esc(n)}</option>`).join('')}</select></div>`;
-    const im = fd.type === 'num' ? 'inputmode="numeric"' : '';
+    const im = fd.type === 'num' ? 'inputmode="numeric"' : fd.type === 'dec' ? 'inputmode="decimal"' : '';
     return `<div class="f">${lab}<input id="${id}" name="${Utils.esc(fd.k)}" ${im} value="${Utils.esc(v)}" placeholder="${Utils.esc(fd.ph || '')}" enterkeyhint="next" autocomplete="off">${fd.hint ? `<div class="fh">${Utils.esc(fd.hint)}</div>` : ''}</div>`;
   },
   /** kleines Formular als Blatt → Promise(Werte | null). Löst erst auf, wenn die Zurück-Navigation verarbeitet ist. */
@@ -7574,6 +7673,924 @@ const ReqView = {
 };
 
 /* =====================================================================
+   CUE-FOTOS (ab 2.8.0) – eigenständige Listen mit Fotos von Lichtstimmungen,
+   getrennt von den Veranstaltungen (eigener Bereich auf der Startseite).
+   Gedächtnisstütze vom Stellwerk/FOH: Cue-Nummer, Name, Notizen, Hinweise, PDF.
+   Datensätze im Speicher „meta“ (kein Datenbank-Update, Zeitstempel je Feld):
+     cl:<id> Liste  { titel, spielstaette, datum, notiz, del, delGrp, purged }
+     cq:<id> Cue    listId · { nr, name, notiz, del, delGrp }
+     cb:<id> Foto   listId · { cueId, ord, b, o, w, h, notiz, hinweis, del, delGrp }
+       b = angezeigtes Bild, o = Original (nur nach dem Markieren gesetzt).
+       Bilddaten wie alle Fotos in fulls/thumbs (unveränderlich).
+   Der Buchstabe eines Fotos (A, B, C …) ergibt sich aus seinem Platz unter den Fotos seiner Cue.
+   „Endgültig löschen“ (purged) gibt die Bilddaten frei; der Datensatz bleibt als Tombstone für den Abgleich.
+   ===================================================================== */
+const Cues = {
+  /* ---------- Cue-Nummern ---------- */
+  /** „12,50“ → „12.5“, „Q 7“ → „7“, „007“ → „7“; alles andere bleibt als Text */
+  norm(s) {
+    let t = String(s ?? '').trim().replace(/^(cue|q)\s*/i, '').replace(/\s+/g, '').replace(',', '.');
+    if (/^\.\d/.test(t)) t = '0' + t;
+    const m = /^0*(\d+)(?:\.(\d*))?$/.exec(t);
+    if (!m) return t;
+    const fr = (m[2] || '').replace(/0+$/, '');
+    return m[1] + (fr ? '.' + fr : '');
+  },
+  num(s) { return /^\d+(?:\.\d+)?$/.test(String(s ?? '')) ? parseFloat(s) : NaN; },
+  /** Sortierung: Zahlen numerisch (12 < 12.5 < 13), Text dahinter */
+  cmpNr(a, b) {
+    const x = this.num(a), y = this.num(b), xn = isNaN(x), yn = isNaN(y);
+    if (xn !== yn) return xn ? 1 : -1;
+    if (!xn && x !== y) return x - y;
+    return String(a ?? '').localeCompare(String(b ?? ''), 'de', { numeric: true });
+  },
+  /** Hochzählen: immer die nächste ganze Cue (12 → 13, 12.5 → 13) – Punkt-Cues sind eingeschoben */
+  nextNr(s) { const m = /^(\d+)/.exec(String(s ?? '')); return m ? String(parseInt(m[1], 10) + 1) : '1'; },
+  /** 0 → A, 25 → Z, 26 → AA */
+  letter(i) { let s = ''; for (let n = i + 1; n > 0; n = Math.floor((n - 1) / 26)) s = String.fromCharCode(65 + (n - 1) % 26) + s; return s; },
+
+  /* ---------- Abfragen ---------- */
+  lists() { return [...Repo.cuelists.values()].filter(l => !l.f.del).sort((a, b) => String(b.f.datum || '').localeCompare(String(a.f.datum || '')) || b.mod - a.mod); },
+  list(id) { const l = Repo.cuelists.get(id); return l && !l.f.del ? l : null; },
+  deletedLists() { return [...Repo.cuelists.values()].filter(l => l.f.del && !l.f.purged).sort((a, b) => (b.t.del || 0) - (a.t.del || 0)); },
+  cuesOf(listId) { return [...Repo.cues.values()].filter(c => c.listId === listId && !c.f.del).sort((a, b) => this.cmpNr(a.f.nr, b.f.nr) || a.c - b.c); },
+  imgsOf(cueId) { return [...Repo.cueimgs.values()].filter(i => i.f.cueId === cueId && !i.f.del).sort((a, b) => ((+a.f.ord || 0) - (+b.f.ord || 0)) || a.c - b.c); },
+  allImgsOf(listId) { return [...Repo.cueimgs.values()].filter(i => i.listId === listId && !i.f.del); },
+  cueByNr(listId, nr) { const n = this.norm(nr); return this.cuesOf(listId).find(c => this.norm(c.f.nr) === n) || null; },
+  /** Fotos, deren Cue gelöscht wurde (z. B. ein Gerät fotografiert, das andere löscht die Cue) – bleiben sichtbar */
+  orphansOf(listId) { const ids = new Set(this.cuesOf(listId).map(c => c.id)); return this.allImgsOf(listId).filter(i => !ids.has(i.f.cueId)).sort((a, b) => a.c - b.c); },
+  dupNrs(listId) { const seen = new Set(), d = new Set(); this.cuesOf(listId).forEach(c => { const n = this.norm(c.f.nr); if (seen.has(n)) d.add(n); seen.add(n); }); return d; },
+  stats(listId) {
+    const cs = this.cuesOf(listId), ids = new Set(cs.map(c => c.id)), all = this.allImgsOf(listId);
+    const withImg = new Set(all.map(i => i.f.cueId));
+    return { cues: cs.length, imgs: all.filter(i => ids.has(i.f.cueId)).length, empty: cs.filter(c => !withImg.has(c.id)).length, orphans: all.filter(i => !ids.has(i.f.cueId)).length };
+  },
+  trashInfo(id) {
+    const l = Repo.cuelists.get(id), g = l && l.f.delGrp;
+    const n = m => [...m.values()].filter(r => r.listId === id && (!r.f.del || (g && r.f.delGrp === g))).length;
+    return { cues: n(Repo.cues), imgs: n(Repo.cueimgs), at: (l && l.t.del) || 0 };
+  },
+
+  /* ---------- Bilddaten-Verweise (Aufräumen, Pakete, Live-Abgleich) ---------- */
+  blobRefsOf(imgs) {
+    const out = [];
+    (imgs || []).forEach(i => { if (!i || !i.f || i.f.del) return; [i.f.b, i.f.o].forEach(b => { if (typeof b === 'string' && Rec.ID.test(b)) out.push(b); }); });
+    return out;
+  },
+  /** Gebrauchte Bilddaten: Fotos lebender Listen; mit withTrash auch Listen im Papierkorb (nicht endgültig gelöschte) */
+  blobRefs(withTrash) {
+    const out = new Set();
+    for (const i of Repo.cueimgs.values()) {
+      if (!i || !i.f) continue;
+      const l = Repo.cuelists.get(i.listId);
+      const keep = (!i.f.del && !(l && l.f.del)) || (withTrash && l && l.f.del && !l.f.purged && (!i.f.del || (i.f.delGrp && i.f.delGrp === l.f.delGrp)));
+      if (keep) [i.f.b, i.f.o].forEach(b => { if (typeof b === 'string' && b) out.add(b); });
+    }
+    return [...out];
+  },
+
+  /* ---------- Schreiben ---------- */
+  newCue(listId, nr, extra = {}) { return Rec.create({ listId }, Object.assign({ nr: this.norm(nr), name: '', notiz: '', del: false }, extra)); },
+  async createList(f) {
+    const l = Rec.create({}, Object.assign({ titel: 'Cue-Fotos', spielstaette: '', datum: RunList.isoDate(), notiz: '', del: false }, f));
+    await Repo._write({ cuelists: [l] }); return l;
+  },
+  async patchList(id, p) { const r = Rec.patch(Repo.cuelists.get(id), p); if (r) await Repo._write({ cuelists: [r] }); return r; },
+  async patchImg(id, p, pics = []) {
+    const r = Rec.patch(Repo.cueimgs.get(id), p);
+    const fulls = pics.map(x => ({ id: x.b, d: x.full })), thumbs = pics.map(x => ({ id: x.b, d: x.thumb }));
+    if (r || fulls.length) await Repo._write({ cueimgs: r ? [r] : [], fulls, thumbs });
+    return r;
+  },
+  /** Cues von–bis anlegen (z. B. 1–40, Schritt 1 oder 0,5); vorhandene Nummern bleiben unberührt */
+  async addRange(listId, von, bis, step = '1') {
+    const have = new Set(this.cuesOf(listId).map(c => this.norm(c.f.nr))), out = [];
+    const v = [von, bis, step].map(x => this.norm(x)), dec = Math.max(...v.map(x => (x.split('.')[1] || '').length));
+    const f = Math.pow(10, dec), a = Math.round(this.num(v[0]) * f), b = Math.round(this.num(v[1]) * f), s = Math.max(1, Math.round(this.num(v[2]) * f));
+    if ([a, b, s].some(isNaN)) return 0;
+    for (let n = Math.min(a, b); n <= Math.max(a, b) && out.length < 500; n += s) {
+      const nr = this.norm((n / f).toFixed(dec));
+      if (!have.has(nr)) { have.add(nr); out.push(this.newCue(listId, nr)); }
+    }
+    if (out.length) await Repo._write({ cues: out });
+    return out.length;
+  },
+  /** Löschen mit gemeinsamer Kennung: del und delGrp mit gleichem Zeitstempel (wie bei Veranstaltungen) */
+  _mark(recs) {
+    const grp = 'g-' + Utils.uuid();
+    return recs.map(r => { const x = Rec.patch(r, { del: true, delGrp: grp }) || Utils.clone(r); const m = Math.max(x.t.del || 0, x.t.delGrp || 0); x.t.del = x.t.delGrp = m; x.mod = Math.max(x.mod, m); return x; });
+  },
+  async deleteCue(id) {
+    const c = Repo.cues.get(id); if (!c) return;
+    const recs = this._mark([c, ...this.imgsOf(id)]);
+    await Repo._write({ cues: recs.slice(0, 1), cueimgs: recs.slice(1) });
+  },
+  async deleteImg(id) { const r = Rec.patch(Repo.cueimgs.get(id), { del: true }); if (r) await Repo._write({ cueimgs: [r] }); },
+  async deleteList(id) {
+    const l = Repo.cuelists.get(id); if (!l || l.f.del) return;
+    const cs = [...Repo.cues.values()].filter(c => c.listId === id && !c.f.del), is = [...Repo.cueimgs.values()].filter(i => i.listId === id && !i.f.del);
+    const recs = this._mark([l, ...cs, ...is]);
+    await Repo._write({ cuelists: recs.slice(0, 1), cues: recs.slice(1, 1 + cs.length), cueimgs: recs.slice(1 + cs.length) });
+  },
+  async restoreList(id) {
+    const l = Repo.cuelists.get(id); if (!l || !l.f.del || l.f.purged) return false;
+    const g = l.f.delGrp, un = r => Rec.patch(r, { del: false, delGrp: '' }) || r;
+    const pick = m => [...m.values()].filter(r => r.listId === id && r.f.del && g && r.f.delGrp === g && (r.t.del || 0) <= (r.t.delGrp || 0));
+    await Repo._write({ cuelists: [un(l)], cues: pick(Repo.cues).map(un), cueimgs: pick(Repo.cueimgs).map(un) });
+    return true;
+  },
+  /** Endgültig löschen: Liste bleibt als Tombstone (für den Abgleich), die Bilddaten werden hier sofort entfernt.
+      Andere Geräte geben sie nach dem Abgleich mit „Speicher aufräumen“ frei. */
+  async purgeList(id) {
+    const l = Repo.cuelists.get(id); if (!l) return 0;
+    if (!l.f.del) await this.deleteList(id);
+    const mine = new Set();
+    for (const i of Repo.cueimgs.values()) if (i.listId === id) [i.f.b, i.f.o].forEach(b => { if (b) mine.add(b); });
+    await this.patchList(id, { purged: true });
+    const used = Repo.usedBlobs(), del = [...mine].filter(b => !used.has(b));
+    if (del.length) await Store.tx(['fulls', 'thumbs'], 'readwrite', s => del.forEach(k => { s.fulls.delete(k); s.thumbs.delete(k); }));
+    del.forEach(b => Thumbs.map.delete(b));
+    return del.length;
+  },
+  /** Foto einer anderen Cue zuordnen (gibt es die Nummer nicht, wird die Cue angelegt) */
+  async moveImg(imgId, nr) {
+    const im = Repo.cueimgs.get(imgId); if (!im) return null;
+    let c = this.cueByNr(im.listId, nr); const cues = [];
+    if (!c) { c = this.newCue(im.listId, nr); cues.push(c); }
+    if (c.id === im.f.cueId) return c;
+    const ord = Math.max(-1, ...this.imgsOf(c.id).map(x => +x.f.ord || 0)) + 1;
+    const r = Rec.patch(im, { cueId: c.id, ord });
+    await Repo._write({ cues, cueimgs: r ? [r] : [] });
+    return c;
+  },
+  /** zwei Cues mit derselben Nummer zusammenführen: Fotos hinten anhängen, Name/Notiz ergänzen */
+  async mergeCue(fromId, toId) {
+    const a = Repo.cues.get(fromId), b = Repo.cues.get(toId); if (!a || !b || a.id === b.id) return;
+    let ord = Math.max(-1, ...this.imgsOf(toId).map(x => +x.f.ord || 0));
+    const imgs = this.imgsOf(fromId).map(im => Rec.patch(im, { cueId: toId, ord: ++ord })).filter(Boolean);
+    const p = {};
+    if (!b.f.name && a.f.name) p.name = a.f.name;
+    if (a.f.notiz && !String(b.f.notiz || '').includes(a.f.notiz)) p.notiz = [b.f.notiz, a.f.notiz].filter(Boolean).join('\n— \n');
+    const bb = Object.keys(p).length ? Rec.patch(b, p) : null;
+    const [aa] = this._mark([a]);
+    await Repo._write({ cues: [aa].concat(bb ? [bb] : []), cueimgs: imgs });
+  },
+  async swapImg(imgId, dir) {
+    const im = Repo.cueimgs.get(imgId); if (!im) return;
+    const list = this.imgsOf(im.f.cueId), i = list.findIndex(x => x.id === imgId), j = i + dir;
+    if (i < 0 || j < 0 || j >= list.length) return;
+    [list[i], list[j]] = [list[j], list[i]];
+    const out = list.map((x, k) => (+x.f.ord === k ? null : Rec.patch(x, { ord: k }))).filter(Boolean);
+    if (out.length) await Repo._write({ cueimgs: out });
+  }
+};
+
+/* =====================================================================
+   CueCam – Kamera für Cue-Fotos (die Doku-Kamera bleibt unverändert).
+   • Auslöser: Foto für die angezeigte Cue, Buchstabe zählt weiter (A, B, C …).
+   • „Nächster Cue“: weiter zur nächsten angelegten Cue (sonst nächste ganze Nummer) und sofort auslösen.
+   • Nicht blockierend: Das Bild wird sofort aus dem Video kopiert; Komprimieren und Speichern laufen
+     in einer Warteschlange nacheinander im Hintergrund (auch nach dem Schließen der Kamera weiter).
+     Jedes Foto wird einzeln gespeichert.
+   • Dunkler Saal: kein weißes Aufblitzen, dunkle Knöpfe, Taschenlampe startet immer aus,
+     Bildschirm bleibt an (Wake Lock, wo vorhanden), Belichtungskorrektur, wo das Gerät sie anbietet.
+   ===================================================================== */
+const CueCam = {
+  queue: [], busy: false, errShown: false,
+  pending() { return this.queue.length; },
+  /** Ziel der ersten Aufnahme: angetippte Cue, sonst die erste vorbereitete Cue ohne Foto, sonst die nächste Nummer */
+  startTarget(listId, cueId) {
+    const c0 = cueId && Repo.cues.get(cueId);
+    if (c0 && !c0.f.del) return { nr: c0.f.nr, cueId: c0.id };
+    const cs = Cues.cuesOf(listId);
+    const free = cs.find(c => !Cues.imgsOf(c.id).length);
+    if (free) return { nr: free.f.nr, cueId: free.id };
+    return { nr: cs.length ? Cues.nextNr(cs[cs.length - 1].f.nr) : '1', cueId: null };
+  },
+  /** Warteschlange abarbeiten: komprimieren, Foto (und bei Bedarf die neue Cue) in einer Transaktion speichern */
+  async pump() {
+    if (this.busy) return; this.busy = true;
+    while (this.queue.length) {
+      const j = this.queue[0]; let ok = false, p = null;
+      try {
+        p = await Photo.fromCanvas(j.c, CUE_Q);
+        const img = Rec.create({ listId: j.listId }, { cueId: j.cueId, ord: j.ord, b: p.b, o: '', w: p.w, h: p.h, notiz: '', hinweis: '', del: false });
+        const cues = j.rec && !Repo.cues.has(j.rec.id) ? [j.rec] : [];
+        await Repo._write({ cues, cueimgs: [img], fulls: [{ id: p.b, d: p.full }], thumbs: [{ id: p.b, d: p.thumb }] });
+        ok = true;
+      } catch (err) { console.error(err); if (!this.errShown) { this.errShown = true; App.error(err); } }
+      finally { j.c.width = j.c.height = 0; this.queue.shift(); try { j.after && j.after(ok, p); } catch (e) { console.error(e); } }
+      await Utils.sleep(0);
+    }
+    this.busy = false; this.errShown = false;
+  },
+  open({ listId, cueId = null }) {
+    return new Promise(resolve => {
+      const l = Cues.list(listId); if (!l) { resolve(); return; }
+      const esc = Utils.esc;
+      let target = this.startTarget(listId, cueId);
+      const fresh = new Map();      // Nummer → neue Cue (wird mit ihrem ersten Foto gespeichert)
+      const pendBy = new Map();     // Cue → Fotos in der Warteschlange
+      const lastOrd = new Map();    // Cue → zuletzt vergebener Platz
+      const urls = [];
+      let stream = null, torch = false, devices = [], curId = Settings.v.cueCamId || '', ev = null, zoom = null, zoomCur = 1, wl = null;
+      let done = 0, failed = 0, closed = false, switched = false;
+      const el = document.createElement('div');
+      el.className = 'cam ccam'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Cue-Kamera'); el.dataset.abt = 'L';
+      el.innerHTML = `
+        <div class="top">
+          <button class="tbtn" data-a="close" aria-label="Kamera schließen">${I('close')}</button>
+          <div class="ttl">${esc(l.f.titel || 'Cue-Fotos')}</div>
+          <button class="tbtn done" data-a="close">Fertig</button>
+        </div>
+        <div class="vf"><video playsinline muted autoplay></video><div class="grid3"></div><div class="hintlbl" data-lbl></div></div>
+        <div class="msg hidden"></div>
+        <div class="camlist hidden" role="group" aria-label="Objektiv wählen"></div>
+        <button class="cnr" data-a="nr" aria-label="Cue-Nummer ändern"><small>CUE</small><b data-nr></b><span data-lt></span></button>
+        <div class="ctrl cctrl">
+          <div class="cside">
+            <button class="cbtn" data-a="flip" aria-label="Nächstes Objektiv">${I('flip')}</button>
+            <button class="cbtn hidden" data-a="torch" aria-label="Taschenlampe" aria-pressed="false">${I('torch')}</button>
+          </div>
+          <button class="shutter" data-a="shot" aria-label="Foto für diese Cue"></button>
+          <button class="cnext" data-a="next" aria-label="Nächster Cue und auslösen"><span>Nächster Cue</span><b data-nx></b></button>
+        </div>
+        <div class="cexp hidden"><button class="cbtn" data-a="ev-" aria-label="Dunkler">−</button><span data-ev></span><button class="cbtn" data-a="ev+" aria-label="Heller">+</button></div>
+        <div class="cstat" aria-live="polite"></div>
+        <div class="strip" aria-label="Aufgenommene Fotos"></div>
+        <input type="file" accept="image/*" multiple class="hidden">`;
+      const video = el.querySelector('video'), vf = el.querySelector('.vf'), msg = el.querySelector('.msg'), strip = el.querySelector('.strip');
+      const camlist = el.querySelector('.camlist'), fileIn = el.querySelector('input[type=file]'), torchBtn = el.querySelector('[data-a=torch]');
+
+      /* ---- Ziel und Anzeige ---- */
+      const cueIdOf = nr => { const c = Cues.cueByNr(listId, nr); if (c) return c.id; const f = fresh.get(Cues.norm(nr)); return f ? f.id : null; };
+      const countOf = id => id ? Cues.imgsOf(id).length + (pendBy.get(id) || 0) : 0;
+      const nextOf = nr => {
+        const n = Cues.num(nr);
+        if (!isNaN(n)) {
+          const all = Cues.cuesOf(listId).map(c => c.f.nr).concat([...fresh.keys()]).filter(x => !isNaN(Cues.num(x)) && Cues.num(x) > n).sort((a, b) => Cues.cmpNr(a, b));
+          if (all.length) return Cues.norm(all[0]);          // vorbereitete Cue folgt → die nehmen
+        }
+        return Cues.nextNr(nr);
+      };
+      const upd = () => {
+        if (closed) return;
+        target.cueId = cueIdOf(target.nr);
+        const lt = Cues.letter(countOf(target.cueId));
+        el.querySelector('[data-nr]').textContent = target.nr;
+        el.querySelector('[data-lt]').textContent = ' · Bild ' + lt;
+        el.querySelector('[data-lbl]').textContent = `Cue ${target.nr} · ${lt}`;
+        el.querySelector('[data-nx]').textContent = '→ ' + nextOf(target.nr);
+        const q = CueCam.queue.length;
+        const st = el.querySelector('.cstat');
+        st.textContent = failed ? `${failed} Foto${failed === 1 ? '' : 's'} NICHT gespeichert` : q ? `${q} wird gespeichert …` : done ? `✓ ${done} gespeichert` : 'Auslöser = nächstes Bild dieser Cue';
+        st.classList.toggle('err', !!failed);
+      };
+      const addThumb = label => {
+        const d = document.createElement('div'); d.className = 'cth'; d.innerHTML = `<span>${esc(label)}</span>`;
+        strip.appendChild(d); strip.scrollLeft = strip.scrollWidth; return d;
+      };
+
+      /* ---- Aufnahme ---- */
+      const grab = () => {
+        if (!video.videoWidth) return null;
+        const w = video.videoWidth, h = video.videoHeight, s = Math.min(w, h), size = Math.min(s, CUE_PX);
+        const c = document.createElement('canvas'); c.width = c.height = size;
+        c.getContext('2d').drawImage(video, (w - s) / 2, (h - s) / 2, s, s, 0, 0, size, size);
+        return c;
+      };
+      const shoot = (next, canvas = null) => {
+        if (next) target = { nr: nextOf(target.nr), cueId: null };
+        const c = canvas || grab(); if (!c) { upd(); return; }
+        const key = Cues.norm(target.nr);
+        let cid = cueIdOf(target.nr), rec = null;
+        if (!cid) { rec = Cues.newCue(listId, target.nr); fresh.set(key, rec); cid = rec.id; }
+        else if (fresh.has(key) && fresh.get(key).id === cid && !Repo.cues.has(cid)) rec = fresh.get(key);   // noch nicht gespeichert → mit diesem Foto
+        const dbMax = Math.max(-1, ...Cues.imgsOf(cid).map(x => +x.f.ord || 0));
+        const ord = Math.max(dbMax, lastOrd.has(cid) ? lastOrd.get(cid) : -1) + 1; lastOrd.set(cid, ord);
+        const label = target.nr + Cues.letter(countOf(cid));
+        pendBy.set(cid, (pendBy.get(cid) || 0) + 1);
+        const th = addThumb(label);
+        CueCam.queue.push({ c, listId, cueId: cid, rec, ord, after: (ok, p) => {
+          pendBy.set(cid, Math.max(0, (pendBy.get(cid) || 1) - 1));
+          if (ok) { done++; if (!closed) { const u = Thumbs.local(p.thumb); urls.push(u); const im = document.createElement('img'); im.alt = ''; im.src = u; th.prepend(im); } }
+          else { failed++; th.classList.add('err'); }
+          upd();
+          if (closed && !CueCam.queue.length) Ui.toast(failed ? `${failed} Cue-Foto(s) konnten nicht gespeichert werden` : `${done} Cue-Fotos gespeichert`, failed ? 'err' : '');
+        } });
+        vf.classList.remove('go'); void vf.offsetWidth; vf.classList.add('go');      // dezentes Zeichen statt weißem Blitz
+        if (navigator.vibrate) navigator.vibrate(15);
+        upd(); CueCam.pump();
+      };
+      /* ---- Fotos aus der Mediathek (Kamera nicht verfügbar) ---- */
+      const fromFiles = async files => {
+        for (const f of files) {
+          const url = URL.createObjectURL(f);
+          try {
+            const img = new Image(); img.src = url; await img.decode();
+            const w = img.naturalWidth, h = img.naturalHeight, s = Math.min(w, h), size = Math.min(s, CUE_PX);
+            const c = document.createElement('canvas'); c.width = c.height = size;
+            c.getContext('2d').drawImage(img, (w - s) / 2, (h - s) / 2, s, s, 0, 0, size, size);
+            shoot(false, c);
+          } catch (e) { Ui.toast('Bild konnte nicht gelesen werden', 'err'); }
+          finally { URL.revokeObjectURL(url); }
+        }
+      };
+
+      /* ---- Kamera ---- */
+      const stopS = () => { if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; } video.srcObject = null; };
+      const lock = async () => { try { if (!closed && !document.hidden && navigator.wakeLock) wl = await navigator.wakeLock.request('screen'); } catch (e) { wl = null; } };
+      const unlock = () => { try { wl && wl.release(); } catch (e) { /* egal */ } wl = null; };
+      const fail = text => {
+        vf.classList.add('hidden'); msg.classList.remove('hidden');
+        msg.innerHTML = `<p>${esc(text)}</p><p><button class="tbtn done" data-a="file">${I('image')} Foto aus Mediathek / System-Kamera</button></p>`;
+        el.querySelector('.shutter').classList.add('hidden'); el.querySelector('.cnext').classList.add('hidden');
+      };
+      const renderCams = () => {
+        let html = '';
+        if (devices.length > 1) html = devices.map(d => `<button data-cam="${esc(d.deviceId)}" aria-pressed="${d.deviceId === curId}">${esc(d.name)}</button>`).join('');
+        else if (zoom) {
+          const steps = [zoom.min, 1].filter(z => z >= zoom.min - 1e-6 && z <= zoom.max + 1e-6);
+          if (steps.length > 1) html = steps.map(z => `<button data-zoom="${z}" aria-pressed="${Math.abs(z - zoomCur) < 0.01}">${String(Math.round(z * 10) / 10).replace('.', ',')}×</button>`).join('');
+        }
+        camlist.innerHTML = html; camlist.classList.toggle('hidden', !html);
+        el.querySelector('[data-a=flip]').classList.toggle('hidden', devices.length < 2);
+      };
+      const renderEv = () => {
+        const row = el.querySelector('.cexp'); row.classList.toggle('hidden', !ev);
+        if (ev) el.querySelector('[data-ev]').textContent = 'Belichtung ' + (ev.cur > 0 ? '+' : '') + String(Math.round(ev.cur * 10) / 10).replace('.', ',');
+      };
+      const start = async () => {
+        stopS();
+        if (!Camera.supported()) return fail('Live-Kamera ist hier nicht verfügbar (die Seite muss über https oder als installierte App laufen).');
+        const base = { width: { ideal: 1920 }, height: { ideal: 1920 } };
+        const get = v => navigator.mediaDevices.getUserMedia({ audio: false, video: Object.assign({}, base, v) });
+        try {
+          try { stream = await get(curId ? { deviceId: { exact: curId } } : { facingMode: { ideal: 'environment' } }); }
+          catch (e) { if (!curId || e.name === 'NotAllowedError') throw e; curId = ''; stream = await get({ facingMode: { ideal: 'environment' } }); }
+          if (closed) { stopS(); return; }
+          video.srcObject = stream; msg.classList.add('hidden'); vf.classList.remove('hidden');
+          el.querySelector('.shutter').classList.remove('hidden'); el.querySelector('.cnext').classList.remove('hidden');
+          await video.play().catch(() => {});
+          const tr = stream.getVideoTracks()[0], st = tr && tr.getSettings ? tr.getSettings() : {}, caps = tr && tr.getCapabilities ? tr.getCapabilities() : {};
+          if (st.deviceId) curId = st.deviceId;
+          torch = false; torchBtn.setAttribute('aria-pressed', 'false'); torchBtn.classList.toggle('hidden', !caps.torch);   // Licht immer aus beim Start
+          const ec = caps.exposureCompensation;
+          ev = ec && ec.max > ec.min ? { min: ec.min, max: ec.max, step: ec.step || 0.5, cur: st.exposureCompensation || 0 } : null;
+          renderEv();
+          devices = await Camera.list();
+          if (devices.length && !devices.some(d => d.deviceId === curId) && !switched) {
+            switched = true; curId = (devices.find(d => d.name.startsWith('1×')) || devices[0]).deviceId; return start();
+          }
+          zoom = caps.zoom && caps.zoom.min < 0.95 ? caps.zoom : null; zoomCur = st.zoom || 1;
+          renderCams();
+          if (curId && curId !== Settings.v.cueCamId) Settings.set({ cueCamId: curId }).catch(() => {});
+        } catch (e) {
+          fail(e && e.name === 'NotAllowedError' ? 'Der Kamerazugriff wurde verweigert. Du kannst ihn in den Browser-Einstellungen erlauben – oder Fotos aus der Mediathek nehmen.'
+            : 'Die Kamera konnte nicht gestartet werden. Fotos lassen sich aus der Mediathek übernehmen.');
+        }
+      };
+      const vis = () => { if (document.hidden) { stopS(); unlock(); } else if (!closed) { if (!vf.classList.contains('hidden')) start(); lock(); } };
+      let layer;
+      const finish = () => {
+        if (closed) return; closed = true;
+        stopS(); unlock(); document.removeEventListener('visibilitychange', vis);
+        setTimeout(() => urls.forEach(u => URL.revokeObjectURL(u)), 5000);
+        if (CueCam.queue.length) Ui.toast(`${CueCam.queue.length} Foto${CueCam.queue.length === 1 ? ' wird' : 's werden'} noch gespeichert …`);
+        resolve();
+      };
+      el.addEventListener('click', async e => {
+        const b = e.target.closest('button'); if (!b) return;
+        if (b.dataset.cam) { if (b.dataset.cam !== curId) { curId = b.dataset.cam; start(); } return; }
+        if (b.dataset.zoom) {
+          const z = +b.dataset.zoom, tr = stream && stream.getVideoTracks()[0];
+          if (tr) tr.applyConstraints({ advanced: [{ zoom: z }] }).then(() => { zoomCur = z; renderCams(); }).catch(() => Ui.toast('Zoom nicht verfügbar', 'warn'));
+          return;
+        }
+        const a = b.dataset.a;
+        if (a === 'close') { finish(); layer.close(); }
+        else if (a === 'shot') shoot(false);
+        else if (a === 'next') shoot(true);
+        else if (a === 'file') { fileIn.value = ''; fileIn.click(); }
+        else if (a === 'flip') { if (devices.length > 1) { const i = devices.findIndex(d => d.deviceId === curId); curId = devices[(i + 1) % devices.length].deviceId; start(); } }
+        else if (a === 'torch') {
+          torch = !torch; b.setAttribute('aria-pressed', torch);
+          const tr = stream && stream.getVideoTracks()[0];
+          tr && tr.applyConstraints({ advanced: [{ torch }] }).catch(() => Ui.toast('Taschenlampe nicht verfügbar', 'warn'));
+        } else if (a === 'ev-' || a === 'ev+') {
+          if (!ev) return;
+          const v = Math.min(ev.max, Math.max(ev.min, ev.cur + (a === 'ev+' ? 1 : -1) * Math.max(ev.step, 0.3)));
+          const tr = stream && stream.getVideoTracks()[0];
+          if (tr) tr.applyConstraints({ advanced: [{ exposureMode: 'continuous', exposureCompensation: v }] }).then(() => { ev.cur = v; renderEv(); }).catch(() => Ui.toast('Belichtung lässt sich nicht ändern', 'warn'));
+        } else if (a === 'nr') {
+          const v = await Ui.dialog({ title: 'Cue-Nummer', message: 'Die nächsten Fotos gehören zu dieser Cue.', input: { value: target.nr, inputmode: 'decimal', placeholder: 'z. B. 12.5' },
+            buttons: [{ label: 'Abbrechen', value: null }, { label: 'Übernehmen', value: true, cls: 'primary' }] });
+          if (v != null && Cues.norm(v)) { target = { nr: Cues.norm(v), cueId: null }; upd(); }
+        }
+      });
+      fileIn.addEventListener('change', () => fileIn.files.length && fromFiles([...fileIn.files]));
+      el.addEventListener('keydown', e => {
+        if (e.target.tagName === 'INPUT') return;
+        if (e.key === ' ' || e.key === 'Enter') { if (e.target.tagName !== 'BUTTON') { e.preventDefault(); shoot(false); } }
+        else if (e.key === 'n' || e.key === 'N' || e.key === 'ArrowRight') { e.preventDefault(); shoot(true); }
+      });
+      document.addEventListener('visibilitychange', vis);
+      layer = Ui.layer(el, { onBack: () => { finish(); return true; } });
+      upd(); start(); lock();
+      el.querySelector('.shutter').focus();
+    });
+  }
+};
+
+/* =====================================================================
+   CueView – Oberfläche der Cue-Fotos: Übersicht der Listen (#/cues) und eine Liste (#/cue/<id>).
+   Ansicht/Bearbeiten wie in der restlichen App: Fotografieren, Anlegen, Ändern, Markieren und
+   Löschen nur im Bearbeitungsmodus; Ansehen und PDF immer.
+   ===================================================================== */
+const CueView = {
+  dateStr(iso) { return iso ? Utils.fmtDate(new Date(iso + 'T12:00').getTime(), false) : ''; },
+  appbarHome() {
+    return `<div class="brand" style="flex:1;min-width:0"><span class="brand-mark">${I('bulb')}</span><h1>Doku VT<span class="ver" title="App-Version">v${APP_VERSION}</span></h1></div>
+      ${App.pillHtml()}<button class="btn icon ghost" data-act="settings" aria-label="Einstellungen">${I('settings')}</button>`;
+  },
+  /* ---------- Übersicht ---------- */
+  renderHome() {
+    document.getElementById('appbarRow').innerHTML = this.appbarHome();
+    const lists = Cues.lists(), trash = Cues.deletedLists().length, main = document.getElementById('main');
+    main.innerHTML = `<div class="wrap">${App.homeTabs('cues')}
+      <div class="home-head"><div><h2>Cue-Fotos</h2><p>${lists.length} ${lists.length === 1 ? 'Liste' : 'Listen'} · Lichtstimmungen als Gedächtnisstütze</p></div></div>
+      ${lists.length ? `<div class="shows">${lists.map(l => this.listCard(l)).join('')}</div>` :
+        `<div class="empty"><div class="ico">${I('camera', 'lg')}</div><h3>Noch keine Cue-Liste</h3><p>Für eine Probe oder Vorstellung eine Liste anlegen, dann vom Stellwerk aus die Stimmungen fotografieren. Nach dem PDF-Export lässt sich die Liste wieder löschen.</p></div>`}
+      ${trash ? `<div style="text-align:center;margin-top:18px"><button class="btn ghost" data-cact="trash">${I('trash', 'sm')} Papierkorb (${trash})</button></div>` : ''}
+      <div class="appver">Doku VT · Version ${APP_VERSION}</div></div>
+      <div class="fabbar"><button class="fab" data-cact="newlist">${I('plus')} Cue-Liste</button></div>`;
+    Thumbs.observe(main);
+    App.updatePill();
+  },
+  listCard(l) {
+    const s = Cues.stats(l.id), esc = Utils.esc, ph = [];
+    for (const c of Cues.cuesOf(l.id)) { for (const im of Cues.imgsOf(c.id)) { ph.push(im); if (ph.length >= 3) break; } if (ph.length >= 3) break; }
+    const sp = String(l.f.spielstaette || '').trim();
+    return `<article class="showcard ${sp ? 'hassp' : ''}" style="${sp ? '--sp:' + spColor(sp) : ''}"><button class="open" data-cact="openlist" data-id="${esc(l.id)}" aria-label="${esc(l.f.titel)} öffnen">
+      <div class="mosaic">${[0, 1, 2].map(i => `<div class="m">${ph[i] ? Views.thumbImg(ph[i].f.b) : ''}</div>`).join('')}</div>
+      <div class="body">${sp ? `<span class="spbadge">${I('pin', 'sm')}${esc(sp)}</span>` : ''}<h3>${esc(l.f.titel || 'Cue-Fotos')}</h3>
+        <div class="meta">${l.f.datum ? `<span>${esc(this.dateStr(l.f.datum))}</span>` : ''}<span>${s.cues} Cues</span><span>${s.imgs} Fotos</span>${s.empty ? `<span>${s.empty} ohne Foto</span>` : ''}</div></div></button>
+      <button class="btn icon ghost menu" data-cact="listmenu" data-id="${esc(l.id)}" aria-label="Aktionen für ${esc(l.f.titel)}">${I('more')}</button></article>`;
+  },
+  /* ---------- eine Liste ---------- */
+  renderList() {
+    const st = App.state, l = Cues.list(st.cueListId);
+    if (!l) { App.go('#/cues'); return; }
+    const s = Cues.stats(l.id), edit = st.edit, esc = Utils.esc;
+    const sub = [l.f.spielstaette, this.dateStr(l.f.datum), `${s.cues} Cues · ${s.imgs} Fotos`].filter(Boolean).join(' · ');
+    document.getElementById('appbarRow').innerHTML = `<button class="btn icon ghost" data-cact="back" aria-label="Zurück zu den Cue-Listen">${I('back')}</button>
+      <h1><button class="title-btn" data-cact="editlist" title="Titel & Details bearbeiten">${esc(l.f.titel || 'Cue-Fotos')}<span class="sub">${esc(sub)}</span></button></h1>
+      ${App.pillHtml()}
+      <button class="btn icon ghost" data-cact="pdf" data-id="${esc(l.id)}" aria-label="PDF exportieren">${I('pdf')}</button>
+      <button class="btn icon ghost" data-cact="listmenu" data-id="${esc(l.id)}" aria-label="Weitere Aktionen">${I('more')}</button>`;
+    const cues = Cues.cuesOf(l.id), dups = Cues.dupNrs(l.id), orphans = Cues.orphansOf(l.id);
+    const body = cues.length || orphans.length ? cues.map(c => this.cueHtml(c, edit, dups.has(Cues.norm(c.f.nr)))).join('') + (orphans.length ? this.orphanHtml(orphans, edit) : '')
+      : `<div class="empty"><div class="ico">${I('camera', 'lg')}</div><h3>Noch keine Cues</h3>
+          <p>${edit ? 'Live: „Kamera“ antippen und loslegen – der Auslöser zählt die Bilder einer Cue hoch (A, B, C …), „Nächster Cue“ springt weiter.<br>Vorbereiten: „+ Cue“ oder „Mehrere“ (z. B. 1–40).' : 'Zum Fotografieren und Anlegen oben auf „Bearbeiten“ schalten.'}</p></div>`;
+    document.getElementById('main').innerHTML = `<div class="toolbar cuetb"><div class="row">
+        ${edit ? `<button class="btn" data-cact="addcue">${I('plus', 'sm')} Cue</button><button class="btn" data-cact="addmany">${I('list', 'sm')}<span class="bl"> Mehrere</span></button>`
+          : `<span class="muted cuehint">${s.imgs ? 'Foto antippen = groß ansehen' : 'Fotografieren: „Bearbeiten“'}</span>`}
+        <button class="modesw" data-act="mode" role="switch" aria-checked="${edit}" aria-pressed="${edit}" aria-label="${edit ? 'Bearbeitungsmodus aktiv – umschalten auf Ansicht' : 'Ansichtsmodus – umschalten auf Bearbeiten'}"><span class="lab l0">${I('lock', 'sm')} Ansicht</span><span class="trk"><span class="knob"></span></span><span class="lab l1">Bearbeiten ${I('edit', 'sm')}</span></button>
+      </div></div>
+      <div class="wrap cuewrap"><div class="cuelist">${body}</div><div class="listfoot">${s.cues} Cues · ${s.imgs} Fotos · Doku VT v${APP_VERSION}</div></div>
+      ${edit ? `<div class="fabbar"><button class="fab cuefab" data-cact="cam" aria-label="Cue-Kamera öffnen">${I('camera', 'lg')} Kamera</button></div>` : ''}`;
+    Thumbs.observe(document.getElementById('main'));
+    App.updatePill();
+  },
+  tileHtml(im, i, edit) {
+    const esc = Utils.esc, lt = Cues.letter(i);
+    return `<div class="cqi"><button type="button" class="th" data-cact="img" data-id="${esc(im.id)}" aria-label="Bild ${lt}${edit ? ' – Optionen' : ' vergrößern'}">${Views.thumbImg(im.f.b)}<span class="lt">${lt}</span>${im.f.o ? `<span class="mk" title="markiert">${I('pen', 'sm')}</span>` : ''}</button>
+      ${im.f.hinweis ? warnHtml(im.f.hinweis) : ''}${im.f.notiz ? `<div class="nt">${esc(im.f.notiz)}</div>` : ''}</div>`;
+  },
+  cueHtml(c, edit, dup) {
+    const esc = Utils.esc, ims = Cues.imgsOf(c.id);
+    const tiles = ims.map((im, i) => this.tileHtml(im, i, edit)).join('');
+    const add = edit ? `<div class="cqi"><button type="button" class="th add" data-cact="shoot" data-id="${esc(c.id)}" aria-label="Foto ${Cues.letter(ims.length)} für Cue ${esc(c.f.nr)}">${I('camera', 'lg')}<span>Foto ${Cues.letter(ims.length)}</span></button></div>` : '';
+    return `<section class="cue ${ims.length ? '' : 'nopic'}" data-cue="${esc(c.id)}">
+      <button type="button" class="cqh" data-cact="cue" data-id="${esc(c.id)}" aria-label="Cue ${esc(c.f.nr)}${edit ? ' bearbeiten' : ''}"><span class="cqnr"><small>CUE</small>${esc(c.f.nr || '–')}</span>
+        <span class="cqname">${c.f.name ? esc(c.f.name) : ''}${c.f.notiz ? `<small>${esc(c.f.notiz)}</small>` : ''}</span>
+        ${dup ? '<span class="cqdup">doppelt</span>' : ''}<span class="cqn">${ims.length ? `${ims.length} Foto${ims.length === 1 ? '' : 's'}` : 'kein Foto'}</span>${edit ? I('edit', 'sm') : ''}</button>
+      ${tiles || add ? `<div class="cqimgs">${tiles}${add}</div>` : ''}</section>`;
+  },
+  orphanHtml(list, edit) {
+    return `<section class="cue nopic"><div class="cqh"><span class="cqnr"><small>CUE</small>?</span><span class="cqname">Fotos ohne Cue<small>Die Cue wurde gelöscht${edit ? ' – Foto antippen → „Zu anderer Cue …“' : ''}</small></span></div>
+      <div class="cqimgs">${list.map((im, i) => this.tileHtml(im, i, edit)).join('')}</div></section>`;
+  },
+  /* ---------- Bildansicht ---------- */
+  lbInfo(cueId, imgId) {
+    const c = Repo.cues.get(cueId), im = Repo.cueimgs.get(imgId), esc = Utils.esc; if (!c || !im) return '';
+    const ims = Cues.imgsOf(cueId), i = ims.findIndex(x => x.id === imgId);
+    return `<div class="row1"><span class="kreis"><small style="color:#bbb">CUE</small>${esc(c.f.nr)}</span><span class="tag E" data-abt="L">Bild ${Cues.letter(Math.max(0, i))}</span>
+        <span class="muted mono">${i + 1}/${ims.length}</span></div>
+      ${c.f.name ? `<div class="lcap" style="font-style:normal;font-weight:700">${esc(c.f.name)}</div>` : ''}
+      ${im.f.hinweis ? `<div class="lwarn">${warnHtml(im.f.hinweis)}</div>` : ''}
+      ${im.f.notiz ? `<div class="note">${esc(im.f.notiz)}</div>` : ''}
+      ${c.f.notiz ? `<div class="note" style="color:#bbb">${esc(c.f.notiz)}</div>` : ''}`;
+  },
+  openLb(listId, imgId) {
+    const items = [];
+    Cues.cuesOf(listId).forEach(c => { const ims = Cues.imgsOf(c.id); ims.forEach((im, i) => items.push({ b: im.f.b, entryId: c.id, kat: 'A', idx: i, n: ims.length, imgId: im.id, infoHtml: () => this.lbInfo(c.id, im.id) })); });
+    if (!items.length) return;
+    Lightbox.open(items, Math.max(0, items.findIndex(x => x.imgId === imgId)), { nextLabel: 'Nächster Cue' });
+  },
+  /* ---------- Klicks ---------- */
+  async onClick(e) {
+    const b = e.target.closest('[data-cact]'); if (!b) return;
+    e.preventDefault();
+    const a = b.dataset.cact, id = b.dataset.id || '', st = App.state, listId = st.cueListId, edit = st.edit;
+    try {
+      switch (a) {
+        case 'newlist': this.listSheet(null); break;
+        case 'openlist': App.go('#/cue/' + id); break;
+        case 'listmenu': await this.listMenu(id); break;
+        case 'back': App.go('#/cues'); break;
+        case 'editlist': this.listSheet(Cues.list(listId)); break;
+        case 'pdf': this.pdf(id || listId); break;
+        case 'trash': this.trash(); break;
+        case 'addcue': if (edit) await this.addCue(listId); break;
+        case 'addmany': if (edit) await this.addMany(listId); break;
+        case 'cam': if (edit) CueCam.open({ listId }); break;
+        case 'shoot': if (edit) CueCam.open({ listId, cueId: id }); break;
+        case 'cue': if (edit) this.editCue(id); else { const im = Cues.imgsOf(id)[0]; if (im) this.openLb(listId, im.id); } break;
+        case 'img': if (edit) await this.imgMenu(id); else this.openLb(listId, id); break;
+      }
+    } catch (err) { App.error(err); }
+  },
+  /* ---------- Liste anlegen / bearbeiten ---------- */
+  listSheet(l) {
+    const isNew = !l, esc = Utils.esc;
+    const sh = Ui.sheet({ title: isNew ? 'Neue Cue-Liste' : 'Cue-Liste', center: true });
+    const shows = Repo.liveShows().filter(s => !App.isDemo(s)), titles = [...new Set(shows.map(s => s.f.titel))].slice(0, 8);
+    sh.body.innerHTML = `<form class="form" onsubmit="return false">
+      <div class="f"><label for="cl-t">Stück / Titel</label><input id="cl-t" value="${esc(l ? l.f.titel : '')}" placeholder="z. B. Die Zauberflöte" autocomplete="off" enterkeyhint="next">
+        ${isNew && titles.length ? `<div class="qkeys ttl" aria-label="Titel einer Veranstaltung übernehmen">${titles.map(t => `<button type="button" data-tt="${esc(t)}">${esc(t)}</button>`).join('')}</div>` : ''}</div>
+      <div class="f"><label>Spielstätte</label><div data-spwrap>${App.spChooser(l ? l.f.spielstaette : (App.state.homeSp !== 'all' ? App.state.homeSp : ''))}</div></div>
+      <div class="f"><label for="cl-d">Datum</label><input id="cl-d" type="date" value="${esc(l ? l.f.datum || '' : RunList.isoDate())}"></div>
+      <div class="f"><label for="cl-n">Notiz</label><textarea id="cl-n" rows="2" placeholder="z. B. Hauptprobe, Pult-Datei HP_2">${esc(l ? l.f.notiz || '' : '')}</textarea></div>
+      <button class="btn primary big block" data-ok>${isNew ? I('plus') + ' Anlegen' : I('check') + ' Speichern'}</button></form>`;
+    App.bindSp(sh.body);
+    sh.body.addEventListener('click', e => {
+      const t = e.target.closest('[data-tt]'); if (!t) return;
+      sh.body.querySelector('#cl-t').value = t.dataset.tt;
+      const show = shows.find(s => s.f.titel === t.dataset.tt), sp = show ? App.spOf(show) : '';
+      if (sp) { const w = sh.body.querySelector('[data-spwrap]'); w.innerHTML = App.spChooser(sp); App.bindSp(w); }
+    });
+    sh.body.querySelector('[data-ok]').onclick = async () => {
+      const f = { titel: sh.body.querySelector('#cl-t').value.trim() || 'Cue-Fotos', spielstaette: App.readSp(sh.body), datum: sh.body.querySelector('#cl-d').value || '', notiz: sh.body.querySelector('#cl-n').value.trim() };
+      try {
+        if (isNew) { const n = await Cues.createList(f); sh.close(); await Ui.afterBack(); App.state.edit = true; App.go('#/cue/' + n.id); }
+        else { await Cues.patchList(l.id, f); sh.close(); }
+      } catch (err) { App.error(err); }
+    };
+    if (isNew) setTimeout(() => sh.body.querySelector('#cl-t').focus(), 50);
+  },
+  async listMenu(id) {
+    const l = Cues.list(id); if (!l) return;
+    const v = await Ui.menu(l.f.titel || 'Cue-Fotos', [
+      { label: 'Titel & Details bearbeiten', value: 'edit', icon: 'edit' },
+      { label: 'PDF exportieren', value: 'pdf', icon: 'pdf' },
+      { label: 'Mehrere Cues anlegen', value: 'many', icon: 'list' },
+      { label: 'Liste löschen', value: 'del', icon: 'trash', danger: true }
+    ]);
+    if (!v) return;
+    await Ui.afterBack();
+    if (v === 'edit') this.listSheet(l);
+    else if (v === 'pdf') this.pdf(id);
+    else if (v === 'many') await this.addMany(id);
+    else if (v === 'del') await this.deleteList(id, false);
+  },
+  /** Löschen: Papierkorb (wiederherstellbar) oder endgültig (gibt den Speicher frei) */
+  async deleteList(id, afterPdf) {
+    const l = Repo.cuelists.get(id); if (!l || l.f.del) return false;
+    const s = Cues.stats(id);
+    const v = await Ui.dialog({ title: afterPdf ? 'Cue-Liste jetzt löschen?' : 'Cue-Liste löschen?',
+      message: `„${l.f.titel}“ mit ${s.cues} Cues und ${s.imgs} Fotos.\n\nPapierkorb: lässt sich wiederherstellen, der Speicher bleibt belegt.\nEndgültig: gibt den Speicher frei. Andere Geräte geben ihn nach dem Abgleich mit „Speicher aufräumen“ frei.`,
+      buttons: [{ label: 'In den Papierkorb', value: 'trash' }, { label: 'Endgültig löschen', value: 'purge', cls: 'danger solid' }, { label: afterPdf ? 'Behalten' : 'Abbrechen', value: null, cls: 'ghost' }] });
+    await Ui.afterBack();
+    if (!v) return false;
+    if (v === 'trash') { await Cues.deleteList(id); Ui.toast('Cue-Liste im Papierkorb'); }
+    else { const n = await Cues.purgeList(id); Ui.toast(`Cue-Liste endgültig gelöscht · ${n} Bilder entfernt`); }
+    if (App.state.route === 'cue' && App.state.cueListId === id) App.go('#/cues'); else App.render();
+    return true;
+  },
+  trash() {
+    const sh = Ui.sheet({ title: 'Papierkorb · Cue-Fotos' });
+    const draw = () => {
+      const list = Cues.deletedLists();
+      sh.body.innerHTML = `<p class="muted" style="margin-top:0">Gelöschte Cue-Listen belegen weiter Speicher, bis sie endgültig gelöscht werden.</p>` +
+        (list.length ? `<div class="group">${list.map(l => { const i = Cues.trashInfo(l.id);
+          return `<div class="item"><span class="lb">${Utils.esc(l.f.titel || 'Cue-Fotos')}<small>gelöscht ${i.at ? Utils.fmtDate(i.at) : ''} · ${i.cues} Cues · ${i.imgs} Fotos</small></span>
+            <button class="btn" data-restore="${Utils.esc(l.id)}">${I('undo', 'sm')} Wiederherstellen</button>
+            <button class="btn danger" data-purge="${Utils.esc(l.id)}" aria-label="Endgültig löschen">${I('trash', 'sm')}</button></div>`; }).join('')}</div>`
+          : `<div class="empty"><h3>Der Papierkorb ist leer</h3></div>`);
+    };
+    draw();
+    sh.body.addEventListener('click', async e => {
+      const r = e.target.closest('[data-restore]'), p = e.target.closest('[data-purge]');
+      try {
+        if (r) { const id = r.dataset.restore; await Cues.restoreList(id); Ui.toast('Cue-Liste wiederhergestellt'); sh.close(); await Ui.afterBack(); App.go('#/cue/' + id); }
+        else if (p) {
+          if (!await Ui.confirm('Endgültig löschen?', 'Die Fotos werden entfernt und lassen sich nicht wiederherstellen.', 'Endgültig löschen', true)) return;
+          const n = await Cues.purgeList(p.dataset.purge); Ui.toast(`${n} Bilder entfernt`); draw(); App.render();
+        }
+      } catch (err) { App.error(err); }
+    });
+  },
+  /* ---------- Cues anlegen ---------- */
+  async addCue(listId) {
+    const cs = Cues.cuesOf(listId), sug = cs.length ? Cues.nextNr(cs[cs.length - 1].f.nr) : '1';
+    const v = await Req.form('Neue Cue', [{ k: 'nr', label: 'Cue-Nummer', type: 'dec', value: sug, ph: 'z. B. 12 oder 12.5' }, { k: 'name', label: 'Name (optional)', ph: 'z. B. Sonnenaufgang' },
+      { k: 'notiz', label: 'Notiz (optional)', type: 'area', rows: 2 }], { ok: 'Anlegen', check: x => Cues.norm(x.nr) ? (Cues.cueByNr(listId, x.nr) ? `Cue ${Cues.norm(x.nr)} gibt es schon.` : '') : 'Bitte eine Cue-Nummer eintragen.' });
+    if (!v) return;
+    const c = Cues.newCue(listId, v.nr, { name: v.name.trim(), notiz: v.notiz.trim() });
+    await Repo._write({ cues: [c] });
+    Ui.toast(`Cue ${c.f.nr} angelegt`);
+  },
+  async addMany(listId) {
+    const cs = Cues.cuesOf(listId), from = cs.length ? Cues.nextNr(cs[cs.length - 1].f.nr) : '1';
+    const v = await Req.form('Mehrere Cues anlegen', [{ k: 'von', label: 'von', type: 'dec', value: from }, { k: 'bis', label: 'bis', type: 'dec', value: String(parseInt(from, 10) + 19 || 20) },
+      { k: 'step', label: 'Schritt', type: 'dec', value: '1', hint: 'z. B. 1 oder 0.5 – vorhandene Nummern bleiben, wie sie sind' }],
+    { ok: 'Anlegen', check: x => [x.von, x.bis, x.step].some(y => isNaN(Cues.num(Cues.norm(y)))) ? 'Bitte Zahlen eintragen (z. B. 1, 12.5).' : !(Cues.num(Cues.norm(x.step)) > 0) ? 'Der Schritt muss größer als 0 sein.' : '' });
+    if (!v) return;
+    const n = await Cues.addRange(listId, v.von, v.bis, v.step);
+    Ui.toast(n ? `${n} Cues angelegt` : 'Alle Nummern gab es schon');
+  },
+  /* ---------- Cue bearbeiten: Nummer, Name, Notiz und je Foto Notiz und Hinweis ---------- */
+  editCue(cueId) {
+    const c = Repo.cues.get(cueId); if (!c || c.f.del) return;
+    const ims = Cues.imgsOf(cueId), esc = Utils.esc;
+    let dirty = false;
+    const sh = Ui.sheet({ title: `Cue ${c.f.nr}`, full: true,
+      headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
+      headRight: `<button class="btn edit" data-x="save">${I('check')} Speichern</button>`, onBack: () => Editor._confirmLeave(dirty) });
+    sh.el.dataset.editor = '1'; sh.el.dataset.abt = 'L';
+    sh.body.innerHTML = `<form class="form" onsubmit="return false">
+      <div class="f-row gf"><div class="f mono"><label for="cq-nr">Cue-Nummer</label><input id="cq-nr" inputmode="decimal" value="${esc(c.f.nr)}" autocomplete="off" spellcheck="false"></div>
+        <div class="f"><label for="cq-name">Name</label><input id="cq-name" value="${esc(c.f.name || '')}" placeholder="z. B. Sonnenaufgang" autocomplete="off"></div></div>
+      <div class="f"><label for="cq-notiz">Notiz zur Cue</label><textarea id="cq-notiz" rows="2" placeholder="gilt für alle Fotos dieser Cue">${esc(c.f.notiz || '')}</textarea></div>
+      ${ims.map((im, i) => `<section class="cqed" data-img="${esc(im.id)}"><div class="cqedh"><span class="cqedth">${Views.thumbImg(im.f.b)}</span><b>Bild ${Cues.letter(i)}</b>${im.f.o ? '<span class="muted">markiert</span>' : ''}</div>
+        <div class="f"><label>Notiz</label><textarea data-f="notiz" rows="2" placeholder="z. B. Verfolger auf Mackie">${esc(im.f.notiz || '')}</textarea></div>
+        <div class="f warnf"><label>${I('alert', 'sm')} Hinweis</label><input data-f="hinweis" value="${esc(im.f.hinweis || '')}" placeholder="z. B. Nebel muss laufen" autocomplete="off"></div></section>`).join('')}
+      <button type="button" class="btn edit big block" data-x="save">${I('check')} Speichern</button>
+      <button type="button" class="btn danger" data-x="del">${I('trash')} Cue löschen</button></form>`;
+    Thumbs.observe(sh.body);
+    sh.body.addEventListener('input', () => { dirty = true; });
+    sh.el.addEventListener('click', async e => {
+      const b = e.target.closest('[data-x]'); if (!b) return;
+      const x = b.dataset.x;
+      try {
+        if (x === 'cancel') history.back();
+        else if (x === 'del') {
+          if (!await Ui.confirm(`Cue ${c.f.nr} löschen?`, ims.length ? `Mit ${ims.length} Foto${ims.length === 1 ? '' : 's'}.` : 'Die Cue wird gelöscht.', 'Löschen', true)) return;
+          await Cues.deleteCue(cueId); dirty = false; sh.close(); Ui.toast('Cue gelöscht');
+        } else if (x === 'save') {
+          const cur = Repo.cues.get(cueId), nr = Cues.norm(sh.body.querySelector('#cq-nr').value);
+          if (!nr) { Ui.toast('Bitte eine Cue-Nummer eintragen.', 'warn'); sh.body.querySelector('#cq-nr').focus(); return; }
+          const p = {}, name = sh.body.querySelector('#cq-name').value.trim(), notiz = sh.body.querySelector('#cq-notiz').value.trim();
+          if (nr !== cur.f.nr) p.nr = nr; if (name !== (cur.f.name || '')) p.name = name; if (notiz !== (cur.f.notiz || '')) p.notiz = notiz;
+          const imgs = [];
+          sh.body.querySelectorAll('[data-img]').forEach(sec => {
+            const im = Repo.cueimgs.get(sec.dataset.img); if (!im) return;
+            const q = {}; sec.querySelectorAll('[data-f]').forEach(inp => { const v = inp.value.trim(); if (v !== (im.f[inp.dataset.f] || '')) q[inp.dataset.f] = v; });
+            const r = Object.keys(q).length ? Rec.patch(im, q) : null; if (r) imgs.push(r);
+          });
+          let other = p.nr ? Cues.cueByNr(cur.listId, nr) : null, merge = false;
+          if (other && other.id === cueId) other = null;
+          if (other) {
+            const v = await Ui.dialog({ title: `Cue ${nr} gibt es schon`, message: 'Fotos zur vorhandenen Cue zusammenführen – oder zwei Cues mit derselben Nummer behalten?',
+              buttons: [{ label: 'Zusammenführen', value: 'merge', cls: 'primary' }, { label: 'Zwei behalten', value: 'keep' }, { label: 'Abbrechen', value: null, cls: 'ghost' }] });
+            await Ui.afterBack();
+            if (!v) return; merge = v === 'merge';
+          }
+          const cr = Object.keys(p).length ? Rec.patch(cur, p) : null;
+          if (cr || imgs.length) await Repo._write({ cues: cr ? [cr] : [], cueimgs: imgs });
+          if (merge) await Cues.mergeCue(cueId, other.id);
+          dirty = false; sh.close(); Ui.toast(merge ? `Mit Cue ${nr} zusammengeführt` : 'Gespeichert');
+        }
+      } catch (err) { App.error(err); }
+    });
+  },
+  /* ---------- Foto: Menü im Bearbeitungsmodus ---------- */
+  async imgMenu(imgId) {
+    const im = Repo.cueimgs.get(imgId); if (!im || im.f.del) return;
+    const c = Repo.cues.get(im.f.cueId), live = c && !c.f.del, list = live ? Cues.imgsOf(c.id) : [im], i = list.findIndex(x => x.id === imgId);
+    const v = await Ui.menu(live ? `Cue ${c.f.nr} · Bild ${Cues.letter(i)}` : 'Foto ohne Cue', [
+      { label: 'Ansehen', value: 'view', icon: 'eye' },
+      { label: 'Notiz & Hinweis', value: 'note', icon: 'edit' },
+      { label: 'Markieren (Pfeil/Kreis)', value: 'ann', icon: 'pen' },
+      im.f.o && { label: 'Original wiederherstellen', value: 'orig', icon: 'undo' },
+      live && i > 0 && { label: 'Nach vorn', value: 'left', icon: 'arrowL' },
+      live && i < list.length - 1 && { label: 'Nach hinten', value: 'right', icon: 'arrowR' },
+      { label: 'Zu anderer Cue …', value: 'move', icon: 'layers' },
+      { label: 'Foto löschen', value: 'del', icon: 'trash', danger: true }
+    ]);
+    if (!v) return;
+    await Ui.afterBack();
+    if (v === 'view') {
+      if (live) this.openLb(im.listId, imgId);
+      else Lightbox.open([{ b: im.f.b, entryId: '', kat: 'A', idx: 0, n: 1, infoHtml: () => '<div class="row1"><span class="tag E" data-abt="L">Foto ohne Cue</span></div>' }], 0);
+    } else if (v === 'note') {
+      const r = await Req.form(live ? `Cue ${c.f.nr} · Bild ${Cues.letter(i)}` : 'Foto', [{ k: 'notiz', label: 'Notiz', type: 'area', rows: 3, value: im.f.notiz || '', ph: 'z. B. Verfolger auf Mackie' },
+        { k: 'hinweis', label: 'Hinweis', value: im.f.hinweis || '', ph: 'z. B. Nebel muss laufen' }]);
+      if (r) await Cues.patchImg(imgId, { notiz: r.notiz.trim(), hinweis: r.hinweis.trim() });
+    } else if (v === 'ann') {
+      const full = await Repo.full(im.f.b);
+      if (!full) { Ui.toast('Bilddaten fehlen auf diesem Gerät', 'err'); return; }
+      const r = await Annotator.open(full);
+      if (r) { await Cues.patchImg(imgId, { b: r.b, o: im.f.o || im.f.b, w: r.w, h: r.h }, [r]); Ui.toast('Markierung gespeichert – das Original bleibt erhalten'); }
+    } else if (v === 'orig') { await Cues.patchImg(imgId, { b: im.f.o, o: '' }); Ui.toast('Original wiederhergestellt'); }
+    else if (v === 'left' || v === 'right') await Cues.swapImg(imgId, v === 'left' ? -1 : 1);
+    else if (v === 'move') {
+      const nr = await Ui.dialog({ title: 'Zu welcher Cue?', message: 'Gibt es die Nummer noch nicht, wird die Cue angelegt.', input: { value: live ? c.f.nr : '', inputmode: 'decimal', placeholder: 'z. B. 13' },
+        buttons: [{ label: 'Abbrechen', value: null }, { label: 'Verschieben', value: true, cls: 'primary' }] });
+      if (nr != null && Cues.norm(nr)) { const t = await Cues.moveImg(imgId, nr); if (t) Ui.toast(`Foto liegt jetzt bei Cue ${t.f.nr}`); }
+    } else if (v === 'del') {
+      if (await Ui.confirm('Foto löschen?', live ? `Cue ${c.f.nr} · Bild ${Cues.letter(i)}` : '', 'Löschen', true)) { await Cues.deleteImg(imgId); Ui.toast('Foto gelöscht'); }
+    }
+  },
+  /* ---------- PDF ---------- */
+  pdf(listId) {
+    const l = Cues.list(listId); if (!l) return;
+    const s = Cues.stats(listId), o = { cover: true, compact: false };
+    const sh = Ui.sheet({ title: 'PDF exportieren', center: true });
+    sh.body.innerHTML = `<p class="muted" style="margin-top:0">„${Utils.esc(l.f.titel)}“ – ${s.imgs} Fotos, je Foto eine Seite (A4 hoch), sortiert nach Cue-Nummer.</p>
+      <div class="group"><h3>Inhalt</h3>
+        <label class="item"><span class="lb">Deckblatt mit Cue-Übersicht<small>auch Cues ohne Foto</small></span><span class="switch"><input type="checkbox" data-c="cover" checked><span></span></span></label>
+        <label class="item"><span class="lb">Kompakt<small>kleinere Datei zum Mailen (Fotos 900 px)</small></span><span class="switch"><input type="checkbox" data-c="compact"><span></span></span></label></div>
+      <button class="btn primary big block" data-go>${I('pdf')} PDF erstellen</button>`;
+    sh.body.addEventListener('change', e => { if (e.target.dataset.c) o[e.target.dataset.c] = e.target.checked; });
+    sh.body.querySelector('[data-go]').onclick = async () => {
+      const bz = Ui.busy('PDF wird erstellt …');
+      try {
+        const blob = await Pdf.buildCues(listId, o, (i, n) => bz.set(`PDF wird erstellt … Foto ${i} / ${n}`));
+        bz.close(); sh.close(); await Ui.afterBack();
+        const name = `${Utils.safeName(l.f.titel)}_Cues_${l.f.datum || RunList.isoDate()}.pdf`;
+        const r = await Utils.offerFile(blob, name, 'PDF ist fertig', `${Pdf.lastPages} Seiten`);
+        if (r === 'abort') return;
+        await Ui.afterBack();
+        Ui.toast(r === 'shared' ? 'PDF geteilt' : `PDF gespeichert (${Utils.fmtBytes(blob.size)})`);
+        await this.deleteList(listId, true);      // Cue-Fotos sind nach dem Export meist nicht mehr nötig
+      } catch (err) { bz.close(); App.error(err); }
+    };
+  }
+};
+
+/* =====================================================================
+   Pdf.buildCues – PDF einer Cue-Liste: A4 hoch, ein Foto je Seite.
+   Deckblatt mit Übersicht aller Cues (auch ohne Foto, mit Seitenzahl), dann je Foto eine Seite:
+   Kopfzeile (Stück · Spielstätte · Datum), Plakette „CUE 12 · A“, Foto groß, darunter
+   Cue-Nummer, Name, Hinweis (rosa), Notiz zum Foto, Notiz zur Cue.
+   ===================================================================== */
+Object.assign(Pdf, {
+  async buildCues(listId, opts = {}, onProgress) {
+    const l = Cues.list(listId); if (!l) throw new Error('Cue-Liste nicht gefunden');
+    const { W, H, M } = this, CW = W - 2 * M, RED = hexRgb(DEPT.L.col.A);
+    const cues = Cues.cuesOf(listId), shots = [];
+    cues.forEach(c => { const ims = Cues.imgsOf(c.id); ims.forEach((im, i) => shots.push({ c, im, i, n: ims.length })); });
+    const termin = CueView.dateStr(l.f.datum), stand = Utils.fmtDate(Date.now());
+    const head = [l.f.titel || 'Cue-Fotos', l.f.spielstaette, termin].filter(Boolean).join(' · ');
+    // ---- Schreiber (wie Pdf.build) ----
+    const parts = []; let offset = 0; const xref = []; let nextId = 5; const pageIds = [];
+    const enc = s => { const u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i) & 255; return u; };
+    const put = d => { const u = typeof d === 'string' ? enc(d) : new Uint8Array(d); parts.push(u); offset += u.length; };
+    const obj = (id, body) => { xref[id] = offset; put(`${id} 0 obj\n`); if (typeof body === 'string') put(body); else body(); put('\nendobj\n'); };
+    put('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+    const writePage = (content, images) => {
+      const cid = nextId++, pid = nextId++;
+      obj(cid, () => { put(`<< /Length ${content.length} >>\nstream\n`); put(content); put('\nendstream'); });
+      const xo = Object.entries(images).map(([n, id]) => `/${n} ${id} 0 R`).join(' ');
+      obj(pid, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${W} ${H}] /Contents ${cid} 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R >>${xo ? ` /XObject << ${xo} >>` : ''} >> >>`);
+      pageIds.push(pid);
+    };
+    // ---- Deckblatt: Kopf und Übersicht (eine Zeile je Foto, Cues ohne Foto als eigene Zeile) ----
+    const st = Cues.stats(listId);
+    const coverHead = c => {
+      let y = H - 60;
+      c.rgb(...RED).rect(0, H - 14, W, 14);
+      c.rgb(0.45, 0.48, 0.53).text(M, y, 'CUE-FOTOS · LICHTSTIMMUNGEN', 'F2', 10); y -= 34;
+      for (const ln of this.wrap(l.f.titel || 'Cue-Fotos', 'F2', 28, CW).slice(0, 2)) { c.rgb(0.07, 0.08, 0.1).text(M, y, ln, 'F2', 28); y -= 32; }
+      const sub = [l.f.spielstaette, termin].filter(Boolean).join('  ·  ');
+      if (sub) { c.rgb(0.25, 0.28, 0.33).text(M, y, sub, 'F1', 14); y -= 22; }
+      c.rgb(0.45, 0.48, 0.53).text(M, y, `${st.cues} Cues  ·  ${shots.length} Fotos${st.empty ? `  ·  ${st.empty} ohne Foto` : ''}  ·  Stand ${stand}`, 'F1', 10); y -= 18;
+      if (l.f.notiz) for (const ln of this.wrap(l.f.notiz, 'F1', 10, CW).slice(0, 4)) { c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 10); y -= 13; }
+      y -= 10; c.rgb(0.8, 0.82, 0.85, true).line(M, y, W - M, y, 1); y -= 26;
+      c.rgb(0.07, 0.08, 0.1).text(M, y, 'Inhalt', 'F2', 16); y -= 12;
+      return y;
+    };
+    const rows = [];
+    cues.forEach(c => { const ims = Cues.imgsOf(c.id); if (!ims.length) rows.push({ c, im: null }); else ims.forEach((im, i) => rows.push({ c, im, i })); });
+    const RH = 15, coverPages = [];
+    if (opts.cover !== false || !shots.length) {
+      let cap = Math.floor((coverHead(this._nullC()) - 50) / RH) - 1, cur = [];
+      rows.forEach(r => { if (cur.length >= cap) { coverPages.push(cur); cur = []; cap = Math.floor((H - 90 - 50) / RH) - 1; } cur.push(r); });
+      coverPages.push(cur);
+    }
+    const total = coverPages.length + shots.length;
+    const pageOf = new Map(); shots.forEach((s, k) => pageOf.set(s.im.id, coverPages.length + k + 1));
+    const footer = (c, n) => {
+      c.rgb(...RED).rect(0, 0, W, 14);
+      c.rgb(0.45, 0.48, 0.53).text(M, 24, this.fit(`Doku VT ${APP_VERSION}  ·  Cue-Fotos  ·  ${head}  ·  Stand ${stand}`, 'F1', 8, CW - 70), 'F1', 8)
+        .textR(W - M, 24, `Seite ${n} / ${total}`, 'F1', 8);
+    };
+    let pageNo = 0;
+    const X = [0, 64, 104, 262, CW - 50], WD = [62, 38, 154, CW - 50 - 262 - 6, 50];
+    coverPages.forEach((rs, ci) => {
+      const c = this._canvas(); pageNo++;
+      let y;
+      if (ci === 0) y = coverHead(c);
+      else { c.rgb(...RED).rect(0, H - 14, W, 14); c.rgb(0.07, 0.08, 0.1).text(M, H - 60, 'Inhalt (Fortsetzung)', 'F2', 16); y = H - 76; }
+      if (!rows.length) c.rgb(0.45, 0.48, 0.53).text(M, y - 16, 'Diese Liste enthält noch keine Cues.', 'F1', 11);
+      else {
+        c.rgb(0.93, 0.94, 0.95).rect(M, y - RH, CW, RH);
+        ['CUE', 'BILD', 'NAME', 'HINWEIS · NOTIZ', 'SEITE'].forEach((t, i) => c.rgb(0.4, 0.43, 0.48).text(M + X[i] + 4, y - RH * 0.7, t, 'F2', 7));
+        y -= RH;
+        rs.forEach((r, k) => {
+          const base = y - RH * 0.7;
+          if (k % 2) c.rgb(0.965, 0.97, 0.975).rect(M, y - RH, CW, RH);
+          const note = r.im ? [r.im.f.hinweis ? '[!] ' + r.im.f.hinweis : '', r.im.f.notiz || r.c.f.notiz || ''].filter(Boolean).join(' · ') : (r.c.f.notiz || '');
+          const vals = [r.c.f.nr, r.im ? Cues.letter(r.i) : '–', r.c.f.name || '', note];
+          vals.forEach((v, i) => { const bold = i === 0; c.rgb(bold ? 0.07 : 0.25, bold ? 0.08 : 0.28, bold ? 0.1 : 0.33).text(M + X[i] + 4, base, this.fit(v || '', bold ? 'F2' : 'F1', 9.5, WD[i] - 4), bold ? 'F2' : 'F1', 9.5); });
+          if (r.im) c.rgb(0.07, 0.08, 0.1).textR(W - M - 4, base, String(pageOf.get(r.im.id)), 'F1', 9.5);
+          else c.rgb(0.6, 0.62, 0.66).textR(W - M - 4, base, 'kein Foto', 'F1', 8.5);
+          y -= RH;
+        });
+      }
+      footer(c, pageNo); writePage(c.get(), {});
+    });
+    // ---- je Foto eine Seite ----
+    let done = 0;
+    for (const s of shots) {
+      const c = this._canvas(), images = {}; pageNo++;
+      const { c: cue, im, i, n } = s, lt = Cues.letter(i);
+      const pill = `CUE ${cue.f.nr} · ${lt}`, pw = this.width(pill, 'F2', 13) + 24;
+      c.rgb(...RED).rect(0, H - 14, W, 14);
+      c.rgb(...RED).rect(W - M - pw, H - 56, pw, 24); c.rgb(1, 1, 1).text(W - M - pw + 12, H - 48, pill, 'F2', 13);
+      c.rgb(0.07, 0.08, 0.1).text(M, H - 50, this.fit(head, 'F2', 16, CW - pw - 14), 'F2', 16);
+      c.rgb(0.85, 0.86, 0.88, true).line(M, H - 66, W - M, H - 66, 0.8);
+      // Text unter dem Foto zuerst ausmessen, dann das Foto so groß wie möglich
+      const nameL = cue.f.name ? this.wrap(cue.f.name, 'F2', 15, CW).slice(0, 2) : [];
+      const hwL = im.f.hinweis ? this.wrap('HINWEIS: ' + im.f.hinweis, 'F2', 12, CW - 20).slice(0, 5) : [];
+      const inL = im.f.notiz ? this.wrap(im.f.notiz, 'F1', 12, CW).slice(0, 8) : [];
+      const cnL = cue.f.notiz ? this.wrap(cue.f.notiz, 'F1', 11, CW).slice(0, 5) : [];
+      const textH = 34 + nameL.length * 18 + (hwL.length ? hwL.length * 15 + 14 : 0) + (inL.length ? 16 + inL.length * 15 : 0) + (cnL.length ? 16 + cnL.length * 14 : 0);
+      const top = H - 78, size = Math.max(220, Math.min(CW, top - (40 + textH + 14))), x = M + (CW - size) / 2;
+      let y = top - size;
+      let d = await Repo.full(im.f.b);
+      if (!d) c.rgb(0.6, 0.62, 0.66).text(x + 8, y + size / 2, 'Bilddaten fehlen auf diesem Gerät', 'F1', 11);
+      else {
+        try {
+          if (opts.compact) d = (await Photo.recompress(d, 900, 0.7)).d;
+          const info = this.jpegInfo(d);
+          if (!(info.w > 0 && info.h > 0) || ![1, 3].includes(info.c)) throw new Error('Format');
+          const iid = nextId++, name = 'Im' + iid, buf = d;
+          obj(iid, () => { put(`<< /Type /XObject /Subtype /Image /Width ${info.w} /Height ${info.h} /ColorSpace /${info.c === 1 ? 'DeviceGray' : 'DeviceRGB'} /BitsPerComponent 8 /Filter /DCTDecode /Length ${buf.byteLength} >>\nstream\n`); put(buf); put('\nendstream'); });
+          images[name] = iid;
+          const ih = size * info.h / info.w;
+          c.img(name, x, y + (size - ih) / 2, size, ih);
+          c.rgb(0.75, 0.77, 0.8, true).rect(x, y + (size - ih) / 2, size, ih, 'S');
+        } catch (e) { c.rgb(0.75, 0.2, 0.4).text(x + 8, y + size / 2, 'Bild beschädigt – nicht darstellbar', 'F1', 11); }
+      }
+      d = null;
+      y -= 30;
+      const cl = `CUE ${cue.f.nr}`;
+      c.rgb(0.07, 0.08, 0.1).text(M, y, cl, 'F2', 26);
+      c.rgb(0.35, 0.38, 0.43).text(M + this.width(cl, 'F2', 26) + 14, y, `Bild ${lt}${n > 1 ? ` von ${n}` : ''}`, 'F1', 13);
+      y -= 4;
+      nameL.forEach(ln => { y -= 18; c.rgb(0.07, 0.08, 0.1).text(M, y, ln, 'F2', 15); });
+      if (hwL.length) {
+        const hh = hwL.length * 15 + 10; y -= hh + 4;
+        c.rgb(1, 0.92, 0.95).rect(M, y, CW, hh); c.rgb(0.75, 0.1, 0.35).rect(M, y, 4, hh);
+        hwL.forEach((ln, k) => c.rgb(0.62, 0.05, 0.25).text(M + 12, y + hh - 15 - k * 15, ln, 'F2', 12));
+      }
+      if (inL.length) { y -= 16; c.rgb(0.45, 0.48, 0.53).text(M, y, 'NOTIZ', 'F2', 7.5); inL.forEach(ln => { y -= 15; c.rgb(0.1, 0.11, 0.13).text(M, y, ln, 'F1', 12); }); }
+      if (cnL.length) { y -= 16; c.rgb(0.45, 0.48, 0.53).text(M, y, 'NOTIZ ZUR CUE', 'F2', 7.5); cnL.forEach(ln => { y -= 14; c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 11); }); }
+      footer(c, pageNo); writePage(c.get(), images);
+      done++; onProgress && onProgress(done, shots.length);
+      if (done % 4 === 0) await Utils.frame();
+    }
+    // ---- Katalog, Seitenbaum, Schriften, Querverweise ----
+    obj(1, `<< /Type /Catalog /Pages 2 0 R /ViewerPreferences << /DisplayDocTitle true >> >>`);
+    obj(2, `<< /Type /Pages /Kids [${pageIds.map(id => id + ' 0 R').join(' ')}] /Count ${pageIds.length} >>`);
+    obj(3, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+    obj(4, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+    const infoId = nextId++, ps = v => '(' + this.esc(this.win(v)) + ')';
+    obj(infoId, `<< /Title ${ps((l.f.titel || 'Cue-Fotos') + ' – Cue-Fotos')} /Producer ${ps('Doku VT ' + APP_VERSION)} /Creator ${ps('Doku VT')} >>`);
+    this.lastPages = pageIds.length;
+    const xrefPos = offset;
+    let xr = `xref\n0 ${nextId}\n0000000000 65535 f \n`;
+    for (let k = 1; k < nextId; k++) xr += (xref[k] != null ? String(xref[k]).padStart(10, '0') + ' 00000 n ' : '0000000000 65535 f ') + '\n';
+    put(xr);
+    put(`trailer\n<< /Size ${nextId} /Root 1 0 R /Info ${infoId} 0 R >>\nstartxref\n${xrefPos}\n%%EOF\n`);
+    return new Blob(parts, { type: 'application/pdf' });
+  }
+});
+
+/* =====================================================================
    SyncView – Abgleich: Status, Live-Verbindung (QR), Sync-Paket, Import
    ===================================================================== */
 const SyncView = {
@@ -7608,7 +8625,7 @@ const SyncView = {
     const last = Sync.state.lastPackageAt;
     const mine = Settings.v.depts, allMine = mine.length === DEPT_ORDER.length;
     const changes = last ? Sync.collect({ since: last, depts: mine }) : null;
-    const nCh = changes ? changes.shows.length + changes.entries.length + changes.photos.length : 0;
+    const nCh = changes ? ['shows', 'entries', 'photos', 'runs', 'house', 'cuelists', 'cues', 'cueimgs'].reduce((n, k) => n + (changes[k] || []).length, 0) : 0;
     const lbl = allMine ? '' : ` · ${Sync.deptLabel()}`;
     const v = await Ui.menu('Sync-Paket senden', [
       last && { label: `Nur Änderungen seit ${Utils.fmtDate(last)} (${nCh})${lbl}`, value: 'inc', icon: 'sync' },
@@ -7787,6 +8804,7 @@ const DiagView = {
           <dt>Veranstaltungen</dt><dd>${s.live} (+${s.dead} gelöscht)</dd><dt>Einträge</dt><dd>${e.live} (+${e.dead} gelöscht)</dd>
           <dt>Fotos</dt><dd>${p.live} (+${p.dead} gelöscht)</dd><dt>Bilddaten</dt><dd>${blobs}</dd>
           <dt>Vorstellungen</dt><dd>${cnt(Repo.runs).live} Durchgänge (+${cnt(Repo.runs).dead} gelöscht)</dd>
+          <dt>Cue-Fotos</dt><dd>${Cues.lists().length} Listen · ${cnt(Repo.cues).live} Cues · ${cnt(Repo.cueimgs).live} Fotos${Cues.deletedLists().length ? ` (+${Cues.deletedLists().length} Listen im Papierkorb)` : ''}</dd>
           ${Repo.house.size || Settings.v.depts.includes('R') ? `<dt>Haus-Daten</dt><dd>${Repo.house.size} Datensatz${Repo.house.size === 1 ? '' : 'e'}${Repo.house.get('requisite') ? ` · ${Req.houseOrts().length} Haus-Orte, ${Req.vorlagen().length} Vorlagen · Stand ${Utils.fmtDate(Repo.house.get('requisite').mod)}` : ''}</dd>` : ''}
           ${(() => { const big = Repo.liveShows().filter(x => Object.keys(x.f).length >= 1500); return big.length ? `<dt>Hinweis</dt><dd style="color:var(--edit)">${big.map(x => `„${Utils.esc(x.f.titel)}“: ${Object.keys(x.f).length} von höchstens ${Rec.MAX_FIELDS} Feldern`).join('<br>')}</dd>` : ''; })()}
           <dt>Fehlende Bilder</dt><dd>${missing.length}${missing.length ? ' – bitte vollständiges Paket/Live-Abgleich' : ''}</dd>
@@ -7898,7 +8916,8 @@ const SettingsView = {
         const t = await Ui.prompt('Zur Bestätigung LÖSCHEN eintippen', '', 'LÖSCHEN');
         if (t !== 'LÖSCHEN') { Ui.toast('Abgebrochen'); return; }
         const rs = Store.db.objectStoreNames.contains('runs') ? ['runs'] : [], runIds = [...Repo.runs.keys()], houseIds = [...Repo.house.keys()];
-        await Store.tx(['shows', 'entries', 'photos', 'fulls', 'thumbs', ...rs, 'meta'], 'readwrite', s => { ['shows', 'entries', 'photos', 'fulls', 'thumbs', ...rs].forEach(n => s[n].clear()); s.meta.delete('syncState'); s.meta.delete('demoDone'); s.meta.delete('demoRDone'); runIds.forEach(id => s.meta.delete('run:' + id)); houseIds.forEach(id => s.meta.delete('house:' + id)); });
+        const cueKeys = [...Repo.cuelists.keys()].map(k => 'cl:' + k).concat([...Repo.cues.keys()].map(k => 'cq:' + k), [...Repo.cueimgs.keys()].map(k => 'cb:' + k));
+        await Store.tx(['shows', 'entries', 'photos', 'fulls', 'thumbs', ...rs, 'meta'], 'readwrite', s => { ['shows', 'entries', 'photos', 'fulls', 'thumbs', ...rs].forEach(n => s[n].clear()); s.meta.delete('syncState'); s.meta.delete('demoDone'); s.meta.delete('demoRDone'); runIds.forEach(id => s.meta.delete('run:' + id)); houseIds.forEach(id => s.meta.delete('house:' + id)); cueKeys.forEach(k => s.meta.delete(k)); });
         location.hash = ''; location.reload();
       }
     });
@@ -8051,7 +9070,7 @@ const Pwa = {
    App – Navigation, Zustand, Rendering
    ===================================================================== */
 const App = {
-  state: { route: 'home', showId: null, abt: 'all', kat: 'all', q: '', edit: false, checklist: false, sel: null, renderPending: false, reqSafe: false, homeSp: 'all' },
+  state: { route: 'home', showId: null, abt: 'all', kat: 'all', q: '', edit: false, checklist: false, sel: null, renderPending: false, reqSafe: false, homeSp: 'all', cueListId: null },
   async start() {
     const setVh = () => document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
     setVh(); window.addEventListener('resize', setVh);
@@ -8085,7 +9104,7 @@ const App = {
     if (window.visualViewport) window.visualViewport.addEventListener('resize', Utils.debounce(realign, 250));
     document.addEventListener('keydown', e => this.keys(e));
     window.addEventListener('unhandledrejection', e => { console.error(e.reason); e.preventDefault(); Ui.toast('Fehler: ' + (e.reason && e.reason.message || e.reason), 'err'); });
-    window.addEventListener('beforeunload', e => { if (document.querySelector('[data-editor]')) { e.preventDefault(); e.returnValue = ''; } });
+    window.addEventListener('beforeunload', e => { if (document.querySelector('[data-editor]') || CueCam.pending()) { e.preventDefault(); e.returnValue = ''; } });
     new ResizeObserver(() => this.stickyTop()).observe(document.getElementById('appbar'));
     this.route();
     Boot.started = true;            // ab hier meldet die App Fehler selbst (Toast/Dialog)
@@ -8110,7 +9129,9 @@ const App = {
     if (h[0] === 'show' && Repo.show(h[1])) {
       if (this.state.showId !== h[1]) Object.assign(this.state, { showId: h[1], q: '', sel: null, abt: 'all', kat: 'all', checklist: false });
       this.state.route = 'show';
-    } else { this.state.route = 'home'; this.state.showId = null; }
+    } else if (h[0] === 'cues') { this.state.route = 'cues'; this.state.showId = null; }                       // Cue-Fotos (ab 2.8.0)
+    else if (h[0] === 'cue' && Cues.list(h[1])) { this.state.route = 'cue'; this.state.showId = null; this.state.cueListId = h[1]; }
+    else { this.state.route = 'home'; this.state.showId = null; }
     this.render(true);
     window.scrollTo(0, 0);
   },
@@ -8123,8 +9144,11 @@ const App = {
   pillHtml() { const st = Sync.status(); return `<button class="syncpill" data-act="sync" data-state="${st.state}" title="${Utils.esc(st.text)}" aria-label="Abgleich: ${Utils.esc(st.text)}"><span class="dot"></span><span class="lbl">${Utils.esc(st.label)}</span></button>`; },
   render(full = false) {
     this.state.renderPending = false;
-    document.documentElement.classList.toggle('editing', this.state.route === 'show' && this.state.edit);
-    if (this.state.route === 'show') this.renderShow(full); else this.renderHome();
+    document.documentElement.classList.toggle('editing', (this.state.route === 'show' || this.state.route === 'cue') && this.state.edit);
+    if (this.state.route === 'show') this.renderShow(full);
+    else if (this.state.route === 'cues') CueView.renderHome();
+    else if (this.state.route === 'cue') CueView.renderList(full);
+    else this.renderHome();
     this.stickyTop();
   },
 
@@ -8139,7 +9163,7 @@ const App = {
     if (this.state.homeSp !== 'all' && !sps.includes(this.state.homeSp)) this.state.homeSp = 'all';
     const shows = this.state.homeSp === 'all' ? all : all.filter(s => this.spOf(s) === this.state.homeSp);
     const main = document.getElementById('main');
-    main.innerHTML = `<div class="wrap">
+    main.innerHTML = `<div class="wrap">${this.homeTabs('docs')}
       <div class="home-head"><div><h2>Veranstaltungen</h2><p>${shows.length} ${shows.length === 1 ? 'Produktion' : 'Produktionen'}${this.state.homeSp === 'all' ? ' auf diesem Gerät' : ' · ' + Utils.esc(this.state.homeSp || 'ohne Spielstätte')}</p></div>
         <button class="btn" data-act="import">${I('download')} Import</button></div>${sps.length > 1 ? `
       <div class="spfilter" role="group" aria-label="Spielstätte">${[['all', 'Alle', all.length]].concat(sps.map(x => [x, x || 'Ohne Spielstätte', all.filter(s => this.spOf(s) === x).length])).map(([v, l, n]) =>
@@ -8152,6 +9176,11 @@ const App = {
       <div class="fabbar"><button class="fab" data-act="newshow">${I('plus')} Veranstaltung</button></div>`;
     Thumbs.observe(main);
     this.updatePill();
+  },
+  /** Umschalter auf der Startseite: Dokumentation | Cue-Fotos (ab 2.8.0) */
+  homeTabs(cur) {
+    return `<div class="seg hometabs" role="group" aria-label="Bereich"><button data-act="godocs" aria-pressed="${cur === 'docs'}">${I('layers', 'sm')} Dokumentation</button>`
+      + `<button data-act="gocues" aria-pressed="${cur === 'cues'}">${I('camera', 'sm')} Cue-Fotos</button></div>`;
   },
   showCard(s) {
     const st = Repo.stats(s.id);
@@ -8690,6 +9719,7 @@ const App = {
   },
   keys(e) {
     if (Ui.topOpen || e.metaKey || e.ctrlKey || e.altKey || Utils.isEditable(document.activeElement)) return;
+    if (this.state.route === 'cue' && (e.key === 'e' || e.key === 'E')) { this.state.edit = !this.state.edit; this.render(); return; }
     if (this.state.route !== 'show') return;
     if (e.key === 'e' || e.key === 'E') { this.state.edit = !this.state.edit; this.render(); }
     else if ((e.key === 'n' || e.key === 'N') && this.state.edit && this.visibleDepts(this.state.showId).length) this.newEntry();
@@ -8724,6 +9754,8 @@ const App = {
     if (b.closest('[data-detail]')) { const id = st.sel && st.sel.split(':')[0]; if (id) this.detailAction(e, id, null); return; }
     switch (a) {
       case 'home': this.go('#/'); break;
+      case 'godocs': this.go('#/'); break;
+      case 'gocues': this.go('#/cues'); break;
       case 'homesp': st.homeSp = b.dataset.sp; this.renderHome(); break;
       case 'open': this.go('#/show/' + b.dataset.id); break;
       case 'newshow': this.newShow(); break;
@@ -8749,6 +9781,7 @@ const App = {
   }
 };
 document.getElementById('app').addEventListener('click', e => App.onClick(e));
+document.getElementById('app').addEventListener('click', e => CueView.onClick(e));
 window.addEventListener('resize', Utils.debounce(() => { if (App.state.route === 'show' && !App.inputFocused()) { App.renderList(); App.renderDetail(); } }, 250));
 App.start();
 </script>
