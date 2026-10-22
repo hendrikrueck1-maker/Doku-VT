@@ -1,5 +1,21 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.7.0 – 22.10.2026
+
+Licht überarbeitet, Ton und Bühne angeglichen, Bildübertragung repariert. Kein Datenbank-Update, Paketformat unverändert. **Alle Geräte auf 2.7.0 aktualisieren** – 2.6.5 behält die neuen Angaben (Zug, Warnhinweis, Ablauf Licht/Ton) beim Abgleich, zeigt sie aber nicht an (Bühnen-Schritte „Während der Vorstellung“ erscheinen dort nicht bzw. unter „Grundeinrichtung“).
+
+- **Bilder fehlten nach dem Abgleich (z. B. Pixel → iPad):** Beim Live-Abgleich kommt ein Eintrag vor seinen Bildern an. Die Vorschau merkte sich dann „kein Bild“ und blieb leer, bis die App neu gestartet wurde – in allen Abteilungen. Jetzt erscheint das Bild, sobald es da ist; bis dahin steht „Bild fehlt“. Sync-Pakete werden auf iPad/iPhone portionsweise eingelesen (weniger Speicher, große Pakete brechen nicht mehr ab).
+- **Licht – Eintrag:** DMX-Adresse entfällt (steht in „Adresse“; alte Werte bleiben sichtbar). **Position und Zug getrennt**, beide im Hauptteil; Zug mit Schnelltasten aus den Beleuchterzügen der Veranstaltung. Farbe/Gobo, Gerät, Szene bleiben unter „Weitere Angaben“.
+- **Warnhinweis** (Licht, Ton, Bühne): auffällig mit Symbol auf der Karte, im Detail, in der Bildansicht, im Großbild und im PDF.
+- **Ablauf für Licht und Ton** (wie Bühne): Vor der Vorstellung · Während der Vorstellung · Pausenumbau · Nach der Vorstellung. Im Eintrag unter „Ablauf-Hinweise“ direkt zum Kreis/Kanal anlegen, oder gesammelt über „Ablauf“. Die Hinweise stehen auf der Karte, in „Vor der Vorstellung“ zum Abhaken und im PDF. Bühne bekommt zusätzlich „Während der Vorstellung“.
+- **Hauptansicht:** Karten zeigen alle ausgefüllten Angaben, auch die „Weiteren Angaben“.
+- **Großbild:** Die fixierte Leiste zeigt Kreis, Gruppe, Filter, Adresse, Position und Zug (Ton: Kanal, Quelle, Mikrofon, Stagebox, Ausgang, Position · Bühne: Position, Element, Ort, Höhe, Reihenfolge), darunter – ebenfalls fixiert – Warnhinweis, weitere Angaben, Ablauf und Bemerkung.
+- **„Hinweis Einrichten / Ablauf“:** Der allgemeine Text jeder Abteilung steht, sobald ausgefüllt, als eigener, immer offener Kasten ganz oben (Requisite: „Wichtig“).
+- **Auffälliger und immer erreichbar:** „Vor der Vorstellung“ und die Kästen „Licht · Beleuchterzüge & Ablauf“, „Ton · Ablauf“, „Bühne · Ablauf & Positionen“ haben farbige Kopfzeilen. Neue Schnellzugriff-Leiste in der fixierten Werkzeugleiste (Hinweis · Vor der Vorstellung mit Fortschritt · Beleuchterzüge · Ablauf) springt beim Scrollen jederzeit zum Kasten und klappt ihn auf.
+- **Spielstätten-Farben** klar anders als die Abteilungen: Großes Haus Gold, Werkstattbühne Ocker, Spiegelhalle Violett, Münsterplatz Cyan, Sonstiges Oliv.
+- **Startseite:** Demo- und Testveranstaltungen stehen immer am Ende.
+- Ablauf-Hinweise im Eintrag speichern nur, was geändert wurde – Änderungen oder Löschungen eines anderen Geräts (Live-Abgleich) bleiben erhalten. Zug-Schnelltasten setzen genau einen Zug.
+
 ## 2.6.5 – 20.10.2026
 
 - **Ablauf neu geordnet (teils nebeneinander, teils untereinander):** oben der Name groß und daneben „für …“, darunter eine Leiste mit festen Feldern nebeneinander – Ort · Zu wem · Lichtzeichen · Übergabe (leere Felder mit „–“, damit alles immer an derselben Stelle steht). Schritte genauso: Wann + Text, darunter Ort · Zu wem · Lichtzeichen · Gegenstand. Auf dem Smartphone 2 × 2.

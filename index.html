@@ -953,6 +953,70 @@ html[data-theme="red"] .rot[aria-pressed="true"]{color:#000}
 .busyov .bx{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r-lg);padding:22px 26px;min-width:260px;max-width:90vw;text-align:center;box-shadow:var(--shadow)}
 .busyov .spinner{margin:0 auto 12px;border-color:var(--surf3);border-top-color:var(--text)}
 
+
+/* ---------- 2.7.0: Hinweise, Warnhinweis, Ablauf je Eintrag, Großbild-Leiste, Schnellzugriff ---------- */
+.setup,.hintbox,.setup.run{scroll-margin-top:calc(var(--stickytop,140px) + 8px)}
+.setup{border:2px solid color-mix(in srgb,var(--da) 55%,var(--line));border-left:10px solid var(--da)}
+.setup>summary{min-height:60px;background:color-mix(in srgb,var(--da) 13%,var(--surf))}
+.setup>summary h3{font-size:16px;font-weight:800;letter-spacing:.01em;text-transform:none;color:var(--text)}
+.setup>summary .sic{display:inline-flex;color:var(--da)}
+.setup.run{border:2px solid color-mix(in srgb,var(--ok) 55%,var(--line));border-left:10px solid var(--ok)}
+.setup.run>summary{background:color-mix(in srgb,var(--ok) 13%,var(--surf))}
+.setup.run>summary .hint.run{color:var(--ok)}
+.setup + .setup,.setup.run + .setup{margin-top:12px}
+.hintbox{margin:4px 0 12px;border:2px solid var(--pink);border-radius:var(--r);background:color-mix(in srgb,var(--pink) 9%,var(--surf));box-shadow:0 0 0 3px var(--pink-soft);overflow:hidden}
+.hintbox .hbh{display:flex;align-items:center;gap:10px;min-height:52px;padding:4px 8px 4px 14px;border-bottom:1px solid color-mix(in srgb,var(--pink) 40%,var(--line));color:var(--pink)}
+.hintbox .hbh h3{margin:0;flex:1;font-size:16px;font-weight:800;color:var(--text)}
+.hintbox .hbt{padding:12px 16px 14px;white-space:pre-wrap;font-size:18px;font-weight:600;line-height:1.45;color:var(--text)}
+.abk{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--muted);margin-left:6px;white-space:nowrap}
+.wbadge{display:inline-flex;align-items:flex-start;gap:6px;padding:4px 10px;border-radius:8px;background:var(--danger-soft);border:2px solid var(--danger);color:var(--text);font-size:14px;font-weight:800;line-height:1.3;max-width:100%;overflow-wrap:anywhere;text-align:left;white-space:normal}
+.wbadge svg{color:var(--danger);flex:none;margin-top:1px}
+.card.haswarn{border-color:color-mix(in srgb,var(--danger) 55%,var(--line))}
+.estp{display:flex;gap:6px;align-items:flex-start;font-size:14px;color:var(--text2);line-height:1.35}
+.estp svg{flex:none;margin-top:2px;color:var(--da)}
+.estp b{color:var(--text)}
+.cards.grid .card .chips .chip:nth-child(n+6),.cards.grid .card .estp{display:none}
+.f.warnf input{border-color:color-mix(in srgb,var(--danger) 70%,var(--line2));font-weight:700}
+.f.warnf label{color:var(--danger);display:flex;align-items:center;gap:6px}
+.ablf{border:1px solid var(--line);border-left:6px solid var(--da);border-radius:var(--r);background:var(--surf);padding:12px;display:grid;gap:10px}
+.ablfh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:15px}
+.ablfh svg{color:var(--da)}
+.ablfh .muted{font-size:13px}
+.ablrow{display:grid;gap:8px;padding:10px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surf2)}
+.ablrow .arow{display:flex;gap:8px;align-items:flex-start}
+.ablrow textarea{flex:1;min-width:0;border:1px solid var(--line2);background:var(--surf);border-radius:var(--r-sm);padding:10px 12px;font-size:16px;min-height:60px;resize:vertical}
+.ablrow .qkeys{margin-top:0}
+.ablrow .qkeys button{font-family:var(--font);font-weight:700}
+.dwarn{margin:0 0 12px}.dwarn .wbadge{font-size:17px;padding:8px 12px}
+.detail .dsteps{margin:12px 0}
+.lbx .lwarn{margin-top:8px}.lbx .lwarn .wbadge{font-size:17px;background:rgba(255,92,147,.22)}
+.lbx .estp{color:#ddd;font-size:16px;margin-top:6px}.lbx .estp b{color:#fff}
+/* Großbild: fixierte Leiste */
+.cards.big .card .bigsticky{position:sticky;top:calc(var(--stickytop, 120px) - 1px);z-index:5;width:calc(100% + 4px);margin:0 -2px;box-sizing:border-box;
+  border-radius:var(--r) var(--r) 0 0;background:color-mix(in srgb,var(--surf) 94%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  box-shadow:0 8px 16px -10px rgba(0,0,0,.75);border:2px solid color-mix(in srgb,var(--k) 75%,transparent);border-bottom-width:1px}
+.cards.big .card .bigsticky .bighead{position:relative;top:auto;width:100%;margin:0;box-shadow:none;border-radius:calc(var(--r) - 2px) calc(var(--r) - 2px) 0 0}
+.bigfields{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:4px 14px;padding:8px 14px;cursor:pointer}
+.bf{display:flex;flex-direction:column;min-width:0}
+.bf small{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bf .v{font-family:var(--mono);font-weight:800;font-size:17px;line-height:1.2;overflow-wrap:anywhere;color:var(--text)}
+@media (max-width:620px){.bigfields{grid-template-columns:repeat(3,minmax(0,1fr))}.bf .v{font-size:15px}}
+.bigwarn{padding:0 14px 8px;cursor:pointer}
+.bigextra{display:grid;gap:6px;padding:8px 14px 10px;border-top:1px dashed var(--line);cursor:pointer}
+.bigextra .note{color:var(--text2);font-size:15px;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+html[data-theme="red"] .cards.big .card .bigsticky{background:var(--surf2);-webkit-backdrop-filter:none;backdrop-filter:none}
+/* Bild (noch) nicht auf dem Gerät */
+.nob{position:relative}
+.nob::after{content:"Bild fehlt";position:absolute;inset:0;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--muted);text-align:center;padding:4px}
+/* Schnellzugriff in der fixierten Werkzeugleiste */
+.toolbar .row.qrow{overflow-x:auto;scrollbar-width:none;gap:6px;padding-bottom:1px}
+.toolbar .row.qrow::-webkit-scrollbar{display:none}
+.qb{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:0 13px;border-radius:999px;border:2px solid var(--line2);background:var(--surf);color:var(--text);font-weight:700;font-size:14px;white-space:nowrap}
+.qb[data-abt]{border-color:var(--da);background:color-mix(in srgb,var(--da) 12%,var(--surf))}
+.qb.run{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surf))}
+.qb.warn{border-color:var(--pink);background:var(--pink-soft)}
+.qb .mono{font-size:12px;opacity:.85}
+
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
 @media print{.appbar,.toolbar,.fabbar{display:none}}
 </style>
@@ -987,7 +1051,7 @@ window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason 
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.6.5';
+const APP_VERSION = '2.7.0';
 const DB_NAME = 'lichtdoku';
 /* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
    bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
@@ -1019,14 +1083,17 @@ const DEPT = {
       { k: 'adresse', label: 'Adresse', mono: true, ph: '12/301' },
       { k: 'gruppe', label: 'Gruppe', mono: true, mode: 'tel' },
       { k: 'filter', label: 'Filter', mono: true, ph: 'z. B. L201, nc', qkeys: 'filterKeys' },
+      { k: 'position', label: 'Position', ph: 'z. B. Portal rechts, 3. Gasse links' },
+      { k: 'lzug', label: 'Zug', mono: true, zkeys: true, ph: 'z. B. OLZ 2' },              // ab 2.7.0 getrennt von „Position“
+      { k: 'warnung', label: 'Warnhinweis', warn: true, full: true, ph: 'z. B. Nicht abschalten – Nebelmaschine hängt dran' },
       { k: 'bemerkung', label: 'Bemerkung', area: true, ph: 'Wo steckt es, was ist zu beachten?' },
       { k: 'geraet', label: 'Gerät / Scheinwerfer', extra: true, ph: 'z. B. ETC Source Four 26°' },
-      { k: 'dmx', label: 'DMX-Adresse / Universe', extra: true, mono: true, ph: 'z. B. 2/145' },
-      { k: 'position', label: 'Position / Zug', extra: true, ph: 'z. B. 3. Zug, Portal rechts' },
       { k: 'farbe', label: 'Farbe / Gobo', extra: true, ph: 'z. B. L201, Gobo Wald' },
-      { k: 'szene', label: 'Szene / Bild', extra: true, ph: 'z. B. Bild 3' }
+      { k: 'szene', label: 'Szene / Bild', extra: true, ph: 'z. B. Bild 3' },
+      { k: 'dmx', label: 'DMX-Adresse / Universe', hidden: true, legacy: true, mono: true }   // ab 2.7.0 nicht mehr im Formular (steht in „Adresse“); alte Werte bleiben sichtbar
     ],
-    extraHint: 'Gerät, DMX, Position, Farbe, Szene',
+    extraHint: 'Gerät, Farbe / Gobo, Szene',
+    headKeys: ['gruppe', 'filter', 'adresse', 'position', 'lzug'],
     pdf: [['KREIS', 'kreis'], ['FILTER', 'filter'], ['GRUPPE', 'gruppe'], ['ADRESSE', 'adresse']],
     toc: ['gruppe', 'filter'],
     col: { A: '#c62c22', E: '#ff9d8c' }
@@ -1043,6 +1110,7 @@ const DEPT = {
       { k: 'stagebox', label: 'Stagebox / Patch', mono: true, ph: 'z. B. SB2-07' },
       { k: 'ausgang', label: 'Ausgang / Weg', ph: 'z. B. PA, Aux 3' },
       { k: 'mikropos', label: 'Mikrofonposition', ph: 'z. B. Stirn', hint: 'Fotos dazu unten unter „Aufbau“' },
+      { k: 'warnung', label: 'Warnhinweis', warn: true, full: true, ph: 'z. B. Kabel quer durch die Gasse – abgeklebt lassen' },
       { k: 'bemerkung', label: 'Bemerkung', area: true, ph: 'Was ist zu beachten?' },
       { k: 'funk', label: 'Funk: Sender-Nr. / Frequenz', extra: true, mono: true, ph: 'z. B. TX 4 · 606,250 MHz' },
       { k: 'akku', label: 'Akku-Wechsel', extra: true, ph: 'z. B. vor jeder Vorstellung' },
@@ -1051,6 +1119,7 @@ const DEPT = {
       { k: 'phantom', label: 'Phantomspeisung 48 V', extra: true, bool: true }
     ],
     extraHint: 'Funk, Akku, Rolle, Szene, 48 V',
+    headKeys: ['quelle', 'mikro', 'stagebox', 'ausgang', 'mikropos'],
     pdf: [['KANAL', 'kanal'], ['QUELLE', 'quelle'], ['MIKROFON', 'mikro'], ['STAGEBOX', 'stagebox']],
     toc: ['quelle', 'mikro'],
     col: { A: '#2a62cc', E: '#7fd0ff' }
@@ -1068,6 +1137,7 @@ const DEPT = {
       { k: 'element', label: 'Element', ph: 'z. B. Rückprospekt' },
       { k: 'hoehe', label: 'Höhe / Marke', mono: true, ph: 'z. B. 8,20 m' },
       { k: 'reihenfolge', label: 'Reihenfolge Umbau', mono: true, mode: 'num', ph: 'z. B. 4' },
+      { k: 'warnung', label: 'Warnhinweis', warn: true, full: true, ph: 'z. B. Nur mit zwei Personen fahren' },
       { k: 'bemerkung', label: 'Bemerkung', area: true, ph: 'Was ist zu beachten?' },
       { k: 'szene', label: 'Szene / Verwandlung', extra: true, ph: 'z. B. Bild 2 → 3' },
       { k: 'zustaendig', label: 'Zuständig', extra: true, ph: 'z. B. Seite links' },
@@ -1077,6 +1147,7 @@ const DEPT = {
       { k: 'lagerort', label: 'Lagerort', extra: true, ph: 'z. B. Seitenbühne rechts' }
     ],
     extraHint: 'Szene, Zuständig, Last, Sicherung, Brandschutz, Lagerort',
+    headKeys: ['element', 'ort', 'hoehe', 'reihenfolge'],
     pdf: [['POSITION', 'zug'], ['ELEMENT', 'element'], ['ORT', 'ort'], ['HÖHE', 'hoehe']],
     toc: ['element', 'ort'],
     col: { A: '#646d79', E: '#c9d0d8' }
@@ -1130,7 +1201,7 @@ const REQ_ABKURZ = { vor: 'Vor Beginn', nach: 'Nach der Vorstellung', abbau: 'Ab
 /** Spielstätten (für alle Gewerke, ab 2.6.0) – „Sonstiges“ mit freiem Text */
 const SPIELSTAETTEN = ['Großes Haus', 'Werkstattbühne', 'Spiegelhalle', 'Münsterplatz'];
 /** Farbe je Spielstätte (Rahmen auf der Startseite, ab 2.6.3); alles andere = Sonstiges */
-const SP_COLOR = { 'Großes Haus': '#d9534f', 'Werkstattbühne': '#3b8fd9', 'Spiegelhalle': '#9b6bdf', 'Münsterplatz': '#d9a12b', '': '#2aa198' };
+const SP_COLOR = { 'Großes Haus': '#e8b500', 'Werkstattbühne': '#a8743c', 'Spiegelhalle': '#9b6bdf', 'Münsterplatz': '#17b7c7', '': '#8c9a2a' };   // ab 2.7.0: Gold, Ocker, Violett, Cyan, Oliv
 const spColor = v => v ? (SP_COLOR[v] || SP_COLOR['']) : '';
 const REQ_AUSL = [['einruf', 'Einruf'], ['licht', 'Lichtzeichen'], ['stichwort', 'Stichwort'], ['tuer', 'Tür'], ['applaus', 'Applaus']];
 const REQ_ZUSTAND = ['präpariert', 'beklebt', 'befüllt', 'geladen', 'markiert', 'angeklebt', 'aufgeladen'];
@@ -1150,7 +1221,12 @@ const BEREICH_ABSCHNITT = ['Vorbühne', 'Portal', 'Haupt- / Seitenbühne', 'Hint
 /** Ort einer Position als Text, z. B. „Vorbühne · Boden“ */
 function ortText(p) { return `${BEREICH_NAME[p.bereich] || 'Hauptbühne'} · ${EBENE_KURZ[p.ebene] || 'Boden'}`; }
 /** Bühnen-Ablauf: feste Abschnitte (Schritte als Felder „b:<id>“ im Veranstaltungs-Datensatz) */
-const ABLAUF = [['grund', 'Grundeinrichtung'], ['pause', 'Pausenumbau'], ['ende', 'Ende / Abbau']];
+const ABLAUF = [['grund', 'Grundeinrichtung'], ['im', 'Während der Vorstellung'], ['pause', 'Pausenumbau'], ['ende', 'Ende / Abbau']];
+const ABL_KEYS = ABLAUF.map(x => x[0]);
+/** Ablauf (ab 2.7.0 auch Licht und Ton): eigener Feld-Präfix je Abteilung – ältere Geräte kennen nur „b:“ und lassen die anderen unberührt */
+const ABL_PRE = { L: 'bl:', T: 'bt:', B: 'b:' };
+const ABL_NAME = { grund: 'Vor der Vorstellung', im: 'Während der Vorstellung', pause: 'Pausenumbau', ende: 'Nach der Vorstellung' };
+function ablaufName(abt, k) { return abt === 'B' ? (ABLAUF.find(x => x[0] === k) || ABLAUF[0])[1] : (ABL_NAME[k] || ABL_NAME.grund); }
 
 /** Kategorien (intern): A = Aufbau, E = 2. Phase, N = Eintrag ohne Fotos. Namen je Abteilung über katName(). */
 const KAT = { A: { key: 'A' }, E: { key: 'E' }, N: { key: 'N' } };
@@ -1195,9 +1271,11 @@ function entryVal(e, k) {
 function fieldVal(abt, k, v) { const fd = deptField(abt, k); if (fd && fd.bool) return v ? 'an' : ''; if (Array.isArray(v)) return v.join(', '); return v == null ? '' : String(v); }
 /** Felder für Info-Chips: zuerst die Chips der Abteilung, dann alle weiteren ausgefüllten (ohne Hauptfeld/Bemerkung) */
 function infoKeys(abt, all = false) {
-  const D = DEPT[abt]; const rest = D.fields.filter(x => !x.hidden).map(x => x.k).filter(k => k !== D.main && k !== 'bemerkung' && !D.chips.includes(k));
+  const D = DEPT[abt]; const rest = D.fields.filter(x => !x.hidden || x.legacy).map(x => x.k).filter(k => k !== D.main && k !== 'bemerkung' && k !== 'warnung' && !D.chips.includes(k));
   return all ? D.chips.concat(rest) : D.chips;
 }
+/** Warnhinweis als auffällige Plakette (Symbol + Text, auch im Rotlicht eindeutig) */
+function warnHtml(t, cls = '') { return t ? `<span class="wbadge ${cls}">${I('alert', 'sm')}<span>${Utils.esc(t)}</span></span>` : ''; }
 /** Tag „LICHT · AUFBAU“ (bei schmalem Bildschirm „L · AUFBAU“) */
 function tagHtml(abt, kat, cls = '') {
   const d = DEPT[abt];
@@ -1214,7 +1292,7 @@ const FIELDS = {
 /** alle Textfelder aller Abteilungen (Suche, Vorlagen) */
 const TEXT_FIELDS = [...new Set(DEPT_ORDER.flatMap(a => DEPT[a].fields.filter(x => !x.bool).map(x => x.k)))];
 const FIELD_LABEL = Object.fromEntries(DEPT_ORDER.flatMap(a => DEPT[a].fields.map(x => [x.k, x.label])).reverse());
-Object.assign(FIELD_LABEL, { kreis: 'Kreis', gruppe: 'Gruppe', filter: 'Filter', adresse: 'Adresse', bemerkung: 'Bemerkung', geraet: 'Gerät', dmx: 'DMX / Universe', position: 'Position / Zug', farbe: 'Farbe / Gobo' });
+Object.assign(FIELD_LABEL, { kreis: 'Kreis', gruppe: 'Gruppe', filter: 'Filter', adresse: 'Adresse', bemerkung: 'Bemerkung', geraet: 'Gerät', dmx: 'DMX / Universe', position: 'Position', lzug: 'Zug', warnung: 'Warnhinweis', farbe: 'Farbe / Gobo' });
 
 /* =====================================================================
    Utils – kleine Helfer ohne Zustand
@@ -1780,7 +1858,7 @@ const Repo = {
     Object.keys(src.f).forEach(k => { const v = src.f[k]; if (k.startsWith('ci:') && v && !v.del) sf['ci:' + Utils.uuid()] = Utils.clone(v); });   // Checklisten-Punkte (ohne Durchgänge)
     // Bühnen-Ablauf mitnehmen; verknüpfte Einträge zeigen auf die Kopien
     const idMap = new Map(this.entriesOf(id).map(e => [e.id, Utils.uuid()]));
-    Object.keys(src.f).forEach(k => { const v = src.f[k]; if (k.startsWith('b:') && v && !v.del) sf['b:' + Utils.uuid()] = Object.assign(Utils.clone(v), { entryId: idMap.get(v.entryId) || '' }); });
+    Object.keys(src.f).forEach(k => { const v = src.f[k], pre = Object.values(ABL_PRE).find(p => k.startsWith(p)); if (pre && v && !v.del) sf[pre + Utils.uuid()] = Object.assign(Utils.clone(v), { entryId: idMap.get(v.entryId) || '' }); });
     const rmap = Req.copyShowFields(src.f, sf, idMap);           // Requisite: Personen, Orte, Abschnitte, Schritte (Verweise auf die Kopien)
     const s = Rec.create({}, sf);
     const entries = [], photos = [];
@@ -1833,16 +1911,18 @@ const Repo = {
       || (Utils.numKey(a.f.reihenfolge) - Utils.numKey(b.f.reihenfolge) || 0) || String(pa.name).localeCompare(String(pb.name), 'de', { numeric: true }) || (a.c - b.c);
   },
   /** Bühnen-Ablauf: Schritte je Abschnitt, sortiert */
-  ablaufOf(showId) {
-    const s = this.shows.get(showId); const f = (s && s.f) || {};
-    const out = Object.keys(f).filter(k => k.startsWith('b:')).map(k => Object.assign({ abschnitt: 'grund', text: '', entryId: '', ord: 0 }, f[k], { id: k.slice(2) })).filter(x => !x.del);
-    return out.sort((a, b) => (ABLAUF.findIndex(x => x[0] === a.abschnitt) - ABLAUF.findIndex(x => x[0] === b.abschnitt)) || (a.ord - b.ord));
+  ablaufOf(showId, abt = 'B') {
+    const s = this.shows.get(showId); const f = (s && s.f) || {}, pre = ABL_PRE[abt] || 'b:';
+    const out = Object.keys(f).filter(k => k.startsWith(pre) && f[k] && typeof f[k] === 'object').map(k => Object.assign({ abschnitt: 'grund', text: '', entryId: '', ord: 0 }, f[k], { id: k.slice(pre.length), key: k, abt })).filter(x => !x.del);
+    out.forEach(x => { if (!ABL_KEYS.includes(x.abschnitt)) x.abschnitt = 'grund'; });
+    return out.sort((a, b) => (ABL_KEYS.indexOf(a.abschnitt) - ABL_KEYS.indexOf(b.abschnitt)) || (a.ord - b.ord));
   },
   /** Gibt es Einrichtungs-Angaben für die Abteilung? (Licht: Einrichtung/Beleuchterzüge, Ton: Text, Bühne: Ablauf/Bühnenzüge) */
   hasSetup(showId, abt = 'L') {
     const s = this.show(showId); if (!s) return false;
-    if (abt === 'T') return !!s.f.einrichtungT;
-    if (abt === 'B') return !!s.f.einrichtungB || this.ablaufOf(showId).length > 0 || this.zuegeOf(showId).some(z => z.typ === 'buehne');
+    if (abt === 'T') return !!s.f.einrichtungT || this.ablaufOf(showId, 'T').length > 0;
+    if (abt === 'L' && this.ablaufOf(showId, 'L').length) return true;
+    if (abt === 'B') return !!s.f.einrichtungB || this.ablaufOf(showId, 'B').length > 0 || this.zuegeOf(showId).some(z => z.typ === 'buehne');
     return !!(s.f.einrichtung || this.zuegeOf(showId).some(z => z.typ === 'licht' && (this.zugFilled(z) || !z.fixed)));
   },
   /** Zug anlegen bzw. ändern – immer als Ergänzung des bestehenden Werts (Felder anderer Abteilungen bleiben) */
@@ -2133,12 +2213,16 @@ const Photo = {
    Hält höchstens MAX URLs, ältere werden freigegeben (kein Speicherleck).
    ===================================================================== */
 const Thumbs = {
-  MAX: 500, map: new Map(), io: null,
+  MAX: 500, map: new Map(), io: null, miss: new Map(),
   async url(b) {
+    const m = this.miss.get(b); if (m && Date.now() - m < 3000) return null;      // gerade erst als fehlend erkannt
     let e = this.map.get(b);
     if (e) { this.map.delete(b); this.map.set(b, e); return e.p; }    // als „zuletzt benutzt“ markieren
     e = { url: null, p: null };
-    e.p = Repo.thumb(b).then(d => { if (!d) return null; e.url = URL.createObjectURL(new Blob([d], { type: 'image/jpeg' })); return e.url; });
+    // Fehlt das Bild noch (Live-Abgleich: Eintrag kommt vor dem Bild, Paket ohne Bilder), wird das NICHT gemerkt –
+    // sonst blieb die Vorschau bis zum Neustart leer, obwohl das Bild inzwischen da ist (bis 2.6.5)
+    e.p = Repo.thumb(b).then(d => { if (!d) { if (this.map.get(b) === e) this.map.delete(b); this.miss.set(b, Date.now()); return null; } e.url = URL.createObjectURL(new Blob([d], { type: 'image/jpeg' })); return e.url; },
+      () => { if (this.map.get(b) === e) this.map.delete(b); return null; });
     this.map.set(b, e);
     if (this.map.size > this.MAX) {
       const [k, old] = this.map.entries().next().value; this.map.delete(k);
@@ -2160,7 +2244,9 @@ const Thumbs = {
   },
   async load(img) {
     const u = await this.url(img.dataset.b);
-    if (!u || !img.isConnected) return;
+    if (!img.isConnected) return;
+    if (!u) { if (img.parentElement) img.parentElement.classList.add('nob'); return; }
+    if (img.parentElement) img.parentElement.classList.remove('nob');
     img.onload = () => img.classList.add('ok');
     img.src = u;
     if (img.complete && img.naturalWidth) img.classList.add('ok');
@@ -2173,7 +2259,7 @@ const Thumbs = {
     if (e) { this.fullMap.delete(b); this.fullMap.set(b, e); }
     else {
       e = { url: null }; this.fullMap.set(b, e);
-      e.p = Repo.full(b).then(d => { if (d) e.url = URL.createObjectURL(new Blob([d], { type: 'image/jpeg' })); return e.url; });
+      e.p = Repo.full(b).then(d => { if (d) e.url = URL.createObjectURL(new Blob([d], { type: 'image/jpeg' })); else if (this.fullMap.get(b) === e) this.fullMap.delete(b); return e.url; });
       while (this.fullMap.size > this.FULL_MAX) {
         const [k, old] = this.fullMap.entries().next().value; this.fullMap.delete(k);
         old.p.then(() => old.url && setTimeout(() => URL.revokeObjectURL(old.url), 4000));
@@ -2516,6 +2602,8 @@ const Lightbox = {
           <span class="kreis"><small style="color:#bbb">${Utils.esc(D.mainLabel)}</small>${mv ? Utils.esc(mv) : '<span class="muted">ohne</span>'}</span>
           <span class="muted mono">Foto ${it.idx + 1}/${it.n}</span></div>
         ${it.cap ? `<div class="lcap">${Utils.esc(it.cap)}</div>` : ''}
+        ${abt !== 'R' && e.f.warnung ? `<div class="lwarn">${warnHtml(e.f.warnung)}</div>` : ''}
+        ${abt !== 'R' && e.id ? Views.stepsHtml(e) : ''}
         ${chips ? `<div class="chips" style="margin-top:8px">${chips}</div>` : ''}
         ${e.f.bemerkung ? `<div class="note">${Utils.esc(e.f.bemerkung)}</div>` : ''}`;
       fitStage();
@@ -3453,16 +3541,17 @@ const Pdf = {
     const blocksOf = d => {
       if (d === 'R') return reqBlocks();
       const out = [];
-      if (ALLG[d]) { out.push(head('ALLGEMEIN')); textBlocks(ALLG[d], out); }
+      if (ALLG[d]) { out.push(head('HINWEIS EINRICHTEN / ABLAUF')); const ls = this.wrap(ALLG[d], 'F2', 11, CW - 24);
+        for (let i = 0; i < ls.length; i += 30) { const p = ls.slice(i, i + 30); out.push({ t: 'hl', lines: p, fs: 11, h: p.length * 14 + 16 }); } out.push({ t: 'gap', h: 8 }); }
       const own = RunList.ownOf(showId).filter(x => x.abt === d);
       if (own.length) { out.push(head('VOR DER VORSTELLUNG')); own.forEach(x => out.push(chk(x.text, 0, null))); out.push({ t: 'gap', h: 8 }); }
+      const steps = ABL_PRE[d] ? Repo.ablaufOf(showId, d) : [];
+      if (steps.length) {
+        out.push(head('ABLAUF'));
+        ABLAUF.forEach(([k]) => { const list = steps.filter(x => x.abschnitt === k); if (!list.length) return;
+          out.push(sub(ablaufName(d, k).toUpperCase())); list.forEach((st, i) => out.push(chk(st.text, i + 1, st.entryId && Repo.entry(st.entryId) || null))); out.push({ t: 'gap', h: 6 }); });
+      }
       if (d === 'B') {
-        const steps = Repo.ablaufOf(showId);
-        if (steps.length) {
-          out.push(head('ABLAUF'));
-          ABLAUF.forEach(([k, n]) => { const list = steps.filter(x => x.abschnitt === k); if (!list.length) return;
-            out.push(sub(n.toUpperCase())); list.forEach((st, i) => out.push(chk(st.text, i + 1, st.entryId && Repo.entry(st.entryId) || null))); out.push({ t: 'gap', h: 6 }); });
-        }
         const zs = SetupView.posSorted(showId).filter(z => z.typ === 'buehne' || Repo.zugFilled(z));
         if (zs.length) { out.push(head('POSITIONEN · VORNE NACH HINTEN, UNTEN NACH OBEN'));
           table([['POSITION', 0, 104], ['ORT', 104, 112], ['HÖHE / MARKE', 216, 92], ['BEMERKUNG', 308, CW - 308]],
@@ -3507,8 +3596,10 @@ const Pdf = {
       const extras = infoKeys(ab, true).filter(k => !pdfKeys.includes(k) && entryVal(e, k)).map(k => ab === 'R' && k === 'sicherheit' ? `[!] ${entryVal(e, k).toUpperCase()}` : `${fieldLabel(ab, k)}: ${entryVal(e, k)}`).join('   ·   ');
       let bem = e.f.bemerkung ? this.wrap(e.f.bemerkung, 'F1', 11, innerW) : [];
       if (bem.length > 14) bem = bem.slice(0, 13).concat(['… (gekürzt)']);
-      const exl = extras ? this.wrap(extras, 'F1', 9.5, innerW) : [];
-      return { bem, exl, h: 56 + (bem.length ? 22 + bem.length * 14 : 0) + (exl.length ? exl.length * 12 + (bem.length ? 6 : 14) : 0) + 6 };
+      const stp = ab === 'R' ? [] : Views.entrySteps(e).map(x => `${ablaufName(ab, x.abschnitt)}: ${x.text}`);
+      const exl = (extras ? this.wrap(extras, 'F1', 9.5, innerW) : []).concat(stp.length ? this.wrap('Ablauf – ' + stp.join('   ·   '), 'F1', 9.5, innerW).slice(0, 6) : []);
+      const wl = ab !== 'R' && e.f.warnung ? this.wrap('ACHTUNG: ' + e.f.warnung, 'F2', 11, innerW - 12).slice(0, 6) : [];
+      return { bem, exl, wl, h: 56 + (wl.length ? wl.length * 14 + 10 : 0) + (bem.length ? 22 + bem.length * 14 : 0) + (exl.length ? exl.length * 12 + (bem.length ? 6 : 14) : 0) + 6 };
     };
 
     // ---- Seiten planen ----
@@ -3619,6 +3710,9 @@ const Pdf = {
           if (ls[1]) c.text(x + 10, rowTop - 44, this.fit(ls.slice(1).join(' '), 'F2', 10.5, cw - 18), 'F2', 10.5); }
       });
       let y = rowTop - 50;
+      if (m.wl && m.wl.length) { const wh = m.wl.length * 14 + 8;
+        c.rgb(1, 0.9, 0.93).rect(M, y - wh, CW, wh); c.rgb(0.75, 0.1, 0.35).rect(M, y - wh, 4, wh);
+        m.wl.forEach((ln, k) => c.rgb(0.62, 0.05, 0.25).text(M + 12, y - 14 - k * 14, ln, 'F2', 11)); y -= wh + 2; }
       if (m.bem.length || m.exl.length) c.rgb(0.75, 0.77, 0.8, true).line(M, y, W - M, y, 0.6);
       y -= 16;
       if (m.bem.length) { c.rgb(0.45, 0.48, 0.53).text(M + 10, y, 'BEMERKUNG', 'F2', 7.5); y -= 16;
@@ -4116,8 +4210,23 @@ const Sync = {
     // Sync-Paket auf einem Gerät ohne Requisite: Requisite-Gegenstände, ihre Fotos und Haus-Daten werden nicht übernommen
     // (Requisite nur an/aus Geräten mit Requisite). Ein Backup übernimmt immer alles.
     if (data.type === 'sync' && !Settings.v.depts.includes('R')) Sync.dropReq(data);
-    const blobs = (data.blobs || []).map(b => ({ id: b.id, full: Utils.b64ToBuf(b.full), thumb: b.thumb ? Utils.b64ToBuf(b.thumb) : null }));
-    const stat = await Repo.applyRemote(data, blobs);
+    // Bilder zuerst und in kleinen Portionen (ab 2.7.0): Ein großes Paket (Hunderte Fotos) brauchte vorher den Speicher
+    // aller Bilder doppelt auf einmal – auf iPad/iPhone brach Safari das Einspielen dann ab. Danach die Datensätze.
+    const raw = Array.isArray(data.blobs) ? data.blobs : []; data.blobs = null;
+    let bilder = 0, bad = 0; const N = 12;
+    for (let i = 0; i < raw.length; i += N) {
+      const batch = [];
+      for (let j = i; j < Math.min(i + N, raw.length); j++) {
+        const b = raw[j]; raw[j] = null;
+        try { if (b && typeof b.id === 'string' && typeof b.full === 'string') batch.push({ id: b.id, full: Utils.b64ToBuf(b.full), thumb: b.thumb ? Utils.b64ToBuf(b.thumb) : null }); else bad++; }
+        catch (e) { bad++; }
+      }
+      if (batch.length) { const s0 = await Repo.applyRemote({}, batch); bilder += s0.bilder; bad += s0.ungueltig; }
+      if (onProgress) onProgress(Math.min(i + N, raw.length), raw.length);
+      await Utils.sleep(0);
+    }
+    const stat = await Repo.applyRemote(data, []);
+    stat.bilder = bilder; stat.ungueltig += bad;
     const missing = (await Repo.missingBlobs()).length;
     // Veranstaltungen, die im Backup vorhanden, hier aber gelöscht sind (Löschen gewinnt beim Zusammenführen) → Wiederherstellen anbieten
     stat.restorable = data.type === 'sync' ? [] : (data.shows || []).filter(x => x && x.f && !x.f.del && Repo.shows.has(x.id) && Repo.shows.get(x.id).f.del).map(x => x.id);
@@ -4766,31 +4875,75 @@ const Views = {
     if (DEPT[abtOf(e)].photoKats.length === 1) return !!(e.f.chkA && e.f.chkE);
     return !!e.f[kat === 'E' ? 'chkE' : 'chkA'];
   },
+  /** Ablauf-Hinweise, die mit einem Eintrag verknüpft sind (Licht, Ton, Bühne) – Zwischenspeicher je Veranstaltungsstand */
+  _stc: null,
+  entrySteps(e) {
+    const abt = abtOf(e); if (!ABL_PRE[abt] || !e.showId || !e.id) return [];
+    const s = Repo.shows.get(e.showId), k = e.showId + ':' + abt;
+    if (!this._stc) this._stc = new Map();
+    let c = this._stc.get(k);
+    if (!c || c.s !== s) {
+      const m = new Map();
+      Repo.ablaufOf(e.showId, abt).forEach(st => { if (st.entryId) { if (!m.has(st.entryId)) m.set(st.entryId, []); m.get(st.entryId).push(st); } });
+      if (this._stc.size > 12) this._stc.clear();
+      c = { s, m }; this._stc.set(k, c);
+    }
+    return c.m.get(e.id) || [];
+  },
+  stepsHtml(e, cls = 'estp') {
+    const st = this.entrySteps(e); if (!st.length) return '';
+    const abt = abtOf(e);
+    return `<span class="${cls}">${I('clock', 'sm')}<span>${st.map(s => `<b>${Utils.esc(ablaufName(abt, s.abschnitt))}:</b> ${Utils.esc(s.text)}`).join('<br>')}</span></span>`;
+  },
   cardHtml(it, { sel, checklist, dupKeys, big = false }) {
     if (it.abt === 'R' && !big) return this.cardHtmlR(it.entry, { sel, checklist });
-    const e = it.entry, abt = it.abt, D = DEPT[abt], mv = mainVal(e);
+    const e = it.entry, abt = it.abt, D = DEPT[abt], mv = mainVal(e), esc = Utils.esc;
     const ph = it.kat === 'N' ? [] : Repo.photosOf(e.id, it.kat);
     const thumbs = big
       ? ph.map((p, i) => `<span class="th" data-act="lb" data-i="${i}">${this.thumbImg(p.b).replace('<img ', '<img data-hq="1" ').replace(' data-l="1"', '')}<span class="plbl">${i + 1}</span></span>`).join('')
       : ph.slice(0, 2).map((p, i) => `<span class="th" data-act="lb" data-i="${i}">${this.thumbImg(p.b)}${i === 1 && ph.length > 2 ? `<span class="more">+${ph.length - 2}</span>` : ''}</span>`).join('');
     const dup = dupKeys.has(Repo.dupKey(e));
-    const chips = this.chips(e);
     const name = `${D.mainLabel} ${mv || 'ohne Nummer'}`;
-    return `<article class="card ${sel ? 'sel' : ''} ${checklist && this.isDone(e, it.kat) ? 'done' : ''}" data-k="${it.kat}" data-abt="${abt}" data-key="${Utils.esc(it.key)}">
-      ${big ? `<button class="bighead" data-k="${it.kat}" data-act="open" aria-label="${Utils.esc(name)} öffnen">${tagHtml(abt, it.kat)}
-        <span class="bk"><small>${Utils.esc(D.mainLabel)}</small>${mv ? Utils.esc(mv) : '<span class="muted">ohne</span>'}</span>
-        <span class="bn">${ph.length} Foto${ph.length === 1 ? '' : 's'}</span></button>` : ''}
+    const warn = abt !== 'R' && e.f.warnung ? warnHtml(e.f.warnung) : '';
+    const steps = abt !== 'R' ? this.stepsHtml(e) : '';
+    const cls = `card ${sel ? 'sel' : ''} ${checklist && this.isDone(e, it.kat) ? 'done' : ''} ${warn ? 'haswarn' : ''}`;
+    if (big) {
+      // Großbild (ab 2.7.0): fixierte Leiste mit Hauptfeld und den wichtigsten Angaben, darunter – ebenfalls fixiert –
+      // Warnhinweis, alle weiteren Angaben, Ablauf und Bemerkung
+      const hk = D.headKeys || D.chips;
+      const fields = hk.map(k => { const v = entryVal(e, k);
+        return `<span class="bf"><small>${esc(fieldLabel(abt, k))}</small><span class="v">${v ? esc(v) : '<span class="muted">–</span>'}</span></span>`; }).join('');
+      const extra = this.chips(e, infoKeys(abt, true).filter(k => !hk.includes(k)));
+      const more = extra || steps || e.f.bemerkung;
+      return `<article class="${cls}" data-k="${it.kat}" data-abt="${abt}" data-key="${esc(it.key)}">
+      <div class="bigsticky" data-k="${it.kat}">
+        <button class="bighead" data-k="${it.kat}" data-act="open" aria-label="${esc(name)} öffnen">${tagHtml(abt, it.kat)}
+          <span class="bk"><small>${esc(D.mainLabel)}</small>${mv ? esc(mv) : '<span class="muted">ohne</span>'}</span>
+          <span class="bn">${ph.length} Foto${ph.length === 1 ? '' : 's'}</span></button>
+        <div class="bigfields" data-act="open" role="button" tabindex="0" aria-label="${esc(name)} öffnen" style="--n:${hk.length}">${fields}</div>
+        ${warn ? `<div class="bigwarn" data-act="open">${warn}</div>` : ''}
+        ${more ? `<div class="bigextra" data-act="open">${extra ? `<span class="chips">${extra}</span>` : ''}${steps}${e.f.bemerkung ? `<span class="note">${esc(e.f.bemerkung)}</span>` : ''}</div>` : ''}
+      </div>
+      ${thumbs ? `<button class="hit" data-act="open" aria-label="${esc(`${name}, ${D.short}, ${katName(abt, it.kat)}`)}"><span class="thumbs">${thumbs}</span></button>` : ''}
+      ${dup ? `<span class="dup" title="${esc(D.mainLabel)} doppelt">doppelt</span>` : ''}
+      ${checklist ? this.chkHtml(e, it.kat) : ''}
+    </article>`;
+    }
+    const chips = this.chips(e, infoKeys(abt, true));         // ab 2.7.0 alle ausgefüllten Angaben, auch „Weitere Angaben“
+    return `<article class="${cls}" data-k="${it.kat}" data-abt="${abt}" data-key="${esc(it.key)}">
       <div class="strip"></div>
-      <button class="hit" data-act="open" aria-label="${Utils.esc(`${name}, ${D.short}, ${katName(abt, it.kat)}`)}">
+      <button class="hit" data-act="open" aria-label="${esc(`${name}, ${D.short}, ${katName(abt, it.kat)}`)}">
         ${thumbs ? `<span class="thumbs">${thumbs}</span>` : ''}
         <span class="info">
           <span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">${tagHtml(abt, it.kat)}</span>
+          ${warn}
           ${chips ? `<span class="chips">${chips}</span>` : ''}
-          ${e.f.bemerkung ? `<span class="note">${Utils.esc(e.f.bemerkung)}</span>` : ''}
+          ${steps}
+          ${e.f.bemerkung ? `<span class="note">${esc(e.f.bemerkung)}</span>` : ''}
         </span>
-        <span class="kcol"><small>${Utils.esc(D.mainLabel)}</small><span class="kreis ${mv ? '' : 'none'}">${mv ? Utils.esc(mv).replace(/\+/g, '+<wbr>') : 'ohne'}</span></span>
+        <span class="kcol"><small>${esc(D.mainLabel)}</small><span class="kreis ${mv ? '' : 'none'}">${mv ? esc(mv).replace(/\+/g, '+<wbr>') : 'ohne'}</span></span>
       </button>
-      ${dup ? `<span class="dup" title="${Utils.esc(D.mainLabel)} doppelt">doppelt</span>` : ''}
+      ${dup ? `<span class="dup" title="${esc(D.mainLabel)} doppelt">doppelt</span>` : ''}
       ${checklist ? this.chkHtml(e, it.kat) : ''}
     </article>`;
   },
@@ -4867,7 +5020,9 @@ const Views = {
       <div class="dh"><div style="flex:1;min-width:0"><div class="muted" style="font-size:12px;font-weight:700;letter-spacing:.1em">${Utils.esc(D.short.toUpperCase())} · ${Utils.esc(D.mainLabel.toUpperCase())}</div>
         <div class="kreis ${mv ? '' : 'none'}">${mv ? Utils.esc(mv) : 'ohne ' + Utils.esc(D.mainLabel)}</div></div>
         <button class="btn ${editMode ? 'edit' : ''}" data-act="dedit">${I('edit')} Bearbeiten</button></div>
+      ${f.warnung ? `<div class="dwarn">${warnHtml(f.warnung)}</div>` : ''}
       <div class="fields">${D.chips.map(k => fieldBox(k)).join('')}${rest.map(k => fieldBox(k)).join('')}${fieldBox('bemerkung', true)}</div>
+      ${this.entrySteps(e).length ? `<div class="dsteps">${this.stepsHtml(e)}</div>` : ''}
       ${D.photoKats.map(kat).join('')}
       <div class="actions">
         <button class="btn" data-act="ddup">${I('copy')} Als Vorlage duplizieren</button>
@@ -4905,18 +5060,25 @@ const Editor = {
       if (fd.main) return `<div class="f kreisf"><label for="${fid(fd.k)}">${Utils.esc(fd.label)}</label>
           <div class="inwrap"><input ${attrs}>${fd.plus ? `<button type="button" class="plusbtn" data-act="plus" aria-label="Plus-Zeichen einfügen">+</button>` : ''}</div>
           ${fd.req ? `<div class="req">${Utils.esc(fd.label)} fehlt – bitte eintragen.</div>` : ''}</div>`;
+      if (fd.warn) return `<div class="f warnf"><label for="${fid(fd.k)}">${I('alert', 'sm')} ${Utils.esc(fd.label)}</label><input ${attrs}><div class="fh">Erscheint auffällig auf der Karte, in der Bildansicht und im PDF.</div></div>`;
       return `<div class="f ${fd.mono ? 'mono' : ''}"><label for="${fid(fd.k)}">${Utils.esc(fd.label)}</label><input ${attrs}>${fd.hint ? `<div class="fh">${Utils.esc(fd.hint)}</div>` : ''}</div>`;
     };
     const base = D.fields.filter(x => !x.extra && !x.hidden && x.k !== 'bemerkung'), extra = D.fields.filter(x => x.extra);
     let html = '';
     if (base[0] && base[0].picker) { html += `<div class="f-row one">${input(base.shift())}</div>`; }
-    for (let i = 0; i < base.length; i += 2) {
-      const pair = base.slice(i, i + 2);
-      html += `<div class="f-row ${i === 0 && !D.fields[0].picker ? 'ka' : 'gf'}">${pair.map(input).join('')}</div>`;
-      pair.filter(x => x.qkeys).forEach(x => { html += `<div class="qkeys" data-qkeys="${x.k}" role="group" aria-label="${Utils.esc(x.label)}-Schnelltasten: antippen setzt, nochmal antippen entfernt"></div>`; });
+    let first = true;
+    for (let i = 0; i < base.length;) {
+      if (base[i].full) { html += `<div class="f-row one">${input(base[i])}</div>`; i++; continue; }     // eine Zeile für sich (Warnhinweis)
+      const pair = [base[i]]; if (base[i + 1] && !base[i + 1].full) pair.push(base[i + 1]);
+      i += pair.length;
+      html += `<div class="f-row ${first && !D.fields[0].picker ? 'ka' : 'gf'}">${pair.map(input).join('')}</div>`; first = false;
+      pair.filter(x => x.qkeys || x.zkeys).forEach(x => { html += `<div class="qkeys" data-qkeys="${x.k}" role="group" aria-label="${Utils.esc(x.label)}-Schnelltasten: antippen setzt, nochmal antippen entfernt"></div>`; });
     }
     const bem = D.fields.find(x => x.k === 'bemerkung');
     if (bem) html += input(bem);
+    // Ablauf-Hinweise zu diesem Eintrag (ab 2.7.0): vorbereiten, während der Vorstellung, Pausenumbau, danach
+    if (ABL_PRE[D.key]) html += `<section class="ablf" data-abt="${D.key}"><div class="ablfh">${I('clock', 'sm')} <b>Ablauf-Hinweise</b> <span class="muted">Vorbereiten · während der Vorstellung · Pausenumbau · danach</span></div>
+      <div data-ablist></div><button type="button" class="btn" data-act="abladd">${I('plus', 'sm')} Hinweis</button></section>`;
     html += D.photoKats.map(k => `<section class="pk" data-k="${k}"><div class="ph">${tagHtml(D.key, k)}<h3></h3><span class="n"></span>
           <button type="button" class="btn kfill" data-k="${k}" data-act="cam">${I('camera')} Foto</button></div>
           <div class="pgrid" data-k="${k}"></div></section>`).join('');
@@ -4956,19 +5118,41 @@ const Editor = {
     </form>`;
     const form = sh.body.querySelector('form'), saveBtn = sh.el.querySelector('.savebtn');
     const kreisIn = form.elements[MAIN];
+    /* ---- Ablauf-Hinweise (Schritte im Ablauf der Abteilung, mit diesem Eintrag verknüpft) ---- */
+    const hasAbl = !!ABL_PRE[A];
+    const abl = hasAbl && ex ? Views.entrySteps(ex).map(x => ({ id: x.id, abschnitt: x.abschnitt, text: x.text, o: { abschnitt: x.abschnitt, text: x.text } })) : [];
+    const ablBox = form.querySelector('[data-ablist]');
+    const renderAbl = () => {
+      if (!ablBox) return;
+      ablBox.innerHTML = abl.map((x, i) => x.removed ? '' : `<div class="ablrow" data-ai="${i}"><div class="qkeys" role="group" aria-label="Wann">${ABLAUF.map(([k]) =>
+        `<button type="button" data-ablk="${k}" aria-pressed="${x.abschnitt === k}">${Utils.esc(ablaufName(A, k))}</button>`).join('')}</div>
+        <div class="arow"><textarea data-abltext rows="2" placeholder="Was ist zu tun? z. B. in der Pause abstecken">${Utils.esc(x.text)}</textarea>
+        <button type="button" class="btn icon danger" data-ablrm aria-label="Hinweis entfernen">${I('trash')}</button></div></div>`).join('');
+    };
+    if (ablBox) {
+      ablBox.addEventListener('click', e => {
+        const row = e.target.closest('[data-ai]'); if (!row) return; const x = abl[+row.dataset.ai];
+        const k = e.target.closest('[data-ablk]'), rm = e.target.closest('[data-ablrm]');
+        if (k) { x.abschnitt = k.dataset.ablk; markDirty(); renderAbl(); }
+        else if (rm) { x.removed = true; markDirty(); renderAbl(); }
+      });
+      ablBox.addEventListener('input', e => { const row = e.target.closest('[data-ai]'); if (row && e.target.matches('[data-abltext]')) abl[+row.dataset.ai].text = e.target.value; });
+      renderAbl();
+    }
 
     /* ---- Schnelltasten (Filter bei Licht, Mikrofon bei Ton): feste Liste aus den Einstellungen
            + in dieser Veranstaltung schon benutzte Werte (gestrichelt) ---- */
     const ftok = v => String(v || '').split(/\s*[+,;]\s*/).map(x => x.trim()).filter(Boolean);
-    D.fields.filter(x => x.qkeys).forEach(fd => {
+    D.fields.filter(x => x.qkeys || x.zkeys).forEach(fd => {
       const qIn = form.elements[fd.k], qbox = form.querySelector(`[data-qkeys="${fd.k}"]`);
       if (!qIn || !qbox) return;
-      const fixed = (Settings.v[fd.qkeys] || []).filter(Boolean);
+      // Zug (Licht): Schnelltasten aus den Beleuchterzügen dieser Veranstaltung
+      const fixed = (fd.zkeys ? Repo.zuegeOf(showId).filter(z => z.typ === 'licht').map(z => z.name) : (Settings.v[fd.qkeys] || [])).filter(Boolean);
       const freq = new Map();
       Repo.entriesOf(showId).filter(e => abtOf(e) === A).forEach(e => ftok(e.f[fd.k]).forEach(t => { if (!fixed.some(k => k.toLowerCase() === t.toLowerCase())) freq.set(t, (freq.get(t) || 0) + 1); }));
       const used = [...freq.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(x => x[0]);
       const renderQ = () => {
-        const cur = ftok(qIn.value).map(t => t.toLowerCase());
+        const cur = (fd.zkeys ? [String(qIn.value).trim()] : ftok(qIn.value)).map(t => t.toLowerCase());
         qbox.innerHTML = fixed.concat(used).map((k, i) => `<button type="button" data-q="${Utils.esc(k)}" class="${i >= fixed.length ? 'used' : ''}" aria-pressed="${cur.includes(k.toLowerCase())}" ${i >= fixed.length ? 'title="in dieser Veranstaltung benutzt"' : ''}>${Utils.esc(k)}</button>`).join('')
           + (cur.length ? `<button type="button" class="qclr" data-qclr aria-label="${Utils.esc(fd.label)} leeren">${I('close', 'sm')}</button>` : '');
       };
@@ -4977,8 +5161,8 @@ const Editor = {
         if (b.hasAttribute('data-qclr')) qIn.value = '';
         else {
           const k = b.dataset.q, cur = ftok(qIn.value), i = cur.findIndex(t => t.toLowerCase() === k.toLowerCase());
-          if (i >= 0) cur.splice(i, 1); else cur.push(k);
-          qIn.value = cur.join('+');
+          if (fd.zkeys) qIn.value = i >= 0 && cur.length === 1 ? '' : k;          // Zug: genau ein Wert, Antippen ersetzt
+          else { if (i >= 0) cur.splice(i, 1); else cur.push(k); qIn.value = cur.join('+'); }
         }
         markDirty(); renderQ();
       });
@@ -5145,7 +5329,7 @@ const Editor = {
     const save = async (next = false) => {
       if (pending > 0 || saving) return;
       const f = readForm();
-      const empty = !D.fields.some(fd => fd.bool ? false : fd.arr ? (f[fd.k] || []).length : String(f[fd.k] || '').trim()) && !slots.A.length && !slots.E.length;
+      const empty = !D.fields.some(fd => fd.bool ? false : fd.arr ? (f[fd.k] || []).length : String(f[fd.k] || '').trim()) && !slots.A.length && !slots.E.length && !abl.some(x => !x.removed && String(x.text).trim());
       if (empty && !ex) { dirty = false; sh.close(); return; }
       if (isR && !String(f.was || '').trim() && !slots.A.length) {      // Requisite: Name ODER Foto genügt
         kreisIn.focus(); Ui.toast('Bitte einen Namen eintragen oder ein Foto aufnehmen.', 'warn'); return;
@@ -5165,6 +5349,7 @@ const Editor = {
       try {
         const draft = { id: ex ? ex.id : null, showId, abt: A, f, photos: { A: slots.A.map(clean), E: slots.E.map(clean) }, initialPhotos };
         const res = await Repo.saveDraft(draft);
+        if (hasAbl) { try { await Editor.saveAbl(showId, A, res.entryId, abl); } catch (err) { App.error(new Error('Der Eintrag ist gespeichert, die Ablauf-Hinweise aber nicht: ' + (err.message || err))); } }
         dirty = false;
         slots.A.concat(slots.E).forEach(s => s.thumbUrl && URL.revokeObjectURL(s.thumbUrl));
         sh.close();
@@ -5185,6 +5370,11 @@ const Editor = {
       const a = b.dataset.act;
       if (a === 'save') save();
       else if (a === 'savenext') save(true);
+      else if (a === 'abladd') {
+        const last = abl.filter(x => !x.removed).pop();
+        abl.push({ id: Utils.uuid(), abschnitt: last ? last.abschnitt : 'pause', text: '', isNew: true }); markDirty(); renderAbl();
+        const ta = ablBox && ablBox.querySelector('.ablrow:last-child textarea'); if (ta) ta.focus();
+      }
       else if (a === 'cancel') history.back();
       else if (a === 'cam') shoot(b.dataset.k);
       else if (a === 'plus') {
@@ -5227,6 +5417,22 @@ const Editor = {
     if (existed) Ui.toast('Gespeichert');
     else Ui.toast(`„${name}“ angelegt`, '', { action: { label: '+ Nächster hier', fn: openNext } });
   },
+  /** Ablauf-Hinweise eines Eintrags speichern (Felder „bl:/bt:/b:<id>“ der Veranstaltung) */
+  async saveAbl(showId, abt, entryId, abl) {
+    const s = Repo.shows.get(showId), pre = ABL_PRE[abt]; if (!s || !pre) return;
+    const all = Repo.ablaufOf(showId, abt), patch = {}, bump = {};
+    abl.forEach(x => {
+      const key = pre + x.id, old = s.f[key], text = String(x.text || '').trim();
+      // unverändert seit dem Öffnen → nicht anfassen (sonst würde eine Live-Änderung oder Löschung eines anderen Geräts zurückgedreht)
+      if (x.o && !x.removed && x.o.abschnitt === x.abschnitt && String(x.o.text || '').trim() === text) return;
+      if (x.removed || !text) { if (old && !old.del) patch[key] = Object.assign({}, old, { del: true }); return; }
+      let ord = old && !old.del && old.abschnitt === x.abschnitt ? old.ord : null;
+      if (ord == null) { bump[x.abschnitt] = (bump[x.abschnitt] || 0) + 10; ord = Math.max(0, ...all.filter(y => y.abschnitt === x.abschnitt).map(y => +y.ord || 0)) + bump[x.abschnitt]; }
+      const v = Object.assign({}, old || {}, { abschnitt: x.abschnitt, text, entryId, ord, del: false });
+      if (!old || JSON.stringify(old) !== JSON.stringify(v)) patch[key] = v;
+    });
+    if (Object.keys(patch).length) await Repo.patchShow(showId, patch);
+  },
   async _confirmLeave(changed) {
     if (!changed) return true;
     return Ui.confirm('Änderungen verwerfen?', 'Der Eintrag wurde noch nicht gespeichert.', 'Verwerfen', true);
@@ -5247,8 +5453,8 @@ const SetupView = {
   render(box, showId, edit, depts = ['L'], { noRun = false } = {}) {
     if (!box) return;
     const s = Repo.show(showId); if (!s || !depts.length) { box.innerHTML = ''; return; }
-    const multi = App.visibleDepts(showId).length > 1;
-    box.innerHTML = (noRun ? '' : this.htmlRun(s, edit, depts)) + depts.map(d => this['html' + d](s, edit, multi)).join('');
+    // Reihenfolge (ab 2.7.0): Hinweise (immer offen) · Vor der Vorstellung · Einrichtung/Ablauf je Abteilung
+    box.innerHTML = depts.map(d => this.hintHtml(s, d, edit)).join('') + (noRun ? '' : this.htmlRun(s, edit, depts)) + depts.map(d => this['html' + d](s, edit)).join('');
     box.querySelectorAll('details.setup, details.ssubd').forEach(dt => dt.addEventListener('toggle', () => { this.open[dt.dataset.box || dt.dataset.abt] = dt.open; }));
     box.querySelectorAll('[data-setup-edit]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); this['edit' + b.dataset.setupEdit](showId); }));
     box.querySelectorAll('[data-rfoto]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); Req.photoLightbox(b.dataset.rfoto, b.dataset.name || '', b.dataset.cap || ''); }));
@@ -5268,10 +5474,19 @@ const SetupView = {
       } catch (err) { App.error(err); }
     }));
   },
-  /** Rahmen eines Blocks. pink = Allgemeine Einrichtung ausgefüllt (Hinweis-Symbol) */
-  frame(abt, title, sum, pink, edit, btns, body) {
-    return `<details class="setup ${pink ? 'has-allg' : ''}" data-abt="${abt}" ${this.open[abt] ? 'open' : ''}>
-      <summary>${pink ? `<span class="hint" title="Einrichtung beachten">${I('info')}</span>` : ''}<h3>${title}<span class="sum">${Utils.esc(sum)}</span></h3>
+  /** Feld des allgemeinen Hinweises je Abteilung (im Veranstaltungs-Datensatz) */
+  ALLG: { L: 'einrichtung', T: 'einrichtungT', B: 'einrichtungB', R: 'einrichtungR' },
+  /** Hinweis Einrichten / Ablauf: eigenes, immer offenes Feld, sobald etwas eingetragen ist (ab 2.7.0) */
+  hintHtml(s, d, edit) {
+    const v = s.f[this.ALLG[d]]; if (!v) return '';
+    return `<section class="hintbox" data-abt="${d}" data-box="hint-${d}"><div class="hbh">${I('alert')}<h3>Hinweis Einrichten / Ablauf</h3>
+      <span class="tag A" data-abt="${d}">${Utils.esc(DEPT[d].short)}</span>${edit ? `<button class="btn icon" data-setup-edit="${d}A" aria-label="Hinweis bearbeiten">${I('edit', 'sm')}</button>` : ''}</div>
+      <div class="hbt">${Utils.esc(v)}</div></section>`;
+  },
+  /** Rahmen eines aufklappbaren Blocks (Einrichtung, Ablauf, Züge) */
+  frame(abt, title, sum, edit, btns, body) {
+    return `<details class="setup" data-abt="${abt}" data-box="${abt}" ${this.open[abt] ? 'open' : ''}>
+      <summary><span class="sic">${I(abt === 'L' ? 'layers' : abt === 'R' ? 'info' : 'list')}</span><h3>${title}<span class="sum">${Utils.esc(sum)}</span></h3>
         ${edit ? btns.map(([k, l, ic]) => `<button class="btn" data-setup-edit="${k}" aria-label="${Utils.esc(l)} bearbeiten">${I(ic || 'edit', 'sm')}<span class="bl"> ${Utils.esc(l)}</span></button>`).join('') : ''}${I('arrowR', 'sm chev')}</summary>
       <div class="sbody">${body}</div></details>`;
   },
@@ -5320,27 +5535,40 @@ const SetupView = {
       <div class="sbody">${body}
         <div class="runtools" style="margin:0"><button class="btn" data-run="open">${I('list', 'sm')} Alle Durchgänge &amp; PDF-Protokoll</button></div></div></details>`;
   },
+  /** Ablauf einer Abteilung (Vor der Vorstellung · Während · Pausenumbau · Nach) – Licht, Ton, Bühne gleich */
+  ablHtml(showId, abt, edit) {
+    const steps = Repo.ablaufOf(showId, abt), e = Utils.esc;
+    const link = st => { const en = st.entryId && Repo.entry(st.entryId); if (!en) return '';
+      return `<button class="btn icon" data-open-entry="${e(en.id)}" aria-label="Eintrag ${e(mainVal(en))} öffnen" title="${e([mainVal(en), en.f.element].filter(Boolean).join(' · '))}">${I('image', 'sm')}</button>`; };
+    const html = ABLAUF.map(([k]) => { const list = steps.filter(x => x.abschnitt === k); if (!list.length) return '';
+      return `<div class="ablsec"><div class="ablh">${e(ablaufName(abt, k))}</div><ol class="abl">${list.map(st => { const en = st.entryId && Repo.entry(st.entryId);
+        return `<li><div class="ar"><span class="at">${e(st.text)}${en ? ` <span class="abk">${e(DEPT[abt].mainLabel)} ${e(mainVal(en) || '–')}</span>` : ''}</span>${link(st)}</div></li>`; }).join('')}</ol></div>`; }).join('');
+    return html || `<div class="allg empty">Noch kein Ablauf${edit ? ' – über „Ablauf“ Hinweise für Vorbereiten, Vorstellung, Pausenumbau und danach anlegen.' : '.'}</div>`;
+  },
+  /** Platzhalter für den Hinweis, solange keiner eingetragen ist (nur im Bearbeitungsmodus) */
+  hintEmpty(s, d, edit) { return !s.f[this.ALLG[d]] && edit ? this.sub('Hinweis Einrichten / Ablauf') + this.textBox('', edit, 'Ablauf') : ''; },
   /* ---------- Licht ---------- */
-  htmlL(s, edit, multi) {
-    const zs = Repo.zuegeOf(s.id).filter(z => z.typ === 'licht'), filled = zs.filter(z => Repo.zugFilled(z)).length;
-    const sum = [s.f.einrichtung ? 'Allgemein' : '', `${filled}/${zs.length} Züge ausgefüllt`].filter(Boolean).join(' · ');
+  htmlL(s, edit) {
+    const zs = Repo.zuegeOf(s.id).filter(z => z.typ === 'licht'), filled = zs.filter(z => Repo.zugFilled(z)).length, n = Repo.ablaufOf(s.id, 'L').length;
+    const sum = [`${filled}/${zs.length} Züge ausgefüllt`, n ? `${n} Ablauf-Hinweise` : ''].filter(Boolean).join(' · ');
     const e = Utils.esc;
-    return this.frame('L', `Einrichtung · Licht`, sum, !!s.f.einrichtung, edit, [['L', 'Bearbeiten']],
-      this.sub('Allgemein') + this.textBox(s.f.einrichtung, edit, 'Bearbeiten') +
-      this.sub('Beleuchterzüge') + this.ztab(zs, [['Zug', z => e(z.name)], ['Höhe / Marke', z => e(z.hoehe), 'mono'], ['Bestückung', z => e(z.bestueckung)], ['Bemerkung', z => e(z.bemerkung), 'zb']]));
+    return this.frame('L', 'Licht · Beleuchterzüge &amp; Ablauf', sum, edit, [['LA', 'Ablauf'], ['L', 'Beleuchterzüge', 'layers']],
+      this.sub('Beleuchterzüge') + this.ztab(zs, [['Zug', z => e(z.name)], ['Höhe / Marke', z => e(z.hoehe), 'mono'], ['Bestückung', z => e(z.bestueckung)], ['Bemerkung', z => e(z.bemerkung), 'zb']]) +
+      this.sub('Ablauf') + this.ablHtml(s.id, 'L', edit) + this.hintEmpty(s, 'L', edit));
   },
   /* ---------- Ton ---------- */
-  htmlT(s, edit, multi) {
-    return this.frame('T', `Einrichtung · Ton`, s.f.einrichtungT ? 'Allgemein' : 'leer', !!s.f.einrichtungT, edit, [['T', 'Bearbeiten']],
-      this.sub('Allgemein · Pult · Show-Datei · Pegel · Funk') + this.textBox(s.f.einrichtungT, edit, 'Bearbeiten'));
+  htmlT(s, edit) {
+    const n = Repo.ablaufOf(s.id, 'T').length;
+    return this.frame('T', 'Ton · Ablauf', n ? `${n} Ablauf-Hinweise` : 'noch kein Ablauf', edit, [['TA', 'Ablauf']],
+      this.sub('Ablauf') + this.ablHtml(s.id, 'T', edit) + this.hintEmpty(s, 'T', edit));
   },
   /* ---------- Requisite ---------- */
-  htmlR(s, edit, multi) {
+  htmlR(s, edit) {
     const e = Utils.esc, ps = Req.persons(s.id), os = Req.showOrts(s.id);
-    const sum = [s.f.einrichtungR ? 'Wichtig' : '', s.f.dauer ? s.f.dauer : '', `${ps.length} Personen`, `${os.length} Orte`].filter(Boolean).join(' · ');
+    const sum = [s.f.dauer ? s.f.dauer : '', `${ps.length} Personen`, `${os.length} Orte`].filter(Boolean).join(' · ');
     const foto = s.f.fotoR ? `<button type="button" class="rfotot" data-rfoto="${e(s.f.fotoR)}" data-name="Übersicht" aria-label="Übersichtsfoto ansehen">${Views.thumbImg(s.f.fotoR)}</button>` : '';
-    return this.frame('R', 'Allgemeine Infos', sum, !!s.f.einrichtungR, edit, [['R', 'Allgemeine Infos'], ['RP', 'Personen', 'user'], ['RO', 'Orte', 'pin']],
-      this.sub('Wichtig') + this.textBox(s.f.einrichtungR, edit, 'Allgemeine Infos') +
+    return this.frame('R', 'Allgemeine Infos', sum, edit, [['R', 'Allgemeine Infos'], ['RP', 'Personen', 'user'], ['RO', 'Orte', 'pin']],
+      (s.f.einrichtungR ? '' : this.sub('Wichtig') + this.textBox('', edit, 'Allgemeine Infos')) +
       `<div class="rgen">${foto}<div><div class="ssub" style="margin:0 0 4px">Dauer</div><div style="font-size:17px;font-weight:700">${s.f.dauer ? e(s.f.dauer) : '<span class="muted">nicht eingetragen</span>'}</div></div></div>` +
       `<details class="ssubd" data-box="Rp" ${this.open.Rp ? 'open' : ''}><summary class="ssub">${I('arrowR', 'sm chev')} Personen <span class="n">${ps.length}</span></summary>
         ${ps.length ? `<div class="ztab">${ps.map(p => `<div class="zr rpr"><b class="zn">${e(p.rolle || '–')}</b><span data-l="Darsteller">${e(p.darsteller || '')}</span></div>`).join('')}</div>` : '<div class="allg empty">Noch keine Personen.</div>'}</details>` +
@@ -5349,6 +5577,7 @@ const SetupView = {
           : '<div class="allg empty">Keine eigenen Orte – es gelten die Haus-Orte (Requisitentisch, Gassen …).</div>'}</details>`);
   },
   editR(showId) { Req.editGeneral(showId); },
+  editRA(showId) { Req.editGeneral(showId); },
   editRP(showId) { Req.editPersons(showId); },
   editRO(showId) { Req.editOrts(showId); },
   /* ---------- Bühne ---------- */
@@ -5356,29 +5585,24 @@ const SetupView = {
   posSorted(showId) {
     return Repo.zuegeOf(showId).slice().sort((a, b) => (BEREICH_RANK[a.bereich] - BEREICH_RANK[b.bereich]) || (EBENE_RANK[a.ebene] - EBENE_RANK[b.ebene]) || (a.ord - b.ord));
   },
-  htmlB(s, edit, multi) {
-    const steps = Repo.ablaufOf(s.id);
+  htmlB(s, edit) {
+    const steps = Repo.ablaufOf(s.id, 'B');
     // Positionen: Bühnenzüge/-positionen und nur ausgefüllte Beleuchterzüge (leere OLZ/BGZ wären hier nur Ballast)
     const zs = this.posSorted(s.id).filter(z => z.typ === 'buehne' || Repo.zugFilled(z));
-    const sum = [s.f.einrichtungB ? 'Allgemein' : '', steps.length ? `${steps.length} Schritte` : 'kein Ablauf', `${zs.length} Positionen`].filter(Boolean).join(' · ');
+    const sum = [steps.length ? `${steps.length} Ablauf-Schritte` : 'kein Ablauf', `${zs.length} Positionen`].join(' · ');
     const e = Utils.esc;
-    const link = st => { const en = st.entryId && Repo.entry(st.entryId); if (!en) return '';
-      return `<button class="btn icon" data-open-entry="${Utils.esc(en.id)}" aria-label="Eintrag ${e(mainVal(en))} öffnen" title="${e([mainVal(en), en.f.element].filter(Boolean).join(' · '))}">${I('image', 'sm')}</button>`; };
-    const abl = ABLAUF.map(([k, n]) => { const list = steps.filter(x => x.abschnitt === k); if (!list.length) return '';
-      return `<div class="ablsec"><div class="ablh">${n}</div><ol class="abl">${list.map(st => `<li><div class="ar"><span class="at">${e(st.text)}</span>${link(st)}</div></li>`).join('')}</ol></div>`; }).join('');
-    return this.frame('B', `Einrichtung · Bühne`, sum, !!s.f.einrichtungB || steps.length > 0, edit, [['B', 'Ablauf'], ['P', 'Positionen', 'layers']],
-      this.sub('Allgemein') + this.textBox(s.f.einrichtungB, edit, 'Ablauf') +
-      this.sub('Ablauf') + (abl || `<div class="allg empty">Noch kein Ablauf${edit ? ' – über „Ablauf“ Schritte für Grundeinrichtung, Pausenumbau und Ende anlegen.' : '.'}</div>`) +
+    return this.frame('B', 'Bühne · Ablauf &amp; Positionen', sum, edit, [['BA', 'Ablauf'], ['P', 'Positionen', 'layers']],
+      this.sub('Ablauf') + this.ablHtml(s.id, 'B', edit) + this.hintEmpty(s, 'B', edit) +
       `<details class="ssubd" data-box="Bpos" ${this.open.Bpos ? 'open' : ''}><summary class="ssub">${I('arrowR', 'sm chev')} Positionen · vorne → hinten, unten → oben <span class="n">${zs.length}</span></summary>` +
       this.ztab(zs, [['Position', z => e(z.name) + (z.typ === 'licht' ? ' <span class="tag A" data-k="A" data-abt="L">Licht</span>' : '')], ['Ort', z => e(ortText(z))], ['Höhe / Marke', z => e(z.hoehe), 'mono'], ['Bemerkung', z => e([z.bemerkung, z.last ? 'Last ' + z.last : ''].filter(Boolean).join(' · ')), 'zb']]) + '</details>');
   },
 
-  /* ---------- Bearbeiten: Licht (allgemeine Einrichtung + Beleuchterzüge) ---------- */
+  /* ---------- Bearbeiten: Beleuchterzüge (der Hinweis steht ab 2.7.0 unter „Ablauf“) ---------- */
   editL(showId) {
     const s = Repo.show(showId); if (!s) return;
     let zs = Repo.zuegeOf(showId).filter(z => z.typ === 'licht').map(z => Object.assign({}, z)), removed = [], dirty = false;
     const sh = Ui.sheet({
-      title: 'Einrichtung · Licht', full: true,
+      title: 'Beleuchterzüge', full: true,
       headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
       headRight: `<button class="btn edit" data-x="save">${I('check')} Speichern</button>`,
       onBack: () => Editor._confirmLeave(dirty)
@@ -5390,18 +5614,13 @@ const SetupView = {
         <div class="zrow"><div class="f mono"><label>Höhe / Marke</label><input data-f="hoehe" value="${Utils.esc(z.hoehe)}" placeholder="z. B. 8,50 m"></div>
           <div class="f"><label>Bestückung</label><input data-f="bestueckung" value="${Utils.esc(z.bestueckung)}" placeholder="z. B. 6× PC 2 kW, 2× Profiler"></div></div>
         <div class="f"><label>Bemerkung</label><textarea data-f="bemerkung" rows="2" placeholder="Was ist zu beachten?">${Utils.esc(z.bemerkung)}</textarea></div></div>`;
-    let allg = null;
     const draw = () => {
       sh.body.innerHTML = `<form class="form" onsubmit="return false">
-        <div class="f"><label for="se-allg">Allgemeine Einrichtung</label>
-          <textarea id="se-allg" rows="5" placeholder="z. B. Bühnenbild, Grundlicht, Saallicht, Besonderheiten der Produktion">${Utils.esc(allg ?? s.f.einrichtung ?? '')}</textarea></div>
-        <h3 style="margin:8px 0 0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Beleuchterzüge</h3>
         ${zs.map(zedHtml).join('')}
         <button type="button" class="btn big" data-x="add">${I('plus')} Weiteren Zug hinzufügen</button>
-        <button type="button" class="btn edit big block" data-x="save">${I('check')} Einrichtung Licht speichern</button></form>`;
+        <button type="button" class="btn edit big block" data-x="save">${I('check')} Beleuchterzüge speichern</button></form>`;
     };
     const readBack = () => {
-      allg = sh.body.querySelector('#se-allg').value;
       sh.body.querySelectorAll('.zed').forEach(el => { const z = zs[+el.dataset.i]; el.querySelectorAll('[data-f]').forEach(inp => { z[inp.dataset.f] = inp.value; }); });
     };
     draw();
@@ -5421,7 +5640,7 @@ const SetupView = {
         if (await Ui.confirm(`„${z.name}“ entfernen?`, 'Der Zug und seine Angaben werden aus dieser Veranstaltung entfernt.', 'Entfernen', true)) { removed.push(z.id); zs.splice(i, 1); dirty = true; draw(); }
       } else if (x === 'save') {
         readBack();
-        const patch = { einrichtung: (allg || '').trim() };
+        const patch = {};
         let next = Math.max(100, ...Repo.zuegeOf(showId).map(z => z.ord || 0)) + 10;
         zs.forEach(z => {
           const old = s.f['z:' + z.id];
@@ -5433,65 +5652,51 @@ const SetupView = {
           patch['z:' + z.id] = v;
         });
         removed.forEach(id => { const old = s.f['z:' + id]; if (old) patch['z:' + id] = Object.assign({}, old, { del: true }); });
-        if (patch.einrichtung === (s.f.einrichtung || '')) delete patch.einrichtung;
-        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open.L = true; sh.close(); Ui.toast('Einrichtung Licht gespeichert'); }
+        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open.L = true; sh.close(); Ui.toast('Beleuchterzüge gespeichert'); }
         catch (err) { App.error(err); }
       }
     });
   },
 
-  /* ---------- Bearbeiten: Ton (Freitext) ---------- */
-  editT(showId) {
+  /* ---------- Bearbeiten: Hinweis Einrichten / Ablauf (Licht, Ton, Bühne gleich, ab 2.7.0) ---------- */
+  editLA(showId) { this.editAblauf(showId, 'L'); },
+  editTA(showId) { this.editAblauf(showId, 'T'); },
+  editBA(showId) { this.editAblauf(showId, 'B'); },
+  editT(showId) { this.editAblauf(showId, 'T'); },
+  editB(showId) { this.editAblauf(showId, 'B'); },
+  editAblauf(showId, abt) {
     const s = Repo.show(showId); if (!s) return;
-    let dirty = false;
-    const sh = Ui.sheet({ title: 'Einrichtung · Ton', full: true,
+    const D = DEPT[abt], pre = ABL_PRE[abt], fk = this.ALLG[abt];
+    let steps = Repo.ablaufOf(showId, abt).map(x => Object.assign({}, x)), removed = [], dirty = false;
+    const sh = Ui.sheet({ title: `Ablauf · ${D.short}`, full: true,
       headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
       headRight: `<button class="btn edit" data-x="save">${I('check')} Speichern</button>`,
       onBack: () => Editor._confirmLeave(dirty) });
-    sh.el.dataset.editor = '1'; sh.el.dataset.abt = 'T';
-    sh.body.innerHTML = `<form class="form" onsubmit="return false">
-      <div class="f"><label for="se-ton">Allgemein</label>
-        <textarea id="se-ton" rows="8" placeholder="z. B. Pult, Show-Datei, Grundpegel, Funkstrecken, Besonderheiten">${Utils.esc(s.f.einrichtungT || '')}</textarea></div>
-      <button type="button" class="btn edit big block" data-x="save">${I('check')} Einrichtung Ton speichern</button></form>`;
-    sh.body.addEventListener('input', () => { dirty = true; });
-    sh.el.addEventListener('click', async e => {
-      const b = e.target.closest('[data-x]'); if (!b) return;
-      if (b.dataset.x === 'cancel') { history.back(); return; }
-      const v = sh.body.querySelector('#se-ton').value.trim();
-      try { if (v !== (s.f.einrichtungT || '')) await Repo.patchShow(showId, { einrichtungT: v }); dirty = false; this.open.T = true; sh.close(); Ui.toast('Einrichtung Ton gespeichert'); }
-      catch (err) { App.error(err); }
-    });
-  },
-
-  /* ---------- Bearbeiten: Bühnen-Ablauf (Schritte je Abschnitt) ---------- */
-  editB(showId) {
-    const s = Repo.show(showId); if (!s) return;
-    let steps = Repo.ablaufOf(showId).map(x => Object.assign({}, x)), removed = [], dirty = false;
-    const sh = Ui.sheet({ title: 'Einrichtung · Bühne', full: true,
-      headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
-      headRight: `<button class="btn edit" data-x="save">${I('check')} Speichern</button>`,
-      onBack: () => Editor._confirmLeave(dirty) });
-    sh.el.dataset.editor = '1'; sh.el.dataset.abt = 'B';
+    sh.el.dataset.editor = '1'; sh.el.dataset.abt = abt;
     const zs = Repo.zuegeOf(showId);
-    const bEntries = Repo.entriesOf(showId).filter(e => abtOf(e) === 'B').sort((a, b) => Repo.bcmp(a, b, zs));
-    const opts = cur => `<option value="">– kein Eintrag verknüpft –</option>` + bEntries.map(e => `<option value="${Utils.esc(e.id)}" ${e.id === cur ? 'selected' : ''}>${Utils.esc([mainVal(e), e.f.element].filter(Boolean).join(' · '))}</option>`).join('');
+    const ents = Repo.entriesOf(showId).filter(e => abtOf(e) === abt).sort((a, b) => abt === 'B' ? Repo.bcmp(a, b, zs) : mainCmp(mainVal(a), mainVal(b)));
+    const opts = cur => `<option value="">– kein Eintrag verknüpft –</option>` + ents.map(e => `<option value="${Utils.esc(e.id)}" ${e.id === cur ? 'selected' : ''}>${Utils.esc([D.mainLabel + ' ' + (mainVal(e) || '–'), e.f.element || e.f.quelle || e.f.geraet].filter(Boolean).join(' · '))}</option>`).join('');
+    const PH = { L: 'z. B. Grundlicht 60 %, Saallicht über Pult, Nebel vorheizen', T: 'z. B. Pult, Show-Datei, Grundpegel, Funkstrecken', B: 'z. B. Bühnenbild, Besonderheiten, wer macht was' };
+    const SPH = { grund: 'z. B. Spiegelkugel einhängen und Motor prüfen', im: 'z. B. Szene 4: Verfolger auf Mackie', pause: 'z. B. Kreis 361 abstecken, Podium frei', ende: 'z. B. Verfolger abdecken' };
     let allg = null;
+    const arrow = d => I(d, 'sm').replace('<svg', '<svg style="transform:rotate(90deg)"');
     const draw = () => {
       sh.body.innerHTML = `<form class="form" onsubmit="return false">
-        <div class="f"><label for="se-buehne">Allgemein</label>
-          <textarea id="se-buehne" rows="3" placeholder="z. B. Bühnenbild, Besonderheiten, wer macht was">${Utils.esc(allg ?? s.f.einrichtungB ?? '')}</textarea></div>
-        ${ABLAUF.map(([k, n]) => { const list = steps.filter(x => x.abschnitt === k);
-          return `<section class="ablsec ed"><div class="ablh">${n}</div>
+        <div class="f"><label for="se-allg">Hinweis Einrichten / Ablauf</label>
+          <textarea id="se-allg" rows="3" placeholder="${Utils.esc(PH[abt])}">${Utils.esc(allg ?? s.f[fk] ?? '')}</textarea>
+          <div class="fh">Steht – sobald ausgefüllt – immer offen ganz oben über der Liste.</div></div>
+        ${ABLAUF.map(([k]) => { const list = steps.filter(x => x.abschnitt === k);
+          return `<section class="ablsec ed" data-abt="${abt}"><div class="ablh">${Utils.esc(ablaufName(abt, k))}</div>
           ${list.map((st, i) => { const gi = steps.indexOf(st);
-            return `<div class="zed astep" data-gi="${gi}"><div class="f"><label>Schritt ${i + 1}</label><textarea data-f="text" rows="2" placeholder="z. B. Beide Zuschauertreppen einsetzen">${Utils.esc(st.text)}</textarea></div>
+            return `<div class="zed astep" data-gi="${gi}"><div class="f"><label>Schritt ${i + 1}</label><textarea data-f="text" rows="2" placeholder="${Utils.esc(SPH[k])}">${Utils.esc(st.text)}</textarea></div>
               <div class="arow"><div class="f" style="flex:1;min-width:0"><select data-f="entryId" aria-label="Eintrag verknüpfen (Fotos)">${opts(st.entryId)}</select></div>
-                <button type="button" class="btn icon" data-x="up" aria-label="Nach oben" ${i === 0 ? 'disabled' : ''}>${I('arrowL', 'sm').replace('<svg', '<svg style="transform:rotate(90deg)"')}</button>
-                <button type="button" class="btn icon" data-x="down" aria-label="Nach unten" ${i === list.length - 1 ? 'disabled' : ''}>${I('arrowR', 'sm').replace('<svg', '<svg style="transform:rotate(90deg)"')}</button>
+                <button type="button" class="btn icon" data-x="up" aria-label="Nach oben" ${i === 0 ? 'disabled' : ''}>${arrow('arrowL')}</button>
+                <button type="button" class="btn icon" data-x="down" aria-label="Nach unten" ${i === list.length - 1 ? 'disabled' : ''}>${arrow('arrowR')}</button>
                 <button type="button" class="btn icon danger" data-x="rm" aria-label="Schritt entfernen">${I('trash')}</button></div></div>`; }).join('')}
           <button type="button" class="btn" data-x="add" data-ab="${k}">${I('plus')} Schritt</button></section>`; }).join('')}
-        <button type="button" class="btn edit big block" data-x="save">${I('check')} Einrichtung Bühne speichern</button></form>`;
+        <button type="button" class="btn edit big block" data-x="save">${I('check')} Ablauf ${Utils.esc(D.short)} speichern</button></form>`;
     };
-    const readBack = () => { allg = sh.body.querySelector('#se-buehne').value;
+    const readBack = () => { allg = sh.body.querySelector('#se-allg').value;
       sh.body.querySelectorAll('.astep').forEach(el => { const st = steps[+el.dataset.gi]; el.querySelectorAll('[data-f]').forEach(inp => { st[inp.dataset.f] = inp.value; }); }); };
     draw();
     sh.body.addEventListener('input', () => { dirty = true; });
@@ -5502,8 +5707,9 @@ const SetupView = {
       if (x === 'cancel') { history.back(); return; }
       readBack();
       if (x === 'add') {
-        const ab = b.dataset.ab; steps.push({ id: Utils.uuid(), abschnitt: ab, text: '', entryId: '', ord: 1e9, isNew: true }); dirty = true; draw();
-        const all = sh.body.querySelectorAll(`.astep`); const el = [...all].find(n => steps[+n.dataset.gi].isNew && steps[+n.dataset.gi] === steps[steps.length - 1]);
+        const nst = { id: Utils.uuid(), abschnitt: b.dataset.ab, text: '', entryId: '', ord: 1e9, isNew: true };
+        steps.push(nst); dirty = true; draw();
+        const el = [...sh.body.querySelectorAll('.astep')].find(n => steps[+n.dataset.gi] === nst);
         if (el) { el.scrollIntoView({ block: 'center' }); el.querySelector('textarea').focus(); }
       } else if (x === 'rm' || x === 'up' || x === 'down') {
         const st = steps[+b.closest('.astep').dataset.gi], same = steps.filter(y => y.abschnitt === st.abschnitt), i = same.indexOf(st);
@@ -5513,14 +5719,14 @@ const SetupView = {
       } else if (x === 'save') {
         const patch = {};
         ABLAUF.forEach(([k]) => steps.filter(y => y.abschnitt === k).forEach((st, i) => {
-          const old = s.f['b:' + st.id], text = st.text.trim();
-          if (!text) { if (old) patch['b:' + st.id] = Object.assign({}, old, { del: true }); return; }
+          const old = s.f[pre + st.id], text = st.text.trim();
+          if (!text) { if (old) patch[pre + st.id] = Object.assign({}, old, { del: true }); return; }
           const v = Object.assign({}, old || {}, { abschnitt: k, text, entryId: st.entryId || '', ord: (i + 1) * 10, del: false });
-          if (!old || JSON.stringify(old) !== JSON.stringify(v)) patch['b:' + st.id] = v;
+          if (!old || JSON.stringify(old) !== JSON.stringify(v)) patch[pre + st.id] = v;
         }));
-        removed.forEach(id => { const old = s.f['b:' + id]; if (old) patch['b:' + id] = Object.assign({}, old, { del: true }); });
-        const al = (allg || '').trim(); if (al !== (s.f.einrichtungB || '')) patch.einrichtungB = al;
-        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open.B = true; sh.close(); Ui.toast('Einrichtung Bühne gespeichert'); }
+        removed.forEach(id => { const old = s.f[pre + id]; if (old) patch[pre + id] = Object.assign({}, old, { del: true }); });
+        const al = (allg || '').trim(); if (al !== (s.f[fk] || '')) patch[fk] = al;
+        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open[abt] = true; sh.close(); Ui.toast(`Ablauf ${D.short} gespeichert`); }
         catch (err) { App.error(err); }
       }
     });
@@ -5632,7 +5838,7 @@ const RunList = {
     DEPT_ORDER.forEach(d => {
       if (depts && !depts.includes(d)) return;
       own.filter(x => x.abt === d).forEach(x => out.push({ key: x.key, abt: d, group: 'Vor der Vorstellung', text: x.text }));
-      if (d === 'B') Repo.ablaufOf(showId).forEach(st => out.push({ key: 'b:' + st.id, abt: 'B', group: 'Ablauf · ' + (ABLAUF.find(a => a[0] === st.abschnitt) || ABLAUF[0])[1], text: st.text, entryId: st.entryId }));
+      if (ABL_PRE[d]) Repo.ablaufOf(showId, d).forEach(st => out.push({ key: st.key, abt: d, group: 'Ablauf · ' + ablaufName(d, st.abschnitt), text: st.text, entryId: st.entryId }));
       if (d === 'R') {                                   // Requisite: Schritte aller Abschnitte (Vor der Vorstellung, Teile, Pausen, Nach …)
         // je Abschnitt: Schritte, dann die Gegenstände, die dort gebraucht werden („Wann gebraucht“ am Gegenstand) –
         // so steht alles Einzurichtende von selbst auf der Checkliste, ohne die Liste extra zu bearbeiten
@@ -5658,6 +5864,8 @@ const RunList = {
     return out;
   },
   abtOfItem(showId, key) {
+    if (key.startsWith('bl:')) return 'L';
+    if (key.startsWith('bt:')) return 'T';
     if (key.startsWith('b:')) return 'B';
     if (key.startsWith('rs:') || key.startsWith('ra:') || key.startsWith('rg:')) return 'R';
     const s = Repo.shows.get(showId); const v = s && s.f[key];
@@ -5771,7 +5979,7 @@ const RunList = {
                 <button type="button" class="btn icon" data-x="down" aria-label="Nach unten" ${i === its.length - 1 ? 'disabled' : ''}>${arrow(0, 'arrowR')}</button>
                 <button type="button" class="btn icon danger" data-x="rm" aria-label="Punkt entfernen">${I('trash')}</button></div></div>`).join('')}
             <button type="button" class="btn" data-x="add" data-abt="${d}">${I('plus')} Punkt</button>
-            ${d === 'B' ? `<div class="fh">Zusätzlich erscheinen die Schritte aus dem Bühnen-Ablauf (Grundeinrichtung, Pausenumbau, Ende) – zu bearbeiten unter „Ablauf“.</div>` : ''}</section>`; }).join('')}
+            ${ABL_PRE[d] ? `<div class="fh">Zusätzlich erscheinen die Schritte aus dem Ablauf (vorher, während, Pause, danach) – zu bearbeiten unter „Ablauf“.</div>` : ''}</section>`; }).join('')}
         <button type="button" class="btn big" data-x="tpl">${I('copy')} Als Hausvorlage für neue Veranstaltungen speichern</button>
         <button type="button" class="btn edit big block" data-x="save">${I('check')} Punkte speichern</button></form>`;
     };
@@ -7753,6 +7961,9 @@ const Demo = {
       'b:d2': { abschnitt: 'grund', text: 'Podest Haifischbecken auf Boden links, Rollen feststellen.', entryId: '', ord: 20, del: false },
       'b:d3': { abschnitt: 'grund', text: 'Rückprospekt Hafen auf Zug 14 einhängen und auf Spielhöhe fahren.', entryId: '', ord: 30, del: false },
       'b:d4': { abschnitt: 'pause', text: 'Kamera weg, Farbeimer und Pinsel abnehmen.', entryId: '', ord: 10, del: false },
+      'bl:d1': { abschnitt: 'pause', text: 'Spiegelkugel einhängen und Motor einschalten', entryId: '', ord: 10, del: false },
+      'bl:d2': { abschnitt: 'grund', text: 'OHP am Gerät ausschalten, Klappe zu', entryId: '', ord: 10, del: false },
+      'bt:d1': { abschnitt: 'pause', text: 'Funk-Akku Mackie tauschen', entryId: '', ord: 10, del: false },
       'ci:d1': { abt: 'L', text: 'Notbeleuchtung geprüft', ord: 10, del: false },
       'ci:d2': { abt: 'T', text: 'Funkakkus voll', ord: 10, del: false },
       'ci:d3': { abt: 'B', text: 'Sicherungsseile geprüft', ord: 10, del: false },
@@ -7761,9 +7972,9 @@ const Demo = {
       { f: { kreis: '361', bemerkung: 'Steckt in Podiumsklappe Li, Steckplatz 1' }, A: [['Kreis 361', 'Stecker', 210, 'nah'], ['Kreis 361', 'Podium links', 210, 'tot']] },
       { f: { kreis: '123+124', geraet: 'Lichterkette', bemerkung: '123 Rot und Blau, 124 Grün und Gelb, rote Lampe muss ins Maul (Haikopf-Requisite)' }, A: [['Kreis 123+124', 'Haikopf', 350, 'nah'], ['Kreis 123+124', 'Position', 350, 'tot']] },
       { f: { kreis: '901', bemerkung: 'Tür mittlere Position vor Steg' }, A: [['Kreis 901', 'Tür vor Steg', 30, 'tot']] },
-      { f: { kreis: '12+17+103+113+620', gruppe: '24', filter: 'nc', bemerkung: 'Einleuchten Spiegelkugel-Stimmung' }, E: [['Gruppe 24', 'Spiegelkugel', 48, 'tot'], ['Gruppe 24', 'Kugel', 48, 'nah']] },
-      { f: { kreis: '10127', geraet: 'Overheadprojektor', bemerkung: 'Verkabelt in die Unterbühne durch die Klappe, muss am Gerät ausgeschaltet sein' }, A: [['Kreis 10127', 'OHP Schalter', 160, 'nah']], E: [['Kreis 10127', 'Projektion', 160, 'tot']] },
-      { f: { kreis: '45', gruppe: '3', filter: 'L201', adresse: '12/301', position: '1. Portalbrücke', bemerkung: 'Seitenlicht links, Torblende oben leicht schließen' } },
+      { link: 'bl:d1', f: { kreis: '12+17+103+113+620', gruppe: '24', filter: 'nc', bemerkung: 'Einleuchten Spiegelkugel-Stimmung' }, E: [['Gruppe 24', 'Spiegelkugel', 48, 'tot'], ['Gruppe 24', 'Kugel', 48, 'nah']] },
+      { link: 'bl:d2', f: { kreis: '10127', geraet: 'Overheadprojektor', warnung: 'Muss am Gerät ausgeschaltet sein', bemerkung: 'Verkabelt in die Unterbühne durch die Klappe, muss am Gerät ausgeschaltet sein' }, A: [['Kreis 10127', 'OHP Schalter', 160, 'nah']], E: [['Kreis 10127', 'Projektion', 160, 'tot']] },
+      { f: { kreis: '45', gruppe: '3', filter: 'L201', adresse: '12/301', position: 'Portal rechts', lzug: 'OLZ 1', bemerkung: 'Seitenlicht links, Torblende oben leicht schließen' } },
       { abt: 'T', f: { kanal: '17', quelle: 'Funk Mackie', mikro: 'DPA 4061', stagebox: 'SB2-07', ausgang: 'PA', mikropos: 'Stirn', rolle: 'Mackie Messer', funk: 'TX 4 · 606,250 MHz', bemerkung: 'Kabel unter der Perücke, Akku vor jeder Vorstellung tauschen' },
         A: [['Kanal 17', 'Mikro Stirn', 205, 'nah']], E: [['Kanal 17', 'Pult-Kanal', 205, 'tot']] },
       { abt: 'B', link: 'b:d3', f: { zug: 'Zug 14', zugId: 'zug14', element: 'Rückprospekt Hafen', hoehe: '8,20 m', reihenfolge: '1', bemerkung: 'Erst nach dem Lichtwechsel fahren' }, A: [['Zug 14', 'Rückprospekt', 0, 'tot']] },
@@ -7857,7 +8068,7 @@ const App = {
     if (Settings.v.depts.includes('R')) {          // Requisite: Haus-Standard und Demo „Einfache Leute“ (nur einmal)
       try { await Req.ensureHouse(); await Req.maybeDemo(); await Req.maybeTest(); } catch (e) { console.warn('Requisite-Standard nicht angelegt', e); }
     }
-    Repo.on(() => this.requestRender());
+    Repo.on(ev => { if (ev && ev.blobIds && ev.blobIds.length) Thumbs.miss.clear(); this.requestRender(); });
     Sync.on(() => this.updatePill());
     window.addEventListener('hashchange', () => this.route());
     window.addEventListener('focusout', () => setTimeout(() => { if (this.state.renderPending && !this.inputFocused()) this.render(); }, 50));
@@ -7922,7 +8133,7 @@ const App = {
     const bar = document.getElementById('appbarRow');
     bar.innerHTML = `<div class="brand" style="flex:1;min-width:0"><span class="brand-mark">${I('bulb')}</span><h1>Doku VT<span class="ver" title="App-Version">v${APP_VERSION}</span></h1></div>
       ${this.pillHtml()}<button class="btn icon ghost" data-act="settings" aria-label="Einstellungen">${I('settings')}</button>`;
-    const all = Repo.liveShows();
+    const all = Repo.liveShows().sort((a, b) => this.isDemo(a) - this.isDemo(b));     // Demo und Testvorstellung immer am Ende (ab 2.7.0)
     // Spielstätten-Filter (ab 2.6.0): nur sichtbar, wenn es mehr als eine Spielstätte gibt
     const sps = [...new Set(all.map(s => this.spOf(s)))].sort((a, b) => this.spRank(a) - this.spRank(b) || a.localeCompare(b, 'de'));
     if (this.state.homeSp !== 'all' && !sps.includes(this.state.homeSp)) this.state.homeSp = 'all';
@@ -8023,7 +8234,7 @@ const App = {
         </div><div class="row">
           <div class="seg" role="group" aria-label="Darstellung"><button data-view="list" aria-label="Liste">${I('list', 'sm')}</button><button data-view="grid" aria-label="Kacheln">${I('grid', 'sm')}</button><button data-view="big" aria-label="Große Bilder">${I('image', 'sm')}</button></div>
           <button class="modesw" data-act="mode" role="switch" aria-checked="false" aria-pressed="false"><span class="lab l0">${I('lock', 'sm')} Ansicht</span><span class="trk"><span class="knob"></span></span><span class="lab l1">Bearbeiten ${I('edit', 'sm')}</span></button>
-        </div><div class="row progress-strip hidden" data-prog></div></div>
+        </div><div class="row progress-strip hidden" data-prog></div><div class="row qrow hidden" data-qrow role="group" aria-label="Schnellzugriff"></div></div>
         <div class="split"><div class="listpane"><div data-setup></div><div data-list></div></div><aside class="detailpane" aria-label="Details" data-detail></aside></div>
         <div class="fabbar" data-fab></div>`;
     }
@@ -8102,6 +8313,7 @@ const App = {
     const setupBox = main.querySelector('[data-setup]');
     // Requisite allein: „Vor der Vorstellung“ steht groß in der Ansicht „Einrichten“ (und im Ablauf) – oben entfällt der Kasten
     SetupView.render(setupBox, st.showId, st.edit, st.abt === 'all' ? vis : vis.filter(d => d === st.abt), { noRun: ca === 'R' });
+    this.renderQrow();
     const sort = 'kreis';                         // Sortierung immer: Abteilung → Phase → Hauptfeld aufsteigend
     const every = Views.sortedItems(st.showId, { kat: 'all', sort, q: st.q, depts: vis });
     const dc = { all: every.length }; vis.forEach(d => { dc[d] = 0; }); every.forEach(i => { dc[i.abt]++; });
@@ -8169,6 +8381,31 @@ const App = {
     };
     appendChunk();
   },
+  /** Schnellzugriff in der fixierten Werkzeugleiste (ab 2.7.0): Hinweis, Vor der Vorstellung, Züge/Ablauf je Abteilung –
+      bleibt beim Scrollen sichtbar und springt zum aufgeklappten Kasten */
+  renderQrow() {
+    const st = this.state, row = document.querySelector('[data-qrow]'); if (!row) return;
+    const s = Repo.show(st.showId), ca = this.curAbt(), vis = this.visibleDepts(st.showId);
+    if (!s || ca === 'R') { row.classList.add('hidden'); row.innerHTML = ''; return; }
+    const ds = (st.abt === 'all' ? vis : vis.filter(d => d === st.abt)).filter(d => d !== 'R');
+    const btns = [], all = st.abt === 'all' ? vis : vis.filter(d => d === st.abt), hints = all.filter(d => s.f[SetupView.ALLG[d]]);
+    hints.forEach(d => btns.push(`<button class="qb warn" data-act="jump" data-box="hint-${d}">${I('alert', 'sm')} Hinweis${hints.length > 1 ? ' ' + Utils.esc(DEPT[d].short) : ''}</button>`));
+    const items = RunList.items(st.showId, all).filter(i => i.abt !== 'R' || i.key.startsWith('ci:') || i.vor);
+    if (items.length || st.edit) {
+      const run = RunList.runsOf(st.showId).find(r => r.f.datum === RunList.isoDate()), p = run ? RunList.progress(run, items) : null;
+      btns.push(`<button class="qb run" data-act="jump" data-box="run">${I('checklist', 'sm')} Vor der Vorstellung${p ? ` <span class="mono">${p.done}/${p.all}</span>` : items.length ? ` <span class="mono">${items.length}</span>` : ''}</button>`);
+    }
+    const LBL = { L: 'Beleuchterzüge', T: 'Ton · Ablauf', B: 'Bühne · Ablauf' };
+    ds.forEach(d => { const n = Repo.ablaufOf(st.showId, d).length;
+      btns.push(`<button class="qb" data-abt="${d}" data-act="jump" data-box="${d}">${I(d === 'L' ? 'layers' : 'list', 'sm')} ${LBL[d]}${d === 'L' && n ? ` · Ablauf <span class="mono">${n}</span>` : d !== 'L' && n ? ` <span class="mono">${n}</span>` : ''}</button>`); });
+    row.innerHTML = btns.join(''); row.classList.toggle('hidden', !btns.length);
+  },
+  jump(box) {
+    const el = document.querySelector(`[data-setup] [data-box="${box}"]`);
+    if (!el) { if (box === 'run') RunList.open(this.state.showId); return; }
+    if (el.tagName === 'DETAILS' && !el.open) el.open = true;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  },
   renderDetail() {
     const st = this.state, pane = document.querySelector('[data-detail]'); if (!pane) return;
     const id = st.sel && st.sel.split(':')[0], e = id && Repo.entry(id);
@@ -8229,6 +8466,7 @@ const App = {
   /* ---------- Aktionen ---------- */
   /** Neue Veranstaltung: Titel + Abteilungen (vorausgewählt: die des Geräts). Nichts wird angelegt, bevor „Anlegen“ getippt ist. */
   /* ---------- Spielstätte (ab 2.6.0, alle Abteilungen) ---------- */
+  isDemo(s) { return /^(demo|test)-/.test(s.id) || /^(Demo|Testvorstellung)\s*:/i.test(String(s.f.titel || '')); },
   spOf(s) { return String((s && s.f.spielstaette) || '').trim(); },
   spRank(v) { const i = SPIELSTAETTEN.indexOf(v); return v === '' ? 999 : i < 0 ? 100 : i; },
   spBadge(s) { const v = this.spOf(s); return v ? `<span class="spbadge">${I('pin', 'sm')}${Utils.esc(v)}</span>` : ''; },
@@ -8505,6 +8743,7 @@ const App = {
         Editor.open({ showId: st.showId, abt, quick: st.kat === 'E' && DEPT[abt].photoKats.includes('E') ? 'E' : 'A' }); break;
       }
       case 'trash': this.openTrash(); break;
+      case 'jump': this.jump(b.dataset.box); break;
       case 'import': { const inp = document.querySelector('[data-file]'); inp.value = ''; inp.onchange = () => inp.files[0] && this.importFile(inp.files[0]); inp.click(); break; }
     }
   }

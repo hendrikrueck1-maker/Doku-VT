@@ -1,4 +1,4 @@
-# Doku VT 2.6.5 – Dokumentation
+# Doku VT 2.7.0 – Dokumentation
 
 Die App ist eine Datei (`index.html`, ca. 570 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
 
@@ -43,6 +43,12 @@ Die App ist eine Datei (`index.html`, ca. 570 KB), keine Abhängigkeiten, kein C
 - Gegenstand: `abschnitte` = Liste von `ra:`-Schlüsseln (Feld fehlt = „Vor der Vorstellung“ des Stücks; leere Liste = in keinem Abschnitt), `wofuer` = Freitext. Beim Duplizieren werden die Schlüssel auf die Kopie umgebogen (`remapEntry`). Gelöschte Abschnitte bleiben als toter Schlüssel stehen und werden ignoriert.
 - Checklisten-Punkt „Gegenstand in Abschnitt“: `RunList.items` liefert je Abschnitt erst die Schritte, dann die Gegenstände mit Schlüssel `rg:<Eintrag>:<Abschnitt>` (Haken im Durchgang als `h:rg:…`, `abtOfItem` → R). Die Punkte entstehen aus den Daten – es gibt nichts zusätzlich zu pflegen und nichts Neues abzugleichen.
 - Spielstätte: das bestehende Feld `spielstaette` der Veranstaltung (Text). Feste Werte `SPIELSTAETTEN`, alles andere gilt als „Sonstiges“. Startseiten-Filter `App.state.homeSp` (nur Sitzung).
+
+**Ab 2.7.0:**
+- Ablauf je Abteilung im Veranstaltungs-Datensatz: Licht `bl:<id>`, Ton `bt:<id>`, Bühne `b:<id>` = {abschnitt grund|im|pause|ende, text, entryId, ord, del}. `ABL_PRE`, `ablaufName(abt, k)`, `Repo.ablaufOf(showId, abt)` (Standard B). Eigene Präfixe, damit 2.6.5-Geräte Licht-/Ton-Schritte nicht als Bühnen-Schritte zeigen. Checklisten-Schlüssel = Feldname (`RunList.abtOfItem`: bl → L, bt → T, b → B). `Views.entrySteps(e)` liefert die mit einem Eintrag verknüpften Schritte (Zwischenspeicher je Veranstaltungsstand); `Editor.saveAbl` speichert die „Ablauf-Hinweise“ des Eintrags nach `Repo.saveDraft`.
+- Neue Eintragsfelder: `lzug` (Licht, Zug), `warnung` (L/T/B). Feld-Optionen in `DEPT`: `full` (eigene Formularzeile), `warn`, `zkeys` (Schnelltasten aus den Beleuchterzügen), `legacy` (nicht im Formular, aber angezeigt, wenn ausgefüllt – Licht `dmx`), `headKeys` (Felder der fixierten Großbild-Leiste).
+- `SetupView`: `hintHtml` (immer offener Hinweis aus `einrichtung`/`einrichtungT`/`einrichtungB`/`einrichtungR`), `editAblauf(showId, abt)` (Hinweis + Ablauf, ersetzt editT/editB), `editL` nur noch Beleuchterzüge. Alle Kästen tragen `data-box`; `App.renderQrow`/`App.jump` = Schnellzugriff in der Werkzeugleiste.
+- `Thumbs.url`/`loadFull` speichern fehlende Bilder nicht mehr zwischen (vorher blieb ein beim Live-Abgleich später angekommenes Bild bis zum Neustart unsichtbar). `Sync.importPackage` spielt Bilder in Portionen zu 12 ein, danach die Datensätze.
 
 **Ab 2.6.3:** Neues Feld `zuAndere` (Text, Teil von „Zu wem“). `ReqView.eRow`/`sRow` mit festen Spalten (`fx`). `SP_COLOR` = Farbe je Spielstätte. PDF: Zeilen mit `sub` (Unterzeile normal gesetzt unter fettem Namen, `boldN`).
 
@@ -186,6 +192,16 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 - [ ] Live iPad ↔ iPad (beide ohne BarcodeDetector): Der eigene QR-Decoder erkennt den Code.
 - [ ] Gleichzeitig auf zwei Geräten denselben Eintrag ändern, unterschiedliche Felder: Beide Änderungen bleiben erhalten.
 - [ ] Auf A löschen, abgleichen: Der Eintrag ist auch auf B weg und taucht nicht wieder auf.
+
+**2.7.0 – iPad, iPhone, Pixel**
+- [ ] Live Pixel → iPad: neuen Licht-Kreis mit Fotos auf dem Pixel anlegen → Fotos erscheinen auf dem iPad ohne Neustart (vorher erst „Bild fehlt“, dann das Bild).
+- [ ] Großes Sync-Paket (100+ Fotos) auf dem iPad einspielen: läuft durch, Fortschritt zählt mit.
+- [ ] Licht-Eintrag: Position und Zug getrennt, Zug-Schnelltasten = Beleuchterzüge, kein DMX-Feld; Warnhinweis erscheint auf Karte, Detail, Bildansicht, Großbild, PDF.
+- [ ] „+ Hinweis“ im Eintrag (z. B. Pausenumbau) → steht auf der Karte, unter „Licht · Beleuchterzüge & Ablauf“ und in „Vor der Vorstellung“ zum Abhaken.
+- [ ] „Hinweis Einrichten / Ablauf“ ausfüllen → eigener Kasten ganz oben, immer offen.
+- [ ] Weit nach unten scrollen → Schnellzugriff in der Werkzeugleiste springt zu „Vor der Vorstellung“ bzw. „Beleuchterzüge“ und klappt auf.
+- [ ] Großbild: Leiste mit Kreis, Gruppe, Filter, Adresse, Position, Zug und darunter die weiteren Angaben bleibt beim Scrollen oben stehen.
+- [ ] Startseite: Demo und Testvorstellung stehen unten; Spielstätten-Rahmen nicht mit Abteilungsfarben verwechselbar.
 
 **Requisite 2.6.1 – iPad, iPhone, Pixel**
 - [ ] Gegenstand → „Zu wem“: Rolle und Darsteller/in getrennt eintragen; „Schnellauswahl bearbeiten“ aus dem Gegenstand heraus; Antippen eines Schnellauswahl-Namens fügt die Person hinzu. Dieselbe Liste unter Einstellungen → Requisite.
