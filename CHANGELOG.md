@@ -1,5 +1,14 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.8.2 – 23.10.2026
+
+Cue-Fotos schneller vorbereiten und Punktstimmungen beim Fotografieren. Kein Datenbank-Update, Paketformat unverändert – 2.8.0, 2.8.1 und 2.8.2 gleichen weiter miteinander ab.
+
+- **„+ Cue“ mit Schnellauswahl:** Unter dem Feld „Cue-Nummer“ stehen die nächsten drei ganzen Nummern und die Punktstimmungen zur zuletzt angelegten Cue – ist das die 13, also **14 · 15 · 16** und **13.1 … 13.9**. Antippen setzt die Nummer, „Anlegen“ legt die Cue an. Nummern, die es in der Liste schon gibt, fallen weg; vorgeschlagen ist die erste freie ganze Nummer. Ausgangspunkt ist die zuletzt angelegte Cue (darunter steht „Zuletzt angelegt: Cue …“).
+- **Cue-Kamera: −0.1 / +0.1** über „Nächster Cue“. Zählt die angezeigte Nummer um 0,1 runter oder hoch (13 → 13.1 → 13.2, 13.9 → 14). Die Punktstimmung entsteht erst mit dem ersten Foto – Durchzählen ohne Auslösen legt nichts an. Gibt es die Nummer schon, gehen die Fotos dorthin. Nicht unter 0; bei Text-Nummern (z. B. „Ende“) ein Hinweis. Am Computer auch mit ↑/↓ bzw. +/−.
+- Der Sucher der Cue-Kamera ist auf kleinen Smartphones etwas kleiner, damit die neuen Knöpfe mit dem Daumen erreichbar bleiben.
+- **Test:** `test_282.py` (21 Prüfungen: Vorschläge, Wegfall vorhandener Nummern, Antippen über die Oberfläche, ±0,1 mit simulierter Kamera, Smartphone 390×844 und 375×667, Rotlicht); `test_281.py` prüft die Version jetzt gegen `version.json`. `test_basis.py`, `test_cues.py`, `test_281.py` laufen durch.
+
 ## 2.8.1 – 23.10.2026
 
 Kleinere Korrekturen für Licht, Requisite und den Foto-Import. Kein Datenbank-Update, Paketformat unverändert – 2.8.0 und 2.8.1 gleichen weiter miteinander ab.

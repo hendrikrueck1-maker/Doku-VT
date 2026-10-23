@@ -1071,7 +1071,7 @@ html[data-theme="red"] .cards.big .card .bigsticky{background:var(--surf2);-webk
 .fab.cuefab{padding:0 22px}
 @media (max-width:560px){.cuetb [data-cact=addmany] .bl{display:none}.cuetb [data-cact=addmany]{padding:0;width:var(--tap)}.cuetb .row>.btn{padding:0 12px}.cuetb .modesw{padding:0 8px;gap:4px}}
 /* Cue-Kamera: dunkel, kein weißes Aufblitzen, große Knöpfe für den Daumen */
-.ccam .vf{width:min(100vw,calc(var(--vh)*100 - 400px));width:min(100vw,calc(100dvh - 400px));border-color:#2a2d33}
+.ccam .vf{width:min(100vw,calc(var(--vh)*100 - 420px));width:min(100vw,calc(100dvh - 420px));border-color:#2a2d33}
 .ccam .vf.go{animation:cpulse .3s ease}
 @keyframes cpulse{40%{box-shadow:inset 0 0 0 10px rgba(255,255,255,.28)}}
 .ccam .hintlbl{background:rgba(0,0,0,.65)!important;color:#e9ecf1!important}
@@ -1083,7 +1083,15 @@ html[data-theme="red"] .cards.big .card .bigsticky{background:var(--surf2);-webk
 .ccam .cside{display:flex;flex-direction:column;gap:8px;min-width:56px}
 .ccam .shutter{width:96px;height:96px;background:#24272c;border:6px solid #8f949b;box-shadow:inset 0 0 0 4px #000}
 .ccam .shutter:active{background:#3a3e45}
-.ccam .cnext{min-width:116px;min-height:88px;border-radius:20px;border:2px solid #8a2a22;background:#3a0f0c;color:#ffd9d4;font-weight:800;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 12px}
+.ccam .cnextw{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.ccam .cstep{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ccam .cstep .cbtn{width:auto;height:48px;border-radius:14px;font-family:var(--mono);font-size:16px;font-weight:800;background:#24272c;color:#e9ecf1;border:2px solid #4a4f57}
+.ccam .cstep .cbtn:active{background:#3a3e45}
+html[data-theme="red"] .ccam .cstep .cbtn{background:#1a0303;border-color:#7a1c16;color:#ff5a4a}
+.pickh{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:10px 2px 0}
+.pickkeys{margin-top:6px}
+.pickkeys button{min-width:64px;font-size:17px}
+.ccam .cnext{min-width:116px;min-height:76px;border-radius:20px;border:2px solid #8a2a22;background:#3a0f0c;color:#ffd9d4;font-weight:800;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 12px}
 .ccam .cnext b{font-family:var(--mono);font-size:22px}
 .ccam .cnext:active{background:#5a1712}
 .ccam .tbtn.done{background:#2b2f35;color:#e9ecf1}
@@ -1095,7 +1103,7 @@ html[data-theme="red"] .cards.big .card .bigsticky{background:var(--surf2);-webk
 .ccam .strip .cth img{width:100%;height:100%;object-fit:cover;border:0;border-radius:0}
 .ccam .strip .cth span{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.72);color:#fff;font:700 10px var(--mono);text-align:center;white-space:nowrap;overflow:hidden}
 .ccam .strip .cth.err{border-color:var(--danger)}
-@media (max-width:380px){.ccam .cnext{min-width:96px}.ccam .shutter{width:84px;height:84px}}
+@media (max-width:380px){.ccam .cnext{min-width:96px}.ccam .cstep .cbtn{font-size:14px}.ccam .shutter{width:84px;height:84px}}
 html[data-theme="red"] .ccam .cnext{border-color:#7a1c16;background:#1a0303;color:#ff5a4a}
 html[data-theme="red"] .ccam .cnr,html[data-theme="red"] .ccam .cnr span,html[data-theme="red"] .ccam .cstat,html[data-theme="red"] .ccam .tbtn,html[data-theme="red"] .ccam .cbtn,html[data-theme="red"] .ccam .top .ttl{color:#ff5a4a}
 html[data-theme="red"] .ccam .shutter{border-color:#7a1c16;background:#1a0303}
@@ -1135,7 +1143,7 @@ window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason 
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.8.1';
+const APP_VERSION = '2.8.2';
 const DB_NAME = 'lichtdoku';
 /* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
    bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
@@ -6526,7 +6534,10 @@ const Req = {
       ${(fd.quick || []).length ? `<div class="qkeys">${fd.quick.map(q => `<button type="button" data-quick="${Utils.esc(fd.k)}" data-qv="${Utils.esc(q)}">${Utils.esc(q)}</button>`).join('')}</div>` : ''}${fd.hint ? `<div class="fh">${Utils.esc(fd.hint)}</div>` : ''}</div>`;
     if (fd.type === 'select') return `<div class="f">${lab}<select id="${id}" name="${Utils.esc(fd.k)}">${fd.opts.map(([k, n]) => `<option value="${Utils.esc(k)}" ${String(k) === String(v) ? 'selected' : ''}>${Utils.esc(n)}</option>`).join('')}</select></div>`;
     const im = fd.type === 'num' ? 'inputmode="numeric"' : fd.type === 'dec' ? 'inputmode="decimal"' : '';
-    return `<div class="f">${lab}<input id="${id}" name="${Utils.esc(fd.k)}" ${im} value="${Utils.esc(v)}" placeholder="${Utils.esc(fd.ph || '')}" enterkeyhint="next" autocomplete="off">${fd.hint ? `<div class="fh">${Utils.esc(fd.hint)}</div>` : ''}</div>`;
+    // Schnellauswahl unter dem Feld (ab 2.8.2, z. B. Cue-Nummern): Gruppen mit Titel, Antippen setzt den Wert
+    const pick = (fd.pick || []).filter(g => g.items && g.items.length).map(g => `${g.title ? `<div class="pickh">${Utils.esc(g.title)}</div>` : ''}<div class="qkeys pickkeys" role="group" aria-label="${Utils.esc(g.title || fd.label)}">${g.items.map(q =>
+      `<button type="button" data-quick="${Utils.esc(fd.k)}" data-qv="${Utils.esc(q)}" aria-pressed="${String(q) === String(v)}">${Utils.esc(q)}</button>`).join('')}</div>`).join('');
+    return `<div class="f">${lab}<input id="${id}" name="${Utils.esc(fd.k)}" ${im} value="${Utils.esc(v)}" placeholder="${Utils.esc(fd.ph || '')}" enterkeyhint="next" autocomplete="off">${pick}${fd.hint ? `<div class="fh">${Utils.esc(fd.hint)}</div>` : ''}</div>`;
   },
   /** kleines Formular als Blatt → Promise(Werte | null). Löst erst auf, wenn die Zurück-Navigation verarbeitet ist. */
   form(title, fields, { ok = 'Übernehmen', html = '', check = null } = {}) {
@@ -6546,6 +6557,11 @@ const Req = {
         const q = e.target.closest('[data-quick]');
         if (q) { const t = sh.body.querySelector(`[name="${CSS.escape(q.dataset.quick)}"]`); if (t) { t.value = q.dataset.qv; t.dispatchEvent(new Event('input', { bubbles: true })); } return; }
         if (e.target.closest('[data-ok]')) submit();
+      });
+      // Schnellauswahl zeigt an, welcher Wert gerade im Feld steht
+      sh.body.addEventListener('input', e => {
+        const n = e.target.name; if (!n) return;
+        sh.body.querySelectorAll(`.pickkeys [data-quick="${CSS.escape(n)}"]`).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.qv === String(e.target.value).trim())));
       });
       sh.body.addEventListener('keydown', e => {
         if (e.key !== 'Enter' || e.target.tagName !== 'INPUT') return;
@@ -7830,6 +7846,25 @@ const Cues = {
   },
   /** Hochzählen: immer die nächste ganze Cue (12 → 13, 12.5 → 13) – Punkt-Cues sind eingeschoben */
   nextNr(s) { const m = /^(\d+)/.exec(String(s ?? '')); return m ? String(parseInt(m[1], 10) + 1) : '1'; },
+  /** Schnellauswahl beim Anlegen (ab 2.8.2): Ausgangspunkt ist die zuletzt angelegte Cue (bei gleicher Zeit die höchste Nummer).
+      Vorschlag: die nächsten drei ganzen Nummern und die Punktstimmungen dazu (13 → 14, 15, 16 und 13.1 … 13.9).
+      Nummern, die es in der Liste schon gibt, fallen weg. */
+  quickNrs(listId) {
+    const cs = this.cuesOf(listId).filter(c => !isNaN(this.num(c.f.nr)));
+    const last = cs.slice().sort((a, b) => (b.c - a.c) || this.cmpNr(b.f.nr, a.f.nr))[0];
+    const have = new Set(this.cuesOf(listId).map(c => this.norm(c.f.nr)));
+    const base = last ? Math.floor(this.num(last.f.nr)) : 0, free = x => !have.has(x);
+    const next = [1, 2, 3].map(i => String(base + i)).filter(free);
+    const dots = last ? [1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => base + '.' + i).filter(free) : [];
+    return { last: last ? last.f.nr : '', base, next, dots };
+  },
+  /** Cue-Nummer um 0,1 hoch oder runter (12 → 12.1, 12.9 → 13, 12.25 → 12.35); nie unter 0. Text-Nummern: null */
+  stepNr(nr, dir) {
+    const t = this.norm(nr), n = this.num(t); if (isNaN(n)) return null;
+    const dec = Math.max(1, (t.split('.')[1] || '').length), f = Math.pow(10, dec);
+    const v = Math.round(n * f) + dir * f / 10;
+    return v < 0 ? null : this.norm((v / f).toFixed(dec));
+  },
   /** 0 → A, 25 → Z, 26 → AA */
   letter(i) { let s = ''; for (let n = i + 1; n > 0; n = Math.floor((n - 1) / 26)) s = String.fromCharCode(65 + (n - 1) % 26) + s; return s; },
 
@@ -8037,7 +8072,13 @@ const CueCam = {
             <button class="cbtn hidden" data-a="torch" aria-label="Taschenlampe" aria-pressed="false">${I('torch')}</button>
           </div>
           <button class="shutter" data-a="shot" aria-label="Foto für diese Cue"></button>
-          <button class="cnext" data-a="next" aria-label="Nächster Cue und auslösen"><span>Nächster Cue</span><b data-nx></b></button>
+          <div class="cnextw">
+            <div class="cstep" role="group" aria-label="Cue-Nummer um 0,1 ändern">
+              <button class="cbtn" data-a="nr-" aria-label="Cue-Nummer 0,1 kleiner">−0.1</button>
+              <button class="cbtn" data-a="nr+" aria-label="Cue-Nummer 0,1 größer">+0.1</button>
+            </div>
+            <button class="cnext" data-a="next" aria-label="Nächster Cue und auslösen"><span>Nächster Cue</span><b data-nx></b></button>
+          </div>
         </div>
         <div class="cexp hidden"><button class="cbtn" data-a="ev-" aria-label="Dunkler">−</button><span data-ev></span><button class="cbtn" data-a="ev+" aria-label="Heller">+</button></div>
         <div class="cstat" aria-live="polite"></div>
@@ -8206,6 +8247,12 @@ const CueCam = {
           const v = Math.min(ev.max, Math.max(ev.min, ev.cur + (a === 'ev+' ? 1 : -1) * Math.max(ev.step, 0.3)));
           const tr = stream && stream.getVideoTracks()[0];
           if (tr) tr.applyConstraints({ advanced: [{ exposureMode: 'continuous', exposureCompensation: v }] }).then(() => { ev.cur = v; renderEv(); }).catch(() => Ui.toast('Belichtung lässt sich nicht ändern', 'warn'));
+        } else if (a === 'nr+' || a === 'nr-') {
+          // Punktstimmung: Nummer um 0,1 ändern – die Cue entsteht erst mit dem ersten Foto
+          const n = Cues.stepNr(target.nr, a === 'nr+' ? 1 : -1);
+          if (n == null) { Ui.toast(Cues.num(Cues.norm(target.nr)) >= 0 ? 'Kleiner als 0 geht nicht' : 'Nur bei Cue-Nummern aus Zahlen', 'warn'); return; }
+          target = { nr: n, cueId: null }; upd();
+          if (navigator.vibrate) navigator.vibrate(8);
         } else if (a === 'nr') {
           const v = await Ui.dialog({ title: 'Cue-Nummer', message: 'Die nächsten Fotos gehören zu dieser Cue.', input: { value: target.nr, inputmode: 'decimal', placeholder: 'z. B. 12.5' },
             buttons: [{ label: 'Abbrechen', value: null }, { label: 'Übernehmen', value: true, cls: 'primary' }] });
@@ -8217,6 +8264,9 @@ const CueCam = {
         if (e.target.tagName === 'INPUT') return;
         if (e.key === ' ' || e.key === 'Enter') { if (e.target.tagName !== 'BUTTON') { e.preventDefault(); shoot(false); } }
         else if (e.key === 'n' || e.key === 'N' || e.key === 'ArrowRight') { e.preventDefault(); shoot(true); }
+        else if (e.key === '+' || e.key === 'ArrowUp' || e.key === '-' || e.key === 'ArrowDown') {
+          e.preventDefault(); const n = Cues.stepNr(target.nr, e.key === '+' || e.key === 'ArrowUp' ? 1 : -1); if (n != null) { target = { nr: n, cueId: null }; upd(); }
+        }
       });
       document.addEventListener('visibilitychange', vis);
       layer = Ui.layer(el, { onBack: () => { finish(); return true; } });
@@ -8427,8 +8477,11 @@ const CueView = {
   },
   /* ---------- Cues anlegen ---------- */
   async addCue(listId) {
-    const cs = Cues.cuesOf(listId), sug = cs.length ? Cues.nextNr(cs[cs.length - 1].f.nr) : '1';
-    const v = await Req.form('Neue Cue', [{ k: 'nr', label: 'Cue-Nummer', type: 'dec', value: sug, ph: 'z. B. 12 oder 12.5' }, { k: 'name', label: 'Name (optional)', ph: 'z. B. Sonnenaufgang' },
+    const cs = Cues.cuesOf(listId), qn = Cues.quickNrs(listId);
+    const sug = qn.next[0] || (cs.length ? Cues.nextNr(cs[cs.length - 1].f.nr) : '1');
+    const pick = [{ title: 'Nächste Cues', items: qn.next }, { title: qn.last ? `Punktstimmungen zu ${qn.base}` : '', items: qn.dots }];
+    const v = await Req.form('Neue Cue', [{ k: 'nr', label: 'Cue-Nummer', type: 'dec', value: sug, ph: 'z. B. 12 oder 12.5', pick,
+      hint: qn.last ? `Zuletzt angelegt: Cue ${qn.last}` : '' }, { k: 'name', label: 'Name (optional)', ph: 'z. B. Sonnenaufgang' },
       { k: 'notiz', label: 'Notiz (optional)', type: 'area', rows: 2 }], { ok: 'Anlegen', check: x => Cues.norm(x.nr) ? (Cues.cueByNr(listId, x.nr) ? `Cue ${Cues.norm(x.nr)} gibt es schon.` : '') : 'Bitte eine Cue-Nummer eintragen.' });
     if (!v) return;
     const c = Cues.newCue(listId, v.nr, { name: v.name.trim(), notiz: v.notiz.trim() });

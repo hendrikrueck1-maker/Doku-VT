@@ -28,7 +28,7 @@ async def main():
         b = await pw.chromium.launch(args=['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'])
         ctx, p, errs = await newpage(b)
         VER = json.load(open(os.path.join(ROOT, 'version.json')))['version']
-        ok(await p.evaluate('APP_VERSION') == VER == '2.8.1', 'Version 2.8.1')
+        ok(await p.evaluate('APP_VERSION') == VER, 'Version ' + VER)
         await p.evaluate("Settings.set({depts:['L','T','B','R']})")
         await p.evaluate("(async()=>{await Req.ensureHouse(); await Req.maybeDemo(); await Req.maybeTest(); App.render(true);})()")
         hai = await p.evaluate("Repo.liveShows().find(s=>s.f.titel.startsWith('Demo: Der Haifisch')).id")

@@ -1,4 +1,4 @@
-# Doku VT 2.8.1 – Dokumentation
+# Doku VT 2.8.2 – Dokumentation
 
 Die App ist eine Datei (`index.html`, ca. 700 KB), keine Abhängigkeiten, kein CDN, keine Webfonts. Läuft per Doppelklick oder über GitHub Pages. Für Kamera und Live-Abgleich ist **https** nötig (also GitHub Pages), denn Browser geben die Kamera nur in sicheren Kontexten frei.
 
@@ -47,6 +47,10 @@ Die App ist eine Datei (`index.html`, ca. 700 KB), keine Abhängigkeiten, kein C
 - Gegenstand: `abschnitte` = Liste von `ra:`-Schlüsseln (Feld fehlt = „Vor der Vorstellung“ des Stücks; leere Liste = in keinem Abschnitt), `wofuer` = Freitext. Beim Duplizieren werden die Schlüssel auf die Kopie umgebogen (`remapEntry`). Gelöschte Abschnitte bleiben als toter Schlüssel stehen und werden ignoriert.
 - Checklisten-Punkt „Gegenstand in Abschnitt“: `RunList.items` liefert je Abschnitt erst die Schritte, dann die Gegenstände mit Schlüssel `rg:<Eintrag>:<Abschnitt>` (Haken im Durchgang als `h:rg:…`, `abtOfItem` → R). Die Punkte entstehen aus den Daten – es gibt nichts zusätzlich zu pflegen und nichts Neues abzugleichen.
 - Spielstätte: das bestehende Feld `spielstaette` der Veranstaltung (Text). Feste Werte `SPIELSTAETTEN`, alles andere gilt als „Sonstiges“. Startseiten-Filter `App.state.homeSp` (nur Sitzung).
+
+**Ab 2.8.2:**
+- `Cues.quickNrs(listId)` → `{last, base, next, dots}`: Ausgangspunkt ist die zuletzt angelegte Cue mit Zahl (`c`, bei Gleichstand die höchste Nummer), `next` = die nächsten drei ganzen Nummern, `dots` = `base.1` … `base.9`, jeweils ohne vorhandene Nummern. `CueView.addCue` zeigt sie über die neue Feld-Option `pick` (`Req._fieldHtml`, Gruppen `{title, items}`; `Req.form` markiert den aktuellen Wert).
+- `Cues.stepNr(nr, ±1)` zählt in Zehnteln (ganzzahlig gerechnet, Nachkommastellen bleiben erhalten), nie unter 0, Text → `null`. `CueCam`: Knöpfe `nr+`/`nr-` (`.cstep` über `.cnext`, in `.cnextw`), Tasten ↑/↓/+/−. Die Cue entsteht wie bisher erst beim ersten Foto (`fresh`).
 
 **Ab 2.8.1:**
 - `SetupView.render`: Hinweise (`hintHtml`, ohne Hinweis im Bearbeitungsmodus der Knopf `.hintadd`) → „Vor der Vorstellung“ (`htmlRun`, nur Punkte mit `vor`) → je Abteilung `htmlAbl` (Kasten „Ablauf“, `data-box="abl-<abt>"`, Abschnitte im/pause/ende, abhakbar über `runRowHtml`) und danach Licht „Beleuchterzüge“ (`data-box="L"`) bzw. Bühne „Positionen“ (`data-box="B"`). `frame(abt, title, sum, edit, btns, body, key, icon)` trennt Kennung und Abteilung. `editHint(showId, abt)` (Blatt über `Req.form`, Kürzel `LH`/`TH`/`BH`); `editAblauf` ohne Hinweisfeld. Abhaken ohne heutigen Durchgang legt ihn an.
@@ -213,6 +217,10 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 - [ ] Gleichzeitig auf zwei Geräten denselben Eintrag ändern, unterschiedliche Felder: Beide Änderungen bleiben erhalten.
 - [ ] Auf A löschen, abgleichen: Der Eintrag ist auch auf B weg und taucht nicht wieder auf.
 
+**2.8.2 – iPad, iPhone, Pixel**
+- [ ] Cue-Liste mit 1–13 → „+ Cue“: Schnellauswahl 14 · 15 · 16 und 13.1 … 13.9; 13.4 antippen → Anlegen → beim nächsten „+ Cue“ fehlt 13.4.
+- [ ] Kamera bei Cue 13: „+0.1“ dreimal → 13.3, Auslöser → Cue 13.3 · A; „−0.1“ → 13.2. Knöpfe im dunklen Saal mit dem Daumen treffbar, Sucher groß genug (auch iPhone SE).
+
 **2.8.1 – iPad, iPhone, Pixel, Samsung-Tablet**
 - [ ] Veranstaltung mit Licht: oben Hinweis Einrichten, dann Vor der Vorstellung, dann „Licht · Ablauf“, dann „Licht · Beleuchterzüge“. Bühne: Ablauf und Positionen getrennt.
 - [ ] Vor der Vorstellung zeigt keine Pausen- oder Nachher-Schritte; im Ablauf einen Pausen-Schritt abhaken (auch ohne „Vorstellung heute beginnen“) → Haken bleibt, PDF-Protokoll zeigt ihn.
@@ -295,6 +303,9 @@ Vorbereitung: Datei auf GitHub Pages legen (https) und jeweils in Safari bzw. Ch
 38. **Sub als „Weitere Angabe“, aber neben dem Kreis:** Das Feld wird selten gebraucht und bleibt deshalb aus der Grundmaske; wenn eingetragen, gehört es zum Kreis und steht nicht zwischen den übrigen Angaben.
 39. **Haus-Ort umbenennen ohne neue Kennung:** Feste Kennungen verhindern Dubletten beim Abgleich mit älteren Geräten; deshalb `STD_ALIAS` statt einer neuen Kennung.
 40. **HEIF nicht selbst dekodieren:** Ein eigener HEVC-Decoder wäre groß und langsam. Der Hinweis auf die Kamera-Einstellung löst das Problem an der Quelle.
+0e. **Automatischer Test (ab 2.8.2):** `test_282.py` (Schnellauswahl beim Anlegen, ±0,1 in der Cue-Kamera, Smartphone-Breiten).
+41. **Vorschläge nach der zuletzt angelegten Cue, nicht nach der höchsten:** Wer eine Liste 1–40 vorbereitet und dann bei 13 eine Punktstimmung einschiebt, bekommt die Vorschläge dort, wo er gerade arbeitet.
+42. **±0,1 legt nichts an:** Durchzählen ist nur das Ziel der nächsten Aufnahme; sonst entstünden leere Cues 13.1, 13.2 … beim Weiterklicken.
 0d. **Automatischer Test (ab 2.8.1):** `test_281.py` (Änderungen aus 2.8.1, simulierte Kamera, Galerie-Import über das Datei-Feld) und `test_basis.py` (bisher `test_280.py`). Den Samsung-Import bitte auf dem Tablet selbst prüfen – Galerie, Speicher und HEIF lassen sich im Test nur nachbilden.
 0c. **Automatischer Test (ab 2.8.0):** `test_280.py` (heute `test_basis.py`; die Prüfungen aus 2.7.0, Version angepasst) und `test_cues.py` (Cue-Fotos, Chromium mit `--use-fake-device-for-media-stream`; mit zweitem Ordner zusätzlich die Ablehnung von Format 4 durch 2.7.0). Echte Geräte ersetzt das nicht: Wake Lock, Taschenlampe, Belichtung und Objektive bitte auf iPad/iPhone/Pixel prüfen.
 0b. **Automatischer Test (ab 2.5.0 neu aufgebaut):** Die Testdatei aus 2.4.3/2.4.4 lag bei der Erweiterung nicht vor; `test/test_dokuvt.py` wurde deshalb neu geschrieben. Aufruf wie bisher (`python3 test/test_dokuvt.py`, `<ordner>`, `-k <teil>`), neu `--alt <ordner>` mit einer Fassung 2.4.4 für den Vergleich. Ab 2.6.1 37 Prüfungen, ab 2.6.0 34 (zusätzlich Einrichten als Checkliste, „Wann gebraucht“/Zuordnen, Spielstätte). Grundfunktionen (Start/Demo, Speichern und Neuladen mit Zusammenführen, Editor über die Oberfläche, Speichern ohne Änderung schreibt nichts, alle Ansichten, PDF mit qpdf, Backup zweimal, Papierkorb, Live-Abgleich per WebRTC, Smartphone-Breite) und die 21 Requisite-Prüfungen aus der Vorgabe plus Duplizieren (u. a. DOM- und PDF-Seitenvergleich mit 2.4.4 für Geräte ohne Requisite, Format 3 wird von echtem 2.4.4 abgelehnt, 2.4.4-Dateien zweimal einlesen, Live mit/ohne Requisite, Aufräumen, Merge-Eigenschaften mit Haus-Daten, PDF-Inhalt, Kontrast, XSS). Die Prüfungen T1–T17 der früheren Suite (Code-Review 2.4.2) sind darin nicht alle enthalten und sollten beim Zusammenführen mit der alten Datei übernommen werden.
