@@ -1,6 +1,6 @@
 # Doku VT – Technikdokumentation
 
-**Version 2.8.0** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton, Bühnentechnik und Requisite: Einträge mit Fotos, Abläufe zum Abhaken, PDF-Export und Geräte-Abgleich. Dazu **Cue-Fotos**: Lichtstimmungen vom Stellwerk aus fotografieren und als PDF ablegen. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
+**Version 2.8.1** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton, Bühnentechnik und Requisite: Einträge mit Fotos, Abläufe zum Abhaken, PDF-Export und Geräte-Abgleich. Dazu **Cue-Fotos**: Lichtstimmungen vom Stellwerk aus fotografieren und als PDF ablegen. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
 
 ## Auf GitHub veröffentlichen
 
@@ -34,6 +34,10 @@ Startseite → **Cue-Fotos**. Je Probe oder Vorstellung eine Cue-Liste anlegen (
 
 **Wichtig:** Ein Paket mit Cue-Fotos hat Format 4. **Alle Geräte, die miteinander abgleichen, zuerst auf 2.8.0 aktualisieren** – 2.7.0 lehnt es mit „bitte zuerst aktualisieren“ ab.
 
+## Licht, Ton, Bühne: Reihenfolge über der Liste (ab 2.8.1)
+
+Hinweis Einrichten → Vor der Vorstellung (feste Punkte und Ablauf „vorher“) → Ablauf (während, Pause, danach – abhakbar) → Beleuchterzüge bzw. Positionen. Bei Licht gibt es unter „Weitere Angaben“ das Feld **Sub**; es steht, wenn eingetragen, direkt neben dem Kreis.
+
 ## Spielstätte (ab 2.6.0)
 
 Jede Veranstaltung kann eine Spielstätte haben: Großes Haus, Werkstattbühne, Spiegelhalle, Münsterplatz oder Sonstiges (freier Text). Sie steht über dem Titel auf der Startseite, in der Kopfzeile der Veranstaltung und in jeder PDF-Kopfzeile; auf der Startseite lässt sich danach filtern.
@@ -64,6 +68,6 @@ Jede Veranstaltung kann eine Spielstätte haben: Großes Haus, Werkstattbühne, 
 | `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png` | App-Icons |
 | `DOKUMENTATION.md` | Architektur, Testcheckliste, Designentscheidungen, Ausblick |
 | `CHANGELOG.md` | Änderungen je Version |
-| `test_280.py`, `test_cues.py` | Automatische Tests (Python + Playwright/Chromium): `python3 test_280.py <ordner>` (Grundfunktionen, Licht/Ton/Bühne/Requisite), `python3 test_cues.py <ordner> [<ordner mit 2.7.0>]` (Cue-Fotos mit simulierter Kamera, optional Ablehnung durch 2.7.0). Nicht nötig für den Betrieb; müssen nicht hochgeladen werden. |
+| `test_basis.py`, `test_281.py`, `test_cues.py` | Automatische Tests (Python + Playwright/Chromium): `python3 test_basis.py <ordner>` (Grundfunktionen, Licht/Ton/Bühne/Requisite), `python3 test_281.py <ordner>` (Änderungen aus 2.8.1), `python3 test_cues.py <ordner> [<ordner mit 2.7.0>]` (Cue-Fotos mit simulierter Kamera, optional Ablehnung durch 2.7.0). Nicht nötig für den Betrieb; müssen nicht hochgeladen werden. |
 
 Kamera, Teilen und Live-Abgleich brauchen **https**. Das bietet GitHub Pages automatisch. Per Doppelklick (`file://`) geöffnet funktioniert die App ebenfalls, aber ohne Kamera-Live-Vorschau und ohne Offline-Installation.

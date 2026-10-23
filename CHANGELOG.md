@@ -1,5 +1,25 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.8.1 – 23.10.2026
+
+Kleinere Korrekturen für Licht, Requisite und den Foto-Import. Kein Datenbank-Update, Paketformat unverändert – 2.8.0 und 2.8.1 gleichen weiter miteinander ab.
+
+- **Licht, Ton, Bühne – Kästen getrennt:** Über der Liste stehen jetzt nacheinander **Hinweis Einrichten** → **Vor der Vorstellung** → **Ablauf** → **Beleuchterzüge** (Licht) bzw. **Positionen** (Bühne). Beleuchterzüge und Ablauf sind nicht mehr in einem Kasten; bei der Bühne sind Ablauf und Positionen ebenso getrennt. Der Schnellzugriff in der Werkzeugleiste hat je einen Knopf dafür.
+- **„Vor der Vorstellung“ enthält nur, was vorher zu tun ist:** feste Punkte und die Ablauf-Schritte „Vor der Vorstellung“ (Bühne: „Grundeinrichtung“). Während der Vorstellung, Pausenumbau und danach stehen im Kasten **Ablauf** – dort weiter abhakbar, im selben Durchgang. Wer im Ablauf abhakt, ohne die Vorstellung begonnen zu haben, legt den Durchgang für heute damit an. Das PDF ist genauso gegliedert.
+- **Hinweis Einrichten:** heißt nur noch so (vorher „Hinweis Einrichten / Ablauf“) und hat ein eigenes Bearbeiten-Blatt. Im Ablauf-Editor steht er nicht mehr. Ohne Hinweis zeigt der Bearbeitungsmodus oben den Knopf „+ Hinweis Einrichten · Licht“.
+- **Sub (Licht):** neues Feld unter „Weitere Angaben“ (Zahlentastatur, „3 7“ wird zu „3+7“). Steht nur, wenn eingetragen, direkt neben dem Kreis – in der Liste, den Kacheln, der Großbild-Kopfzeile, im Detail, in der Bildansicht und im PDF (Seitenkopf, Infoblock, Inhaltsverzeichnis).
+- **Foto kopieren:** Im Foto-Menü des Eintrags gibt es neben „Zu Einleuchten verschieben“ jetzt **„Zu Einleuchten kopieren“** (umgekehrt „Zu Aufbau kopieren“, bei Ton „Soundcheck“). Die Kopie ist ein eigenes Foto, die Bilddaten werden geteilt – kein doppelter Speicher.
+- **Requisite – „Vor der Vorstellung“ beim Gegenstand sichtbar:** Unter „Wann gebraucht?“ steht der Knopf wieder, bei neuen Gegenständen vorgewählt. Er hat keine Auswirkung auf „Einrichten“ – eingerichtet wird weiterhin jeder Gegenstand.
+- **Requisite – Ensemble sofort sichtbar:** Wer aus „Personen“ heraus das Ensemble bearbeitet, sieht neue Namen beim Zurückkehren sofort unter „Aus dem Ensemble“ (vorher erst nach erneutem Öffnen). Alle Listen aktualisieren sich jetzt auch bei Änderungen der Einstellungen.
+- **Requisite – „Bühne hinten“ heißt „Hinterbühne“:** Der Haus-Ort ist umbenannt, für alle Stücke und auf Geräten mit bestehenden Daten (beim Start). Die Kennung bleibt gleich, beim Abgleich mit 2.8.0 entstehen keine Dubletten; kommt von dort der alte Name zurück, passt der nächste Start ihn wieder an. Ein von Hand umbenannter Ort bleibt, wie er ist.
+- **Behoben – Fotos aus der Galerie (Samsung-Tablet):**
+  - Konnte der Browser ein Foto zunächst nicht dekodieren, wartete die App endlos – das Foto blieb „in Arbeit“ und Speichern war gesperrt. Jetzt gibt es ein Zeitlimit und einen zweiten Leseweg (createImageBitmap).
+  - Mehrere ausgewählte Fotos werden **nacheinander** statt gleichzeitig verarbeitet. Große Handy-Fotos (50–200 MP) auf einmal brachten den Speicher des Tablets an die Grenze.
+  - **HEIF/HEIC** (Samsung „Hocheffiziente Bilder“) kann Chrome auf Android nicht lesen. Statt eines stillen Fehlers erscheint jetzt ein Hinweis, wie man es in der Kamera-App abstellt.
+  - Jedes nicht übernommene Foto steht mit Dateiname, Typ und Größe im Protokoll (Diagnose).
+  - Gilt für Doku-Fotos, Requisite-Fotos und Cue-Fotos.
+- **Test:** `test_281.py` (36 Prüfungen zu 2.8.1, u. a. Reihenfolge der Kästen, Abhaken im Ablauf, Sub in Liste/Detail/Großbild/PDF, Foto kopieren, Ensemble, Hinterbühne, Galerie-Import mit großem, kaputtem und HEIF-Bild über die Oberfläche); `test_basis.py` (bisher `test_280.py`, an 2.8.1 angepasst) und `test_cues.py` laufen durch.
+
 ## 2.8.0 – 22.10.2026
 
 Neuer Bereich **Cue-Fotos**: Lichtstimmungen vom Stellwerk/FOH fotografieren, mit Cue-Nummer, Notizen und Hinweisen ablegen und als PDF exportieren. Eigenständig neben den Dokumentationen – Licht, Ton, Bühne und Requisite bleiben unverändert. Kein Datenbank-Update. **Alle Geräte, die miteinander abgleichen, auf 2.8.0 aktualisieren** – ein Paket mit Cue-Fotos hat Format 4, Doku VT 2.7.0 lehnt es mit „bitte zuerst aktualisieren“ ab. Pakete ohne Cue-Fotos bleiben für ältere Geräte lesbar.

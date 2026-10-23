@@ -1,5 +1,5 @@
-"""Doku VT 2.8.0 – automatischer Test der Cue-Fotos (Python + Playwright/Chromium mit simulierter Kamera).
-Aufruf: python3 test_cues.py <ordner 2.8.0> [<ordner 2.7.0>]"""
+"""Doku VT 2.8.x – automatischer Test der Cue-Fotos (Python + Playwright/Chromium mit simulierter Kamera).
+Aufruf: python3 test_cues.py <ordner 2.8.x> [<ordner 2.7.0>]"""
 import asyncio, sys, subprocess, http.server, threading, functools, os
 from playwright.async_api import async_playwright
 ROOT = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(os.path.abspath(__file__))
@@ -33,7 +33,7 @@ async def main():
     async with async_playwright() as pw:
         b = await pw.chromium.launch(args=['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'])
         ctx, p, errs = await newpage(b)
-        ok(await p.evaluate('APP_VERSION') == '2.8.0', 'Version 2.8.0')
+        ok(await p.evaluate('APP_VERSION') == open(os.path.join(ROOT, 'version.json')).read().split('"')[3], 'Version aus version.json')
         # ---- Nummern ----
         r = await p.evaluate("""[Cues.norm('12,50'), Cues.norm(' Q 007 '), Cues.norm('.5'), Cues.nextNr('12.5'), Cues.nextNr('12'), Cues.letter(0)+Cues.letter(2)+Cues.letter(26),
           ['13','12.5','2','12','Ende','0.5'].sort((a,b)=>Cues.cmpNr(a,b)).join(' ')]""")

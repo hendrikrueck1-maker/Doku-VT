@@ -964,6 +964,21 @@ html[data-theme="red"] .rot[aria-pressed="true"]{color:#000}
 .setup.run>summary{background:color-mix(in srgb,var(--ok) 13%,var(--surf))}
 .setup.run>summary .hint.run{color:var(--ok)}
 .setup + .setup,.setup.run + .setup{margin-top:12px}
+.hintadd{display:flex;align-items:center;gap:8px;width:100%;min-height:52px;margin:4px 0 10px;padding:0 14px;border-radius:var(--r);border:2px dashed var(--pink);background:transparent;color:var(--text);font-weight:700;font-size:15px;text-align:left}
+.hintadd svg{color:var(--pink)}
+.setup .ablsec .runchk{margin-top:4px}
+.setup .ablsec + .ablsec{margin-top:6px}
+/* Sub (ab 2.8.1): steht direkt neben dem Kreis, nur wenn eingetragen */
+.krow{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:baseline;gap:2px 8px;max-width:100%}
+.cards.grid .card .krow{justify-content:flex-start}
+.ksub{display:inline-flex;align-items:center;height:26px;padding:0 8px;border-radius:7px;border:2px solid var(--k,var(--da));background:var(--surf2);color:var(--text);
+  font-family:var(--mono);font-size:15px;font-weight:800;letter-spacing:0;white-space:nowrap;vertical-align:middle;line-height:1}
+.ksub b{font-family:var(--font);font-size:10px;font-weight:800;letter-spacing:.08em;margin-right:5px;color:var(--muted)}
+.detail .dh .kreis .ksub{height:32px;font-size:20px;margin-left:10px}
+.bighead .ksub{background:rgba(0,0,0,.2);border-color:currentColor;color:inherit;font-size:16px}
+.bighead .ksub b{color:inherit;opacity:.75}
+.lbx .ksub{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5);color:#fff;font-size:20px;height:32px}
+.lbx .ksub b{color:#bbb}
 .hintbox{margin:4px 0 12px;border:2px solid var(--pink);border-radius:var(--r);background:color-mix(in srgb,var(--pink) 9%,var(--surf));box-shadow:0 0 0 3px var(--pink-soft);overflow:hidden}
 .hintbox .hbh{display:flex;align-items:center;gap:10px;min-height:52px;padding:4px 8px 4px 14px;border-bottom:1px solid color-mix(in srgb,var(--pink) 40%,var(--line));color:var(--pink)}
 .hintbox .hbh h3{margin:0;flex:1;font-size:16px;font-weight:800;color:var(--text)}
@@ -1120,7 +1135,7 @@ window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason 
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.8.0';
+const APP_VERSION = '2.8.1';
 const DB_NAME = 'lichtdoku';
 /* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
    bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
@@ -1159,12 +1174,13 @@ const DEPT = {
       { k: 'lzug', label: 'Zug', mono: true, zkeys: true, ph: 'z. B. OLZ 2' },              // ab 2.7.0 getrennt von „Position“
       { k: 'warnung', label: 'Warnhinweis', warn: true, full: true, ph: 'z. B. Nicht abschalten – Nebelmaschine hängt dran' },
       { k: 'bemerkung', label: 'Bemerkung', area: true, ph: 'Wo steckt es, was ist zu beachten?' },
+      { k: 'sub', label: 'Sub', extra: true, beside: true, plus: true, mono: true, mode: 'tel', ph: 'z. B. 3', hint: 'Steht direkt neben dem Kreis' },   // ab 2.8.1
       { k: 'geraet', label: 'Gerät / Scheinwerfer', extra: true, ph: 'z. B. ETC Source Four 26°' },
       { k: 'farbe', label: 'Farbe / Gobo', extra: true, ph: 'z. B. L201, Gobo Wald' },
       { k: 'szene', label: 'Szene / Bild', extra: true, ph: 'z. B. Bild 3' },
       { k: 'dmx', label: 'DMX-Adresse / Universe', hidden: true, legacy: true, mono: true }   // ab 2.7.0 nicht mehr im Formular (steht in „Adresse“); alte Werte bleiben sichtbar
     ],
-    extraHint: 'Gerät, Farbe / Gobo, Szene',
+    extraHint: 'Sub, Gerät, Farbe / Gobo, Szene',
     headKeys: ['gruppe', 'filter', 'adresse', 'position', 'lzug'],
     pdf: [['KREIS', 'kreis'], ['FILTER', 'filter'], ['GRUPPE', 'gruppe'], ['ADRESSE', 'adresse']],
     toc: ['gruppe', 'filter'],
@@ -1343,9 +1359,12 @@ function entryVal(e, k) {
 function fieldVal(abt, k, v) { const fd = deptField(abt, k); if (fd && fd.bool) return v ? 'an' : ''; if (Array.isArray(v)) return v.join(', '); return v == null ? '' : String(v); }
 /** Felder für Info-Chips: zuerst die Chips der Abteilung, dann alle weiteren ausgefüllten (ohne Hauptfeld/Bemerkung) */
 function infoKeys(abt, all = false) {
-  const D = DEPT[abt]; const rest = D.fields.filter(x => !x.hidden || x.legacy).map(x => x.k).filter(k => k !== D.main && k !== 'bemerkung' && k !== 'warnung' && !D.chips.includes(k));
+  const D = DEPT[abt]; const rest = D.fields.filter(x => (!x.hidden || x.legacy) && !x.beside).map(x => x.k).filter(k => k !== D.main && k !== 'bemerkung' && k !== 'warnung' && !D.chips.includes(k));
   return all ? D.chips.concat(rest) : D.chips;
 }
+/** Sub (Licht, ab 2.8.1): steht direkt neben dem Kreis – nur, wenn eingetragen */
+function subOf(e) { return e && e.f && abtOf(e) === 'L' && e.f.sub ? String(e.f.sub).trim() : ''; }
+function subHtml(e) { const v = subOf(e); return v ? `<span class="ksub" title="Sub ${Utils.esc(v)}"><b>SUB</b>${Utils.esc(v)}</span>` : ''; }
 /** Warnhinweis als auffällige Plakette (Symbol + Text, auch im Rotlicht eindeutig) */
 function warnHtml(t, cls = '') { return t ? `<span class="wbadge ${cls}">${I('alert', 'sm')}<span>${Utils.esc(t)}</span></span>` : ''; }
 /** Tag „LICHT · AUFBAU“ (bei schmalem Bildschirm „L · AUFBAU“) */
@@ -2053,7 +2072,7 @@ const Repo = {
     }
     // Der Editor schickt bei bestehenden Einträgen nur geänderte Felder (ab 2.4.3) – fehlt das Hauptfeld,
     // bleibt es unberührt (normKreis(undefined) würde es sonst leeren)
-    if (main in f && D.fields.find(x => x.k === main).plus) f[main] = Utils.normKreis(f[main]);
+    D.fields.forEach(fd => { if (fd.plus && fd.k in f) f[fd.k] = Utils.normKreis(f[fd.k]); });     // Kreis, Kanal, Sub: „3 7“ → „3+7“
     if (target) for (const k of Object.keys(f)) if (k !== 'abschnitte' && (f[k] === '' || f[k] === false || (Array.isArray(f[k]) && !f[k].length)) && target.f[k] == null) delete f[k];
     if (!target && abt === 'R') for (const k of Object.keys(f)) if (k !== 'abschnitte' && (f[k] === '' || (Array.isArray(f[k]) && !f[k].length))) delete f[k];   // neue Gegenstände: leere Felder nicht anlegen
     const textKeys = Object.keys(f).filter(k => !deptField(abt, k).bool && !deptField(abt, k).arr);
@@ -2226,7 +2245,12 @@ const Settings = {
     this.v.depts = d.length ? d : ['L'];
     this.apply();
   },
-  async set(patch) { Object.assign(this.v, patch); this.apply(); await Store.metaSet('settings', this.v); },
+  listeners: new Set(),
+  on(fn) { this.listeners.add(fn); return () => this.listeners.delete(fn); },
+  async set(patch) {
+    Object.assign(this.v, patch); this.apply(); await Store.metaSet('settings', this.v);
+    this.listeners.forEach(fn => { try { fn(patch); } catch (e) { console.error(e); } });     // offene Listen (z. B. Ensemble) neu zeichnen, ab 2.8.1
+  },
   apply() {
     const root = document.documentElement;
     root.dataset.theme = this.v.theme;
@@ -2243,15 +2267,75 @@ const Settings = {
 const Photo = {
   THUMB_PX: 360,
   /** Datei/Blob → verarbeitetes Foto */
-  async fromFile(file) {
+  /* Foto aus der Mediathek / Galerie / Geräte-Kamera übernehmen (überarbeitet in 2.8.1 nach Problemen auf Samsung-Tablets):
+     • nacheinander statt alle gleichzeitig – mehrere große Fotos (50–200 MP) auf einmal brachten den Speicher des Tablets an die Grenze,
+     • kein Hängenbleiben mehr: Schlug img.decode() fehl, nachdem das Bild schon geladen war, wartete die App bis 2.8.0 endlos auf „onload“
+       – das Foto blieb im Editor „in Arbeit“ und Speichern war gesperrt,
+     • zweiter Versuch über createImageBitmap, Zeitlimit, klare Meldung bei HEIF/HEIC (Samsung „Hocheffiziente Bilder“),
+     • jeder Fehlschlag steht mit Dateiname, Typ und Größe im Protokoll (Diagnose). */
+  _q: Promise.resolve(),
+  fromFile(file) {
+    const p = this._q.then(() => this._fromFile(file));
+    this._q = p.catch(() => {});
+    return p;
+  },
+  async _fromFile(file) {
+    let src;
+    try { src = await this.decode(file); }
+    catch (err) { this.logFail(file, err); throw err; }
+    try { return await this.fromDrawable(src.el, src.w, src.h); }
+    catch (err) { this.logFail(file, err); throw err; }
+    finally { src.close(); }
+  },
+  logFail(file, err) {
+    try { Sync.log(`Foto nicht übernommen: ${file && file.name || 'ohne Namen'} (${file && file.type || 'Typ unbekannt'}, ${Utils.fmtBytes(file && file.size)}) – ${err && err.message || err}`); } catch (e) { /* egal */ }
+  },
+  /** Ist die Datei HEIF/HEIC? (Endung, Typ oder „ftyp“-Kennung im Dateikopf) */
+  async isHeic(file) {
+    if (/hei[cf]/i.test(file.type || '') || /\.hei[cf]$/i.test(file.name || '')) return true;
+    try {
+      const u = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+      const t = String.fromCharCode(...u.subarray(4, 12));
+      return /^ftyp(heic|heix|hevc|hevx|heim|heis|mif1|msf1)/.test(t);
+    } catch (e) { return false; }
+  },
+  HEIC_MSG: 'Das Foto ist im Format HEIF/HEIC gespeichert – das kann dieser Browser nicht lesen. Abhilfe auf Samsung-Geräten: in der Kamera-App unter Einstellungen → Bildformate (bzw. Erweiterte Bildoptionen) „Hocheffiziente Bilder“ ausschalten. Danach aufgenommene Fotos lassen sich übernehmen. Oder direkt mit der Doku-VT-Kamera fotografieren.',
+  /** Datei → zeichenbares Bild {el, w, h, close()}. Erst <img> (beachtet die Ausrichtung aus EXIF), sonst createImageBitmap. */
+  async decode(file) {
+    let first = null;
     const url = URL.createObjectURL(file);
     try {
-      const img = new Image();
+      const img = await this._img(url);
+      return { el: img, w: img.naturalWidth, h: img.naturalHeight, close: () => URL.revokeObjectURL(url) };
+    } catch (e) { first = e; URL.revokeObjectURL(url); }
+    if (globalThis.createImageBitmap) {
+      for (const o of [{ imageOrientation: 'from-image' }, null]) {
+        try {
+          const bm = await Promise.race([o ? createImageBitmap(file, o) : createImageBitmap(file), Utils.sleep(30000).then(() => { throw new Error('Zeitüberschreitung'); })]);
+          if (bm && bm.width && bm.height) return { el: bm, w: bm.width, h: bm.height, close: () => { try { bm.close(); } catch (e) { /* egal */ } } };
+        } catch (e) { /* nächster Versuch */ }
+      }
+    }
+    if (await this.isHeic(file)) { const e = new Error(this.HEIC_MSG); e.heic = true; throw e; }
+    throw new Error('Bild konnte nicht gelesen werden' + (file.type ? ` (${file.type})` : '') + (first && first.message && !/gelesen/.test(first.message) ? ': ' + first.message : '') + '. Bitte erneut versuchen oder mit der Doku-VT-Kamera fotografieren.');
+  },
+  /** <img> laden – wartet auf onload (nie endlos: Zeitlimit), decode() nur als Zugabe */
+  _img(url, ms = 30000) {
+    return new Promise((res, rej) => {
+      const img = new Image(); let done = false;
+      const t = setTimeout(() => fail(new Error('Zeitüberschreitung beim Lesen')), ms);
+      const fail = e => { if (done) return; done = true; clearTimeout(t); rej(e); };
+      const ok = () => { if (done) return; if (!img.naturalWidth || !img.naturalHeight) { fail(new Error('Bild ist leer')); return; } done = true; clearTimeout(t); res(img); };
+      img.onload = () => { const d = img.decode ? img.decode().catch(() => {}) : Promise.resolve(); d.then(ok); };
+      img.onerror = () => fail(new Error('Bild konnte nicht gelesen werden'));
       img.decoding = 'async';
       img.src = url;
-      try { await img.decode(); } catch (e) { await new Promise((res, rej) => { img.onload = res; img.onerror = () => rej(new Error('Bild konnte nicht gelesen werden (Format?)')); }); }
-      return await this.fromDrawable(img, img.naturalWidth, img.naturalHeight);
-    } finally { URL.revokeObjectURL(url); }
+    });
+  },
+  /** Fehlermeldung zu einem Foto: HEIF als Dialog (einmal je Sitzung), sonst Toast */
+  report(err) {
+    if (err && err.heic) { if (this._heicShown) { Ui.toast('Foto im HEIF-Format – nicht übernommen', 'err'); return; } this._heicShown = true; Ui.dialog({ title: 'Foto kann nicht gelesen werden', message: err.message }); return; }
+    Ui.toast('Foto konnte nicht verarbeitet werden: ' + (err && err.message || err), 'err', { ms: 7000 });
   },
   /** Zeichenbare Quelle (Image, Video, Canvas) mittig quadratisch zuschneiden */
   async fromDrawable(src, w, h) {
@@ -2684,7 +2768,7 @@ const Lightbox = {
       const chips = infoKeys(abt, true).filter(k => entryVal(e, k))
         .map(k => `<span class="chip"><b>${Utils.esc(fieldLabel(abt, k))}</b><span>${Utils.esc(entryVal(e, k))}</span></span>`).join('');
       infos.innerHTML = `<div class="row1">${tagHtml(abt, it.kat)}
-          <span class="kreis"><small style="color:#bbb">${Utils.esc(D.mainLabel)}</small>${mv ? Utils.esc(mv) : '<span class="muted">ohne</span>'}</span>
+          <span class="kreis"><small style="color:#bbb">${Utils.esc(D.mainLabel)}</small>${mv ? Utils.esc(mv) : '<span class="muted">ohne</span>'}</span>${subHtml(e)}
           <span class="muted mono">Foto ${it.idx + 1}/${it.n}</span></div>
         ${it.cap ? `<div class="lcap">${Utils.esc(it.cap)}</div>` : ''}
         ${abt !== 'R' && e.f.warnung ? `<div class="lwarn">${warnHtml(e.f.warnung)}</div>` : ''}
@@ -3627,14 +3711,19 @@ const Pdf = {
     const blocksOf = d => {
       if (d === 'R') return reqBlocks();
       const out = [];
-      if (ALLG[d]) { out.push(head('HINWEIS EINRICHTEN / ABLAUF')); const ls = this.wrap(ALLG[d], 'F2', 11, CW - 24);
+      if (ALLG[d]) { out.push(head('HINWEIS EINRICHTEN')); const ls = this.wrap(ALLG[d], 'F2', 11, CW - 24);
         for (let i = 0; i < ls.length; i += 30) { const p = ls.slice(i, i + 30); out.push({ t: 'hl', lines: p, fs: 11, h: p.length * 14 + 16 }); } out.push({ t: 'gap', h: 8 }); }
+      // ab 2.8.1 wie in der App: „Vor der Vorstellung“ = feste Punkte + Ablauf-Schritte vorher; „Ablauf“ = während, Pause, danach
       const own = RunList.ownOf(showId).filter(x => x.abt === d);
-      if (own.length) { out.push(head('VOR DER VORSTELLUNG')); own.forEach(x => out.push(chk(x.text, 0, null))); out.push({ t: 'gap', h: 8 }); }
-      const steps = ABL_PRE[d] ? Repo.ablaufOf(showId, d) : [];
-      if (steps.length) {
+      const steps = ABL_PRE[d] ? Repo.ablaufOf(showId, d) : [], vorSt = steps.filter(x => x.abschnitt === 'grund'), rest = steps.filter(x => x.abschnitt !== 'grund');
+      if (own.length || vorSt.length) {
+        out.push(head('VOR DER VORSTELLUNG')); own.forEach(x => out.push(chk(x.text, 0, null)));
+        if (vorSt.length) { if (d === 'B') out.push(sub('GRUNDEINRICHTUNG')); vorSt.forEach((st, i) => out.push(chk(st.text, i + 1, st.entryId && Repo.entry(st.entryId) || null))); }
+        out.push({ t: 'gap', h: 8 });
+      }
+      if (rest.length) {
         out.push(head('ABLAUF'));
-        ABLAUF.forEach(([k]) => { const list = steps.filter(x => x.abschnitt === k); if (!list.length) return;
+        ABLAUF.forEach(([k]) => { const list = rest.filter(x => x.abschnitt === k); if (!list.length) return;
           out.push(sub(ablaufName(d, k).toUpperCase())); list.forEach((st, i) => out.push(chk(st.text, i + 1, st.entryId && Repo.entry(st.entryId) || null))); out.push({ t: 'gap', h: 6 }); });
       }
       if (d === 'B') {
@@ -3785,8 +3874,9 @@ const Pdf = {
       c.rgb(0.55, 0.58, 0.63, true); c.rect(M, boxY, CW, boxH, 'S');
       c.rgb(...col).rect(M, boxY + boxH - 4, CW, 4);
       const cw = CW / 4, rowTop = boxY + boxH - 4;
+      const sb = subOf(e);
       D.pdf.forEach(([lab, k], i) => {
-        const x = M + i * cw, val = entryVal(e, k) || '—';
+        const x = M + i * cw, val = (entryVal(e, k) || '—') + (i === 0 && sb ? '  · Sub ' + sb : '');      // Sub direkt beim Kreis (ab 2.8.1)
         if (i) c.rgb(0.75, 0.77, 0.8, true).line(x, rowTop - 50, x, rowTop, 0.6);
         c.rgb(0.45, 0.48, 0.53).text(x + 10, rowTop - 16, lab, 'F2', 7.5);
         // lange Werte: erst etwas verkleinern, dann zweizeilig, erst ganz zuletzt kürzen
@@ -3830,7 +3920,7 @@ const Pdf = {
         const it = r.it, ab = abtOf(it.entry), RD = DEPT[ab];
         if (k % 2 === 0) c.rgb(0.95, 0.955, 0.965).rect(M, yy - RH, CW, RH);
         c.rgb(...katRgb(ab, it.kat)).rect(M, yy - RH + 1, 5, RH - 2);
-        const vals = [mainVal(it.entry) || (ab === 'R' ? 'Ohne Namen' : '—'), ab === 'R' ? (it.kat === 'N' ? 'ohne' : 'mit Foto') : katName(ab, it.kat), entryVal(it.entry, RD.toc[0]), entryVal(it.entry, RD.toc[1])];
+        const vals = [(mainVal(it.entry) || (ab === 'R' ? 'Ohne Namen' : '—')) + (subOf(it.entry) ? ' · Sub ' + subOf(it.entry) : ''), ab === 'R' ? (it.kat === 'N' ? 'ohne' : 'mit Foto') : katName(ab, it.kat), entryVal(it.entry, RD.toc[0]), entryVal(it.entry, RD.toc[1])];
         vals.forEach((v, i) => { const b = i === 0;
           c.rgb(b ? 0.07 : 0.25, b ? 0.08 : 0.28, b ? 0.1 : 0.33).text(M + X[i], base, this.fit(v, b ? 'F2' : 'F1', 9.5, WD[i] - 4), b ? 'F2' : 'F1', 9.5); });
         c.rgb(0.07, 0.08, 0.1).textR(W - M - 2, base, String(firstPage.get(it)), 'F1', 9.5);
@@ -3952,8 +4042,10 @@ const Pdf = {
       pageHead(c, ab, it.kat, (ab === 'R' ? D.short : D.short + ' · ' + D.phases[it.kat]).toUpperCase());
       const kreisTxt = mainVal(e) || '—', ml = D.mainLabel.toUpperCase(), mw = this.width(ml, 'F2', 9) + 12;
       c.rgb(0.45, 0.48, 0.53).text(M, H - 96, ml, 'F2', 9);
-      let ks = 30; while (ks > 14 && this.width(kreisTxt, 'F2', ks) > CW - 150) ks -= 2;
+      const sbT = subOf(e) ? 'SUB ' + subOf(e) : '', sbW = sbT ? this.width(sbT, 'F2', 15) + 16 : 0;
+      let ks = 30; while (ks > 14 && this.width(kreisTxt, 'F2', ks) > CW - 150 - sbW) ks -= 2;
       c.rgb(0.07, 0.08, 0.1).text(M + Math.max(44, mw), H - 100, kreisTxt, 'F2', ks);
+      if (sbT) c.rgb(0.25, 0.28, 0.33).text(M + Math.max(44, mw) + this.width(kreisTxt, 'F2', ks) + 14, H - 100, sbT, 'F2', 15);
       if (pg.cont) c.rgb(0.45, 0.48, 0.53).textR(W - M, H - 96, `Fortsetzung · Fotos ${pg.from + 1}–${pg.from + pg.photos.length}`, 'F1', 9);
       const m = measure(e), boxY = 40;
       drawBox(c, e, it.kat, boxY, m);
@@ -5017,7 +5109,7 @@ const Views = {
       return `<article class="${cls}" data-k="${it.kat}" data-abt="${abt}" data-key="${esc(it.key)}">
       <div class="bigsticky" data-k="${it.kat}">
         <button class="bighead" data-k="${it.kat}" data-act="open" aria-label="${esc(name)} öffnen">${tagHtml(abt, it.kat)}
-          <span class="bk"><small>${esc(D.mainLabel)}</small>${mv ? esc(mv) : '<span class="muted">ohne</span>'}</span>
+          <span class="bk"><small>${esc(D.mainLabel)}</small>${mv ? esc(mv) : '<span class="muted">ohne</span>'}${subHtml(e)}</span>
           <span class="bn">${ph.length} Foto${ph.length === 1 ? '' : 's'}</span></button>
         <div class="bigfields" data-act="open" role="button" tabindex="0" aria-label="${esc(name)} öffnen" style="--n:${hk.length}">${fields}</div>
         ${warn ? `<div class="bigwarn" data-act="open">${warn}</div>` : ''}
@@ -5040,7 +5132,7 @@ const Views = {
           ${steps}
           ${e.f.bemerkung ? `<span class="note">${esc(e.f.bemerkung)}</span>` : ''}
         </span>
-        <span class="kcol"><small>${esc(D.mainLabel)}</small><span class="kreis ${mv ? '' : 'none'}">${mv ? esc(mv).replace(/\+/g, '+<wbr>') : 'ohne'}</span></span>
+        <span class="kcol"><small>${esc(D.mainLabel)}</small><span class="krow"><span class="kreis ${mv ? '' : 'none'}">${mv ? esc(mv).replace(/\+/g, '+<wbr>') : 'ohne'}</span>${subHtml(e)}</span></span>
       </button>
       ${dup ? `<span class="dup" title="${esc(D.mainLabel)} doppelt">doppelt</span>` : ''}
       ${checklist ? this.chkHtml(e, it.kat) : ''}
@@ -5117,7 +5209,7 @@ const Views = {
     };
     return `<div class="detail" data-abt="${abt}">
       <div class="dh"><div style="flex:1;min-width:0"><div class="muted" style="font-size:12px;font-weight:700;letter-spacing:.1em">${Utils.esc(D.short.toUpperCase())} · ${Utils.esc(D.mainLabel.toUpperCase())}</div>
-        <div class="kreis ${mv ? '' : 'none'}">${mv ? Utils.esc(mv) : 'ohne ' + Utils.esc(D.mainLabel)}</div></div>
+        <div class="kreis ${mv ? '' : 'none'}">${mv ? Utils.esc(mv) : 'ohne ' + Utils.esc(D.mainLabel)}${subHtml(e)}</div></div>
         <button class="btn ${editMode ? 'edit' : ''}" data-act="dedit">${I('edit')} Bearbeiten</button></div>
       ${f.warnung ? `<div class="dwarn">${warnHtml(f.warnung)}</div>` : ''}
       <div class="fields">${D.chips.map(k => fieldBox(k)).join('')}${rest.map(k => fieldBox(k)).join('')}${fieldBox('bemerkung', true)}</div>
@@ -5377,7 +5469,7 @@ const Editor = {
       }).catch(err => {
         const kk = slots.A.includes(s) ? 'A' : 'E';
         slots[kk].splice(slots[kk].indexOf(s), 1); renderGrid(kk);
-        Ui.toast('Foto konnte nicht verarbeitet werden: ' + err.message, 'err');
+        Photo.report(err);
       }).finally(() => { pending--; updateSave(); });
     };
     const camTitle = () => isR ? (kreisIn.value || 'Neuer Gegenstand') : kreisIn.value ? `${D.mainLabel} ${kreisIn.value}` : `Neuer Eintrag ${D.short}`;
@@ -5395,6 +5487,7 @@ const Editor = {
         i > 0 && { label: 'Nach vorn', value: 'left', icon: 'arrowL' },
         i < list.length - 1 && { label: 'Nach hinten', value: 'right', icon: 'arrowR' },
         D.photoKats.length > 1 && { label: `Zu „${pname(other)}“ verschieben`, value: 'move', icon: 'layers' },
+        D.photoKats.length > 1 && { label: `Zu „${pname(other)}“ kopieren`, value: 'copy', icon: 'copy' },
         isR && { label: s.cap ? 'Bildunterschrift ändern' : 'Bildunterschrift', value: 'cap', icon: 'edit' },
         { label: 'Foto entfernen', value: 'del', icon: 'trash', danger: true }
       ]);
@@ -5404,6 +5497,11 @@ const Editor = {
       else if (v === 'cap') { await Ui.afterBack(); const t = await Ui.prompt('Bildunterschrift', s.cap || '', 'z. B. von hinter dem Gitter Richtung Publikum'); if (t != null) { s.cap = t.trim(); renderGrid(k); } }
       else if (v === 'left' || v === 'right') { const j = v === 'left' ? i - 1 : i + 1; [list[i], list[j]] = [list[j], list[i]]; renderGrid(k); }
       else if (v === 'move') { list.splice(i, 1); slots[other].push(s); renderGrid(k); renderGrid(other); }
+      else if (v === 'copy') {
+        // Kopie = eigenes Foto in der anderen Phase; die Bilddaten werden geteilt (kein doppelter Speicher, ab 2.8.1)
+        slots[other].push({ photoId: null, b: s.b, w: s.w, h: s.h, full: s.full, thumb: s.thumb, thumbUrl: s.thumbUrl, label: s.label || '', cap: s.cap || '' });
+        renderGrid(other); Ui.toast(`Foto zu „${pname(other)}“ kopiert`);
+      }
       else if (v === 'del') { list.splice(i, 1); renderGrid(k); }
       else if (v === 'rep') {
         let got = null;
@@ -5552,7 +5650,7 @@ const SetupView = {
   render(box, showId, edit, depts = ['L'], { noRun = false } = {}) {
     if (!box) return;
     const s = Repo.show(showId); if (!s || !depts.length) { box.innerHTML = ''; return; }
-    // Reihenfolge (ab 2.7.0): Hinweise (immer offen) · Vor der Vorstellung · Einrichtung/Ablauf je Abteilung
+    // Reihenfolge (ab 2.8.1): Hinweise (immer offen) · Vor der Vorstellung · je Abteilung Ablauf, dann Beleuchterzüge bzw. Positionen
     box.innerHTML = depts.map(d => this.hintHtml(s, d, edit)).join('') + (noRun ? '' : this.htmlRun(s, edit, depts)) + depts.map(d => this['html' + d](s, edit)).join('');
     box.querySelectorAll('details.setup, details.ssubd').forEach(dt => dt.addEventListener('toggle', () => { this.open[dt.dataset.box || dt.dataset.abt] = dt.open; }));
     box.querySelectorAll('[data-setup-edit]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); this['edit' + b.dataset.setupEdit](showId); }));
@@ -5569,23 +5667,44 @@ const SetupView = {
         if (r === 'start') { const run = await RunList.create(showId); this.open.run = true; Ui.toast(`${run.f.titel} angelegt`); }
         else if (r === 'open') RunList.open(showId);
         else if (r === 'items') RunList.editItems(showId);
-        else { if (navigator.vibrate) navigator.vibrate(10); await RunList.toggle(b.dataset.runId, r); }
+        else {
+          // Abhaken im Kasten „Ablauf“ geht auch ohne „Vorstellung heute beginnen“ – der Durchgang wird dann angelegt
+          let id = b.dataset.runId;
+          if (!id || !Repo.runs.get(id)) { const run = RunList.runsOf(showId).find(x => x.f.datum === RunList.isoDate()) || await RunList.create(showId); id = run.id; }
+          if (navigator.vibrate) navigator.vibrate(10); await RunList.toggle(id, r);
+        }
       } catch (err) { App.error(err); }
     }));
   },
   /** Feld des allgemeinen Hinweises je Abteilung (im Veranstaltungs-Datensatz) */
   ALLG: { L: 'einrichtung', T: 'einrichtungT', B: 'einrichtungB', R: 'einrichtungR' },
-  /** Hinweis Einrichten / Ablauf: eigenes, immer offenes Feld, sobald etwas eingetragen ist (ab 2.7.0) */
+  /** Hinweis Einrichten: eigenes, immer offenes Feld, sobald etwas eingetragen ist (ab 2.7.0; eigener Editor ab 2.8.1).
+      Im Bearbeitungsmodus steht ohne Hinweis ein Knopf zum Eintragen. */
   hintHtml(s, d, edit) {
-    const v = s.f[this.ALLG[d]]; if (!v) return '';
-    return `<section class="hintbox" data-abt="${d}" data-box="hint-${d}"><div class="hbh">${I('alert')}<h3>Hinweis Einrichten / Ablauf</h3>
-      <span class="tag A" data-abt="${d}">${Utils.esc(DEPT[d].short)}</span>${edit ? `<button class="btn icon" data-setup-edit="${d}A" aria-label="Hinweis bearbeiten">${I('edit', 'sm')}</button>` : ''}</div>
+    const v = s.f[this.ALLG[d]], ek = d === 'R' ? 'RA' : d + 'H';
+    if (!v) return edit && d !== 'R' ? `<button type="button" class="hintadd" data-abt="${d}" data-setup-edit="${ek}">${I('plus', 'sm')} Hinweis Einrichten · ${Utils.esc(DEPT[d].short)}</button>` : '';
+    return `<section class="hintbox" data-abt="${d}" data-box="hint-${d}"><div class="hbh">${I('alert')}<h3>Hinweis Einrichten</h3>
+      <span class="tag A" data-abt="${d}">${Utils.esc(DEPT[d].short)}</span>${edit ? `<button class="btn icon" data-setup-edit="${ek}" aria-label="Hinweis bearbeiten">${I('edit', 'sm')}</button>` : ''}</div>
       <div class="hbt">${Utils.esc(v)}</div></section>`;
   },
-  /** Rahmen eines aufklappbaren Blocks (Einrichtung, Ablauf, Züge) */
-  frame(abt, title, sum, edit, btns, body) {
-    return `<details class="setup" data-abt="${abt}" data-box="${abt}" ${this.open[abt] ? 'open' : ''}>
-      <summary><span class="sic">${I(abt === 'L' ? 'layers' : abt === 'R' ? 'info' : 'list')}</span><h3>${title}<span class="sum">${Utils.esc(sum)}</span></h3>
+  /** Hinweis Einrichten bearbeiten (Licht, Ton, Bühne) – eigenes kleines Blatt, getrennt vom Ablauf */
+  async editHint(showId, abt) {
+    const s = Repo.show(showId); if (!s) return;
+    const fk = this.ALLG[abt], cur = s.f[fk] || '';
+    const PH = { L: 'z. B. Grundlicht 60 %, Saallicht über Pult, Nebel vorheizen', T: 'z. B. Pult, Show-Datei, Grundpegel, Funkstrecken', B: 'z. B. Bühnenbild, Besonderheiten, wer macht was' };
+    const v = await Req.form(`Hinweis Einrichten · ${DEPT[abt].short}`, [{ k: 't', label: 'Hinweis Einrichten', type: 'area', rows: 5, value: cur, ph: PH[abt] || '',
+      hint: 'Steht – sobald ausgefüllt – immer offen ganz oben über der Liste. Leer lassen = kein Hinweis.' }], { ok: 'Speichern' });
+    if (!v) return;
+    const t = v.t.trim(); if (t === cur) return;
+    try { await Repo.patchShow(showId, { [fk]: t }); Ui.toast(t ? 'Hinweis gespeichert' : 'Hinweis entfernt'); } catch (err) { App.error(err); }
+  },
+  editLH(showId) { this.editHint(showId, 'L'); },
+  editTH(showId) { this.editHint(showId, 'T'); },
+  editBH(showId) { this.editHint(showId, 'B'); },
+  /** Rahmen eines aufklappbaren Blocks (Ablauf, Züge, Positionen). key = Kennung zum Aufklappen und für den Schnellzugriff */
+  frame(abt, title, sum, edit, btns, body, key = abt, icon = null) {
+    return `<details class="setup" data-abt="${abt}" data-box="${key}" ${this.open[key] ? 'open' : ''}>
+      <summary><span class="sic">${I(icon || (abt === 'L' ? 'layers' : abt === 'R' ? 'info' : 'list'))}</span><h3>${title}<span class="sum">${Utils.esc(sum)}</span></h3>
         ${edit ? btns.map(([k, l, ic]) => `<button class="btn" data-setup-edit="${k}" aria-label="${Utils.esc(l)} bearbeiten">${I(ic || 'edit', 'sm')}<span class="bl"> ${Utils.esc(l)}</span></button>`).join('') : ''}${I('arrowR', 'sm chev')}</summary>
       <div class="sbody">${body}</div></details>`;
   },
@@ -5602,8 +5721,9 @@ const SetupView = {
   },
   /* ---------- Vor der Vorstellung (alle sichtbaren Abteilungen) ---------- */
   htmlRun(s, edit, depts) {
-    // Requisite: hier nur „Vor der Vorstellung“ – der ganze Ablauf wird in der Ansicht „Ablauf“ abgehakt (gleicher Durchgang)
-    const items = RunList.items(s.id, depts).filter(i => i.abt !== 'R' || i.key.startsWith('ci:') || i.vor);
+    // Nur, was vor der Vorstellung zu tun ist (feste Punkte, Ablauf „Vor der Vorstellung“) – ab 2.8.1 auch bei Licht, Ton, Bühne.
+    // Während, Pause und danach stehen im Kasten „Ablauf“ (bei Requisite in der Ansicht „Ablauf“), gleicher Durchgang.
+    const items = RunList.items(s.id, depts).filter(i => i.vor);
     if (!items.length && !edit) return '';
     const today = RunList.isoDate(), run = RunList.runsOf(s.id).find(r => r.f.datum === today);
     const pr = run ? RunList.progress(run, items) : null;
@@ -5619,13 +5739,9 @@ const SetupView = {
           const its = items.filter(i => i.abt === d); if (!its.length) return '';
           const p = RunList.progress(run, its); let lastG = '';
           return `<section class="runsec" data-abt="${d}"><div class="runsh"><span class="tag A" data-k="A" data-abt="${d}">${Utils.esc(DEPT[d].short)}</span><h3>${Utils.esc(DEPT[d].name)}</h3><span class="mono">${p.done}/${p.all}</span></div>
-            ${its.map(i => { const h = run.f['h:' + i.key], ok = h && h.ok;
+            ${its.map(i => {
               const g = i.group !== lastG ? `<div class="rung">${Utils.esc(i.group)}</div>` : ''; lastG = i.group;
-              const e = i.entryId && Repo.entry(i.entryId);
-              return g + `<div class="runrow ${ok ? 'ok' : ''}"><button class="runchk" role="checkbox" aria-checked="${!!ok}" data-run="${Utils.esc(i.key)}" data-run-id="${Utils.esc(run.id)}">
-                  <span class="box">${ok ? I('check') : ''}</span><span class="rt">${Utils.esc(i.text)}</span>
-                  <span class="rm">${h && ok ? `${RunList.fmtTime(h.at)} · ${Utils.esc(h.dev || '')}` : ''}</span></button>
-                  ${e ? `<button class="btn icon" data-open-entry="${Utils.esc(e.id)}" aria-label="Eintrag ${Utils.esc(mainVal(e))} öffnen" title="${Utils.esc(mainVal(e))}">${I('image', 'sm')}</button>` : ''}</div>`; }).join('')}</section>`;
+              return g + this.runRowHtml(i.key, i.text, i.entryId && Repo.entry(i.entryId), run, d); }).join('')}</section>`;
         }).join('');
     }
     return `<details class="setup run" data-box="run" ${open ? 'open' : ''}>
@@ -5634,33 +5750,37 @@ const SetupView = {
       <div class="sbody">${body}
         <div class="runtools" style="margin:0"><button class="btn" data-run="open">${I('list', 'sm')} Alle Durchgänge &amp; PDF-Protokoll</button></div></div></details>`;
   },
-  /** Ablauf einer Abteilung (Vor der Vorstellung · Während · Pausenumbau · Nach) – Licht, Ton, Bühne gleich */
-  ablHtml(showId, abt, edit) {
-    const steps = Repo.ablaufOf(showId, abt), e = Utils.esc;
-    const link = st => { const en = st.entryId && Repo.entry(st.entryId); if (!en) return '';
-      return `<button class="btn icon" data-open-entry="${e(en.id)}" aria-label="Eintrag ${e(mainVal(en))} öffnen" title="${e([mainVal(en), en.f.element].filter(Boolean).join(' · '))}">${I('image', 'sm')}</button>`; };
-    const html = ABLAUF.map(([k]) => { const list = steps.filter(x => x.abschnitt === k); if (!list.length) return '';
-      return `<div class="ablsec"><div class="ablh">${e(ablaufName(abt, k))}</div><ol class="abl">${list.map(st => { const en = st.entryId && Repo.entry(st.entryId);
-        return `<li><div class="ar"><span class="at">${e(st.text)}${en ? ` <span class="abk">${e(DEPT[abt].mainLabel)} ${e(mainVal(en) || '–')}</span>` : ''}</span>${link(st)}</div></li>`; }).join('')}</ol></div>`; }).join('');
-    return html || `<div class="allg empty">Noch kein Ablauf${edit ? ' – über „Ablauf“ Hinweise für Vorbereiten, Vorstellung, Pausenumbau und danach anlegen.' : '.'}</div>`;
+  /** Zeile zum Abhaken (Vor der Vorstellung und Ablauf). run fehlt = heute noch kein Durchgang, Antippen legt ihn an. */
+  runRowHtml(key, text, entry, run, abt) {
+    const e = Utils.esc, h = run && run.f['h:' + key], ok = !!(h && h.ok);
+    const abk = entry && ABL_PRE[abt] ? ` <span class="abk">${e(DEPT[abt].mainLabel)} ${e(mainVal(entry) || '–')}</span>` : '';
+    return `<div class="runrow ${ok ? 'ok' : ''}"><button class="runchk" role="checkbox" aria-checked="${ok}" data-run="${e(key)}" data-run-id="${e(run ? run.id : '')}">
+        <span class="box">${ok ? I('check') : ''}</span><span class="rt">${e(text)}${abk}</span>
+        <span class="rm">${h && ok ? `${RunList.fmtTime(h.at)} · ${e(h.dev || '')}` : ''}</span></button>
+        ${entry ? `<button class="btn icon" data-open-entry="${e(entry.id)}" aria-label="Eintrag ${e(mainVal(entry))} öffnen" title="${e([mainVal(entry), entry.f.element].filter(Boolean).join(' · '))}">${I('image', 'sm')}</button>` : ''}</div>`;
   },
-  /** Platzhalter für den Hinweis, solange keiner eingetragen ist (nur im Bearbeitungsmodus) */
-  hintEmpty(s, d, edit) { return !s.f[this.ALLG[d]] && edit ? this.sub('Hinweis Einrichten / Ablauf') + this.textBox('', edit, 'Ablauf') : ''; },
-  /* ---------- Licht ---------- */
+  /** Kasten „Ablauf“ (ab 2.8.1 eigener Kasten, Licht/Ton/Bühne gleich): Während der Vorstellung · Pausenumbau · Nach der Vorstellung,
+      zum Abhaken im heutigen Durchgang. Die Schritte „Vor der Vorstellung“ stehen oben im Kasten „Vor der Vorstellung“. */
+  htmlAbl(s, abt, edit) {
+    const e = Utils.esc, steps = Repo.ablaufOf(s.id, abt), rest = steps.filter(x => x.abschnitt !== 'grund'), vor = steps.length - rest.length;
+    const run = RunList.runsOf(s.id).find(r => r.f.datum === RunList.isoDate()) || null;
+    const done = run ? rest.filter(x => { const h = run.f['h:' + x.key]; return h && h.ok; }).length : 0;
+    const sum = rest.length ? (run ? `heute ${done} von ${rest.length} erledigt` : `${rest.length} Schritt${rest.length === 1 ? '' : 'e'}`) : 'noch kein Ablauf';
+    let body = ABLAUF.filter(([k]) => k !== 'grund').map(([k]) => { const list = rest.filter(x => x.abschnitt === k); if (!list.length) return '';
+      return `<div class="ablsec"><div class="ablh">${e(ablaufName(abt, k))}</div>${list.map(st => this.runRowHtml(st.key, st.text, st.entryId && Repo.entry(st.entryId), run, abt)).join('')}</div>`; }).join('');
+    if (!body) body = `<div class="allg empty">Noch kein Ablauf für während, Pause und danach${edit ? ' – über „Ablauf“ anlegen.' : '.'}</div>`;
+    if (vor) body += `<div class="fh" style="margin:0">${vor} Schritt${vor === 1 ? '' : 'e'} „${e(ablaufName(abt, 'grund'))}“ steh${vor === 1 ? 't' : 'en'} oben unter „Vor der Vorstellung“.</div>`;
+    return this.frame(abt, `${e(DEPT[abt].short)} · Ablauf`, sum, edit, [[abt + 'A', 'Ablauf']], body, 'abl-' + abt, 'clock');
+  },
+  /* ---------- Licht: Ablauf, dann Beleuchterzüge ---------- */
   htmlL(s, edit) {
-    const zs = Repo.zuegeOf(s.id).filter(z => z.typ === 'licht'), filled = zs.filter(z => Repo.zugFilled(z)).length, n = Repo.ablaufOf(s.id, 'L').length;
-    const sum = [`${filled}/${zs.length} Züge ausgefüllt`, n ? `${n} Ablauf-Hinweise` : ''].filter(Boolean).join(' · ');
+    const zs = Repo.zuegeOf(s.id).filter(z => z.typ === 'licht'), filled = zs.filter(z => Repo.zugFilled(z)).length;
     const e = Utils.esc;
-    return this.frame('L', 'Licht · Beleuchterzüge &amp; Ablauf', sum, edit, [['LA', 'Ablauf'], ['L', 'Beleuchterzüge', 'layers']],
-      this.sub('Beleuchterzüge') + this.ztab(zs, [['Zug', z => e(z.name)], ['Höhe / Marke', z => e(z.hoehe), 'mono'], ['Bestückung', z => e(z.bestueckung)], ['Bemerkung', z => e(z.bemerkung), 'zb']]) +
-      this.sub('Ablauf') + this.ablHtml(s.id, 'L', edit) + this.hintEmpty(s, 'L', edit));
+    return this.htmlAbl(s, 'L', edit) + this.frame('L', 'Licht · Beleuchterzüge', `${filled}/${zs.length} Züge ausgefüllt`, edit, [['L', 'Beleuchterzüge', 'layers']],
+      this.ztab(zs, [['Zug', z => e(z.name)], ['Höhe / Marke', z => e(z.hoehe), 'mono'], ['Bestückung', z => e(z.bestueckung)], ['Bemerkung', z => e(z.bemerkung), 'zb']]), 'L', 'layers');
   },
   /* ---------- Ton ---------- */
-  htmlT(s, edit) {
-    const n = Repo.ablaufOf(s.id, 'T').length;
-    return this.frame('T', 'Ton · Ablauf', n ? `${n} Ablauf-Hinweise` : 'noch kein Ablauf', edit, [['TA', 'Ablauf']],
-      this.sub('Ablauf') + this.ablHtml(s.id, 'T', edit) + this.hintEmpty(s, 'T', edit));
-  },
+  htmlT(s, edit) { return this.htmlAbl(s, 'T', edit); },
   /* ---------- Requisite ---------- */
   htmlR(s, edit) {
     const e = Utils.esc, ps = Req.persons(s.id), os = Req.showOrts(s.id);
@@ -5685,15 +5805,11 @@ const SetupView = {
     return Repo.zuegeOf(showId).slice().sort((a, b) => (BEREICH_RANK[a.bereich] - BEREICH_RANK[b.bereich]) || (EBENE_RANK[a.ebene] - EBENE_RANK[b.ebene]) || (a.ord - b.ord));
   },
   htmlB(s, edit) {
-    const steps = Repo.ablaufOf(s.id, 'B');
     // Positionen: Bühnenzüge/-positionen und nur ausgefüllte Beleuchterzüge (leere OLZ/BGZ wären hier nur Ballast)
     const zs = this.posSorted(s.id).filter(z => z.typ === 'buehne' || Repo.zugFilled(z));
-    const sum = [steps.length ? `${steps.length} Ablauf-Schritte` : 'kein Ablauf', `${zs.length} Positionen`].join(' · ');
     const e = Utils.esc;
-    return this.frame('B', 'Bühne · Ablauf &amp; Positionen', sum, edit, [['BA', 'Ablauf'], ['P', 'Positionen', 'layers']],
-      this.sub('Ablauf') + this.ablHtml(s.id, 'B', edit) + this.hintEmpty(s, 'B', edit) +
-      `<details class="ssubd" data-box="Bpos" ${this.open.Bpos ? 'open' : ''}><summary class="ssub">${I('arrowR', 'sm chev')} Positionen · vorne → hinten, unten → oben <span class="n">${zs.length}</span></summary>` +
-      this.ztab(zs, [['Position', z => e(z.name) + (z.typ === 'licht' ? ' <span class="tag A" data-k="A" data-abt="L">Licht</span>' : '')], ['Ort', z => e(ortText(z))], ['Höhe / Marke', z => e(z.hoehe), 'mono'], ['Bemerkung', z => e([z.bemerkung, z.last ? 'Last ' + z.last : ''].filter(Boolean).join(' · ')), 'zb']]) + '</details>');
+    return this.htmlAbl(s, 'B', edit) + this.frame('B', 'Bühne · Positionen', `${zs.length} Positionen · vorne → hinten, unten → oben`, edit, [['P', 'Positionen', 'layers']],
+      this.ztab(zs, [['Position', z => e(z.name) + (z.typ === 'licht' ? ' <span class="tag A" data-k="A" data-abt="L">Licht</span>' : '')], ['Ort', z => e(ortText(z))], ['Höhe / Marke', z => e(z.hoehe), 'mono'], ['Bemerkung', z => e([z.bemerkung, z.last ? 'Last ' + z.last : ''].filter(Boolean).join(' · ')), 'zb']]), 'B', 'layers');
   },
 
   /* ---------- Bearbeiten: Beleuchterzüge (der Hinweis steht ab 2.7.0 unter „Ablauf“) ---------- */
@@ -5757,7 +5873,7 @@ const SetupView = {
     });
   },
 
-  /* ---------- Bearbeiten: Hinweis Einrichten / Ablauf (Licht, Ton, Bühne gleich, ab 2.7.0) ---------- */
+  /* ---------- Bearbeiten: Ablauf (Licht, Ton, Bühne gleich; der Hinweis Einrichten hat ab 2.8.1 ein eigenes Blatt) ---------- */
   editLA(showId) { this.editAblauf(showId, 'L'); },
   editTA(showId) { this.editAblauf(showId, 'T'); },
   editBA(showId) { this.editAblauf(showId, 'B'); },
@@ -5765,7 +5881,7 @@ const SetupView = {
   editB(showId) { this.editAblauf(showId, 'B'); },
   editAblauf(showId, abt) {
     const s = Repo.show(showId); if (!s) return;
-    const D = DEPT[abt], pre = ABL_PRE[abt], fk = this.ALLG[abt];
+    const D = DEPT[abt], pre = ABL_PRE[abt];
     let steps = Repo.ablaufOf(showId, abt).map(x => Object.assign({}, x)), removed = [], dirty = false;
     const sh = Ui.sheet({ title: `Ablauf · ${D.short}`, full: true,
       headLeft: `<button class="btn ghost" data-x="cancel" aria-label="Abbrechen">${I('close')}<span class="cl">Abbrechen</span></button>`,
@@ -5775,15 +5891,11 @@ const SetupView = {
     const zs = Repo.zuegeOf(showId);
     const ents = Repo.entriesOf(showId).filter(e => abtOf(e) === abt).sort((a, b) => abt === 'B' ? Repo.bcmp(a, b, zs) : mainCmp(mainVal(a), mainVal(b)));
     const opts = cur => `<option value="">– kein Eintrag verknüpft –</option>` + ents.map(e => `<option value="${Utils.esc(e.id)}" ${e.id === cur ? 'selected' : ''}>${Utils.esc([D.mainLabel + ' ' + (mainVal(e) || '–'), e.f.element || e.f.quelle || e.f.geraet].filter(Boolean).join(' · '))}</option>`).join('');
-    const PH = { L: 'z. B. Grundlicht 60 %, Saallicht über Pult, Nebel vorheizen', T: 'z. B. Pult, Show-Datei, Grundpegel, Funkstrecken', B: 'z. B. Bühnenbild, Besonderheiten, wer macht was' };
     const SPH = { grund: 'z. B. Spiegelkugel einhängen und Motor prüfen', im: 'z. B. Szene 4: Verfolger auf Mackie', pause: 'z. B. Kreis 361 abstecken, Podium frei', ende: 'z. B. Verfolger abdecken' };
-    let allg = null;
     const arrow = d => I(d, 'sm').replace('<svg', '<svg style="transform:rotate(90deg)"');
     const draw = () => {
       sh.body.innerHTML = `<form class="form" onsubmit="return false">
-        <div class="f"><label for="se-allg">Hinweis Einrichten / Ablauf</label>
-          <textarea id="se-allg" rows="3" placeholder="${Utils.esc(PH[abt])}">${Utils.esc(allg ?? s.f[fk] ?? '')}</textarea>
-          <div class="fh">Steht – sobald ausgefüllt – immer offen ganz oben über der Liste.</div></div>
+        <div class="fh" style="margin:0">„${Utils.esc(ablaufName(abt, 'grund'))}“ steht beim Abhaken oben unter „Vor der Vorstellung“, alles andere im Kasten „Ablauf“.</div>
         ${ABLAUF.map(([k]) => { const list = steps.filter(x => x.abschnitt === k);
           return `<section class="ablsec ed" data-abt="${abt}"><div class="ablh">${Utils.esc(ablaufName(abt, k))}</div>
           ${list.map((st, i) => { const gi = steps.indexOf(st);
@@ -5795,7 +5907,7 @@ const SetupView = {
           <button type="button" class="btn" data-x="add" data-ab="${k}">${I('plus')} Schritt</button></section>`; }).join('')}
         <button type="button" class="btn edit big block" data-x="save">${I('check')} Ablauf ${Utils.esc(D.short)} speichern</button></form>`;
     };
-    const readBack = () => { allg = sh.body.querySelector('#se-allg').value;
+    const readBack = () => {
       sh.body.querySelectorAll('.astep').forEach(el => { const st = steps[+el.dataset.gi]; el.querySelectorAll('[data-f]').forEach(inp => { st[inp.dataset.f] = inp.value; }); }); };
     draw();
     sh.body.addEventListener('input', () => { dirty = true; });
@@ -5824,8 +5936,7 @@ const SetupView = {
           if (!old || JSON.stringify(old) !== JSON.stringify(v)) patch[pre + st.id] = v;
         }));
         removed.forEach(id => { const old = s.f[pre + id]; if (old) patch[pre + id] = Object.assign({}, old, { del: true }); });
-        const al = (allg || '').trim(); if (al !== (s.f[fk] || '')) patch[fk] = al;
-        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open[abt] = true; sh.close(); Ui.toast(`Ablauf ${D.short} gespeichert`); }
+        try { if (Object.keys(patch).length) await Repo.patchShow(showId, patch); dirty = false; this.open['abl-' + abt] = true; sh.close(); Ui.toast(`Ablauf ${D.short} gespeichert`); }
         catch (err) { App.error(err); }
       }
     });
@@ -5936,8 +6047,10 @@ const RunList = {
     const own = this.ownOf(showId), out = [];
     DEPT_ORDER.forEach(d => {
       if (depts && !depts.includes(d)) return;
-      own.filter(x => x.abt === d).forEach(x => out.push({ key: x.key, abt: d, group: 'Vor der Vorstellung', text: x.text }));
-      if (ABL_PRE[d]) Repo.ablaufOf(showId, d).forEach(st => out.push({ key: st.key, abt: d, group: 'Ablauf · ' + ablaufName(d, st.abschnitt), text: st.text, entryId: st.entryId }));
+      // vor: gehört in den Kasten „Vor der Vorstellung“ (feste Punkte und Ablauf „Vor der Vorstellung“), sonst in „Ablauf“
+      own.filter(x => x.abt === d).forEach(x => out.push({ key: x.key, abt: d, group: 'Vor der Vorstellung', text: x.text, vor: true }));
+      if (ABL_PRE[d]) Repo.ablaufOf(showId, d).forEach(st => out.push({ key: st.key, abt: d, text: st.text, entryId: st.entryId, vor: st.abschnitt === 'grund',
+        group: st.abschnitt === 'grund' && d !== 'B' ? 'Ablauf' : 'Ablauf · ' + ablaufName(d, st.abschnitt) }));
       if (d === 'R') {                                   // Requisite: Schritte aller Abschnitte (Vor der Vorstellung, Teile, Pausen, Nach …)
         // je Abschnitt: Schritte, dann die Gegenstände, die dort gebraucht werden („Wann gebraucht“ am Gegenstand) –
         // so steht alles Einzurichtende von selbst auf der Checkliste, ohne die Liste extra zu bearbeiten
@@ -6355,14 +6468,22 @@ const Req = {
     ['Requisite', ['Requisitenbüro', 'Requisitenschrank', 'Waffenschrank']],
     ['Garderoben', ['Damengarderobe', 'Herrengarderobe', 'Garderobe']],
     ['Unterbühne', ['Unterbühne']],
-    ['Bühne', ['Bühne hinten', 'Bühne links', 'Bühne rechts', 'Bühne vorne']],
+    ['Bühne', ['Hinterbühne', 'Bühne links', 'Bühne rechts', 'Bühne vorne']],
     ['Vorbühne', ['Vorbühne', 'Vorbühne Bühnentür rechts']],
     ['Seiten und Gassen', ['Seitenbühne links', 'Seitenbühne rechts', 'Nullgasse links', 'Nullgasse rechts', 'Gasse 1 links', 'Gasse 2 links', 'Gasse 3 links', 'Gasse 1 rechts', 'Gasse 2 rechts', 'Gasse 3 rechts', 'OFF links', 'OFF rechts', 'hinter Bühnentür']],
     ['Sonstiges', ['Kühlschrank Technikaufenthalt']]
   ],
   STD_VORLAGEN: [['Lesebrille'], ['Sonnenbrille'], ['Zigaretten (Fake)'], ['Feuerzeug'], ['Baseballschläger'], ['Luftrüssel'], ['Sektglas', 'glas'], ['Wasserflasche'], ['Gaffa-Tape'], ['Puffreis'],
     ['Gewehr', 'waffe'], ['Konfettikanone', 'pyro'], ['Crashglas', 'glas'], ['Taschenlampe', 'strom']],
-  houseKey(name) { return 'ho:std-' + this.slug(name); },
+  /** umbenannte Haus-Orte behalten ihre feste Kennung (sonst entstünden beim Abgleich mit älteren Geräten Dubletten) */
+  STD_ALIAS: { 'Hinterbühne': 'Bühne hinten' },
+  houseKey(name) { return 'ho:std-' + this.slug(this.STD_ALIAS[name] || name); },
+  /** ab 2.8.1: Haus-Ort „Bühne hinten“ heißt „Hinterbühne“ (gilt für alle Stücke). Läuft bei jedem Start – kommt der alte Name
+      von einem älteren Gerät zurück, wird er wieder angepasst. Ein von Hand umbenannter Ort bleibt, wie er ist. */
+  async migrateHouse() {
+    const k = this.houseKey('Hinterbühne'), o = this.houseF()[k];
+    if (o && !o.del && o.name === 'Bühne hinten') await Repo.patchHouse({ [k]: Object.assign({}, o, { name: 'Hinterbühne' }) });
+  },
   async ensureHouse() {
     if (Repo.house.has('requisite')) return false;
     const f = {}; let ord = 0;
@@ -6503,7 +6624,7 @@ const Req = {
     await Camera.open({ abt: 'R', kat: 'A', startIndex: 0, title, allowKatSwitch: false, onShot: p => { got = p; } });
     await Ui.afterBack();
     if (!got) return null;
-    try { return await got; } catch (e) { Ui.toast('Foto konnte nicht verarbeitet werden: ' + e.message, 'err'); return null; }
+    try { return await got; } catch (e) { Photo.report(e); return null; }
   },
   photoLightbox(b, title, cap = '') {
     if (!b) return;
@@ -6526,7 +6647,7 @@ const Req = {
       <div class="f"><label>Ort</label><div class="rorts" data-orts></div></div>
       ${inp('stelle', 'Stelle am Ort', 'z. B. rechts neben Schlagzeug, unter dem Steg')}
       <div class="f rwann"><label>Wann gebraucht?</label><div class="qkeys rwannchips" data-rwann></div>
-        <div class="fh">Eingerichtet wird jeder Gegenstand (Checkliste „Einrichten“) – hier steht, wann er im Stück gebraucht wird.</div></div>
+        <div class="fh">Eingerichtet wird jeder Gegenstand (Checkliste „Einrichten“), mit oder ohne „Vor der Vorstellung“ – hier steht, wann er gebraucht wird.</div></div>
       ${inp('wofuer', 'Wofür', 'z. B. Szene 3 – Anna raucht')}
       <div class="rteil hidden" data-rteil><div class="f"><label>Lichtzeichen?</label><div class="qkeys" data-rlz></div></div>
         <div class="f"><label for="ed-uebergabe">Übergabe-Ort</label><input id="ed-uebergabe" name="uebergabe" list="rq-orts" value="${Utils.esc(f0.uebergabe || '')}" placeholder="z. B. Gassenwand links" autocomplete="off">
@@ -6559,7 +6680,8 @@ const Req = {
       zustand: Array.isArray(f0.zustand) ? f0.zustand.slice() : [],
       sicherheit: f0.sicherheit || '', zustaendig: f0.zustaendig || '', art: Array.isArray(f0.art) ? f0.art.slice() : [],
       // Wann gebraucht: bestehender Gegenstand wie gespeichert (ohne Angabe = Vor der Vorstellung), neuer = Vorgabe oder Vor der Vorstellung
-      abschnitte: ex ? this.whenKeys(ex) : (f0.abschnitte || []).slice(),
+      // neuer Gegenstand: „Vor der Vorstellung“ ist vorgewählt (ab 2.8.1; eingerichtet wird ohnehin jeder Gegenstand)
+      abschnitte: ex ? this.whenKeys(ex) : (() => { const a = (f0.abschnitte || []).slice(), v = this.vorKey(showId); if (v && !a.includes(v)) a.unshift(v); return a; })(),
       lichtzeichen: f0.lichtzeichen || ''
     };
     // Lichtzeichen und Übergabe-Ort nur, wenn der Gegenstand im Stück gebraucht wird (Teil, Pause, Sonstiges)
@@ -6571,7 +6693,7 @@ const Req = {
     const renderWann = () => {
       const abs = this.abschnitte(showId);
       renderTeil();
-      form.querySelector('[data-rwann]').innerHTML = abs.filter(a => a.typ !== 'vor').map(a => `<button type="button" data-rwa="${Utils.esc(a.key)}" aria-pressed="${rs.abschnitte.includes(a.key)}">${I('clock', 'sm')} ${Utils.esc(a.label)}</button>`).join('')
+      form.querySelector('[data-rwann]').innerHTML = abs.map(a => `<button type="button" data-rwa="${Utils.esc(a.key)}" aria-pressed="${rs.abschnitte.includes(a.key)}">${I('clock', 'sm')} ${Utils.esc(a.label)}</button>`).join('')
         || '<span class="muted" style="font-size:14px">Dieses Stück hat noch keinen Ablauf.</span>';
     };
     const zk = REQ_NAME(REQ_ZUST);
@@ -6703,6 +6825,8 @@ Object.assign(Req, {
     };
     draw();
     const off = Repo.on(() => { if (sh.layer.closed) { off(); return; } if (!Utils.isEditable(document.activeElement)) draw(); });
+    // Einstellungen (z. B. Ensemble) werden nicht abgeglichen und lösen kein Repo-Ereignis aus – trotzdem sofort neu zeichnen
+    const offS = Settings.on(() => { if (sh.layer.closed) { offS(); return; } if (!Utils.isEditable(document.activeElement)) draw(); });
     sh.body.addEventListener('click', async e => {
       const b = e.target.closest('[data-la]'); if (!b) return;
       try { await opts.onAct(b.dataset.la, b.dataset.key || '', b); } catch (err) { App.error(err); }
@@ -7276,7 +7400,7 @@ Object.assign(Req, {
     add('Laterne', 'Gasse 1 links', { p: ['Tim'], ab: ['t2'], wofuer: 'Nachtszene', zustand: ['aufgeladen'] });
     add('Brief des Präsidenten', 'Gasse 1 links', { p: ['Tim'], ab: ['t1'], wofuer: 'Diktat Szene 4', uebergabe: 'Hinterbühne', lichtzeichen: 'ja' });
     add('Weinflasche', 'Gasse 3 rechts', { p: ['Paul'], ab: ['t1'], zustand: ['befüllt'], bemerkung: 'Traubensaft' });
-    add('Stuhl (Spielstuhl)', 'Bühne hinten', { zuAndere: 'Bühnentechnik', ab: ['p'], wofuer: 'Umbau Pause', uebergabe: 'Hinterbühne' });
+    add('Stuhl (Spielstuhl)', 'Hinterbühne', { zuAndere: 'Bühnentechnik', ab: ['p'], wofuer: 'Umbau Pause', uebergabe: 'Hinterbühne' });
     add('Hutschachtel', 'Bühne links', { p: ['Anna'], ab: ['t2'] });
     // 43–50 Unterbühne / Sonstiges
     add('Konfetti (Ersatz)', 'Unterbühne', { art: ['reserve'] });
@@ -7985,15 +8109,15 @@ const CueCam = {
       /* ---- Fotos aus der Mediathek (Kamera nicht verfügbar) ---- */
       const fromFiles = async files => {
         for (const f of files) {
-          const url = URL.createObjectURL(f);
+          let src = null;
           try {
-            const img = new Image(); img.src = url; await img.decode();
-            const w = img.naturalWidth, h = img.naturalHeight, s = Math.min(w, h), size = Math.min(s, CUE_PX);
+            src = await Photo.decode(f);           // wie bei den Doku-Fotos (ab 2.8.1): kein Hängen, HEIF-Hinweis
+            const { w, h } = src, s = Math.min(w, h), size = Math.min(s, CUE_PX);
             const c = document.createElement('canvas'); c.width = c.height = size;
-            c.getContext('2d').drawImage(img, (w - s) / 2, (h - s) / 2, s, s, 0, 0, size, size);
+            c.getContext('2d').drawImage(src.el, (w - s) / 2, (h - s) / 2, s, s, 0, 0, size, size);
             shoot(false, c);
-          } catch (e) { Ui.toast('Bild konnte nicht gelesen werden', 'err'); }
-          finally { URL.revokeObjectURL(url); }
+          } catch (e) { Photo.logFail(f, e); Photo.report(e); }
+          finally { if (src) src.close(); }
         }
       };
 
@@ -9087,6 +9211,7 @@ const App = {
     if (Settings.v.depts.includes('R')) {          // Requisite: Haus-Standard und Demo „Einfache Leute“ (nur einmal)
       try { await Req.ensureHouse(); await Req.maybeDemo(); await Req.maybeTest(); } catch (e) { console.warn('Requisite-Standard nicht angelegt', e); }
     }
+    try { await Req.migrateHouse(); } catch (e) { console.warn('Haus-Orte nicht angepasst', e); }
     Repo.on(ev => { if (ev && ev.blobIds && ev.blobIds.length) Thumbs.miss.clear(); this.requestRender(); });
     Sync.on(() => this.updatePill());
     window.addEventListener('hashchange', () => this.route());
@@ -9419,14 +9544,19 @@ const App = {
     const ds = (st.abt === 'all' ? vis : vis.filter(d => d === st.abt)).filter(d => d !== 'R');
     const btns = [], all = st.abt === 'all' ? vis : vis.filter(d => d === st.abt), hints = all.filter(d => s.f[SetupView.ALLG[d]]);
     hints.forEach(d => btns.push(`<button class="qb warn" data-act="jump" data-box="hint-${d}">${I('alert', 'sm')} Hinweis${hints.length > 1 ? ' ' + Utils.esc(DEPT[d].short) : ''}</button>`));
-    const items = RunList.items(st.showId, all).filter(i => i.abt !== 'R' || i.key.startsWith('ci:') || i.vor);
+    const items = RunList.items(st.showId, all).filter(i => i.vor);
+    const run = RunList.runsOf(st.showId).find(r => r.f.datum === RunList.isoDate());
     if (items.length || st.edit) {
-      const run = RunList.runsOf(st.showId).find(r => r.f.datum === RunList.isoDate()), p = run ? RunList.progress(run, items) : null;
+      const p = run ? RunList.progress(run, items) : null;
       btns.push(`<button class="qb run" data-act="jump" data-box="run">${I('checklist', 'sm')} Vor der Vorstellung${p ? ` <span class="mono">${p.done}/${p.all}</span>` : items.length ? ` <span class="mono">${items.length}</span>` : ''}</button>`);
     }
-    const LBL = { L: 'Beleuchterzüge', T: 'Ton · Ablauf', B: 'Bühne · Ablauf' };
-    ds.forEach(d => { const n = Repo.ablaufOf(st.showId, d).length;
-      btns.push(`<button class="qb" data-abt="${d}" data-act="jump" data-box="${d}">${I(d === 'L' ? 'layers' : 'list', 'sm')} ${LBL[d]}${d === 'L' && n ? ` · Ablauf <span class="mono">${n}</span>` : d !== 'L' && n ? ` <span class="mono">${n}</span>` : ''}</button>`); });
+    // je Abteilung: Ablauf (während, Pause, danach) und – getrennt – Beleuchterzüge bzw. Positionen (ab 2.8.1)
+    ds.forEach(d => {
+      const rest = Repo.ablaufOf(st.showId, d).filter(x => x.abschnitt !== 'grund'), done = run ? rest.filter(x => { const h = run.f['h:' + x.key]; return h && h.ok; }).length : 0;
+      btns.push(`<button class="qb" data-abt="${d}" data-act="jump" data-box="abl-${d}">${I('clock', 'sm')} ${ds.length > 1 ? Utils.esc(DEPT[d].short) + ' · ' : ''}Ablauf${rest.length ? ` <span class="mono">${run ? done + '/' : ''}${rest.length}</span>` : ''}</button>`);
+      if (d === 'L') btns.push(`<button class="qb" data-abt="L" data-act="jump" data-box="L">${I('layers', 'sm')} Beleuchterzüge</button>`);
+      if (d === 'B') btns.push(`<button class="qb" data-abt="B" data-act="jump" data-box="B">${I('layers', 'sm')} Positionen</button>`);
+    });
     row.innerHTML = btns.join(''); row.classList.toggle('hidden', !btns.length);
   },
   jump(box) {
