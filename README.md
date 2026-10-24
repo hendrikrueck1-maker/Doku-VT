@@ -1,6 +1,6 @@
 # Doku VT – Technikdokumentation
 
-**Version 2.8.2** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton, Bühnentechnik und Requisite: Einträge mit Fotos, Abläufe zum Abhaken, PDF-Export und Geräte-Abgleich. Dazu **Cue-Fotos**: Lichtstimmungen vom Stellwerk aus fotografieren und als PDF ablegen. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
+**Version 2.8.3** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton, Bühnentechnik und Requisite: Einträge mit Fotos, Abläufe zum Abhaken, PDF-Export und Geräte-Abgleich. Dazu **Cue-Fotos**: Lichtstimmungen vom Stellwerk aus fotografieren und als PDF ablegen. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
 
 ## Auf GitHub veröffentlichen
 
@@ -19,9 +19,13 @@ Installiert startet Doku VT auch ohne Internet, und der Browser behandelt die Da
 
 ## Abteilungen einstellen
 
-Unter *Einstellungen → Dieses Gerät dokumentiert* festlegen, welche Abteilungen das Gerät führt (Standard nach dem Update: nur Licht). Jede Veranstaltung hat zusätzlich eigene Abteilungen. Sichtbar ist, was beide gemeinsam haben. Beim Abgleich gehen Einträge nur für die Abteilungen des Geräts mit; Veranstaltungen, Einrichtung und Züge immer.
+Unter *Einstellungen → Dieses Gerät dokumentiert* festlegen, welche Abteilungen das Gerät führt (Standard nach dem Update: nur Licht). Jede Veranstaltung hat zusätzlich eigene Abteilungen. Sichtbar ist, was beide gemeinsam haben. Beim Abgleich gibt jedes Gerät ab 2.8.3 alles weiter, was es hat (Licht, Ton, Bühne – auch Einträge anderer Geräte), die Requisite nur an Geräte mit Requisite. Die Reihenfolge der Abgleiche ist damit egal.
 
 Die Daten liegen **nur lokal auf dem jeweiligen Gerät** (IndexedDB). Das Repository enthält keine Daten. Regelmäßig über *Abgleich → Komplett-Backup* sichern und das Backup auf einem zweiten Ort ablegen (z. B. Fritzbox-Speicher).
+
+## Vorstellungs-Checkliste: Spieltag (ab 2.8.3)
+
+„Heute“ wechselt erst um **4 Uhr morgens**. Wer nach Mitternacht abbaut und abhakt, bleibt im Durchgang des Vorabends. Beginnen zwei Geräte unabhängig voneinander, wird daraus beim Abgleich **ein** Durchgang. **Alle Geräte auf 2.8.3 aktualisieren** – erst dann greift das vollständig (Züge: Licht-Bestückung und Bühnen-Last am selben Zug bleiben beide erhalten).
 
 ## Cue-Fotos (ab 2.8.0)
 
@@ -69,6 +73,6 @@ Jede Veranstaltung kann eine Spielstätte haben: Großes Haus, Werkstattbühne, 
 | `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png` | App-Icons |
 | `DOKUMENTATION.md` | Architektur, Testcheckliste, Designentscheidungen, Ausblick |
 | `CHANGELOG.md` | Änderungen je Version |
-| `test_basis.py`, `test_281.py`, `test_282.py`, `test_cues.py` | Automatische Tests (Python + Playwright/Chromium): `python3 test_basis.py <ordner>` (Grundfunktionen, Licht/Ton/Bühne/Requisite), `python3 test_281.py <ordner>` (Änderungen aus 2.8.1), `python3 test_282.py <ordner>` (Schnellauswahl und ±0,1 der Cue-Fotos), `python3 test_cues.py <ordner> [<ordner mit 2.7.0>]` (Cue-Fotos mit simulierter Kamera, optional Ablehnung durch 2.7.0). Nicht nötig für den Betrieb; müssen nicht hochgeladen werden. |
+| `test_basis.py`, `test_281.py`, `test_282.py`, `test_283.py`, `test_cues.py`, `test_stress.py` | Automatische Tests (Python + Playwright/Chromium): `python3 test_basis.py <ordner>` (Grundfunktionen, Licht/Ton/Bühne/Requisite), `python3 test_281.py <ordner>` (Änderungen aus 2.8.1), `python3 test_282.py <ordner>` (Schnellauswahl und ±0,1 der Cue-Fotos), `python3 test_283.py <ordner> [<ordner mit 2.8.2>]` (Korrekturen aus dem QA-Bericht zu 2.8.2, optional Abgleich mit einem Gerät auf 2.8.2), `python3 test_cues.py <ordner> [<ordner mit 2.7.0>]` (Cue-Fotos mit simulierter Kamera, optional Ablehnung durch 2.7.0), `python3 test_stress.py <ordner> [-k A1,B3]` (Stresstest der QA-Runde, an 2.8.3 angepasst, ca. 8 min). Nicht nötig für den Betrieb; müssen nicht hochgeladen werden. |
 
 Kamera, Teilen und Live-Abgleich brauchen **https**. Das bietet GitHub Pages automatisch. Per Doppelklick (`file://`) geöffnet funktioniert die App ebenfalls, aber ohne Kamera-Live-Vorschau und ohne Offline-Installation.

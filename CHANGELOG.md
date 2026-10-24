@@ -1,5 +1,26 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.8.3 – 24.10.2026
+
+Korrekturen aus dem QA-Bericht zu 2.8.2. Kein Datenbank-Update, Paketformat unverändert – 2.8.0 bis 2.8.3 gleichen weiter miteinander ab. **Alle Geräte auf 2.8.3 aktualisieren:** Erst dann wirken ein Durchgang je Spieltag und das feldweise Zusammenführen der Züge überall.
+
+- **Vorstellungs-Checkliste – Mitternacht:** „Heute“ ist jetzt der Spieltag, er wechselt um **4 Uhr**. Haken nach 0 Uhr (Ablauf, Abbau, Requisite „Einrichten“) landen im Durchgang des Vorabends, das Protokoll bleibt vollständig. Vorher begann um 0 Uhr still ein zweiter Durchgang mit dem Folgedatum.
+- **Ein Durchgang je Spieltag auf allen Geräten:** Beginnen zwei Geräte unabhängig „Vorstellung heute beginnen“ (oder haken ab, ohne begonnen zu haben), entsteht derselbe Durchgang (feste Kennung je Veranstaltung, Tag und Nummer). Doppelte Durchgänge aus älteren Versionen werden beim Abgleich und beim Start zusammengeführt – Haken gehen nicht verloren. „Neu beginnen“ bleibt ein eigener Durchgang.
+- **Cue-Kamera und Doku-Kamera quer:** Auf dem Smartphone im Querformat Sucher links, Knöpfe rechts (vorher Sucher 12 px in der Cue-Kamera). Im Hochformat auf kleinen Smartphones (320 × 568) ist der Cue-Sucher größer (178 statt 148 px).
+- **Doku-Kamera im Rotlicht:** dunkle rote Knöpfe statt Weiß, Sucherbild rot gefiltert, Phase über Rahmenart. Kein weißes Aufblitzen mehr im dunklen und im Rotlicht-Modus (dezenter Rand wie bei der Cue-Kamera).
+- **Sehr lange genutzte Veranstaltungen:** Der Empfänger nimmt jetzt bis 20 000 Felder an (vorher 2 000 – die Veranstaltung wurde still verworfen). Was trotzdem abgelehnt wird, steht im Import-Dialog („NICHT übernommen“), im Protokoll und als „Fehler“ im Status – auch beim Live-Abgleich. Die Diagnose warnt, wenn Geräte mit 2.8.2 eine Veranstaltung nicht mehr annehmen würden.
+- **Rotlicht:** Fehler- und Warnmeldungen sehen anders aus als „Gespeichert“ (Fehler hell hinterlegt, Warnung mit kräftigem Rahmen, beide mit Symbol – in allen Farbschemata). Bildansicht rot statt weiß. Gedämpfte Schrift etwas heller.
+- **Großbild auf dem Smartphone:** „Kreis“ steht über der Nummer, die Nummer bricht nur nach „+“ um (vorher „123+1“ / „24“). Die Fotozahl entfällt im Kopf auf schmalen Smartphones.
+- **Smartphone quer:** Die Werkzeugleiste klappt beim Runterscrollen weg und kommt beim Hochscrollen zurück (vorher blieben 63–85 px für den Inhalt).
+- **Cue-Fotos:** „Nächster Cue“ nach einer Text-Cue („Ende“) springt hinter die höchste Nummer statt auf Cue 1. „Mehrere Cues“ legt bis 2000 auf einmal an und sagt, wenn es mehr wären (vorher still bei 500 gekappt). Die Schnellauswahl hängt nicht mehr an einer Cue eines Geräts mit vorgehender Uhr.
+- **PDF:** Gekürzte Texte enden sichtbar mit „…“ (Warnhinweise jetzt bis 12 Zeilen, vorher still nach 6). Sehr lange Kreise laufen nicht mehr aus der Seite. Das Protokoll nennt in der Nacht der Zeitumstellung die Zone (MESZ/MEZ).
+- **Ansichtsmodus:** Titel antippen, ⋯-Menü (Ändern, Duplizieren, Zurücksetzen, Zusammenführen, Löschen) und „Haken zurücksetzen“ fragen erst, ob der Bearbeitungsmodus eingeschaltet werden soll – auch in der Cue-Liste. Die Übersichten bleiben unverändert.
+- **Abgleich:** Nach dem Abgleich mit einem Gerät, dessen Uhr vorgeht, steht „Synchron“ statt „22 offen“. **Gemeinsamer Zug:** Licht-Bestückung und Bühnen-Last am selben Zug bleiben beide erhalten (Angabe für Angabe zusammengeführt). **Weitergeben:** Jedes Gerät gibt beim Abgleich alles weiter, was es hat – auch im Kreis (Licht → Ton → Bühne → Alle) kommt alles an. Requisite weiterhin nur an Geräte mit Requisite; „Komplett, alle Abteilungen“ entfällt (steckt in „Komplett“).
+- **Bedienung:** Sync-Pille, Ansichts-Umschalter und Schnellzugriff mindestens 44 px hoch. „Löschen“-Knopf und Fehlermeldung mit ausreichendem Kontrast. Titel-Knopf mit sichtbarem Fokusrahmen. Auf dem Smartphone steht PDF im ⋯-Menü, der Titel hat mehr Platz. „Lichtzeichen“ wird nicht mehr mitten im Wort getrennt.
+- **Robustheit:** Texte über 100 000 Zeichen werden nicht gespeichert (klare Meldung, Editor bleibt offen) – vorher verwarf sie der Empfänger still. Zeitstempel jenseits eines gültigen Datums und falsche Feldtypen (z. B. „Zustand“ als Zahl) werden beim Import abgelehnt statt die Ansicht abstürzen zu lassen. Speicherfehler ohne Angabe des Browsers und „Speicher voll“ beim Schreiben melden klar „Es wurde NICHTS gespeichert“. Transparente PNG werden weiß statt schwarz hinterlegt. „Wiederherstellen“ bringt keinen Eintrag zurück, den ein anderes Gerät vorher einzeln gelöscht hatte.
+- **Nicht geändert (siehe DOKUMENTATION, Ausblick):** Cue-Fotos in der Warteschlange beim Beenden der App, Sonderschriften im PDF, Speicherbedarf sehr großer Pakete.
+- **Test:** `test_283.py` (61 Prüfungen zu allen Korrekturen, mit zweitem Ordner 2.8.2 64 – dann auch gemischter Betrieb mit 2.8.2; u. a. Mitternacht mit verstellter Uhr, zwei und fünf Geräte, Kameras quer und im Rotlicht, Zug-Simulation mit Geräten auf 2.8.2). `test_stress.py` an 2.8.3 angepasst. `test_basis.py`, `test_281.py`, `test_282.py`, `test_cues.py` laufen unverändert durch.
+
 ## 2.8.2 – 23.10.2026
 
 Cue-Fotos schneller vorbereiten und Punktstimmungen beim Fotografieren. Kein Datenbank-Update, Paketformat unverändert – 2.8.0, 2.8.1 und 2.8.2 gleichen weiter miteinander ab.

@@ -82,7 +82,7 @@ html[data-theme="light"]{
 html[data-theme="red"]{
   --bg:#000; --bg2:#070000; --surf:#0e0202; --surf2:#160404; --surf3:#200707;
   --line:#3a0e0e; --line2:#561616;
-  --text:#ff5a4a; --text2:#e8463a; --muted:#c63c30;
+  --text:#ff5a4a; --text2:#e8463a; --muted:#d4422f;   /* muted ab 2.8.3 etwas heller (vorher #c63c30, 3,9 : 1) */
   /* alle Abteilungen rot; Unterscheidung über Tag (Abteilungsname) und Schraffur (Aufbau) / Füllung (2. Phase) */
   --L-a:#ff4a3d; --L-e:#ff4a3d; --L-ei:#000; --T-a:#ff4a3d; --T-e:#ff4a3d; --T-ei:#000; --B-a:#ff4a3d; --B-e:#ff4a3d; --B-ei:#000;
   --R-a:#ff4a3d; --R-e:#ff4a3d; --R-ei:#000;
@@ -130,6 +130,9 @@ svg.i.lg{width:28px;height:28px}
 .appbar-row{display:flex;align-items:center;gap:8px;min-height:var(--tap)}
 .appbar h1{font-size:19px;font-weight:700;margin:0;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em}
 .appbar h1 button.title-btn{all:unset;cursor:pointer;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-radius:8px;padding:2px 4px;margin-left:-4px}
+.appbar h1 button.title-btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}     /* ab 2.8.3: Fokus sichtbar (all:unset nahm ihn weg) */
+/* Smartphone (ab 2.8.3): PDF steht im ⋯-Menü – der Titel bekommt mehr Platz (vorher nach 8 Zeichen abgeschnitten) */
+@media (max-width:480px){.appbar [data-act=pdf],.appbar [data-cact=pdf]{display:none}}
 .appbar h1 .sub{display:block;font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0}
 html.editing .appbar{box-shadow:inset 0 -3px 0 var(--edit)}
 /* Bearbeitungsmodus: Rahmen um den ganzen Bildschirm */
@@ -151,7 +154,9 @@ html.editing body::after{content:"";position:fixed;inset:0;border:4px solid var(
 .btn.primary{background:var(--text);color:var(--bg);border-color:var(--text)}
 .btn.edit{background:var(--edit);color:#1a0a00;border-color:var(--edit)}
 .btn.danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,var(--line))}
-.btn.danger.solid{background:var(--danger);color:#fff;border-color:var(--danger)}
+.btn.danger.solid{background:var(--danger);color:#1a0008;border-color:var(--danger)}      /* ab 2.8.3 dunkle Schrift: Weiß auf Rosa hatte nur 2,9 : 1 */
+html[data-theme="light"] .btn.danger.solid{color:#fff}
+html[data-theme="red"] .btn.danger.solid{color:#000}
 /* Knopf in Phasenfarbe (data-k + geerbtes data-abt) */
 .btn.kfill{background:var(--k);color:var(--ki);border-color:var(--k)}
 .btn.kline{border:2px solid var(--k)}
@@ -160,7 +165,7 @@ html.editing body::after{content:"";position:fixed;inset:0;border:4px solid var(
 html[data-theme="red"] .btn.primary{background:var(--text);color:#000}
 
 /* Sync-Status-Pille */
-.syncpill{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line);
+.syncpill{display:inline-flex;align-items:center;gap:7px;height:44px;padding:0 12px;border-radius:999px;border:1px solid var(--line);
   background:var(--surf);font-size:13px;font-weight:600;color:var(--text2);white-space:nowrap;min-width:44px;justify-content:center}
 .syncpill .dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
 .syncpill[data-state="ok"] .dot{background:var(--ok)}
@@ -220,6 +225,10 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .toolbar{position:sticky;z-index:30;background:var(--bg);padding:10px calc(var(--sar) + var(--gut)) 10px calc(var(--sal) + var(--gut));
   border-bottom:1px solid var(--line);box-shadow:0 8px 16px -12px rgba(0,0,0,.6)}
 .toolbar .row{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;min-width:0}
+/* Niedriger Bildschirm (Smartphone quer, ab 2.8.3): Werkzeugleiste klappt beim Runterscrollen weg und kommt beim Hochscrollen
+   zurück – sonst blieben neben App- und Werkzeugleiste nur 60–85 px für den Inhalt */
+.toolbar{transition:transform .2s ease}
+html.tbhide .toolbar{transform:translateY(calc(-100% - 2px));box-shadow:none;pointer-events:none}
 .toolbar .katbtn{flex:0 1 auto;min-width:0;white-space:nowrap}
 .toolbar .seg{flex:none}
 .modesw{flex:0 1 auto;min-width:0}
@@ -230,8 +239,8 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .search input:focus{border-color:var(--focus)}
 .search .si{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 .search .clear{position:absolute;right:2px;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;background:none;color:var(--muted);border-radius:8px}
-.seg{display:inline-flex;background:var(--surf);border:1px solid var(--line);border-radius:var(--r-sm);padding:3px;gap:2px;flex:none}
-.seg button{border:0;background:transparent;min-height:40px;padding:0 13px;border-radius:7px;font-weight:600;font-size:14px;color:var(--text2);display:inline-flex;align-items:center;gap:6px}
+.seg{display:inline-flex;background:var(--surf);border:1px solid var(--line);border-radius:var(--r-sm);padding:1px;gap:2px;flex:none}
+.seg button{border:0;background:transparent;min-height:44px;min-width:44px;padding:0 13px;border-radius:7px;font-weight:600;font-size:14px;color:var(--text2);display:inline-flex;align-items:center;gap:6px}
 .seg button[aria-pressed="true"]{background:var(--surf3);color:var(--text)}
 .seg .cnt{font-family:var(--mono);font-size:12px;opacity:.8}
 /* Kategorie-Knöpfe, farbig umrandet */
@@ -272,7 +281,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .modesw[aria-checked="true"] .knob{transform:translateX(24px);background:#fff}
 .modesw[aria-checked="true"]{border-color:var(--edit)}
 @media (max-width:620px){
-  .toolbar .seg button{min-width:40px;padding:0 8px}
+  .toolbar .seg button{min-width:44px;padding:0 8px}
   .modesw{gap:6px;padding:0 10px;font-size:13px}
   .modesw .lab svg{display:none}
   .modesw .trk{width:46px}.modesw[aria-checked="true"] .knob{transform:translateX(14px)}}
@@ -351,7 +360,7 @@ html[data-theme="red"] .bighead[data-k="E"]{box-shadow:inset 0 -6px 0 var(--k)}
 /* Kreis-Spalte rechts: Nummer immer an derselben Stelle, unabhängig von Fotos und Text */
 .card .kcol{flex:none;width:clamp(92px,24%,190px);display:flex;flex-direction:column;align-items:flex-end;text-align:right;gap:2px;padding-left:8px;border-left:1px dashed var(--line)}
 .card .kcol small{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
-.card .kcol .kreis{font-size:clamp(20px,4.6vw,30px);overflow-wrap:anywhere}
+.card .kcol .kreis{font-size:clamp(20px,4.6vw,30px);overflow-wrap:break-word}   /* ab 2.8.3: Umbruch nur nach „+“ (<wbr>), nie mitten in der Zahl */
 .card .kcol .kreis.none{font-size:15px}
 @media (max-width:520px){.cards:not(.grid):not(.big) .card .th:nth-child(2){display:none}.cards:not(.grid):not(.big) .card .th{width:64px;height:64px}}
 .card.done .info,.card.done .kcol{opacity:.55}
@@ -376,8 +385,12 @@ html[data-theme="red"] .bighead[data-k="E"]{box-shadow:inset 0 -6px 0 var(--k)}
   background:color-mix(in srgb,var(--k) 86%,transparent);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);
   color:var(--text);text-align:left;box-shadow:0 6px 14px -8px rgba(0,0,0,.7);border-radius:var(--r) var(--r) 0 0}
 .bighead .tag{background:rgba(0,0,0,.22);color:inherit;border-color:transparent}
-.bighead .bk{flex:1;min-width:0;font-family:var(--mono);font-weight:800;font-size:clamp(24px,6.5vw,34px);line-height:1.05;overflow-wrap:anywhere;display:flex;align-items:baseline;gap:8px}
-.bighead .bk small{font-family:var(--font);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
+.bighead .bk{flex:1;min-width:0;font-family:var(--mono);font-weight:800;font-size:clamp(22px,6vw,34px);line-height:1.05;display:flex;align-items:baseline;gap:8px}
+.bighead .bk .bv{min-width:0;overflow-wrap:break-word}          /* ab 2.8.3: „123+124“ nicht mehr als „123+1“ / „24“ */
+/* Smartphone (ab 2.8.3): „KREIS“ über die Nummer, Fotozahl weg – die Nummer bekommt die Breite (sonst brach sie mitten in der Zahl) */
+@media (max-width:620px){.bighead .bk{flex-direction:column;align-items:flex-start;gap:0}.bighead .bk small{font-size:10px}}
+@media (max-width:420px){.bighead .bn{display:none}}
+.bighead .bk small{flex:none;font-family:var(--font);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.7}
 .bighead .bn{font-family:var(--mono);font-size:13px;font-weight:700;opacity:.75;white-space:nowrap}
 .card[data-k] .bighead{color:var(--ki)}
 html[data-theme="red"] .bighead,html[data-theme="red"] .card[data-k] .bighead{background:var(--surf3);color:var(--text);-webkit-backdrop-filter:none;backdrop-filter:none}
@@ -413,7 +426,7 @@ html[data-theme="red"] .bighead .tag{border-color:var(--line2);background:transp
 .setup + .setup{margin-top:10px}
 .setup>summary [data-setup-edit] + [data-setup-edit]{margin-left:-2px}
 .ablsec{display:grid;gap:6px}.ablsec.ed{gap:10px;border:1px solid var(--line);border-radius:var(--r);padding:12px;background:var(--surf)}
-.ablh{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--da)}
+.ablh{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:color-mix(in srgb,var(--da) 55%,var(--text))}
 ol.abl{margin:0;padding-left:26px;display:grid;gap:2px}
 ol.abl li{color:var(--text);font-size:15px;padding:4px 0}
 ol.abl li::marker{font-weight:800;color:var(--muted)}
@@ -451,7 +464,7 @@ ol.abl li .btn.icon{flex:none;width:var(--tap);height:var(--tap)}
 .setup[data-abt="R"]>summary h3{font-size:18px;color:var(--text)}
 .setup[data-abt="R"]>summary .sum{font-size:16px}
 .setup[data-abt="R"] .allg{font-size:19px;line-height:1.45;font-weight:600}
-.setup>summary .sum{font-size:13px;color:var(--muted);font-weight:500;letter-spacing:0;text-transform:none;margin-left:8px}
+.setup>summary .sum{font-size:13px;color:var(--text2);font-weight:500;letter-spacing:0;text-transform:none;margin-left:8px}
 .setup>summary .chev{transition:transform .2s;color:var(--muted)}
 .setup[open]>summary .chev{transform:rotate(90deg)}
 .setup[open]>summary{border-bottom:1px solid var(--line)}
@@ -561,11 +574,16 @@ html.kb-open .sheet-b{padding-bottom:calc(var(--kb, 0px) + 32px)}
 .dialog input.txt:focus{border-color:var(--focus)}
 .toasts{position:fixed;z-index:400;left:50%;transform:translateX(-50%);bottom:calc(var(--sab) + 96px);display:flex;flex-direction:column;gap:8px;width:min(520px,calc(100% - 32px));pointer-events:none}
 .toast{pointer-events:auto;display:flex;align-items:center;gap:12px;background:var(--text);color:var(--bg);border-radius:var(--r);padding:12px 14px 12px 16px;font-weight:600;font-size:15px;box-shadow:var(--shadow);animation:up .2s ease}
-.toast.err{background:var(--danger);color:#fff}
+.toast.err{background:var(--danger);color:#1a0008}
+html[data-theme="light"] .toast.err{color:#fff}
 .toast.warn{background:var(--edit);color:#1a0a00}
+.toast .ti{display:grid;place-items:center;flex:none}
 .toast .t{flex:1}
 .toast button{border:0;background:rgba(0,0,0,.15);color:inherit;font-weight:700;border-radius:8px;min-height:40px;padding:0 12px}
 html[data-theme="red"] .toast{background:#2a0606;color:var(--text);border:1px solid var(--line2)}
+/* Rotlicht (ab 2.8.3): Fehler und Warnungen anders als „Gespeichert“ – Fehler hell hinterlegt, Warnung mit kräftigem Rahmen, beide mit Symbol */
+html[data-theme="red"] .toast.err{background:#ff4a3d;color:#000;border:2px solid #ff4a3d;font-weight:800}
+html[data-theme="red"] .toast.warn{background:#1a0303;color:#ff5a4a;border:3px dashed #ff4a3d}
 
 /* Formular (Editor) */
 .form{display:grid;gap:14px}
@@ -683,7 +701,7 @@ button.item:hover{background:var(--surf2)}
 .cam .vf .flash.go{animation:flash .25s ease}
 @keyframes flash{30%{opacity:.6}}
 .cam .ctrl{display:flex;align-items:center;justify-content:space-between;width:min(560px,100%);padding:18px 24px 6px;gap:12px}
-.cam .shutter{width:84px;height:84px;border-radius:50%;border:5px solid #fff;background:#fff;box-shadow:inset 0 0 0 4px #000}
+.cam .shutter{flex:none;width:84px;height:84px;border-radius:50%;border:5px solid #fff;background:#fff;box-shadow:inset 0 0 0 4px #000}
 .cam .shutter:active{transform:scale(.94)}
 .cam .cbtn{width:56px;height:56px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center}
 .cam .cbtn[aria-pressed="true"]{background:#ffcc33;color:#000}
@@ -724,6 +742,15 @@ button.item:hover{background:var(--surf2)}
 .lbx .nav{width:64px;height:64px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.35);z-index:2}
 .lbx .nav svg{width:30px;height:30px}
 .lbx .nav:disabled{opacity:.25}
+/* Bildansicht im Rotlicht (ab 2.8.3): Schrift, Knöpfe und Rahmen rot statt weiß */
+html[data-theme="red"] .lbx,html[data-theme="red"] .lbx .infos .kreis,html[data-theme="red"] .lbx .tag,html[data-theme="red"] .lbx .estp b,html[data-theme="red"] .lbx .ksub{color:#ff5a4a}
+html[data-theme="red"] .lbx .lbtn,html[data-theme="red"] .lbx .nav,html[data-theme="red"] .lbx .nextk{background:#1a0303;color:#ff5a4a;border:1px solid #561616}
+html[data-theme="red"] .lbx .infos{border-top-color:#3a0e0e}
+html[data-theme="red"] .lbx .infos .chips .chip{background:#1a0303;border-color:#561616;color:#ff5a4a}
+html[data-theme="red"] .lbx .infos .chips .chip b,html[data-theme="red"] .lbx .ksub b,html[data-theme="red"] .lbx .lcap,html[data-theme="red"] .lbx .estp{color:#e8463a}
+html[data-theme="red"] .lbx .lwarn .wbadge{background:rgba(255,74,61,.18);color:#ff5a4a}
+html[data-theme="red"] .lbx .tag{border-color:#561616;background:transparent}
+html[data-theme="red"] .lbx .infos .kreis small{color:#e8463a!important}
 
 /* Annotation */
 .ann{position:fixed;inset:0;z-index:260;background:#000;display:flex;flex-direction:column;color:#fff}
@@ -809,12 +836,13 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
 .erow .rst{font-size:19px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
 .erow .rsz{align-self:flex-start;font-size:14px}
 .rtl{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
-.rfor2{font-size:17px;font-weight:700;color:var(--k)}
+.rfor2{font-size:17px;font-weight:700;color:color-mix(in srgb,var(--k) 45%,var(--text))}
 .rbar{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:6px 14px;border-top:1px solid var(--line);padding-top:8px;width:100%}
 .rbc{display:flex;flex-direction:column;gap:2px;min-width:0}
 .rbc small{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .rbc .v{font-size:16px;font-weight:600;color:var(--text);overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto;line-height:1.25}
 .rbc.hot .v{font-weight:900;color:var(--edit)}
+html[data-theme="light"] .rbc.hot .v{color:#a84a00}
 .rbc.strong .v{font-weight:800}
 .erow .note{font-size:16px;color:var(--text2);-webkit-line-clamp:4}
 .erow.done .ename,.erow.done .thumbs{opacity:.5}
@@ -863,7 +891,7 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
 .rorthead.alldone{border-color:var(--ok);border-left-color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,var(--surf2))}
 .rorthead p{margin:2px 0 0;color:var(--text2);font-size:14px;white-space:pre-wrap}
 .rorthead .rorti{flex:1;min-width:0}
-.rorthead .n{font-family:var(--mono);color:var(--muted);font-weight:700}
+.rorthead .n{font-family:var(--mono);color:var(--text);font-weight:700}
 .rorthum{all:unset;cursor:zoom-in;flex:none;width:56px;height:56px;border-radius:10px;overflow:hidden;background:var(--surf2);display:grid;place-items:center;color:var(--muted)}
 .rorthum img{width:100%;height:100%;object-fit:cover;filter:var(--photo-filter);opacity:0}.rorthum img.ok{opacity:1}
 .rorthum.none{cursor:default}
@@ -897,7 +925,7 @@ textarea.code{width:100%;min-height:120px;font-family:var(--mono);font-size:12px
 .rchk[aria-checked="true"]{color:var(--ok)} .rchk[aria-checked="true"] .box{background:var(--ok);border-color:var(--ok);color:#002b14}
 .rshit{all:unset;cursor:pointer;flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:8px 10px}
 .rshit:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
-.rsz{flex:none;min-width:76px;max-width:40%;font-family:var(--mono);font-weight:800;font-size:16px;color:var(--text);background:var(--surf3);border-radius:8px;padding:6px 8px;text-align:center;line-height:1.25;overflow-wrap:anywhere}
+.rsz{flex:none;min-width:76px;max-width:40%;font-family:var(--mono);font-weight:800;font-size:16px;color:var(--text);background:var(--surf3);border-radius:8px;padding:6px 8px;text-align:center;line-height:1.25;overflow-wrap:break-word}
 .rst{flex:1;min-width:0;font-size:18px;line-height:1.35;white-space:pre-wrap}
 .rst small{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:4px;font-size:13px;color:var(--text2);white-space:normal}
 .rst small svg{vertical-align:-3px}
@@ -1018,6 +1046,18 @@ html[data-theme="red"] .rot[aria-pressed="true"]{color:#000}
 @media (max-width:620px){.bigfields{grid-template-columns:repeat(3,minmax(0,1fr))}.bf .v{font-size:15px}}
 .bigwarn{padding:0 14px 8px;cursor:pointer}
 .bigextra{display:grid;gap:6px;padding:8px 14px 10px;border-top:1px dashed var(--line);cursor:pointer}
+/* Smartphone quer (ab 2.8.3): fixierter Großbild-Kopf und schwebende Knöpfe kompakter – mehr Platz für die Fotos.
+   Weitere Angaben einzeilig (vollständig im Detail: Kopf antippen). */
+@media (orientation:landscape) and (max-height:560px){
+  .bighead{min-height:46px;padding:4px 14px}
+  .bigfields{padding:4px 14px;gap:2px 14px}
+  .bigextra{padding:4px 14px 6px;gap:2px}
+  .bigextra>*{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .bigextra .chips{flex-wrap:nowrap;overflow:hidden}
+  .fabbar{bottom:calc(var(--sab) + 10px);right:calc(var(--sar) + 12px)}
+  .fab{height:52px;min-width:52px;border-radius:16px;padding:0 16px}
+  .fab.qcam{width:52px}
+}
 .bigextra .note{color:var(--text2);font-size:15px;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 html[data-theme="red"] .cards.big .card .bigsticky{background:var(--surf2);-webkit-backdrop-filter:none;backdrop-filter:none}
 /* Bild (noch) nicht auf dem Gerät */
@@ -1026,7 +1066,7 @@ html[data-theme="red"] .cards.big .card .bigsticky{background:var(--surf2);-webk
 /* Schnellzugriff in der fixierten Werkzeugleiste */
 .toolbar .row.qrow{overflow-x:auto;scrollbar-width:none;gap:6px;padding-bottom:1px}
 .toolbar .row.qrow::-webkit-scrollbar{display:none}
-.qb{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:0 13px;border-radius:999px;border:2px solid var(--line2);background:var(--surf);color:var(--text);font-weight:700;font-size:14px;white-space:nowrap}
+.qb{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 13px;border-radius:999px;border:2px solid var(--line2);background:var(--surf);color:var(--text);font-weight:700;font-size:14px;white-space:nowrap}
 .qb[data-abt]{border-color:var(--da);background:color-mix(in srgb,var(--da) 12%,var(--surf))}
 .qb.run{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--surf))}
 .qb.warn{border-color:var(--pink);background:var(--pink-soft)}
@@ -1071,7 +1111,7 @@ html[data-theme="red"] .cards.big .card .bigsticky{background:var(--surf2);-webk
 .fab.cuefab{padding:0 22px}
 @media (max-width:560px){.cuetb [data-cact=addmany] .bl{display:none}.cuetb [data-cact=addmany]{padding:0;width:var(--tap)}.cuetb .row>.btn{padding:0 12px}.cuetb .modesw{padding:0 8px;gap:4px}}
 /* Cue-Kamera: dunkel, kein weißes Aufblitzen, große Knöpfe für den Daumen */
-.ccam .vf{width:min(100vw,calc(var(--vh)*100 - 420px));width:min(100vw,calc(100dvh - 420px));border-color:#2a2d33}
+.ccam .vf{width:min(100vw,calc(var(--vh)*100 - 390px));width:min(100vw,calc(100dvh - 390px));border-color:#2a2d33}   /* ab 2.8.3: 390 statt 420 – auf kleinen Smartphones (320×568) 178 statt 148 px */
 .ccam .vf.go{animation:cpulse .3s ease}
 @keyframes cpulse{40%{box-shadow:inset 0 0 0 10px rgba(255,255,255,.28)}}
 .ccam .hintlbl{background:rgba(0,0,0,.65)!important;color:#e9ecf1!important}
@@ -1108,6 +1148,38 @@ html[data-theme="red"] .ccam .cnext{border-color:#7a1c16;background:#1a0303;colo
 html[data-theme="red"] .ccam .cnr,html[data-theme="red"] .ccam .cnr span,html[data-theme="red"] .ccam .cstat,html[data-theme="red"] .ccam .tbtn,html[data-theme="red"] .ccam .cbtn,html[data-theme="red"] .ccam .top .ttl{color:#ff5a4a}
 html[data-theme="red"] .ccam .shutter{border-color:#7a1c16;background:#1a0303}
 html[data-theme="red"] .ccam video{filter:var(--photo-filter)}
+/* Doku-Kamera (ab 2.8.3): kein weißes Aufblitzen im dunklen Saal – nur noch im hellen Modus; sonst ein dezenter Rand wie bei der Cue-Kamera */
+html:not([data-theme="light"]) .cam .vf .flash{display:none}
+.cam .vf.go{animation:cpulse .3s ease}
+html[data-theme="light"] .cam:not(.ccam) .vf.go{animation:none}
+/* Rotlicht in der Doku-Kamera (ab 2.8.3): rote, dunkle Knöpfe, rot gefiltertes Sucherbild, Phase über Rahmenart statt Farbe */
+@keyframes cpulseR{40%{box-shadow:inset 0 0 0 10px rgba(255,74,61,.35)}}
+html[data-theme="red"] .cam .vf.go{animation:cpulseR .3s ease}
+html[data-theme="red"] .cam video{filter:var(--photo-filter)}
+html[data-theme="red"] .cam .vf{border-color:#7a1c16!important}
+html[data-theme="red"] .cam .vf[data-k="E"]{border-style:dashed}
+html[data-theme="red"] .cam .vf .grid3{opacity:.5}
+html[data-theme="red"] .cam .hintlbl{background:rgba(26,3,3,.85)!important;color:#ff5a4a!important}
+html[data-theme="red"] .cam .tbtn,html[data-theme="red"] .cam .cbtn,html[data-theme="red"] .cam .camlist button,html[data-theme="red"] .cam .katsw button{background:#1a0303;color:#ff5a4a;border:1px solid #561616}
+html[data-theme="red"] .cam .tbtn.done{background:#2a0606;color:#ff5a4a;border:1px solid #7a1c16}
+html[data-theme="red"] .cam .camlist button[aria-pressed="true"],html[data-theme="red"] .cam .katsw button[aria-pressed="true"]{background:#ff4a3d;color:#000;border-color:#ff4a3d}
+html[data-theme="red"] .cam .cbtn[aria-pressed="true"]{background:#ff4a3d;color:#000}
+html[data-theme="red"] .cam .shutter{background:#1a0303;border-color:#7a1c16}
+html[data-theme="red"] .cam .top .ttl,html[data-theme="red"] .cam .camname,html[data-theme="red"] .cam .camhint,html[data-theme="red"] .cam .msg{color:#ff5a4a}
+html[data-theme="red"] .cam .strip img{border-color:#7a1c16!important;filter:var(--photo-filter)}
+html[data-theme="red"] .cam{background:#000}
+/* Smartphone quer (ab 2.8.3): Sucher links, Bedienung rechts – vorher blieb vom Sucher kaum etwas übrig (Cue-Kamera 12 px) */
+@media (orientation:landscape) and (max-height:560px){
+  .cam{display:grid;grid-template-columns:auto minmax(0,1fr);grid-auto-rows:min-content;align-content:center;justify-content:center;justify-items:center;
+    column-gap:clamp(12px,3vw,32px);row-gap:6px;padding:calc(var(--sat) + 60px) calc(var(--sar) + 12px) calc(var(--sab) + 8px) calc(var(--sal) + 12px)}
+  .cam>*:not(.top):not(.vf){grid-column:2}
+  .cam .vf,.ccam .vf{grid-column:1;grid-row:1 / span 12;align-self:center;width:min(58vw,calc(var(--vh)*100 - 76px));width:min(58vw,calc(100dvh - var(--sat) - var(--sab) - 76px))}
+  .cam .msg{grid-column:1 / -1}
+  .cam .ctrl{padding:6px 4px 2px;width:min(420px,100%)}
+  .cam .camhint{display:none}
+  .cam .strip{height:52px;max-width:100%}
+  .ccam .cnr{margin-top:0}
+}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
 @media print{.appbar,.toolbar,.fabbar{display:none}}
@@ -1143,7 +1215,7 @@ window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason 
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.8.2';
+const APP_VERSION = '2.8.3';
 const DB_NAME = 'lichtdoku';
 /* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
    bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
@@ -1340,6 +1412,8 @@ function katHex(abt, kat) { const d = DEPT[abt] || DEPT.L; return kat === 'E' ? 
 function katRgb(abt, kat) { return hexRgb(katHex(abt, kat)); }
 function deptField(abt, k) { return (DEPT[abt] || DEPT.L).fields.find(x => x.k === k); }
 function fieldLabel(abt, k) { if (k === 'ort') return 'Ort'; const f = deptField(abt, k); return f ? f.label : (FIELD_LABEL[k] || k); }
+/** Beschriftung eines Felds ohne bekannte Abteilung (Fehlermeldungen): erste Abteilung, die das Feld kennt */
+function fieldLabelAny(k) { const d = DEPT_ORDER.find(a => deptField(a, k)); return d ? fieldLabel(d, k) : (FIELD_LABEL[k] || k); }
 /** Wert des Hauptfelds (Kreis / Kanal / Zug). Bühne: aktueller Name des Zugs aus der Zugliste. */
 function mainVal(e) {
   if (!e || !e.f) return '';
@@ -1372,6 +1446,8 @@ function infoKeys(abt, all = false) {
 }
 /** Sub (Licht, ab 2.8.1): steht direkt neben dem Kreis – nur, wenn eingetragen */
 function subOf(e) { return e && e.f && abtOf(e) === 'L' && e.f.sub ? String(e.f.sub).trim() : ''; }
+/** Hauptwert (Kreis „123+124“) mit Umbruchstelle nur nach „+“ – nie mitten in einer Zahl (ab 2.8.3 überall gleich) */
+function kreisWbr(v) { return Utils.esc(v).replace(/\+/g, '+<wbr>'); }
 function subHtml(e) { const v = subOf(e); return v ? `<span class="ksub" title="Sub ${Utils.esc(v)}"><b>SUB</b>${Utils.esc(v)}</span>` : ''; }
 /** Warnhinweis als auffällige Plakette (Symbol + Text, auch im Rotlicht eindeutig) */
 function warnHtml(t, cls = '') { return t ? `<span class="wbadge ${cls}">${I('alert', 'sm')}<span>${Utils.esc(t)}</span></span>` : ''; }
@@ -1673,16 +1749,24 @@ const Store = {
       t.oncomplete = () => resolve(result);
       t.onabort = () => {
         const e = t.error;
-        if (e && /quota/i.test(e.name)) reject(new StoreError('Der Gerätespeicher ist voll. Es wurde NICHTS gespeichert. Bitte Platz schaffen (alte Veranstaltungen sichern & löschen, „Speicher aufräumen“) und erneut speichern.', e));
-        else reject(new StoreError('Speichern abgebrochen: ' + (e ? e.message || e.name : 'unbekannter Fehler'), e));
+        if (e && /quota/i.test(e.name)) reject(new StoreError(Store.QUOTA_MSG, e));
+        // ohne Fehlerangabe (ab 2.8.3 verständlich statt „unbekannter Fehler“): z. B. App in den Hintergrund, Speicher knapp
+        else reject(new StoreError(e ? 'Speichern abgebrochen: ' + (e.message || e.name) + '. Es wurde NICHTS gespeichert – bitte erneut speichern.'
+          : 'Speichern abgebrochen – der Browser hat den Vorgang ohne Angabe von Gründen beendet (z. B. App im Hintergrund oder Speicher knapp). Es wurde NICHTS gespeichert – bitte erneut speichern.', e));
       };
       // KEIN preventDefault (bis 2.4.2): Ein fehlgeschlagener Request muss die GANZE Transaktion abbrechen
       // (→ onabort → reject). Sonst würde der Rest still gespeichert und „atomar“ wäre gelogen.
       t.onerror = () => {};
       try { result = fn(stores, t); }
-      catch (e) { try { t.abort(); } catch (_) { /* schon beendet */ } reject(e instanceof StoreError ? e : new StoreError('Speicherfehler: ' + e.message, e)); }
+      catch (e) {
+        try { t.abort(); } catch (_) { /* schon beendet */ }
+        // Speicher voll schon beim Schreiben (manche Browser werfen sofort): dieselbe klare Meldung wie beim Abbruch (ab 2.8.3)
+        reject(e instanceof StoreError ? e : e && /quota/i.test((e.name || '') + ' ' + (e.message || '')) ? new StoreError(Store.QUOTA_MSG, e)
+          : new StoreError('Speicherfehler: ' + e.message + '. Es wurde NICHTS gespeichert.', e));
+      }
     });
   },
+  QUOTA_MSG: 'Der Gerätespeicher ist voll. Es wurde NICHTS gespeichert. Bitte Platz schaffen (alte Veranstaltungen sichern & löschen, „Speicher aufräumen“) und erneut speichern.',
   req(r) { return new Promise((res, rej) => { r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); },
   async getAll(name) { let out = []; await this.tx(name, 'readonly', s => { s[name].getAll().onsuccess = e => { out = e.target.result; }; }); return out; },
   async get(name, key) { let out; await this.tx(name, 'readonly', s => { s[name].get(key).onsuccess = e => { out = e.target.result; }; }); return out; },
@@ -1701,7 +1785,7 @@ const Rec = {
   create(base, fields) {
     const ts = Clock.now();
     const r = Object.assign({ id: Utils.uuid(), c: ts, mod: ts, f: {}, t: {} }, base);
-    for (const [k, v] of Object.entries(fields)) { r.f[k] = v; r.t[k] = ts; }
+    for (const [k, v] of Object.entries(fields)) { r.f[k] = this.isSub(k) && this.isObj(v) ? this.canonSub(v, ts) : v; r.t[k] = ts; }
     return r;
   },
   /** Gibt eine geänderte Kopie zurück (oder null, wenn nichts geändert wurde) */
@@ -1711,7 +1795,10 @@ const Rec = {
     for (const [k, v] of Object.entries(patch)) {
       // Zeitstempel nie älter als der bisherige Wert: Hat ein Gerät mit vorgehender Uhr das Feld geschrieben,
       // gilt die eigene, spätere Änderung trotzdem als jünger (sonst würde sie beim Abgleich zurückgedreht).
-      if (JSON.stringify(r.f[k] ?? null) !== JSON.stringify(v ?? null)) { r.f[k] = v; r.t[k] = Math.max(ts, (r.t[k] || 0) + 1); changed = true; }
+      if (JSON.stringify(r.f[k] ?? null) !== JSON.stringify(v ?? null)) {
+        const t = Math.max(ts, (r.t[k] || 0) + 1);
+        r.f[k] = this.isSub(k) ? this.stampSub(r.f[k], r.t[k] || 0, v, t) : v; r.t[k] = t; changed = true;
+      }
     }
     if (!changed) return null;
     r.mod = Math.max(ts, ...Object.values(r.t));
@@ -1719,27 +1806,102 @@ const Rec = {
   },
   /** Zwei Fassungen desselben Datensatzes zusammenführen */
   merge(local, remote) {
-    if (!local) return { rec: Utils.clone(remote), changed: true };
+    if (!local) {             // neu: Züge gleich in die feste Schreibweise (wie nach jedem Zusammenführen)
+      const rec = Utils.clone(remote);
+      for (const k of Object.keys(rec.f || {})) if (this.isSub(k) && this.isObj(rec.f[k])) rec.f[k] = this.canonSub(rec.f[k], (rec.t && rec.t[k]) || 0);
+      return { rec, changed: true };
+    }
     const r = Utils.clone(local); let changed = false;
     const keys = new Set([...Object.keys(local.t || {}), ...Object.keys(remote.t || {})]);
     for (const k of keys) {
       const tl = local.t[k] || 0, tr = remote.t[k] || 0;
       const vl = JSON.stringify(local.f[k] ?? null), vr = JSON.stringify(remote.f[k] ?? null);
-      if (tr > tl || (tr === tl && tr > 0 && vr > vl)) {   // Gleichstand: deterministischer Vergleich
+      // Züge (ab 2.8.3): Angabe für Angabe zusammenführen – Licht-Bestückung und Bühnen-Last am selben Zug bleiben beide
+      const sub = this.isSub(k) && this.isObj(local.f[k]) && this.isObj(remote.f[k]) && (vl !== vr || tr !== tl) ? this.mergeSub(local.f[k], tl, remote.f[k], tr) : null;
+      if (sub) {
+        const t = Math.max(tl, tr);
+        if (JSON.stringify(sub) !== vl || t !== tl) { r.f[k] = sub; r.t[k] = t; changed = true; }
+      } else if (tr > tl || (tr === tl && tr > 0 && vr > vl)) {   // Gleichstand: deterministischer Vergleich
         if (vl !== vr || tr !== tl) { r.f[k] = remote.f[k]; r.t[k] = tr; changed = true; }
       }
+      // Zug als Objekt immer in derselben Form (mit Zeitstempeln je Angabe) – sonst hinge die Schreibweise von der
+      // Reihenfolge der Abgleiche ab (gleicher Inhalt, aber einmal mit, einmal ohne „_t“)
+      if (this.isSub(k) && this.isObj(r.f[k])) { const cn = this.canonSub(r.f[k], r.t[k] || 0); if (JSON.stringify(cn) !== JSON.stringify(r.f[k])) { r.f[k] = cn; changed = true; } }
       Clock.observe(tr);
     }
     r.c = Math.min(local.c || Infinity, remote.c || Infinity);
     r.mod = Math.max(0, ...Object.values(r.t));
     return { rec: r, changed };
   },
+  /* ---------- Züge: Angaben einzeln zusammenführen (ab 2.8.3) ----------
+     Ein Zug „z:<id>“ im Veranstaltungs-Datensatz ist EIN Feld mit einem Objekt {name, hoehe, bestueckung, last, …}.
+     Licht pflegt Bestückung, Bühne Last/Ebene/Bereich – am selben Zug. Bis 2.8.2 gewann beim Abgleich das ganze
+     Objekt mit dem jüngeren Zeitstempel: Änderten Licht und Bühne denselben Zug auf zwei Geräten, war eine
+     Änderung weg. Jetzt trägt das Objekt je Angabe einen Zeitstempel („_t“) und die Feldzeit, zu der sie
+     galten („_ft“). Stimmt _ft nicht mit der Feldzeit überein, hat ein älteres Gerät (≤ 2.8.2) das Objekt geändert,
+     ohne _t zu pflegen → dann gelten alle seine Angaben mit der Feldzeit (wie bisher: das Ganze gewinnt).
+     Das Ergebnis hängt nicht von der Reihenfolge ab (je Angabe: jüngere Zeit, bei Gleichstand fester Vergleich). */
+  isSub(k) { return typeof k === 'string' && k.startsWith('z:'); },
+  isObj(v) { return !!v && typeof v === 'object' && !Array.isArray(v); },
+  /** Angaben eines Zug-Objekts → Map Angabe → [Zeit, Wert] und Grundzeit „base“: Eine Angabe, die fehlt, gilt als „nicht
+      vorhanden“ zur Grundzeit. Verlässliches Objekt (_ft = Feldzeit): Zeiten aus _t, Grundzeit _b (sonst 0).
+      Sonst (von einem älteren Gerät geändert): alle Angaben UND das Fehlen jeder anderen Angabe zur Feldzeit. */
+  _subMap(v, ft) {
+    const ok = this.isObj(v._t) && v._ft === ft, m = new Map();
+    const base = ok ? (typeof v._b === 'number' && isFinite(v._b) && v._b >= 0 ? v._b : 0) : ft;
+    const keys = new Set(Object.keys(v).concat(ok ? Object.keys(v._t) : []));
+    this.SUB_META.forEach(x => keys.delete(x));
+    for (const p of keys) {
+      if (this.BAD_KEYS.has(p)) continue;
+      const t = ok ? (typeof v._t[p] === 'number' && isFinite(v._t[p]) ? v._t[p] : base) : ft;
+      m.set(p, [t, v[p]]);
+    }
+    return { m, base };
+  },
+  SUB_META: ['_t', '_ft', '_b', '~'],
+  /** feste Schreibweise: Angaben sortiert; eine fehlende Angabe behält ihre Zeit in _t (Fehlen gilt so weiter).
+      „~“ steht vorn (größte Zeit und Summe der Zeiten, fest breit): Geräte mit 2.8.2 oder älter entscheiden bei gleicher
+      Feldzeit nach dem Text des ganzen Objekts – so nehmen sie das zusammengeführte (neuere) statt des alten. */
+  _subBuild(m, ft, base) {
+    const out = { '~': '' }, t = {}; let mx = base, sum = base;
+    [...m.keys()].sort().forEach(p => { const [tp, vp] = m.get(p); if (vp !== undefined) out[p] = vp; t[p] = tp; mx = Math.max(mx, tp); sum += tp; });
+    const pad = n => String(Math.max(0, Math.round(n))).padStart(17, '0');
+    out['~'] = pad(mx) + '.' + pad(sum);
+    out._t = t; out._ft = ft; if (base > 0) out._b = base; return out;
+  },
+  _subJ(v) { return v === undefined ? '' : JSON.stringify(v); },
+  /** Neuer Wert eines Zugs: geänderte Angaben bekommen die neue Zeit, unveränderte behalten ihre */
+  stampSub(old, oldT, v, t) {
+    if (!this.isObj(v)) return v;
+    const P = this.isObj(old) ? this._subMap(old, oldT) : { m: new Map(), base: 0 }, m = new Map();
+    const keys = new Set(Object.keys(v).concat([...P.m.keys()])); this.SUB_META.forEach(x => keys.delete(x));
+    for (const p of keys) {
+      if (this.BAD_KEYS.has(p)) continue;
+      const nv = v[p], pv = P.m.get(p) || [P.base, undefined];
+      m.set(p, this._subJ(pv[1]) === this._subJ(nv) ? [pv[0], nv] : [t, nv]);
+    }
+    return this._subBuild(m, t, P.base);
+  },
+  canonSub(v, t) { const A = this._subMap(v, t); return this._subBuild(A.m, t, A.base); },
+  mergeSub(a, ta, b, tb) {
+    const A = this._subMap(a, ta), B = this._subMap(b, tb), m = new Map();
+    for (const p of new Set([...A.m.keys(), ...B.m.keys()])) {
+      const x = A.m.get(p) || [A.base, undefined], y = B.m.get(p) || [B.base, undefined];
+      const jx = this._subJ(x[1]), jy = this._subJ(y[1]);
+      m.set(p, y[0] > x[0] || (y[0] === x[0] && jy > jx) ? y : x);
+    }
+    return this._subBuild(m, Math.max(ta, tb), Math.max(A.base, B.base));
+  },
   /* Eingangsprüfung für fremde Datensätze (Import, Sync-Paket, Live). IDs landen in HTML-Attributen –
      deshalb nur Zeichen, die nie aus einem Attribut ausbrechen können. Alle von Doku VT und dem
      Lichtdoku-Import erzeugten IDs (UUID, lgs-/lge-/lgp-/lgb-…) passen auf dieses Muster. */
   ID: /^[A-Za-z0-9_.:-]{1,200}$/,
   BAD_KEYS: new Set(['__proto__', 'constructor', 'prototype']),
-  MAX_FIELDS: 2000, MAX_STR: 100000,
+  // Höchstgrenzen für fremde Datensätze. MAX_FIELDS ab 2.8.3 20000 (vorher 2000): Gelöschte Unterobjekte einer Veranstaltung
+  // (Schritte, Orte, Personen, Züge, Punkte) bleiben als Feld stehen – eine lange genutzte Veranstaltung kam über 2000 und wurde
+  // beim Empfänger still verworfen. Geräte mit 2.8.2 oder älter lehnen weiterhin ab 2000 Feldern ab (Hinweis in der Diagnose).
+  MAX_FIELDS: 20000, MAX_FIELDS_OLD: 2000, MAX_STR: 100000,
+  ARR_FIELDS: ['personIds', 'abschnitte', 'zustand', 'art'],
   valid(r, type) {
     if (!r || typeof r !== 'object' || Array.isArray(r) || typeof r.id !== 'string' || !this.ID.test(r.id)) return false;
     if (!r.f || typeof r.f !== 'object' || Array.isArray(r.f) || !r.t || typeof r.t !== 'object' || Array.isArray(r.t)) return false;
@@ -1753,10 +1915,14 @@ const Rec = {
       if (typeof r.f.b !== 'string' || !this.ID.test(r.f.b) || typeof r.f.cueId !== 'string' || !this.ID.test(r.f.cueId)) return false;
       if (r.f.o != null && r.f.o !== '' && (typeof r.f.o !== 'string' || !this.ID.test(r.f.o))) return false;
     }
+    // Listenfelder der Requisite (Zustand, Wann gebraucht, Zu wem, Art) müssen Listen sein (ab 2.8.3) –
+    // ein präpariertes „zustand: 5“ brachte sonst die Requisite-Ansicht zum Absturz
+    if (type === 'entry') for (const k of this.ARR_FIELDS) { const v = r.f[k]; if (v != null && !Array.isArray(v)) return false; }
     const fk = Object.keys(r.f), tk = Object.keys(r.t);
     if (fk.length > this.MAX_FIELDS || tk.length > this.MAX_FIELDS) return false;
     for (const k of fk.concat(tk)) if (this.BAD_KEYS.has(k) || k.length > 120) return false;
-    for (const v of Object.values(r.t)) if (typeof v !== 'number' || !isFinite(v) || v < 0) return false;
+    // Zeitstempel: Zahl im Bereich gültiger Datumswerte (ab 2.8.3 auch nach oben begrenzt – 1e308 fror ein Feld für immer ein)
+    for (const v of Object.values(r.t)) if (typeof v !== 'number' || !isFinite(v) || v < 0 || v > 8.64e15) return false;
     for (const v of Object.values(r.f)) if (typeof v === 'string' && v.length > this.MAX_STR) return false;
     return true;
   },
@@ -1865,6 +2031,11 @@ const Repo = {
     // was ein „Nur Änderungen“-Paket weitergibt – auch Daten, die von einem anderen Gerät übernommen wurden.
     const rx = Date.now();
     const sets = [['shows', shows], ['entries', entries], ['photos', photos], ['runs', runs], ['house', house], ['cuelists', cuelists], ['cues', cues], ['cueimgs', cueimgs]];
+    // Eigene Änderungen nur speichern, wenn andere Geräte sie auch annehmen (ab 2.8.3): Ein Text über Rec.MAX_STR Zeichen
+    // ließ den ganzen Datensatz beim Empfänger still durchfallen. Fremde Daten wurden vorher schon geprüft (Rec.valid).
+    if (local) for (const [, list] of sets) for (const r of list) for (const [k, v] of Object.entries(r.f || {})) {
+      if (typeof v === 'string' && v.length > Rec.MAX_STR) throw new StoreError(`Der Text „${fieldLabelAny(k)}“ ist zu lang (${v.length.toLocaleString('de-DE')} Zeichen, höchstens ${Rec.MAX_STR.toLocaleString('de-DE')}). Es wurde NICHTS gespeichert – bitte kürzen und erneut speichern.`);
+    }
     sets.forEach(([, list]) => list.forEach(r => { r.rx = rx; }));
     // Cache SOFORT setzen (ab 2.4.3): Wer danach Rec.patch/merge rechnet, sieht diesen Stand – zwei schnelle
     // Schreibvorgänge überschreiben sich nicht mehr gegenseitig (Lost Update). IndexedDB führt die
@@ -1945,7 +2116,7 @@ const Repo = {
     const s = this.shows.get(id); const t0 = (s && s.t.del) || 0;
     // Lösch-Kennung gilt nur, wenn sie zum aktuellen Löschen gehört (nicht zu einem früheren, schon wiederhergestellten)
     const g = s && s.f.delGrp && (s.t.delGrp || 0) >= t0 ? s.f.delGrp : null;
-    const pick = (m, slack) => [...m.values()].filter(r => r.showId === id && r.f.del &&
+    const pick = (m, slack) => [...m.values()].filter(r => r.showId === id && r.f.del && !r.f.delSelf &&
       (g ? r.f.delGrp === g && (r.t.del || 0) <= (r.t.delGrp || 0) : (r.t.del || 0) >= t0 - slack));      // ohne Kennung (mit 2.4.2 gelöscht): Zeit-Heuristik wie bisher
     return { entries: pick(this.entries, 0), photos: pick(this.photos, 0), runs: pick(this.runs, 2000) };
   },
@@ -2040,8 +2211,10 @@ const Repo = {
   },
   async deleteEntry(id) {
     const out = { entries: [], photos: [] };
-    const e = Rec.patch(this.entries.get(id), { del: true }); if (e) out.entries.push(e);
-    this.photosOf(id).forEach(p => out.photos.push(Rec.patch(p, { del: true })));
+    // „delSelf“ (ab 2.8.3): einzeln gelöscht. Löscht ein anderes Gerät ohne Abgleich danach die ganze Veranstaltung, bekommt der
+    // Eintrag dessen Lösch-Kennung – „Wiederherstellen“ hätte ihn sonst zurückgebracht.
+    const e = Rec.patch(this.entries.get(id), { del: true, delSelf: true }); if (e) out.entries.push(e);
+    this.photosOf(id).forEach(p => out.photos.push(Rec.patch(p, { del: true, delSelf: true })));
     await this._write(out);
   },
   async toggleCheck(id, kat) {
@@ -2106,7 +2279,7 @@ const Repo = {
       Object.keys(f).filter(k => deptField(abt, k).bool && f[k] && !mergedInto.f[k]).forEach(k => { patch[k] = true; });
       const r = Rec.patch(mergedInto, patch); if (r) out.entries.push(r);
       entryId = mergedInto.id;
-      if (target) { const t = Rec.patch(target, { del: true }); if (t) out.entries.push(t); }
+      if (target) { const t = Rec.patch(target, { del: true, delSelf: true }); if (t) out.entries.push(t); }
     } else if (target) {
       const r = Rec.patch(target, f); if (r) out.entries.push(r);
       entryId = target.id;
@@ -2136,7 +2309,7 @@ const Repo = {
     // Fotos, die im Editor entfernt/ersetzt wurden → Tombstone. Nur Fotos, die beim Öffnen des Editors zu sehen
     // waren (draft.initialPhotos) – ein Foto, das währenddessen per Live-Abgleich dazukam, bleibt erhalten.
     if (draft.id) this.photosOf(draft.id).forEach(p => {
-      if (!keep.has(p.id) && (!draft.initialPhotos || draft.initialPhotos.has(p.id))) out.photos.push(Rec.patch(p, { del: true }));
+      if (!keep.has(p.id) && (!draft.initialPhotos || draft.initialPhotos.has(p.id))) out.photos.push(Rec.patch(p, { del: true, delSelf: true }));
     });
     await this._write(out);
     return { entryId, mergedInto: mergedInto ? mergedInto.id : null, mergeNotes };
@@ -2353,6 +2526,7 @@ const Photo = {
     const c = document.createElement('canvas'); c.width = c.height = size;
     const ctx = c.getContext('2d');
     ctx.imageSmoothingQuality = 'high';
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, size, size);       // transparente PNG auf Weiß statt Schwarz (JPEG kennt keine Transparenz, ab 2.8.3)
     ctx.drawImage(src, sx, sy, s, s, 0, 0, size, size);
     try { return await this.fromCanvas(c); } finally { c.width = c.height = 0; }
   },
@@ -2614,7 +2788,8 @@ const Camera = {
         const c = document.createElement('canvas'); const size = Math.min(s, Settings.v.maxPx);
         c.width = c.height = size;
         c.getContext('2d').drawImage(video, (w - s) / 2, (h - s) / 2, s, s, 0, 0, size, size);
-        const flash = el.querySelector('.flash'); flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
+        // Rückmeldung beim Auslösen: im hellen Modus kurz weiß, sonst (dunkler Saal, Rotlicht) nur ein dezenter Rand (ab 2.8.3)
+        const flash = el.querySelector('.flash'); flash.classList.remove('go'); vf.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go'); vf.classList.add('go');
         if (navigator.vibrate) navigator.vibrate(15);
         const p = Photo.fromCanvas(c).finally(() => { c.width = c.height = 0; });
         opts.onShot(p, kat); addThumb(p, kat); count++; setHint();
@@ -3520,6 +3695,12 @@ const Pdf = {
     }
     return lines;
   },
+  /** wie wrap(…).slice(0, n), aber gekürzter Text endet sichtbar mit „…“ (ab 2.8.3 – vorher brach er still ab) */
+  wrapMax(str, font, size, maxW, n) {
+    const ls = this.wrap(str, font, size, maxW); if (ls.length <= n) return ls;
+    const out = ls.slice(0, n); out[n - 1] = this.fit(out[n - 1] + ' …', font, size, maxW); if (!/…$/.test(out[n - 1])) out[n - 1] = this.fit(out[n - 1] + '…', font, size, maxW);
+    return out;
+  },
   fit(str, font, size, maxW) {
     if (this.width(str, font, size) <= maxW) return str;
     let s = String(str); while (s.length > 1 && this.width(s + '…', font, size) > maxW) s = s.slice(0, -1);
@@ -3566,12 +3747,12 @@ const Pdf = {
       for (let i = 0; i < ls.length; i += 12) out.push({ t: 'text', lines: ls.slice(i, i + 12), h: Math.min(12, ls.length - i) * 14 + 6 });
       out.push({ t: 'gap', h: 8 });
     };
-    const chk = (text, n, entry) => { const ls = this.wrap(text, 'F1', 11, CW - (n ? 44 : 24)).slice(0, 20); return { t: 'chk', n, lines: ls, entry, h: ls.length * 14 + (entry ? 12 : 0) + 8 }; };
+    const chk = (text, n, entry) => { const ls = this.wrapMax(text, 'F1', 11, CW - (n ? 44 : 24), 20); return { t: 'chk', n, lines: ls, entry, h: ls.length * 14 + (entry ? 12 : 0) + 8 }; };
     const table = (cols, rows, out) => {
       const thead = { t: 'thead', cols, h: 18 };
       out.push(thead);
       rows.forEach(r => {
-        const cells = r.map((v, i) => this.wrap(v || '—', i === 0 ? 'F2' : 'F1', i === 0 ? 11 : 10, cols[i][2] - 8).slice(0, 6));
+        const cells = r.map((v, i) => this.wrapMax(v || '—', i === 0 ? 'F2' : 'F1', i === 0 ? 11 : 10, cols[i][2] - 8, 6));
         out.push({ t: 'trow', cols, cells, thead, h: Math.max(...cells.map(x => x.length)) * 13 + 10 });
       });
       out.push({ t: 'gap', h: 10 });
@@ -3587,9 +3768,9 @@ const Pdf = {
       // box: true = Kästchen, fett ist Spalte 2 (Ablauf); 1 = Kästchen, fett ist Spalte 1 (Gegenstände); Zeile mit nobox ohne Kästchen
       const bc = box === 1 ? 1 : box ? 2 : 0;
       rows.forEach(r => {
-        const cells = r.vals.map((v, i) => this.wrap(v || '', i === bc || r.bold ? 'F2' : 'F1', fs, Math.max(20, cols[i][2] - 10 - (i === bc && r.indent ? 14 : 0))).slice(0, 8));
+        const cells = r.vals.map((v, i) => this.wrapMax(v || '', i === bc || r.bold ? 'F2' : 'F1', fs, Math.max(20, cols[i][2] - 10 - (i === bc && r.indent ? 14 : 0)), 8));
         const boldN = cells[bc].length;
-        if (r.sub) cells[bc] = cells[bc].concat(this.wrap(r.sub, 'F1', fs - 0.5, Math.max(20, cols[bc][2] - 10 - (r.indent ? 14 : 0))).slice(0, 8));
+        if (r.sub) cells[bc] = cells[bc].concat(this.wrapMax(r.sub, 'F1', fs - 0.5, Math.max(20, cols[bc][2] - 10 - (r.indent ? 14 : 0)), 8));
         out.push({ t: 'rrow', cols, cells, fs, boldN, box: box && !r.nobox, bc, entry: r.entry || null, indent: !!r.indent, bold: r.bold, thead, h: Math.max(...cells.map(x => x.length), 1) * (fs + 3) + (fs < 10 ? 6 : 9) });
       });
       thead.grpH = out.slice(out.indexOf(thead)).reduce((n, x) => n + x.h, 0);   // ganze Tabelle – passt sie auf eine Seite, wird sie nicht geteilt
@@ -3605,13 +3786,13 @@ const Pdf = {
       let out = [];
       if (show.f.dauer) out.push({ t: 'text', lines: ['Dauer: ' + show.f.dauer], h: 20, bold: true });
       if (show.f.fotoR) out.push({ t: 'img', b: show.f.fotoR, size: 150, cap: 'Übersicht', h: 164 });
-      if (show.f.einrichtungR) { out.push(Object.assign(rhead('ALLGEMEINE INFOS'), { big: true, h: 38 })); const ls = this.wrap(show.f.einrichtungR, 'F2', 14, CW - 24).slice(0, 30); out.push({ t: 'hl', lines: ls, fs: 14, h: ls.length * 18 + 16 }); out.push({ t: 'gap', h: 8 }); }
+      if (show.f.einrichtungR) { out.push(Object.assign(rhead('ALLGEMEINE INFOS'), { big: true, h: 38 })); const ls = this.wrapMax(show.f.einrichtungR, 'F2', 14, CW - 24, 30); out.push({ t: 'hl', lines: ls, fs: 14, h: ls.length * 18 + 16 }); out.push({ t: 'gap', h: 8 }); }
       const saf = [];
       REQ_SICHER.forEach(([k, n]) => {
         es.filter(e => e.f.sicherheit === k).forEach(e => saf.push(`[!] ${n.toUpperCase()} – ${e.f.was || 'Ohne Namen'}${Req.val(e, 'ort') ? ' (' + Req.val(e, 'ort') + ')' : ''}`));
         steps.filter(s => Req.stepSafety(s) === k).forEach(s => saf.push(`[!] ${n.toUpperCase()} – Schritt: ${s.text}${(abs.find(a => a.key === s.abschnitt) || {}).label ? ' (' + abs.find(a => a.key === s.abschnitt).label + ')' : ''}`));
       });
-      if (saf.length) { out.push(rhead('SICHERHEIT')); saf.forEach(t => { const ls = this.wrap(t, 'F2', 10.5, CW).slice(0, 6); out.push({ t: 'safe', lines: ls, h: ls.length * 13 + 5 }); }); out.push({ t: 'gap', h: 8 }); }
+      if (saf.length) { out.push(rhead('SICHERHEIT')); saf.forEach(t => { const ls = this.wrapMax(t, 'F2', 10.5, CW, 6); out.push({ t: 'safe', lines: ls, h: ls.length * 13 + 5 }); }); out.push({ t: 'gap', h: 8 }); }
       if (ps.length && !opts.cover) {                    // klein, zweispaltig: Person – Rolle (mit Deckblatt steht die Liste dort)
         out.push(rhead('PERSONEN'));
         const half = Math.ceil(ps.length / 2), w = CW / 2;
@@ -3635,8 +3816,8 @@ const Pdf = {
       // Ablauf ab 2.6.4: je Schritt/Gegenstand ein großer Eintrag (lesbar im Halbdunkel): Kästchen, Wann, Was groß, Angaben darunter
       const TW = CW - 30 - 64;
       const ritem = (when, title, info, more, entry) => {
-        const wl = when ? this.wrap(when, 'F2', 11.5, TW) : [], tl = this.wrap(title, 'F2', 14, TW).slice(0, 6);
-        const il = info ? this.wrap(info, 'F1', 12, TW).slice(0, 8) : [], ml = more ? this.wrap(more, 'F1', 11, TW).slice(0, 8) : [];
+        const wl = when ? this.wrap(when, 'F2', 11.5, TW) : [], tl = this.wrapMax(title, 'F2', 14, TW, 6);
+        const il = info ? this.wrapMax(info, 'F1', 12, TW, 8) : [], ml = more ? this.wrapMax(more, 'F1', 11, TW, 8) : [];
         return { t: 'ritem', wl, tl, il, ml, entry, h: 10 + wl.length * 14 + tl.length * 17 + il.length * 15 + ml.length * 14 + 10 };
       };
       const sItem = s => { const o = s.ortId ? Req.ortByKey(sid, s.ortId) : null, saf1 = Req.stepSafety(s), e = Req.stepEntry(s);
@@ -3651,7 +3832,7 @@ const Pdf = {
         const its = Req.sectionItems(sid, a, steps, es).filter(it => it.kind === 's' || a.typ !== 'vor');
         if (!its.length && !a.notiz) return false;
         if (!out[0] || out[0].text !== a.label.toUpperCase()) out.push(Object.assign(rhead(a.label.toUpperCase()), { big: true, h: 38 }));   // nicht doppelt unter gleichnamiger Überschrift
-        if (a.notiz) { const ls = this.wrap(a.notiz, 'F1', 12, CW).slice(0, 8); out.push({ t: 'note', lines: ls, big: true, h: ls.length * 15 + 6, chain: true }); }
+        if (a.notiz) { const ls = this.wrapMax(a.notiz, 'F1', 12, CW, 8); out.push({ t: 'note', lines: ls, big: true, h: ls.length * 15 + 6, chain: true }); }
         its.forEach(it => out.push(it.kind === 's' ? sItem(it.s) : gItem(it.e)));
         out.push({ t: 'gap', h: 10 });
         return true;
@@ -3679,7 +3860,7 @@ const Pdf = {
         groups.forEach(g => {
           const o = g.o && g.o.ort, name = g.k === '' ? 'Ohne Ort' : (o ? o.name : g.o.name + (g.o.removed ? ' · Ort entfernt' : ''));
           out.push(rsub(name.toUpperCase()));
-          if (o && o.notiz) { const ls = this.wrap(o.notiz, 'F1', 10, CW).slice(0, 6); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4, chain: true }); }
+          if (o && o.notiz) { const ls = this.wrapMax(o.notiz, 'F1', 10, CW, 6); out.push({ t: 'note', lines: ls, h: ls.length * 13 + 4, chain: true }); }
           if (o && o.foto) out.push({ t: 'img', b: o.foto, size: 90, cap: o.cap || '', h: 102, chain: true });
           const rows = [];
           if (/requisitentisch/i.test(name)) {
@@ -3780,8 +3961,8 @@ const Pdf = {
       let bem = e.f.bemerkung ? this.wrap(e.f.bemerkung, 'F1', 11, innerW) : [];
       if (bem.length > 14) bem = bem.slice(0, 13).concat(['… (gekürzt)']);
       const stp = ab === 'R' ? [] : Views.entrySteps(e).map(x => `${ablaufName(ab, x.abschnitt)}: ${x.text}`);
-      const exl = (extras ? this.wrap(extras, 'F1', 9.5, innerW) : []).concat(stp.length ? this.wrap('Ablauf – ' + stp.join('   ·   '), 'F1', 9.5, innerW).slice(0, 6) : []);
-      const wl = ab !== 'R' && e.f.warnung ? this.wrap('ACHTUNG: ' + e.f.warnung, 'F2', 11, innerW - 12).slice(0, 6) : [];
+      const exl = (extras ? this.wrap(extras, 'F1', 9.5, innerW) : []).concat(stp.length ? this.wrapMax('Ablauf – ' + stp.join('   ·   '), 'F1', 9.5, innerW, 6) : []);
+      const wl = ab !== 'R' && e.f.warnung ? this.wrapMax('ACHTUNG: ' + e.f.warnung, 'F2', 11, innerW - 12, 12) : [];   // Warnhinweis: bis 12 Zeilen (vorher still nach 6 abgeschnitten)
       return { bem, exl, wl, h: 56 + (wl.length ? wl.length * 14 + 10 : 0) + (bem.length ? 22 + bem.length * 14 : 0) + (exl.length ? exl.length * 12 + (bem.length ? 6 : 14) : 0) + 6 };
     };
 
@@ -3813,13 +3994,13 @@ const Pdf = {
       let y = H - 60;
       const docName = multi ? 'TECHNIKDOKUMENTATION' : (DEPT[tocAbt] || DEPT.L).name.toUpperCase() + ' – DOKUMENTATION';
       c.rgb(0.45, 0.48, 0.53).text(M, y, docName, 'F2', 10); y -= 34;
-      for (const ln of this.wrap(show.f.titel, 'F2', 30, CW).slice(0, 2)) { c.rgb(0.07, 0.08, 0.1).text(M, y, ln, 'F2', 30); y -= 34; }
+      for (const ln of this.wrapMax(show.f.titel, 'F2', 30, CW, 2)) { c.rgb(0.07, 0.08, 0.1).text(M, y, ln, 'F2', 30); y -= 34; }
       if (show.f.spielstaette) { c.rgb(0.25, 0.28, 0.33).text(M, y, show.f.spielstaette, 'F1', 14); y -= 22; }
       c.rgb(0.45, 0.48, 0.53).text(M, y, `Stand ${dateStr}  ·  ${st0.entries} Einträge  ·  ${st0.photos} Fotos` + (opts.kat !== 'all' ? `  ·  nur ${katName(tocAbt, opts.kat)}` : ''), 'F1', 10); y -= 18;
-      if (show.f.notiz) { for (const ln of this.wrap(show.f.notiz, 'F1', 10, CW).slice(0, 4)) { c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 10); y -= 13; } }
+      if (show.f.notiz) { for (const ln of this.wrapMax(show.f.notiz, 'F1', 10, CW, 4)) { c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 10); y -= 13; } }
       const rps = inDepts.includes('R') ? Req.persons(showId) : [];      // Requisite: Personen (Person · Rolle) auf dem Deckblatt
       if (rps.length) { y -= 8; c.rgb(0.07, 0.08, 0.1).text(M, y, 'Personen', 'F2', 11); y -= 14;
-        for (const ln of this.wrap(rps.map(p => Req.personLabel(p)).join('   ·   '), 'F1', 10, CW).slice(0, 6)) { c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 10); y -= 13; } }
+        for (const ln of this.wrapMax(rps.map(p => Req.personLabel(p)).join('   ·   '), 'F1', 10, CW, 6)) { c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 10); y -= 13; } }
       y -= 12; c.rgb(0.8, 0.82, 0.85, true).line(M, y, W - M, y, 1); y -= 26;
       c.rgb(0.07, 0.08, 0.1).text(M, y, 'Inhalt', 'F2', 16); y -= 14;
       return y;
@@ -4052,8 +4233,10 @@ const Pdf = {
       c.rgb(0.45, 0.48, 0.53).text(M, H - 96, ml, 'F2', 9);
       const sbT = subOf(e) ? 'SUB ' + subOf(e) : '', sbW = sbT ? this.width(sbT, 'F2', 15) + 16 : 0;
       let ks = 30; while (ks > 14 && this.width(kreisTxt, 'F2', ks) > CW - 150 - sbW) ks -= 2;
-      c.rgb(0.07, 0.08, 0.1).text(M + Math.max(44, mw), H - 100, kreisTxt, 'F2', ks);
-      if (sbT) c.rgb(0.25, 0.28, 0.33).text(M + Math.max(44, mw) + this.width(kreisTxt, 'F2', ks) + 14, H - 100, sbT, 'F2', 15);
+      // sehr langer Kreis: nicht mehr über den Seitenrand hinaus (ab 2.8.3), vollständig steht er im Infoblock
+      const kreisDraw = this.fit(kreisTxt, 'F2', ks, CW - Math.max(44, mw) - sbW - 8);
+      c.rgb(0.07, 0.08, 0.1).text(M + Math.max(44, mw), H - 100, kreisDraw, 'F2', ks);
+      if (sbT) c.rgb(0.25, 0.28, 0.33).text(M + Math.max(44, mw) + this.width(kreisDraw, 'F2', ks) + 14, H - 100, sbT, 'F2', 15);
       if (pg.cont) c.rgb(0.45, 0.48, 0.53).textR(W - M, H - 96, `Fortsetzung · Fotos ${pg.from + 1}–${pg.from + pg.photos.length}`, 'F1', 9);
       const m = measure(e), boxY = 40;
       drawBox(c, e, it.kat, boxY, m);
@@ -4190,8 +4373,13 @@ const Pdf = {
     const pr = RunList.progress(run, items);
     const wr = this._writer(`${show.f.titel} – ${run.f.titel || 'Vorstellung'}`);
     const dateStr = Utils.fmtDate(Date.now());
+    // Zeitumstellung in der Nacht des Durchgangs (ab 2.8.3): Uhrzeiten mit Zone, sonst stünde 02:30 (Sommerzeit) vor 02:10 (Winterzeit)
+    const offs = new Set(Object.keys(run.f).filter(k => k.startsWith('h:') && run.f[k] && run.f[k].at).map(k => new Date(run.f[k].at).getTimezoneOffset()));
+    const zoned = offs.size > 1;
+    const zone = ts => { const o = -new Date(ts).getTimezoneOffset(); return o === 120 ? 'MESZ' : o === 60 ? 'MEZ' : 'UTC' + (o >= 0 ? '+' : '−') + Math.abs(o / 60); };
     // Zeilen vorbereiten (Kopf je Abteilung, Gruppenzeile, Punkt)
     const rows = [];
+    if (zoned) rows.push({ t: 'group', label: 'Zeitumstellung in dieser Nacht – Uhrzeiten mit Zone (MESZ = Sommerzeit, MEZ = Winterzeit)', h: 18 });
     DEPT_ORDER.filter(d => depts.includes(d)).forEach(d => {
       const its = items.filter(i => i.abt === d); if (!its.length) return;
       const p = RunList.progress(run, its);
@@ -4200,7 +4388,7 @@ const Pdf = {
       its.forEach(i => {
         if (i.group !== lastG) { rows.push({ t: 'group', label: i.group, h: 18 }); lastG = i.group; }
         const hk = run.f['h:' + i.key], bold = !(hk && hk.ok);                      // offene Punkte fett → mit fetter Schrift umbrechen
-        const lines = this.wrap(i.text, bold ? 'F2' : 'F1', 10.5, W - 2 * M - 170).slice(0, 8);
+        const lines = this.wrapMax(i.text, bold ? 'F2' : 'F1', 10.5, W - 2 * M - 170, 8);
         rows.push({ t: 'item', d, i, h: Math.max(18, lines.length * 13 + 6), lines });
       });
     });
@@ -4235,7 +4423,9 @@ const Pdf = {
           c.rgb(0.35, 0.37, 0.42, true).rect(M + 4, y - 14, 11, 11, 'S');
           if (ok) { c.rgb(0.13, 0.55, 0.33, true).line(M + 6, y - 9, M + 9, y - 12.5, 1.6); c.line(M + 9, y - 12.5, M + 14, y - 5, 1.6); }
           r.lines.forEach((ln, k) => c.rgb(0.1, 0.11, 0.13).text(M + 22, y - 12 - k * 13, ln, ok ? 'F1' : 'F2', 10.5));
-          if (h) c.rgb(0.25, 0.28, 0.33).text(W - M - 132, y - 12, (ok ? '' : 'zurück ') + RunList.fmtTime(h.at), 'F1', 9.5)
+          if (h && zoned) c.rgb(0.25, 0.28, 0.33).text(W - M - 140, y - 12, (ok ? '' : 'zur. ') + RunList.fmtTime(h.at) + ' ' + zone(h.at), 'F1', 8)
+            .text(W - M - 70, y - 12, this.fit(h.dev || '', 'F1', 9, 70), 'F1', 9);
+          else if (h) c.rgb(0.25, 0.28, 0.33).text(W - M - 132, y - 12, (ok ? '' : 'zurück ') + RunList.fmtTime(h.at), 'F1', 9.5)
             .text(W - M - 84, y - 12, this.fit(h.dev || '', 'F1', 9.5, 84), 'F1', 9.5);
           else c.rgb(0.75, 0.2, 0.4).text(W - M - 132, y - 12, 'offen', 'F2', 9.5);
           c.rgb(0.88, 0.89, 0.91, true).line(M, y - r.h + 1, W - M, y - r.h + 1, 0.4);
@@ -4298,7 +4488,9 @@ const Sync = {
   async markSynced(msg) { this.state.lastSyncAt = Date.now(); this.state.lastError = ''; await this.log(msg, 'ok'); },
   pending() {
     const since = this.state.lastSyncAt; let n = 0;
-    for (const m of [Repo.shows, Repo.entries, Repo.photos, Repo.runs, Repo.house, Repo.cuelists, Repo.cues, Repo.cueimgs]) for (const r of m.values()) if (r.mod > since) n++;
+    // nach der Eingangszeit auf diesem Gerät (ab 2.8.3, wie collect): Datensätze von einem Gerät mit vorgehender Uhr haben
+    // einen „mod“ in der Zukunft und standen sonst bis zu einen Tag lang als „offen“ da, obwohl gerade abgeglichen
+    for (const m of [Repo.shows, Repo.entries, Repo.photos, Repo.runs, Repo.house, Repo.cuelists, Repo.cues, Repo.cueimgs]) for (const r of m.values()) if ((r.rx || r.mod) > since) n++;
     return n;
   },
   status() {
@@ -4312,7 +4504,7 @@ const Sync = {
   /** Datensätze sammeln: seit Zeitpunkt, optional nur bestimmte Shows (inkl. Tombstones!).
       depts: nur Einträge/Fotos dieser Abteilungen (null = alle). Veranstaltungen (inkl. Einrichtung
       und Zugliste) gehen IMMER mit – sie sind gemeinsam. */
-  collect({ since = 0, showIds = null, depts = null } = {}) {
+  collect({ since = 0, showIds = null, depts = null, strict = false } = {}) {
     const inShow = r => !showIds || showIds.includes(r.showId || r.id);
     // ab 2.4.3 nach der lokalen Eingangszeit rx: auch von anderen Geräten Übernommenes geht weiter
     // (Datensätze aus 2.4.2 ohne rx wie bisher nach mod)
@@ -4324,11 +4516,17 @@ const Sync = {
     // aber nicht in das Backup einzelner Veranstaltungen
     const cuePick = m => showIds ? [] : [...m.values()].filter(r => (r.rx || r.mod) > since);
     return this.filterRecs({ shows: pick(Repo.shows), entries: pick(Repo.entries), photos: pick(Repo.photos), runs: pick(Repo.runs), house,
-      cuelists: cuePick(Repo.cuelists), cues: cuePick(Repo.cues), cueimgs: cuePick(Repo.cueimgs) }, depts);
+      cuelists: cuePick(Repo.cuelists), cues: cuePick(Repo.cues), cueimgs: cuePick(Repo.cueimgs) }, depts, strict);
   },
-  /** Einträge und Fotos auf Abteilungen beschränken. Ein Foto gehört zur Abteilung seines Eintrags. */
-  filterRecs(recs, depts) {
+  /** Was an ein Gerät mit diesen Abteilungen geht (ab 2.8.3): Licht, Ton und Bühne IMMER – auch Einträge fremder
+      Abteilungen, die dieses Gerät selbst nur von einem anderen bekommen hat. Vorher gingen nur die eigenen Abteilungen
+      weiter; wer im Kreis abglich (Licht → Ton → Bühne → Alle), bei dem kamen die Licht-Einträge nie an, obwohl alle
+      „Synchron“ zeigten. Requisite bleibt wie bisher auf Geräte mit Requisite beschränkt (ältere Gegenstellen kennen „R“
+      nicht, Paketformat 3). Ein Foto gehört zur Abteilung seines Eintrags. */
+  filterRecs(recs, depts, strict = false) {
     if (!depts) return recs;
+    // strict: Gegenstelle ohne Abteilungen (vor 2.0.0, kennt nur Licht) – dann wie bisher nur die genannten Abteilungen
+    if (!strict) depts = depts.includes('R') ? DEPT_ORDER.slice() : DEPT_ORDER.filter(d => d !== 'R');
     const okE = e => depts.includes(abtOf(e));
     const okP = p => { const e = Repo.entries.get(p.f.entryId) || (recs.entries || []).find(x => x.id === p.f.entryId); return !e || okE(e); };
     // Durchgänge: nur die Haken der erlaubten Abteilungen mitschicken (Feld für Feld – der Merge ergänzt den Rest)
@@ -4429,6 +4627,8 @@ const Sync = {
     const from = data.deviceName ? ` von ${data.deviceName}` : '';
     if (data.type === 'sync') await this.markSynced(`Sync-Paket${from} eingespielt: ${stat.neu} neu, ${stat.geaendert} zusammengeführt, ${stat.bilder} Bilder`);
     else await this.log(`Backup${from} importiert: ${stat.neu} neu, ${stat.geaendert} zusammengeführt, ${stat.bilder} Bilder`, 'ok');
+    // Abgelehntes nicht verschweigen (ab 2.8.3): vorher stand danach „Synchron“, obwohl z. B. eine Veranstaltung fehlte
+    if (stat.ungueltig) await this.log(`${stat.ungueltig} Datensätze/Bilder${from} NICHT übernommen (ungültig oder zu groß)`, 'error');
     return { ...stat, missing, type: data.type };
   }
 };
@@ -4725,14 +4925,16 @@ class PeerSession {
           this.peerName = msg.n; this.peerId = msg.id; Sync.changed(); this.onstate('hello', msg.n);
           // Abteilungen: Schnittmenge beider Geräte (ältere Versionen ohne Angabe = nur Licht)
           this.peerDepts = Array.isArray(msg.d) ? msg.d : ['L'];
+          this.strict = !Array.isArray(msg.d);       // Gegenstelle ohne Abteilungen: nur Licht (kein Weitergeben anderer Abteilungen)
           this.depts = Settings.v.depts.filter(d => this.peerDepts.includes(d));
           this.peerCues = !!msg.c;                  // ältere Gegenstellen kennen keine Cue-Fotos
-          await Sync.log(`Live-Verbindung mit ${msg.n} hergestellt (Einträge: ${this.depts.length ? Sync.deptLabel(this.depts) : 'keine gemeinsame Abteilung – nur Veranstaltungen'})`, 'ok');
-          { const meta = Sync.collect({ since: 0, depts: this.depts }); if (!this.peerCues) Sync.stripCues(meta); await this.send({ t: 'meta', ...meta }); }
+          await Sync.log(`Live-Verbindung mit ${msg.n} hergestellt (Einträge: ${this.strict ? (this.depts.length ? Sync.deptLabel(this.depts) : 'keine gemeinsame Abteilung – nur Veranstaltungen') : Sync.deptLabel(DEPT_ORDER.filter(d => d !== 'R' || this.depts.includes('R')))})`, 'ok');
+          { const meta = Sync.collect({ since: 0, depts: this.depts, strict: this.strict }); if (!this.peerCues) Sync.stripCues(meta); await this.send({ t: 'meta', ...meta }); }
           this.unsub = Repo.on(ev => this._local(ev));
           break;
         case 'meta': {
           const st = await Repo.applyRemote(msg);
+          if (st.ungueltig) await Sync.log(`Live: ${st.ungueltig} Datensätze von ${this.peerName || 'der Gegenstelle'} abgelehnt (ungültig oder zu groß)`, 'error');
           this.gotMeta = true; this.onstate('progress', `Daten zusammengeführt: ${st.neu} neu, ${st.geaendert} geändert`);
           const miss = await Repo.missingBlobs(); miss.forEach(b => this.need.add(b));
           this.needTotal = miss.length;
@@ -4752,7 +4954,8 @@ class PeerSession {
           await this._maybeDone();
           break;
         case 'delta': {
-          await Repo.applyRemote(msg);
+          const st = await Repo.applyRemote(msg);
+          if (st.ungueltig) await Sync.log(`Live: ${st.ungueltig} Datensätze von ${this.peerName || 'der Gegenstelle'} abgelehnt (ungültig oder zu groß)`, 'error');
           const ids = (msg.photos || []).filter(p => !p.f.del).map(p => p.b)
             .concat(Settings.v.depts.includes('R') ? Req.blobRefs((msg.shows || []).filter(s => s && s.f && !s.f.del), msg.house || []) : [], Cues.blobRefsOf(msg.cueimgs || []));
           const have = await Repo.blobIds(); const miss = ids.filter(b => !have.has(b) && !this.need.has(b));
@@ -4777,7 +4980,7 @@ class PeerSession {
   /** Lokale Änderung sofort an das andere Gerät schicken */
   async _local(ev) {
     if (!ev.local || !this.open) return;
-    const recs = Sync.filterRecs(ev.records, this.depts || Settings.v.depts);
+    const recs = Sync.filterRecs(ev.records, this.depts || Settings.v.depts, !!this.strict);
     if (!this.peerCues) Sync.stripCues(recs);
     if (!recs.shows.length && !recs.entries.length && !recs.photos.length && !(recs.runs || []).length && !(recs.house || []).length && !Sync.hasCue(recs)) return;
     await this.send({ t: 'delta', ...recs });
@@ -4884,7 +5087,9 @@ const Ui = {
   toast(msg, kind = '', { action = null, ms = 3800 } = {}) {
     const box = document.getElementById('toasts');
     const t = document.createElement('div'); t.className = `toast ${kind}`;
-    t.innerHTML = `<span class="t">${Utils.esc(msg)}</span>${action ? `<button>${Utils.esc(action.label)}</button>` : ''}`;
+    // Fehler und Warnungen mit Symbol (ab 2.8.3) – auch ohne Farbe (Rotlicht) als Fehler erkennbar
+    const ic = kind === 'err' || kind === 'warn' ? `<span class="ti" aria-hidden="true">${I('alert')}</span>` : '';
+    t.innerHTML = `${ic}<span class="t">${kind === 'err' ? '<span class="sr">Fehler: </span>' : ''}${Utils.esc(msg)}</span>${action ? `<button>${Utils.esc(action.label)}</button>` : ''}`;
     if (action) t.querySelector('button').onclick = () => { t.remove(); action.fn(); };
     box.appendChild(t);
     while (box.children.length > 3) box.firstChild.remove();
@@ -5117,7 +5322,7 @@ const Views = {
       return `<article class="${cls}" data-k="${it.kat}" data-abt="${abt}" data-key="${esc(it.key)}">
       <div class="bigsticky" data-k="${it.kat}">
         <button class="bighead" data-k="${it.kat}" data-act="open" aria-label="${esc(name)} öffnen">${tagHtml(abt, it.kat)}
-          <span class="bk"><small>${esc(D.mainLabel)}</small>${mv ? esc(mv) : '<span class="muted">ohne</span>'}${subHtml(e)}</span>
+          <span class="bk"><small>${esc(D.mainLabel)}</small><span class="bv">${mv ? kreisWbr(mv) : '<span class="muted">ohne</span>'}</span>${subHtml(e)}</span>
           <span class="bn">${ph.length} Foto${ph.length === 1 ? '' : 's'}</span></button>
         <div class="bigfields" data-act="open" role="button" tabindex="0" aria-label="${esc(name)} öffnen" style="--n:${hk.length}">${fields}</div>
         ${warn ? `<div class="bigwarn" data-act="open">${warn}</div>` : ''}
@@ -5140,7 +5345,7 @@ const Views = {
           ${steps}
           ${e.f.bemerkung ? `<span class="note">${esc(e.f.bemerkung)}</span>` : ''}
         </span>
-        <span class="kcol"><small>${esc(D.mainLabel)}</small><span class="krow"><span class="kreis ${mv ? '' : 'none'}">${mv ? esc(mv).replace(/\+/g, '+<wbr>') : 'ohne'}</span>${subHtml(e)}</span></span>
+        <span class="kcol"><small>${esc(D.mainLabel)}</small><span class="krow"><span class="kreis ${mv ? '' : 'none'}">${mv ? kreisWbr(mv) : 'ohne'}</span>${subHtml(e)}</span></span>
       </button>
       ${dup ? `<span class="dup" title="${esc(D.mainLabel)} doppelt">doppelt</span>` : ''}
       ${checklist ? this.chkHtml(e, it.kat) : ''}
@@ -5678,7 +5883,7 @@ const SetupView = {
         else {
           // Abhaken im Kasten „Ablauf“ geht auch ohne „Vorstellung heute beginnen“ – der Durchgang wird dann angelegt
           let id = b.dataset.runId;
-          if (!id || !Repo.runs.get(id)) { const run = RunList.runsOf(showId).find(x => x.f.datum === RunList.isoDate()) || await RunList.create(showId); id = run.id; }
+          if (!id || !Repo.runs.get(id) || Repo.runs.get(id).f.del) { const run = RunList.todayRun(showId) || await RunList.create(showId); id = run.id; }
           if (navigator.vibrate) navigator.vibrate(10); await RunList.toggle(id, r);
         }
       } catch (err) { App.error(err); }
@@ -5733,7 +5938,7 @@ const SetupView = {
     // Während, Pause und danach stehen im Kasten „Ablauf“ (bei Requisite in der Ansicht „Ablauf“), gleicher Durchgang.
     const items = RunList.items(s.id, depts).filter(i => i.vor);
     if (!items.length && !edit) return '';
-    const today = RunList.isoDate(), run = RunList.runsOf(s.id).find(r => r.f.datum === today);
+    const run = RunList.todayRun(s.id);
     const pr = run ? RunList.progress(run, items) : null;
     // Ton und Bühne brauchen die Liste vor jeder Vorstellung → dort von selbst aufgeklappt
     const open = this.open.run ?? depts.some(d => d === 'T' || d === 'B' || d === 'R');
@@ -5771,7 +5976,7 @@ const SetupView = {
       zum Abhaken im heutigen Durchgang. Die Schritte „Vor der Vorstellung“ stehen oben im Kasten „Vor der Vorstellung“. */
   htmlAbl(s, abt, edit) {
     const e = Utils.esc, steps = Repo.ablaufOf(s.id, abt), rest = steps.filter(x => x.abschnitt !== 'grund'), vor = steps.length - rest.length;
-    const run = RunList.runsOf(s.id).find(r => r.f.datum === RunList.isoDate()) || null;
+    const run = RunList.todayRun(s.id);
     const done = run ? rest.filter(x => { const h = run.f['h:' + x.key]; return h && h.ok; }).length : 0;
     const sum = rest.length ? (run ? `heute ${done} von ${rest.length} erledigt` : `${rest.length} Schritt${rest.length === 1 ? '' : 'e'}`) : 'noch kein Ablauf';
     let body = ABLAUF.filter(([k]) => k !== 'grund').map(([k]) => { const list = rest.filter(x => x.abschnitt === k); if (!list.length) return '';
@@ -6093,22 +6298,91 @@ const RunList = {
   },
   runsOf(showId) {
     return [...Repo.runs.values()].filter(r => r.showId === showId && !r.f.del)
-      .sort((a, b) => String(b.f.datum || '').localeCompare(String(a.f.datum || '')) || (b.c - a.c));
+      .sort((a, b) => String(b.f.datum || '').localeCompare(String(a.f.datum || '')) || (this.slot(b) - this.slot(a)) || (b.c - a.c));
   },
   isoDate(d = new Date()) { const p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; },
+  /** Spieltag (ab 2.8.3): wechselt erst um 4 Uhr morgens. Wer nach Mitternacht abbaut und abhakt, bleibt im
+      Durchgang des Vorabends (vorher begann um 0 Uhr ein neuer Durchgang mit dem Folgedatum). */
+  DAY_START_H: 4,
+  today(d = new Date()) { return this.isoDate(new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours() - this.DAY_START_H, d.getMinutes())); },
+  /** Durchgang des heutigen Spieltags (bei „Neu beginnen“ der zuletzt begonnene) */
+  todayRun(showId) { const d = this.today(); return this.runsOf(showId).find(r => r.f.datum === d) || null; },
+  /** Nummer des Durchgangs am Tag: 1 = erster, 2 = „Neu beginnen“ … (ab 2.8.3 Feld „seq“, davor aus dem Titel „(2)“) */
+  slot(r) { const n = +r.f.seq; if (n >= 1) return Math.floor(n); const m = /\((\d+)\)\s*$/.exec(String(r.f.titel || '')); return m ? +m[1] : 1; },
+  /** Feste Kennung je Veranstaltung, Spieltag und Nummer (ab 2.8.3): Beginnen zwei Geräte unabhängig voneinander
+      die Vorstellung (oder haken ab, ohne begonnen zu haben), entsteht derselbe Datensatz – der Abgleich führt ihn
+      feldweise zusammen, statt zwei Durchgänge zu zeigen. */
+  runId(showId, datum, seq) { const id = `run-${showId}-${datum}-${seq}`; return Rec.ID.test(id) ? id : null; },
   async create(showId) {
-    const iso = this.isoDate();
-    const n = this.runsOf(showId).filter(r => r.f.datum === iso).length;
-    const r = Rec.create({ showId }, { datum: iso, titel: `Vorstellung ${Utils.fmtDate(Date.now(), false)}${n ? ` (${n + 1})` : ''}`, del: false });
+    const iso = this.today();
+    const live = this.runsOf(showId).filter(r => r.f.datum === iso);
+    let seq = Math.max(0, ...live.map(r => this.slot(r))) + 1;
+    // gelöschter Durchgang mit dieser Kennung: nächste Nummer (sonst kämen seine alten Haken zurück)
+    while (this.runId(showId, iso, seq) && Repo.runs.has(this.runId(showId, iso, seq))) seq++;
+    const id = this.runId(showId, iso, seq);
+    const datum = new Date(iso + 'T12:00').getTime(), n = live.length;
+    const r = Rec.create(id ? { id, showId } : { showId }, { datum: iso, seq, titel: `Vorstellung ${Utils.fmtDate(datum, false)}${n ? ` (${n + 1})` : ''}`, del: false });
     await Repo._write({ runs: [r] }); return r;
   },
+  /** Durchgänge zusammenführen (ab 2.8.3), die dasselbe meinen: gleiche Veranstaltung, gleicher Spieltag, gleiche
+      Nummer – z. B. von zwei Geräten mit 2.8.2 oder älter, die unabhängig „Vorstellung heute beginnen“ getippt haben.
+      Jeder Haken behält seinen Zeitstempel (der jüngere gewinnt, wie beim Abgleich); die übrigen Durchgänge werden
+      gelöscht und zeigen mit „mergedInto“ auf den bleibenden. Haken, die ein älteres Gerät danach noch in einen
+      solchen Durchgang setzt, wandern beim nächsten Lauf nach. Ergebnis auf allen Geräten gleich (feste Auswahl). */
+  async fold() {
+    const groups = new Map();
+    for (const r of Repo.runs.values()) {
+      if (r.f.del || !r.f.datum) continue;
+      const k = r.showId + '|' + r.f.datum + '|' + this.slot(r);
+      if (!groups.has(k)) groups.set(k, []); groups.get(k).push(r);
+    }
+    const canon = new Map(), drop = [];               // id → Kopie des bleibenden Durchgangs
+    const pick = list => {                             // bleibend: feste Kennung, sonst der älteste, sonst kleinste ID
+      const det = list.find(r => r.id === this.runId(r.showId, r.f.datum, this.slot(r)));
+      return det || list.slice().sort((a, b) => (a.c - b.c) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))[0];
+    };
+    const copyInto = (dst, src) => {                   // Haken mit Original-Zeitstempel übernehmen, wenn jünger
+      let ch = false;
+      for (const k of Object.keys(src.f)) {
+        if (!k.startsWith('h:')) continue;
+        const ts = src.t[k] || 0, td = dst.t[k] || 0;
+        const vs = JSON.stringify(src.f[k] ?? null), vd = JSON.stringify(dst.f[k] ?? null);
+        if (ts > td || (ts === td && ts > 0 && vs > vd)) { if (vs !== vd || ts !== td) { dst.f[k] = Utils.clone(src.f[k]); dst.t[k] = ts; ch = true; } }
+      }
+      if (ch) dst.mod = Math.max(dst.mod || 0, ...Object.values(dst.t));
+      return ch;
+    };
+    const target = id => { if (canon.has(id)) return canon.get(id); const r = Repo.runs.get(id); if (!r) return null; const c = Utils.clone(r); canon.set(id, c); c._ch = false; return c; };
+    for (const list of groups.values()) {
+      if (list.length < 2) continue;
+      const keep = pick(list), dst = target(keep.id);
+      for (const r of list) {
+        if (r.id === keep.id) continue;
+        if (copyInto(dst, r)) dst._ch = true;
+        const p = Rec.patch(r, { del: true, mergedInto: keep.id }); if (p) drop.push(p);
+      }
+    }
+    // Nachzügler: gelöschte, zusammengeführte Durchgänge mit jüngeren Haken (Kette höchstens 10 Schritte)
+    for (const r of Repo.runs.values()) {
+      if (!r.f.del || !r.f.mergedInto) continue;
+      let id = r.f.mergedInto, n = 0, to = null;
+      while (id && n++ < 10) { const x = Repo.runs.get(id); if (!x) break; if (!x.f.del) { to = x; break; } id = x.f.mergedInto; }
+      if (!to || to.showId !== r.showId) continue;
+      const dst = target(to.id); if (copyInto(dst, r)) dst._ch = true;
+    }
+    const runs = drop.concat([...canon.values()].filter(c => c._ch).map(c => { delete c._ch; return c; }));
+    if (runs.length) await Repo._write({ runs });
+    return runs.length;
+  },
+  foldSoon: Utils.debounce(function () { RunList.fold().catch(e => console.error(e)); }, 400),
   async toggle(runId, key) {
-    const r = Repo.runs.get(runId); if (!r) return;
+    let r = Repo.runs.get(runId); if (!r) return;
+    if (r.f.del && r.f.mergedInto) { const m = Repo.runs.get(r.f.mergedInto); if (m && !m.f.del) r = m; }   // inzwischen zusammengeführt (ab 2.8.3)
     const cur = r.f['h:' + key];
     const v = { ok: !(cur && cur.ok), at: Date.now(), dev: Sync.deviceName() };
     const p = Rec.patch(r, { ['h:' + key]: v }); if (p) await Repo._write({ runs: [p] });
   },
-  async remove(runId) { const r = Repo.runs.get(runId); const p = r && Rec.patch(r, { del: true }); if (p) await Repo._write({ runs: [p] }); },
+  async remove(runId) { const r = Repo.runs.get(runId); const p = r && Rec.patch(r, { del: true, delSelf: true }); if (p) await Repo._write({ runs: [p] }); },
   progress(run, items) { const done = items.filter(i => { const h = run && run.f['h:' + i.key]; return h && h.ok; }).length; return { done, all: items.length }; },
   fmtTime(ts) { return ts ? new Date(ts).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) : ''; },
 
@@ -6120,8 +6394,12 @@ const RunList = {
     sh.el.classList.add('runsheet');
     const draw = () => {
       const vis = App.visibleDepts(showId), edit = App.state.edit;
-      const runs = this.runsOf(showId), run = cur && Repo.runs.get(cur);
-      if (run && run.f.del) cur = null;
+      const runs = this.runsOf(showId);
+      let run = cur && Repo.runs.get(cur);
+      if (run && run.f.del) {          // zusammengeführt (ab 2.8.3) → den bleibenden Durchgang zeigen, sonst keinen
+        const m = run.f.mergedInto && Repo.runs.get(run.f.mergedInto);
+        cur = m && !m.f.del ? m.id : null; run = cur ? m : null;
+      }
       const items = this.items(showId, vis);
       const pr = this.progress(run, items);
       const head = `<div class="runhead">
@@ -7509,7 +7787,7 @@ const ReqView = {
   safetyCount(showId) {
     return Req.entriesR(showId).filter(e => e.f.sicherheit).length + Req.steps(showId).filter(s => Req.stepSafety(s)).length;
   },
-  todayRun(showId) { const d = RunList.isoDate(); return RunList.runsOf(showId).find(r => r.f.datum === d) || null; },
+  todayRun(showId) { return RunList.todayRun(showId); },
   /** abhaken – ohne Durchgang für heute wird er dabei angelegt */
   async tick(showId, key) {
     let r = this.todayRun(showId);
@@ -7846,12 +8124,29 @@ const Cues = {
   },
   /** Hochzählen: immer die nächste ganze Cue (12 → 13, 12.5 → 13) – Punkt-Cues sind eingeschoben */
   nextNr(s) { const m = /^(\d+)/.exec(String(s ?? '')); return m ? String(parseInt(m[1], 10) + 1) : '1'; },
+  /** Nächste ganze Nummer nach nr; bei einer Text-Cue („Ende“) nach der höchsten Zahl der Liste (ab 2.8.3 – vorher
+      sprang „Nächster Cue“ nach „Ende“ auf Cue 1 und hängte das Foto dort an). extra = weitere Nummern (noch nicht gespeichert). */
+  nextAfter(listId, nr, extra = []) {
+    if (!isNaN(this.num(this.norm(nr)))) return this.nextNr(this.norm(nr));
+    const ns = this.cuesOf(listId).map(c => this.num(this.norm(c.f.nr))).concat(extra.map(x => this.num(this.norm(x)))).filter(x => !isNaN(x));
+    return ns.length ? String(Math.floor(Math.max(...ns)) + 1) : '1';
+  },
+  /** Anzahl der Nummern von–bis im Schritt (für „Mehrere Cues“); NaN bei ungültiger Eingabe */
+  rangeCount(von, bis, step) {
+    const v = [von, bis, step].map(x => this.norm(x)), dec = Math.max(...v.map(x => (x.split('.')[1] || '').length)), f = Math.pow(10, dec);
+    const a = Math.round(this.num(v[0]) * f), b = Math.round(this.num(v[1]) * f), s = Math.max(1, Math.round(this.num(v[2]) * f));
+    return [a, b, s].some(isNaN) ? NaN : Math.floor(Math.abs(b - a) / s) + 1;
+  },
+  MAX_RANGE: 2000,
   /** Schnellauswahl beim Anlegen (ab 2.8.2): Ausgangspunkt ist die zuletzt angelegte Cue (bei gleicher Zeit die höchste Nummer).
       Vorschlag: die nächsten drei ganzen Nummern und die Punktstimmungen dazu (13 → 14, 15, 16 und 13.1 … 13.9).
       Nummern, die es in der Liste schon gibt, fallen weg. */
   quickNrs(listId) {
     const cs = this.cuesOf(listId).filter(c => !isNaN(this.num(c.f.nr)));
-    const last = cs.slice().sort((a, b) => (b.c - a.c) || this.cmpNr(b.f.nr, a.f.nr))[0];
+    // angelegt = Erstellzeit, aber nie später als die Ankunft auf diesem Gerät (ab 2.8.3): Eine Cue von einem Gerät mit
+    // vorgehender Uhr blieb sonst tagelang „zuletzt angelegt“
+    const at = c => Math.min(c.c || 0, c.rx || c.c || 0);
+    const last = cs.slice().sort((a, b) => (at(b) - at(a)) || this.cmpNr(b.f.nr, a.f.nr))[0];
     const have = new Set(this.cuesOf(listId).map(c => this.norm(c.f.nr)));
     const base = last ? Math.floor(this.num(last.f.nr)) : 0, free = x => !have.has(x);
     const next = [1, 2, 3].map(i => String(base + i)).filter(free);
@@ -7927,7 +8222,7 @@ const Cues = {
     const v = [von, bis, step].map(x => this.norm(x)), dec = Math.max(...v.map(x => (x.split('.')[1] || '').length));
     const f = Math.pow(10, dec), a = Math.round(this.num(v[0]) * f), b = Math.round(this.num(v[1]) * f), s = Math.max(1, Math.round(this.num(v[2]) * f));
     if ([a, b, s].some(isNaN)) return 0;
-    for (let n = Math.min(a, b); n <= Math.max(a, b) && out.length < 500; n += s) {
+    for (let n = Math.min(a, b); n <= Math.max(a, b) && out.length < this.MAX_RANGE; n += s) {     // ab 2.8.3 bis 2000 (vorher still 500)
       const nr = this.norm((n / f).toFixed(dec));
       if (!have.has(nr)) { have.add(nr); out.push(this.newCue(listId, nr)); }
     }
@@ -8024,7 +8319,7 @@ const CueCam = {
     const cs = Cues.cuesOf(listId);
     const free = cs.find(c => !Cues.imgsOf(c.id).length);
     if (free) return { nr: free.f.nr, cueId: free.id };
-    return { nr: cs.length ? Cues.nextNr(cs[cs.length - 1].f.nr) : '1', cueId: null };
+    return { nr: cs.length ? Cues.nextAfter(listId, cs[cs.length - 1].f.nr) : '1', cueId: null };
   },
   /** Warteschlange abarbeiten: komprimieren, Foto (und bei Bedarf die neue Cue) in einer Transaktion speichern */
   async pump() {
@@ -8096,7 +8391,7 @@ const CueCam = {
           const all = Cues.cuesOf(listId).map(c => c.f.nr).concat([...fresh.keys()]).filter(x => !isNaN(Cues.num(x)) && Cues.num(x) > n).sort((a, b) => Cues.cmpNr(a, b));
           if (all.length) return Cues.norm(all[0]);          // vorbereitete Cue folgt → die nehmen
         }
-        return Cues.nextNr(nr);
+        return Cues.nextAfter(listId, nr, [...fresh.keys()]);
       };
       const upd = () => {
         if (closed) return;
@@ -8155,7 +8450,8 @@ const CueCam = {
             src = await Photo.decode(f);           // wie bei den Doku-Fotos (ab 2.8.1): kein Hängen, HEIF-Hinweis
             const { w, h } = src, s = Math.min(w, h), size = Math.min(s, CUE_PX);
             const c = document.createElement('canvas'); c.width = c.height = size;
-            c.getContext('2d').drawImage(src.el, (w - s) / 2, (h - s) / 2, s, s, 0, 0, size, size);
+            const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, size, size);       // transparente PNG auf Weiß (ab 2.8.3)
+            g.drawImage(src.el, (w - s) / 2, (h - s) / 2, s, s, 0, 0, size, size);
             shoot(false, c);
           } catch (e) { Photo.logFail(f, e); Photo.report(e); }
           finally { if (src) src.close(); }
@@ -8383,7 +8679,7 @@ const CueView = {
         case 'openlist': App.go('#/cue/' + id); break;
         case 'listmenu': await this.listMenu(id); break;
         case 'back': App.go('#/cues'); break;
-        case 'editlist': this.listSheet(Cues.list(listId)); break;
+        case 'editlist': if (await App.needEdit('Titel und Details ändern')) this.listSheet(Cues.list(listId)); break;
         case 'pdf': this.pdf(id || listId); break;
         case 'trash': this.trash(); break;
         case 'addcue': if (edit) await this.addCue(listId); break;
@@ -8433,6 +8729,8 @@ const CueView = {
     ]);
     if (!v) return;
     await Ui.afterBack();
+    const need = { edit: 'Titel und Details ändern', many: 'Cues anlegen', del: 'Löschen' }[v];
+    if (need && !(await App.needEdit(need))) return;
     if (v === 'edit') this.listSheet(l);
     else if (v === 'pdf') this.pdf(id);
     else if (v === 'many') await this.addMany(id);
@@ -8478,7 +8776,7 @@ const CueView = {
   /* ---------- Cues anlegen ---------- */
   async addCue(listId) {
     const cs = Cues.cuesOf(listId), qn = Cues.quickNrs(listId);
-    const sug = qn.next[0] || (cs.length ? Cues.nextNr(cs[cs.length - 1].f.nr) : '1');
+    const sug = qn.next[0] || (cs.length ? Cues.nextAfter(listId, cs[cs.length - 1].f.nr) : '1');
     const pick = [{ title: 'Nächste Cues', items: qn.next }, { title: qn.last ? `Punktstimmungen zu ${qn.base}` : '', items: qn.dots }];
     const v = await Req.form('Neue Cue', [{ k: 'nr', label: 'Cue-Nummer', type: 'dec', value: sug, ph: 'z. B. 12 oder 12.5', pick,
       hint: qn.last ? `Zuletzt angelegt: Cue ${qn.last}` : '' }, { k: 'name', label: 'Name (optional)', ph: 'z. B. Sonnenaufgang' },
@@ -8489,10 +8787,11 @@ const CueView = {
     Ui.toast(`Cue ${c.f.nr} angelegt`);
   },
   async addMany(listId) {
-    const cs = Cues.cuesOf(listId), from = cs.length ? Cues.nextNr(cs[cs.length - 1].f.nr) : '1';
+    const cs = Cues.cuesOf(listId), from = cs.length ? Cues.nextAfter(listId, cs[cs.length - 1].f.nr) : '1';
     const v = await Req.form('Mehrere Cues anlegen', [{ k: 'von', label: 'von', type: 'dec', value: from }, { k: 'bis', label: 'bis', type: 'dec', value: String(parseInt(from, 10) + 19 || 20) },
       { k: 'step', label: 'Schritt', type: 'dec', value: '1', hint: 'z. B. 1 oder 0.5 – vorhandene Nummern bleiben, wie sie sind' }],
-    { ok: 'Anlegen', check: x => [x.von, x.bis, x.step].some(y => isNaN(Cues.num(Cues.norm(y)))) ? 'Bitte Zahlen eintragen (z. B. 1, 12.5).' : !(Cues.num(Cues.norm(x.step)) > 0) ? 'Der Schritt muss größer als 0 sein.' : '' });
+    { ok: 'Anlegen', check: x => [x.von, x.bis, x.step].some(y => isNaN(Cues.num(Cues.norm(y)))) ? 'Bitte Zahlen eintragen (z. B. 1, 12.5).' : !(Cues.num(Cues.norm(x.step)) > 0) ? 'Der Schritt muss größer als 0 sein.'
+      : Cues.rangeCount(x.von, x.bis, x.step) > Cues.MAX_RANGE ? `Das wären ${Cues.rangeCount(x.von, x.bis, x.step)} Cues – höchstens ${Cues.MAX_RANGE} auf einmal. Bitte in Teilen anlegen.` : '' });
     if (!v) return;
     const n = await Cues.addRange(listId, v.von, v.bis, v.step);
     Ui.toast(n ? `${n} Cues angelegt` : 'Alle Nummern gab es schon');
@@ -8650,11 +8949,11 @@ Object.assign(Pdf, {
       let y = H - 60;
       c.rgb(...RED).rect(0, H - 14, W, 14);
       c.rgb(0.45, 0.48, 0.53).text(M, y, 'CUE-FOTOS · LICHTSTIMMUNGEN', 'F2', 10); y -= 34;
-      for (const ln of this.wrap(l.f.titel || 'Cue-Fotos', 'F2', 28, CW).slice(0, 2)) { c.rgb(0.07, 0.08, 0.1).text(M, y, ln, 'F2', 28); y -= 32; }
+      for (const ln of this.wrapMax(l.f.titel || 'Cue-Fotos', 'F2', 28, CW, 2)) { c.rgb(0.07, 0.08, 0.1).text(M, y, ln, 'F2', 28); y -= 32; }
       const sub = [l.f.spielstaette, termin].filter(Boolean).join('  ·  ');
       if (sub) { c.rgb(0.25, 0.28, 0.33).text(M, y, sub, 'F1', 14); y -= 22; }
       c.rgb(0.45, 0.48, 0.53).text(M, y, `${st.cues} Cues  ·  ${shots.length} Fotos${st.empty ? `  ·  ${st.empty} ohne Foto` : ''}  ·  Stand ${stand}`, 'F1', 10); y -= 18;
-      if (l.f.notiz) for (const ln of this.wrap(l.f.notiz, 'F1', 10, CW).slice(0, 4)) { c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 10); y -= 13; }
+      if (l.f.notiz) for (const ln of this.wrapMax(l.f.notiz, 'F1', 10, CW, 4)) { c.rgb(0.25, 0.28, 0.33).text(M, y, ln, 'F1', 10); y -= 13; }
       y -= 10; c.rgb(0.8, 0.82, 0.85, true).line(M, y, W - M, y, 1); y -= 26;
       c.rgb(0.07, 0.08, 0.1).text(M, y, 'Inhalt', 'F2', 16); y -= 12;
       return y;
@@ -8710,10 +9009,10 @@ Object.assign(Pdf, {
       c.rgb(0.07, 0.08, 0.1).text(M, H - 50, this.fit(head, 'F2', 16, CW - pw - 14), 'F2', 16);
       c.rgb(0.85, 0.86, 0.88, true).line(M, H - 66, W - M, H - 66, 0.8);
       // Text unter dem Foto zuerst ausmessen, dann das Foto so groß wie möglich
-      const nameL = cue.f.name ? this.wrap(cue.f.name, 'F2', 15, CW).slice(0, 2) : [];
-      const hwL = im.f.hinweis ? this.wrap('HINWEIS: ' + im.f.hinweis, 'F2', 12, CW - 20).slice(0, 5) : [];
-      const inL = im.f.notiz ? this.wrap(im.f.notiz, 'F1', 12, CW).slice(0, 8) : [];
-      const cnL = cue.f.notiz ? this.wrap(cue.f.notiz, 'F1', 11, CW).slice(0, 5) : [];
+      const nameL = cue.f.name ? this.wrapMax(cue.f.name, 'F2', 15, CW, 2) : [];
+      const hwL = im.f.hinweis ? this.wrapMax('HINWEIS: ' + im.f.hinweis, 'F2', 12, CW - 20, 5) : [];
+      const inL = im.f.notiz ? this.wrapMax(im.f.notiz, 'F1', 12, CW, 8) : [];
+      const cnL = cue.f.notiz ? this.wrapMax(cue.f.notiz, 'F1', 11, CW, 5) : [];
       const textH = 34 + nameL.length * 18 + (hwL.length ? hwL.length * 15 + 14 : 0) + (inL.length ? 16 + inL.length * 15 : 0) + (cnL.length ? 16 + cnL.length * 14 : 0);
       const top = H - 78, size = Math.max(220, Math.min(CW, top - (40 + textH + 14))), x = M + (CW - size) / 2;
       let y = top - size;
@@ -8800,14 +9099,14 @@ const SyncView = {
   },
   async send() {
     const last = Sync.state.lastPackageAt;
-    const mine = Settings.v.depts, allMine = mine.length === DEPT_ORDER.length;
+    const mine = Settings.v.depts;
     const changes = last ? Sync.collect({ since: last, depts: mine }) : null;
     const nCh = changes ? ['shows', 'entries', 'photos', 'runs', 'house', 'cuelists', 'cues', 'cueimgs'].reduce((n, k) => n + (changes[k] || []).length, 0) : 0;
-    const lbl = allMine ? '' : ` · ${Sync.deptLabel()}`;
+    const lbl = '';            // ab 2.8.3 gehen Licht, Ton und Bühne immer mit (auch Einträge, die dieses Gerät weitergibt)
     const v = await Ui.menu('Sync-Paket senden', [
       last && { label: `Nur Änderungen seit ${Utils.fmtDate(last)} (${nCh})${lbl}`, value: 'inc', icon: 'sync' },
       { label: `Komplett (alle Veranstaltungen)${lbl}`, value: 'full', icon: 'layers' },
-      !allMine && { label: 'Komplett, alle Abteilungen', value: 'fullall', icon: 'database' }
+      // „Komplett, alle Abteilungen“ entfällt ab 2.8.3 – „Komplett“ enthält bereits alles, was dieses Gerät hat
     ]);
     if (!v) return;
     if (v === 'inc' && !nCh) { Ui.toast('Keine Änderungen seit dem letzten Paket.'); return; }
@@ -8983,7 +9282,8 @@ const DiagView = {
           <dt>Vorstellungen</dt><dd>${cnt(Repo.runs).live} Durchgänge (+${cnt(Repo.runs).dead} gelöscht)</dd>
           <dt>Cue-Fotos</dt><dd>${Cues.lists().length} Listen · ${cnt(Repo.cues).live} Cues · ${cnt(Repo.cueimgs).live} Fotos${Cues.deletedLists().length ? ` (+${Cues.deletedLists().length} Listen im Papierkorb)` : ''}</dd>
           ${Repo.house.size || Settings.v.depts.includes('R') ? `<dt>Haus-Daten</dt><dd>${Repo.house.size} Datensatz${Repo.house.size === 1 ? '' : 'e'}${Repo.house.get('requisite') ? ` · ${Req.houseOrts().length} Haus-Orte, ${Req.vorlagen().length} Vorlagen · Stand ${Utils.fmtDate(Repo.house.get('requisite').mod)}` : ''}</dd>` : ''}
-          ${(() => { const big = Repo.liveShows().filter(x => Object.keys(x.f).length >= 1500); return big.length ? `<dt>Hinweis</dt><dd style="color:var(--edit)">${big.map(x => `„${Utils.esc(x.f.titel)}“: ${Object.keys(x.f).length} von höchstens ${Rec.MAX_FIELDS} Feldern`).join('<br>')}</dd>` : ''; })()}
+          ${(() => { const big = Repo.liveShows().filter(x => Object.keys(x.f).length >= 1500); return big.length ? `<dt>Hinweis</dt><dd style="color:var(--edit)">${big.map(x => { const n = Object.keys(x.f).length;
+            return `„${Utils.esc(x.f.titel)}“: ${n} Felder${n >= Rec.MAX_FIELDS_OLD ? ` – Geräte mit Doku VT 2.8.2 oder älter nehmen diese Veranstaltung nicht mehr an (ab 2.8.3 bis ${Rec.MAX_FIELDS})` : ` (Geräte mit 2.8.2 oder älter nehmen höchstens ${Rec.MAX_FIELDS_OLD} an)`}`; }).join('<br>')}</dd>` : ''; })()}
           <dt>Fehlende Bilder</dt><dd>${missing.length}${missing.length ? ' – bitte vollständiges Paket/Live-Abgleich' : ''}</dd>
           <dt>Offene Änderungen</dt><dd>${Sync.pending()}</dd><dt>Letzter Abgleich</dt><dd>${Utils.fmtDate(Sync.state.lastSyncAt)}</dd>
           <dt>Letztes Paket</dt><dd>${Utils.fmtDate(Sync.state.lastPackageAt)}</dd></dl></div>
@@ -9266,6 +9566,9 @@ const App = {
     }
     try { await Req.migrateHouse(); } catch (e) { console.warn('Haus-Orte nicht angepasst', e); }
     Repo.on(ev => { if (ev && ev.blobIds && ev.blobIds.length) Thumbs.miss.clear(); this.requestRender(); });
+    // Durchgänge desselben Spieltags zusammenführen (ab 2.8.3): nach jedem Abgleich und einmal beim Start
+    Repo.on(ev => { if (ev && !ev.local && ev.records && ev.records.runs && ev.records.runs.length) RunList.foldSoon(); });
+    RunList.foldSoon();
     Sync.on(() => this.updatePill());
     window.addEventListener('hashchange', () => this.route());
     window.addEventListener('focusout', () => setTimeout(() => { if (this.state.renderPending && !this.inputFocused()) this.render(); }, 50));
@@ -9284,6 +9587,8 @@ const App = {
     window.addEventListener('unhandledrejection', e => { console.error(e.reason); e.preventDefault(); Ui.toast('Fehler: ' + (e.reason && e.reason.message || e.reason), 'err'); });
     window.addEventListener('beforeunload', e => { if (document.querySelector('[data-editor]') || CueCam.pending()) { e.preventDefault(); e.returnValue = ''; } });
     new ResizeObserver(() => this.stickyTop()).observe(document.getElementById('appbar'));
+    window.addEventListener('scroll', () => this.tbAuto(), { passive: true });
+    window.addEventListener('resize', () => { if (!matchMedia(this.SHORT).matches && document.documentElement.classList.contains('tbhide')) { document.documentElement.classList.remove('tbhide'); this.stickyTop(); } });
     this.route();
     Boot.started = true;            // ab hier meldet die App Fehler selbst (Toast/Dialog)
     Pwa.init();
@@ -9314,7 +9619,24 @@ const App = {
     window.scrollTo(0, 0);
   },
   go(hash) { if (location.hash !== hash) location.hash = hash; else this.route(); },
-  stickyTop() { const h = document.getElementById('appbar').offsetHeight; document.documentElement.style.setProperty('--appbar', h + 'px'); const tb = document.querySelector('.toolbar'); if (tb) { tb.style.top = h + 'px'; document.documentElement.style.setProperty('--stickytop', (h + tb.offsetHeight) + 'px'); } },
+  stickyTop() {
+    const h = document.getElementById('appbar').offsetHeight; document.documentElement.style.setProperty('--appbar', h + 'px');
+    if (window.scrollY < 60 || !document.querySelector('.toolbar')) document.documentElement.classList.remove('tbhide');   // oben oder andere Ansicht: Leiste immer zeigen
+    const tb = document.querySelector('.toolbar'), hid = document.documentElement.classList.contains('tbhide');
+    if (tb) { tb.style.top = h + 'px'; document.documentElement.style.setProperty('--stickytop', (h + (hid ? 0 : tb.offsetHeight)) + 'px'); }
+  },
+  /** Werkzeugleiste auf niedrigen Bildschirmen (Smartphone quer) beim Runterscrollen einklappen, beim Hochscrollen zeigen (ab 2.8.3) */
+  SHORT: '(orientation: landscape) and (max-height: 560px)',
+  _tbY: 0,
+  tbAuto() {
+    const html = document.documentElement, y = window.scrollY, dy = y - this._tbY;
+    const tb = document.querySelector('.toolbar'), short = !!(window.matchMedia && matchMedia(this.SHORT).matches);
+    let hide = html.classList.contains('tbhide');
+    if (!short || !tb || y < 60 || (tb.contains(document.activeElement) && Utils.isEditable(document.activeElement))) hide = false;
+    else if (dy > 8) hide = true; else if (dy < -8) hide = false; else return;
+    this._tbY = y;
+    if (hide !== html.classList.contains('tbhide')) { html.classList.toggle('tbhide', hide); this.stickyTop(); }
+  },
   updatePill() {
     const st = Sync.status(); const p = document.querySelector('.syncpill'); if (!p) return;
     p.dataset.state = st.state; p.querySelector('.lbl').textContent = st.label; p.title = st.text; p.setAttribute('aria-label', 'Abgleich: ' + st.text);
@@ -9598,7 +9920,7 @@ const App = {
     const btns = [], all = st.abt === 'all' ? vis : vis.filter(d => d === st.abt), hints = all.filter(d => s.f[SetupView.ALLG[d]]);
     hints.forEach(d => btns.push(`<button class="qb warn" data-act="jump" data-box="hint-${d}">${I('alert', 'sm')} Hinweis${hints.length > 1 ? ' ' + Utils.esc(DEPT[d].short) : ''}</button>`));
     const items = RunList.items(st.showId, all).filter(i => i.vor);
-    const run = RunList.runsOf(st.showId).find(r => r.f.datum === RunList.isoDate());
+    const run = RunList.todayRun(st.showId);
     if (items.length || st.edit) {
       const p = run ? RunList.progress(run, items) : null;
       btns.push(`<button class="qb run" data-act="jump" data-box="run">${I('checklist', 'sm')} Vor der Vorstellung${p ? ` <span class="mono">${p.done}/${p.all}</span>` : items.length ? ` <span class="mono">${items.length}</span>` : ''}</button>`);
@@ -9730,6 +10052,16 @@ const App = {
     sh.body.querySelector('#ns-t').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
     setTimeout(() => sh.body.querySelector('#ns-t').focus(), 50);
   },
+  /** Ansichtsmodus schützt vor versehentlichen Änderungen (ab 2.8.3 auch Titel und ⋯-Menü): Ändern, Duplizieren, Löschen und
+      Zurücksetzen fragen erst, ob der Bearbeitungsmodus eingeschaltet werden soll. Auf den Übersichten (ohne Umschalter) nicht. */
+  async needEdit(what) {
+    if (this.state.edit || !['show', 'cue'].includes(this.state.route)) return true;
+    const v = await Ui.dialog({ title: 'Ansichtsmodus', message: `${what} geht nur im Bearbeitungsmodus – so ändert sich im Ansichtsmodus nichts aus Versehen.`,
+      buttons: [{ label: 'Abbrechen', value: false }, { label: 'Bearbeiten einschalten', value: true, cls: 'primary' }], cancelValue: false });
+    if (!v) return false;
+    await Ui.afterBack();
+    this.state.edit = true; this.render(); return true;
+  },
   async showMenu(id) {
     const s = Repo.show(id); if (!s) return;
     const dups = Repo.duplicatesOf(id, this.visibleDepts(id)).length;
@@ -9744,6 +10076,8 @@ const App = {
       { label: 'Veranstaltung löschen', value: 'del', icon: 'trash', danger: true }
     ]);
     try {
+      const need = { edit: 'Titel und Details ändern', dup: 'Duplizieren', reset: 'Haken zurücksetzen', merge: 'Zusammenführen', del: 'Löschen' }[v];
+      if (need && !this.state.edit && ['show', 'cue'].includes(this.state.route)) { await Ui.afterBack(); if (!(await this.needEdit(need))) return; }   // erst das Menü ganz schließen
       if (v === 'edit') await this.editShow(id);
       else if (v === 'pdf') this.pdf(id);
       else if (v === 'backup') this.backup([id]);
@@ -9866,7 +10200,7 @@ const App = {
         return;
       }
       if (r.restorable && r.restorable.length && await this.offerRestore(r.restorable)) return;
-      Ui.dialog({ title: r.type === 'sync' ? 'Sync-Paket eingespielt' : 'Backup importiert', message: `${r.neu} neue und ${r.geaendert} zusammengeführte Datensätze, ${r.bilder} Bilder übernommen.${r.missing ? `\n\nHinweis: ${r.missing} Fotos haben auf diesem Gerät noch keine Bilddaten – bitte ein komplettes Paket einspielen oder live abgleichen.` : ''}\n\nBestehende Daten wurden nicht überschrieben, sondern feldweise nach Zeitstempel zusammengeführt.` });
+      Ui.dialog({ title: (r.type === 'sync' ? 'Sync-Paket eingespielt' : 'Backup importiert') + (r.ungueltig ? ' – mit Fehlern' : ''), message: `${r.neu} neue und ${r.geaendert} zusammengeführte Datensätze, ${r.bilder} Bilder übernommen.${r.ungueltig ? `\n\nACHTUNG: ${r.ungueltig} Datensätze bzw. Bilder wurden NICHT übernommen (ungültig oder zu groß). Bitte das sendende Gerät auf die neueste Version bringen; Details unter Abgleich → Diagnose.` : ''}${r.missing ? `\n\nHinweis: ${r.missing} Fotos haben auf diesem Gerät noch keine Bilddaten – bitte ein komplettes Paket einspielen oder live abgleichen.` : ''}\n\nBestehende Daten wurden nicht überschrieben, sondern feldweise nach Zeitstempel zusammengeführt.` });
     } catch (err) { bz.close(); Sync.log('Import fehlgeschlagen: ' + err.message, 'error'); this.error(err); }
   },
   /** Gelöschte Veranstaltungen aus einem Backup wiederherstellen? → true, wenn wiederhergestellt */
@@ -9945,12 +10279,12 @@ const App = {
       case 'showmenu': this.showMenu(b.dataset.id); break;
       case 'settings': SettingsView.open(); break;
       case 'sync': SyncView.open(); break;
-      case 'rename': this.editShow(st.showId); break;
+      case 'rename': if (await this.needEdit('Titel und Details ändern')) this.editShow(st.showId); break;
       case 'pdf': this.pdf(st.showId); break;
       case 'runs': RunList.open(st.showId); break;
       case 'mode': st.edit = !st.edit; this.render(); Ui.toast(st.edit ? 'Bearbeitungsmodus – Änderungen möglich' : 'Ansichtsmodus – geschützt vor versehentlichen Änderungen'); break;
       case 'checklist': st.checklist = !st.checklist; this.renderToolbar(); this.renderList(); this.renderDetail(); break;
-      case 'resetchk': this.resetChecks(st.showId); break;
+      case 'resetchk': if (await this.needEdit('Haken zurücksetzen')) this.resetChecks(st.showId); break;
       case 'clearq': { const s = document.querySelector('[data-search]'); s.value = ''; st.q = ''; b.classList.add('hidden'); this.renderList(); s.focus(); break; }
       case 'new': this.newEntry(b.dataset.abt); break;
       case 'quick': {
