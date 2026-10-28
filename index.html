@@ -992,6 +992,47 @@ html[data-theme="red"] .rot[aria-pressed="true"]{color:#000}
 .setup.run>summary{background:color-mix(in srgb,var(--ok) 13%,var(--surf))}
 .setup.run>summary .hint.run{color:var(--ok)}
 .setup + .setup,.setup.run + .setup{margin-top:12px}
+/* Zuständig/Dauer je Abteilung über den Einrichtungs-Kästen (ab 2.9.0) */
+.zline{display:flex;align-items:center;gap:8px;width:100%;min-height:44px;margin:2px 0 8px;padding:6px 12px;border-radius:var(--r-sm);border:1px solid var(--line);border-left:4px solid var(--da);background:var(--surf);color:var(--text);font-size:15px;font-weight:600;text-align:left}
+.zline .zt{flex:1;min-width:0;overflow-wrap:anywhere}
+.zline svg{flex:none;color:var(--muted)}
+button.zline{min-height:48px;cursor:pointer}
+button.zline:hover{background:var(--surf2)}
+/* Stückdaten-Formular (ab 2.9.0) */
+.showform .sfmore .inner{grid-template-columns:minmax(0,1fr);gap:14px}
+.showform .form{grid-template-columns:minmax(0,1fr)}
+.showform .form > *,.showform .sfmore .inner > *{min-width:0}
+.sfens .rqh{flex-wrap:wrap}.sfens .rqh .btn{white-space:normal;min-height:44px}
+.sfmore summary{min-height:56px}
+.sfm{display:flex;flex-direction:column;gap:2px;padding:6px 0;line-height:1.2;min-width:0}
+.sfm b{color:var(--text)}.sfm small{font-weight:400;font-size:12px;color:var(--muted)}
+.sfz{display:grid;gap:8px}
+.sfzr{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:center;gap:10px}
+.f .sfzr label{margin:0;font-size:15px;letter-spacing:0;text-transform:none;color:var(--text);font-weight:700;border-left:4px solid var(--da);padding:6px 0 6px 8px;overflow-wrap:anywhere}
+.sfrows{display:grid;gap:8px}.sfrows:not(:empty){margin-top:10px}
+.sfprow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 48px;gap:8px;align-items:center}
+.sfprow [data-rm]{width:48px;height:48px}
+@media (max-width:480px){.sfprow{grid-template-columns:minmax(0,1fr) 48px;grid-template-areas:"p x" "r x";padding-bottom:6px;border-bottom:1px dashed var(--line)}
+  .sfprow [data-pd]{grid-area:p}.sfprow [data-pr]{grid-area:r}.sfprow [data-rm]{grid-area:x}
+  .sfzr{grid-template-columns:84px minmax(0,1fr)}}
+[data-bes] > .btn{margin-top:10px;min-height:48px}
+.sfens .rqh{margin-top:0}
+.sfens .qkeys button{font-family:var(--font);font-weight:700}
+.sfhint{font-size:14px}
+.sfplist{display:flex;flex-wrap:wrap;gap:6px 8px}
+.sfp{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:var(--surf2);border:1px solid var(--line2);font-weight:600;font-size:14px;max-width:100%;overflow-wrap:anywhere}
+.sfsw{display:flex;align-items:center;gap:12px;min-height:56px;cursor:pointer}
+.sfsw .lb{flex:1;min-width:0}.sfsw .lb small{display:block;color:var(--muted);font-size:13px;font-weight:400;margin-top:2px}
+.sfdev{border:1px dashed var(--line2);border-radius:var(--r);padding:8px 14px 6px;background:var(--surf)}
+.sfdh{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:4px}
+/* Startseite / Archiv / Gastspiel (ab 2.9.0) */
+.homefoot{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.homefoot .btn{min-height:48px}
+.showcard .allbadge{display:inline-flex;align-items:center;gap:5px;margin:0 6px 6px 0;padding:3px 10px 3px 7px;border-radius:999px;background:var(--surf2);border:1px dashed var(--line2);color:var(--text2);font-size:12px;font-weight:700}
+.abgbanner{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:4px 0 12px;padding:8px 8px 8px 14px;border-radius:var(--r);border:1px solid var(--line2);background:var(--surf2);font-weight:700;font-size:15px}
+.abgbanner span{flex:1;min-width:180px}.abgbanner .btn{min-height:48px}
+.gasthint{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:var(--r);border:1px dashed var(--line2);background:var(--surf);font-size:14px;line-height:1.4}
+.gasthint svg{flex:none;margin-top:2px}
 .hintadd{display:flex;align-items:center;gap:8px;width:100%;min-height:52px;margin:4px 0 10px;padding:0 14px;border-radius:var(--r);border:2px dashed var(--pink);background:transparent;color:var(--text);font-weight:700;font-size:15px;text-align:left}
 .hintadd svg{color:var(--pink)}
 .setup .ablsec .runchk{margin-top:4px}
@@ -1215,7 +1256,7 @@ window.addEventListener('unhandledrejection', function (e) { Boot.fail(e.reason 
      Decoder) · Pdf · Sync (Kern + Adapter: Datei, WebRTC, Server-Stub)
      Ui (Overlays, Dialoge, Toasts) · Views · Editor · App
    ===================================================================== */
-const APP_VERSION = '2.8.3';
+const APP_VERSION = '2.9.0';
 const DB_NAME = 'lichtdoku';
 /* Datenbank: wird OHNE Versionsnummer geöffnet (ab 2.4.1). Ein Datenbank-Update (neue Version) muss warten,
    bis jede andere offene Doku VT-Instanz die Datenbank freigibt – auf iPad/iPhone wird eine App im Hintergrund
@@ -1239,6 +1280,9 @@ const CUE_PX = 1200, CUE_Q = 0.75;     // Gedächtnisstütze: 1200 px, JPEG 0,75
    der Schnelltasten), req (Pflichtfeld), hint (Hinweis unter dem Feld).
    ===================================================================== */
 const DEPT_ORDER = ['L', 'T', 'B', 'R'];
+/** Zuständige je Abteilung (ab 2.9.0): eigene Felder im Veranstaltungs-Datensatz, damit zwei Geräte gleichzeitig ändern können */
+const ZUST = { L: 'zustL', T: 'zustT', B: 'zustB', R: 'zustR' };
+const ZUST_FIELDS = DEPT_ORDER.map(d => ZUST[d]);
 const DEPT = {
   L: {
     key: 'L', name: 'Beleuchtung', short: 'Licht', abbr: 'L',
@@ -1683,6 +1727,7 @@ const ICONS = {
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>',
   pin: '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
   box: '<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
+  archive: '<path d="M3 4h18v4H3z"/><path d="M5 8v12h14V8M10 12h4"/>',
   clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   wrench: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3 17.8V21h3.2l6.3-6.3a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/>'
 };
@@ -2064,9 +2109,14 @@ const Repo = {
     this.emit({ local, records: { shows, entries, photos, runs, house, cuelists, cues, cueimgs }, blobIds: fulls.map(f => f.id) });
     App.ensurePersist();
   },
-  async createShow(titel, abteilungen = null, spielstaette = '') {
-    const f = { titel: titel || 'Neue Veranstaltung', spielstaette: String(spielstaette || '').trim(), notiz: '', del: false };
+  /** Neue Veranstaltung. extra (ab 2.9.0, Stückdaten aus dem Formular): {dauer, notiz, zustL…zustR, persons:[{darsteller, rolle}]}.
+      Leere Textfelder werden NICHT geschrieben (nur „notiz“ wie bis 2.8.3); Personen landen als „rp:“ in derselben Transaktion. */
+  async createShow(titel, abteilungen = null, spielstaette = '', extra = {}) {
+    const f = { titel: titel || 'Neue Veranstaltung', spielstaette: String(spielstaette || '').trim(), notiz: String(extra.notiz || '').trim(), del: false };
     if (abteilungen && abteilungen.length) f.abteilungen = DEPT_ORDER.filter(d => abteilungen.includes(d));
+    ['dauer', ...ZUST_FIELDS].forEach(k => { const v = String(extra[k] || '').trim(); if (v) f[k] = v; });
+    (extra.persons || []).map(p => ({ darsteller: String(p.darsteller || '').trim(), rolle: String(p.rolle || '').trim() }))
+      .filter(p => p.darsteller || p.rolle).forEach((p, i) => { f['rp:' + Utils.uuid()] = { rolle: p.rolle, darsteller: p.darsteller, ord: (i + 1) * 10, del: false }; });
     // Vorstellungs-Checkliste: Punkte der Hausvorlage (bzw. Beispiele) für die gewählten Abteilungen
     const deps = f.abteilungen || ['L'];
     RunList.template().filter(x => deps.includes(x.abt)).forEach((x, i) => { f['ci:' + Utils.uuid()] = { abt: x.abt, text: x.text, ord: (i + 1) * 10, del: false }; });
@@ -2131,6 +2181,7 @@ const Repo = {
   async duplicateShow(id) {
     const src = this.shows.get(id);
     const sf = { titel: src.f.titel + ' (Kopie)', spielstaette: src.f.spielstaette || '', notiz: src.f.notiz || '', einrichtung: src.f.einrichtung || '', abteilungen: this.showDepts(id), del: false };
+    ZUST_FIELDS.forEach(k => { if (src.f[k]) sf[k] = src.f[k]; });      // Zuständige (ab 2.9.0); Dauer und Personen über Req.copyShowFields. Kopie nie „abgespielt“
     Object.keys(src.f).forEach(k => { if (k.startsWith('z:') && src.f[k] && !src.f[k].del) sf[k] = Utils.clone(src.f[k]); });   // Züge mitnehmen
     if (src.f.einrichtungT) sf.einrichtungT = src.f.einrichtungT;
     if (src.f.einrichtungB) sf.einrichtungB = src.f.einrichtungB;
@@ -2148,7 +2199,9 @@ const Repo = {
       const ne = Rec.create({ id: idMap.get(e.id), showId: s.id }, f); entries.push(ne);
       for (const p of this.photosOf(e.id)) photos.push(Rec.create({ showId: s.id, b: p.b, w: p.w, h: p.h }, Object.assign({ entryId: ne.id, kat: p.f.kat, ord: p.f.ord, label: p.f.label || '', del: false }, p.f.cap ? { cap: p.f.cap } : {})));
     }
-    await this._write({ shows: [s], entries, photos }); return s;
+    await this._write({ shows: [s], entries, photos });
+    if (Settings.v.allDeptShows.includes(id)) await Settings.set({ allDeptShows: Settings.v.allDeptShows.concat(s.id) });   // Gastspiel-Schalter mitnehmen (ab 2.9.0)
+    return s;
   },
   /* ---------- Einrichtung & Züge (je Veranstaltung) ----------
      Gemeinsame Zugliste: jeder Zug ist ein eigenes Feld „z:<id>“ =
@@ -2396,7 +2449,7 @@ const Repo = {
   async missingBlobs() {
     const have = await this.blobIds(); const miss = new Set();
     for (const p of this.photos.values()) if (!p.f.del && !have.has(p.b)) miss.add(p.b);
-    if (Settings.v.depts.includes('R')) Req.blobRefs(this.liveShows(), [...this.house.values()]).forEach(b => { if (!have.has(b)) miss.add(b); });
+    if (App.deviceDepts().includes('R')) Req.blobRefs(this.liveShows(), [...this.house.values()]).forEach(b => { if (!have.has(b)) miss.add(b); });   // inkl. Gastspiel-Stücke (ab 2.9.0)
     Cues.blobRefs(false).forEach(b => { if (!have.has(b)) miss.add(b); });
     return [...miss];
   }
@@ -2418,12 +2471,14 @@ const Settings = {
     zustandKeys: REQ_ZUSTAND.slice(),               // Zustand-Schnelltasten der Requisite (ab 2.5.0)
     reqView: 'einrichten',                          // zuletzt gewählte Requisite-Ansicht: einrichten | ablauf | personen
     cueCamId: '',                                   // Objektiv der Cue-Kamera (ab 2.8.0, getrennt von der Doku-Kamera – vom FOH oft Tele)
-    depts: ['L']                                    // Abteilungen, die DIESES Gerät dokumentiert (bestehende Installationen: nur Licht)
+    depts: ['L'],                                   // Abteilungen, die DIESES Gerät dokumentiert (bestehende Installationen: nur Licht)
+    allDeptShows: []                                // Gastspiel-Schalter (ab 2.9.0): Veranstaltungen, die HIER mit allen ihren Abteilungen erscheinen
   },
   async load() {
     Object.assign(this.v, await Store.metaGet('settings', {}));
     const d = DEPT_ORDER.filter(x => (this.v.depts || []).includes(x));
     this.v.depts = d.length ? d : ['L'];
+    this.v.allDeptShows = Array.isArray(this.v.allDeptShows) ? this.v.allDeptShows.filter(x => typeof x === 'string') : [];
     this.apply();
   },
   listeners: new Set(),
@@ -3741,6 +3796,14 @@ const Pdf = {
 
     // ---- Kapitel-Inhalt je Abteilung (Blöcke) ----
     const head = text => ({ t: 'head', text, h: 30, keep: true });
+    // Stückdaten (ab 2.9.0): „Zuständig: <Name>   ·   Dauer: <Dauer>“ als erster Block der Kapitelseite (Requisite: ohne Dauer)
+    const zustOf = d => String(show.f[ZUST[d]] || '').trim();
+    const zustBlocks = d => {
+      const t = [zustOf(d) ? 'Zuständig: ' + zustOf(d) : '', d !== 'R' && String(show.f.dauer || '').trim() ? 'Dauer: ' + String(show.f.dauer).trim() : ''].filter(Boolean).join('   ·   ');
+      if (!t) return [];
+      const ls = this.wrapMax(t, 'F2', 11, CW, 3);
+      return [{ t: 'text', lines: ls, h: ls.length * 14 + 6, bold: true }, { t: 'gap', h: 8 }];
+    };
     const sub = text => ({ t: 'sub', text, h: 20, keep: true });
     const textBlocks = (txt, out) => {
       const ls = this.wrap(txt, 'F1', 11, CW);
@@ -3784,7 +3847,9 @@ const Pdf = {
       const FOTO = ['FOTO', CW - 54, 54];
       // --- 1. Allgemeine Infos
       let out = [];
-      if (show.f.dauer) out.push({ t: 'text', lines: ['Dauer: ' + show.f.dauer], h: 20, bold: true });
+      // Dauer-Zeile, ab 2.9.0 um „Zuständig“ ergänzt (ohne Dauer steht „Zuständig“ über zustBlocks – nur wenn es die Seite ohnehin gibt)
+      if (show.f.dauer) { const ls = this.wrapMax(['Dauer: ' + show.f.dauer, zustOf('R') ? 'Zuständig: ' + zustOf('R') : ''].filter(Boolean).join('   ·   '), 'F2', 11, CW, 3);
+        out.push({ t: 'text', lines: ls, h: ls.length * 14 + 6, bold: true }); }
       if (show.f.fotoR) out.push({ t: 'img', b: show.f.fotoR, size: 150, cap: 'Übersicht', h: 164 });
       if (show.f.einrichtungR) { out.push(Object.assign(rhead('ALLGEMEINE INFOS'), { big: true, h: 38 })); const ls = this.wrapMax(show.f.einrichtungR, 'F2', 14, CW - 24, 30); out.push({ t: 'hl', lines: ls, fs: 14, h: ls.length * 18 + 16 }); out.push({ t: 'gap', h: 8 }); }
       const saf = [];
@@ -3969,7 +4034,9 @@ const Pdf = {
     // ---- Seiten planen ----
     const pages = [];
     chapters.forEach(d => {
-      if (multi || blocks[d].length) paginate(blocks[d], multi ? AV_BAND : AV).forEach((b, i) => pages.push({ chapter: d, band: multi && i === 0, blocks: b, cont: i > 0 }));
+      // Zuständig/Dauer nur auf einer Kapitelseite, die es ohnehin gibt – nie eine Seite nur für diese Zeile (ab 2.9.0)
+      const zb = d === 'R' && show.f.dauer ? [] : zustBlocks(d);
+      if (multi || blocks[d].length) paginate(zb.concat(blocks[d]), multi ? AV_BAND : AV).forEach((b, i) => pages.push({ chapter: d, band: multi && i === 0, blocks: b, cont: i > 0 }));
       let pack = null;
       items.filter(it => abtOf(it.entry) === d).forEach(it => {
         if (it.kat === 'N') {
@@ -4043,7 +4110,8 @@ const Pdf = {
     const footer = (c, n, kat, abt) => {
       const col = kat ? katRgb(abt, kat) : [0.55, 0.58, 0.63];
       c.rgb(...col).rect(0, 0, W, 14);
-      c.rgb(0.45, 0.48, 0.53).text(M, 24, this.fit(`Doku VT ${APP_VERSION}  ·  ${show.f.titel}${show.f.spielstaette ? '  ·  ' + show.f.spielstaette : ''}  ·  Stand ${dateStr}`, 'F1', 8, CW - 70), 'F1', 8)
+      const zu = abt && ZUST[abt] ? zustOf(abt) : '';                 // Seiten einer Abteilung: „· Zuständig <Name>“ (ab 2.9.0)
+      c.rgb(0.45, 0.48, 0.53).text(M, 24, this.fit(`Doku VT ${APP_VERSION}  ·  ${show.f.titel}${show.f.spielstaette ? '  ·  ' + show.f.spielstaette : ''}${zu ? '  ·  Zuständig ' + zu : ''}  ·  Stand ${dateStr}`, 'F1', 8, CW - 70), 'F1', 8)
         .textR(W - M, 24, `Seite ${n} / ${total}`, 'F1', 8);
     };
     /** Seitenkopf: Farbbalken, Titel, Plakette rechts (gleich für alle Seiten außer Deckblatt/Kapitelband) */
@@ -4567,7 +4635,7 @@ const Sync = {
   /** Cue-Fotos aus einer Sendung entfernen (Gegenstelle ohne Cue-Fotos) */
   stripCues(recs) { recs.cuelists = []; recs.cues = []; recs.cueimgs = []; return recs; },
   /** Abteilungen dieses Geräts als Text, z. B. „Licht, Ton“ */
-  deptLabel(depts = Settings.v.depts) { return depts.map(d => DEPT[d].short).join(', '); },
+  deptLabel(depts = App.deviceDepts()) { return depts.map(d => DEPT[d].short).join(', '); },
   /** Paket als Blob – stückweise zusammengesetzt (kein Riesen-String im Speicher) */
   async buildPackage({ type = 'sync', since = 0, showIds = null, withBlobs = true, depts = null } = {}, onProgress) {
     const recs = this.collect({ since, showIds, depts });
@@ -4603,7 +4671,8 @@ const Sync = {
     if ((data.formatVersion || 1) > FORMAT_VERSION) throw new Error('Das Paket stammt aus einer neueren Doku VT-Version. Bitte zuerst die App aktualisieren.');
     // Sync-Paket auf einem Gerät ohne Requisite: Requisite-Gegenstände, ihre Fotos und Haus-Daten werden nicht übernommen
     // (Requisite nur an/aus Geräten mit Requisite). Ein Backup übernimmt immer alles.
-    if (data.type === 'sync' && !Settings.v.depts.includes('R')) Sync.dropReq(data);
+    // Wirksame Abteilungen (ab 2.9.0): inkl. Gastspiel-Stücke – sonst verwürfe ein Licht-Gerät mit Gastspiel die Requisite wieder
+    if (data.type === 'sync' && !App.deviceDepts().includes('R')) Sync.dropReq(data);
     // Bilder zuerst und in kleinen Portionen (ab 2.7.0): Ein großes Paket (Hunderte Fotos) brauchte vorher den Speicher
     // aller Bilder doppelt auf einmal – auf iPad/iPhone brach Safari das Einspielen dann ab. Danach die Datensätze.
     const raw = Array.isArray(data.blobs) ? data.blobs : []; data.blobs = null;
@@ -4736,7 +4805,7 @@ const FileAdapter = {
     // Stand des Pakets = Zeitpunkt des Einsammelns (nicht des Teilens): was danach ankommt, geht ins nächste Paket.
     // −1 ms: ein Schreibvorgang in derselben Millisekunde wird lieber doppelt als gar nicht übertragen.
     const t0 = Date.now() - 1;
-    const { blob, counts } = await Sync.buildPackage({ type: 'sync', since, showIds, depts: allDepts ? null : Settings.v.depts.slice() }, onProgress);
+    const { blob, counts } = await Sync.buildPackage({ type: 'sync', since, showIds, depts: allDepts ? null : App.deviceDepts() }, onProgress);
     const name = `DokuVT_Sync_${Utils.safeName(Sync.deviceName())}_${Utils.stamp()}.ldsync.json`;
     if (onReady) onReady();                       // Fortschrittsanzeige schließen, bevor der Dialog erscheint
     const res = await Utils.offerFile(blob, name, 'Sync-Paket ist fertig', `${counts.entries} Einträge, ${counts.blobs} Bilder`);
@@ -4861,7 +4930,7 @@ class PeerSession {
     this.dc = dc; dc.bufferedAmountLowThreshold = 1 << 20;
     dc.onopen = () => {
       this.open = true; Sync.peer = this; Sync.changed(); this.onstate('open');
-      this.send({ t: 'hello', id: Sync.deviceId, n: Sync.deviceName(), v: APP_VERSION, d: Settings.v.depts, c: 1 });   // c: kennt Cue-Fotos (ab 2.8.0)
+      this.send({ t: 'hello', id: Sync.deviceId, n: Sync.deviceName(), v: APP_VERSION, d: App.deviceDepts(), c: 1 });   // c: kennt Cue-Fotos (ab 2.8.0)
     };
     dc.onclose = () => this._closed();
     dc.onmessage = ev => this._recv(ev.data);
@@ -4926,7 +4995,7 @@ class PeerSession {
           // Abteilungen: Schnittmenge beider Geräte (ältere Versionen ohne Angabe = nur Licht)
           this.peerDepts = Array.isArray(msg.d) ? msg.d : ['L'];
           this.strict = !Array.isArray(msg.d);       // Gegenstelle ohne Abteilungen: nur Licht (kein Weitergeben anderer Abteilungen)
-          this.depts = Settings.v.depts.filter(d => this.peerDepts.includes(d));
+          this.depts = App.deviceDepts().filter(d => this.peerDepts.includes(d));      // wirksame Abteilungen (ab 2.9.0 inkl. Gastspiel)
           this.peerCues = !!msg.c;                  // ältere Gegenstellen kennen keine Cue-Fotos
           await Sync.log(`Live-Verbindung mit ${msg.n} hergestellt (Einträge: ${this.strict ? (this.depts.length ? Sync.deptLabel(this.depts) : 'keine gemeinsame Abteilung – nur Veranstaltungen') : Sync.deptLabel(DEPT_ORDER.filter(d => d !== 'R' || this.depts.includes('R')))})`, 'ok');
           { const meta = Sync.collect({ since: 0, depts: this.depts, strict: this.strict }); if (!this.peerCues) Sync.stripCues(meta); await this.send({ t: 'meta', ...meta }); }
@@ -4957,7 +5026,7 @@ class PeerSession {
           const st = await Repo.applyRemote(msg);
           if (st.ungueltig) await Sync.log(`Live: ${st.ungueltig} Datensätze von ${this.peerName || 'der Gegenstelle'} abgelehnt (ungültig oder zu groß)`, 'error');
           const ids = (msg.photos || []).filter(p => !p.f.del).map(p => p.b)
-            .concat(Settings.v.depts.includes('R') ? Req.blobRefs((msg.shows || []).filter(s => s && s.f && !s.f.del), msg.house || []) : [], Cues.blobRefsOf(msg.cueimgs || []));
+            .concat(App.deviceDepts().includes('R') ? Req.blobRefs((msg.shows || []).filter(s => s && s.f && !s.f.del), msg.house || []) : [], Cues.blobRefsOf(msg.cueimgs || []));
           const have = await Repo.blobIds(); const miss = ids.filter(b => !have.has(b) && !this.need.has(b));
           miss.forEach(b => this.need.add(b));
           if (miss.length) await this.send({ t: 'need', ids: miss }); else await Sync.markSynced(`Live-Änderung von ${this.peerName} übernommen`);
@@ -4980,13 +5049,13 @@ class PeerSession {
   /** Lokale Änderung sofort an das andere Gerät schicken */
   async _local(ev) {
     if (!ev.local || !this.open) return;
-    const recs = Sync.filterRecs(ev.records, this.depts || Settings.v.depts, !!this.strict);
+    const recs = Sync.filterRecs(ev.records, this.depts || App.deviceDepts(), !!this.strict);
     if (!this.peerCues) Sync.stripCues(recs);
     if (!recs.shows.length && !recs.entries.length && !recs.photos.length && !(recs.runs || []).length && !(recs.house || []).length && !Sync.hasCue(recs)) return;
     await this.send({ t: 'delta', ...recs });
     const okBlobs = new Set(recs.photos.map(p => p.b));
     Cues.blobRefsOf(recs.cueimgs).forEach(b => okBlobs.add(b));
-    if ((this.depts || Settings.v.depts).includes('R')) Req.blobRefs(recs.shows, recs.house || []).forEach(b => okBlobs.add(b));
+    if ((this.depts || App.deviceDepts()).includes('R')) Req.blobRefs(recs.shows, recs.house || []).forEach(b => okBlobs.add(b));
     for (const id of (ev.blobIds || []).filter(b => okBlobs.has(b))) {
       const full = await Repo.full(id), thumb = await Repo.thumb(id);
       await this.send({ t: 'blob', id, full: Utils.bufToB64(full), thumb: thumb ? Utils.bufToB64(thumb) : null });
@@ -5864,7 +5933,9 @@ const SetupView = {
     if (!box) return;
     const s = Repo.show(showId); if (!s || !depts.length) { box.innerHTML = ''; return; }
     // Reihenfolge (ab 2.8.1): Hinweise (immer offen) · Vor der Vorstellung · je Abteilung Ablauf, dann Beleuchterzüge bzw. Positionen
-    box.innerHTML = depts.map(d => this.hintHtml(s, d, edit)).join('') + (noRun ? '' : this.htmlRun(s, edit, depts)) + depts.map(d => this['html' + d](s, edit)).join('');
+    // ab 2.9.0 ganz oben: je Abteilung „Zuständig: … · Dauer …“ (Stückdaten, nur Vorhandenes)
+    box.innerHTML = depts.map(d => this.zustHtml(s, d, edit, depts.length > 1)).join('') + depts.map(d => this.hintHtml(s, d, edit)).join('') + (noRun ? '' : this.htmlRun(s, edit, depts)) + depts.map(d => this['html' + d](s, edit)).join('');
+    box.querySelectorAll('[data-zline]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); App.editShow(showId, { more: true, focus: b.dataset.zline }); }));
     box.querySelectorAll('details.setup, details.ssubd').forEach(dt => dt.addEventListener('toggle', () => { this.open[dt.dataset.box || dt.dataset.abt] = dt.open; }));
     box.querySelectorAll('[data-setup-edit]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); this['edit' + b.dataset.setupEdit](showId); }));
     box.querySelectorAll('[data-rfoto]').forEach(b => b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); Req.photoLightbox(b.dataset.rfoto, b.dataset.name || '', b.dataset.cap || ''); }));
@@ -5893,6 +5964,18 @@ const SetupView = {
   ALLG: { L: 'einrichtung', T: 'einrichtungT', B: 'einrichtungB', R: 'einrichtungR' },
   /** Hinweis Einrichten: eigenes, immer offenes Feld, sobald etwas eingetragen ist (ab 2.7.0; eigener Editor ab 2.8.1).
       Im Bearbeitungsmodus steht ohne Hinweis ein Knopf zum Eintragen. */
+  /** Zeile „Zuständig: Hendrik · Dauer 1:40“ je Abteilung (ab 2.9.0). Requisite ohne Dauer – die steht dort in „Allgemeine Infos“.
+      Fehlt beides: keine Zeile. Im Bearbeitungsmodus antippbar → Stückdaten mit aufgeklapptem „Mehr Angaben“. */
+  zustText(s, d) {
+    const z = String(s.f[ZUST[d]] || '').trim(), du = d === 'R' ? '' : String(s.f.dauer || '').trim();
+    return [z ? 'Zuständig: ' + z : '', du ? 'Dauer ' + du : ''].filter(Boolean).join(' · ');
+  },
+  zustHtml(s, d, edit, tag) {
+    const t = this.zustText(s, d); if (!t) return '';
+    const inner = `${tag ? `<span class="tag A" data-abt="${d}">${Utils.esc(DEPT[d].short)}</span>` : ''}<span class="zt">${Utils.esc(t)}</span>`;
+    return edit ? `<button type="button" class="zline" data-abt="${d}" data-zline="${d}" aria-label="${Utils.esc(DEPT[d].short + ': ' + t)} – Stückdaten bearbeiten">${I('user', 'sm')}${inner}${I('edit', 'sm')}</button>`
+      : `<div class="zline" data-abt="${d}">${I('user', 'sm')}${inner}</div>`;
+  },
   hintHtml(s, d, edit) {
     const v = s.f[this.ALLG[d]], ek = d === 'R' ? 'RA' : d + 'H';
     if (!v) return edit && d !== 'R' ? `<button type="button" class="hintadd" data-abt="${d}" data-setup-edit="${ek}">${I('plus', 'sm')} Hinweis Einrichten · ${Utils.esc(DEPT[d].short)}</button>` : '';
@@ -7255,10 +7338,13 @@ Object.assign(Req, {
     if (to) await this.moveItemTo(showId, tok, fromKey, to);
   },
   personFields(p = {}) { return [{ k: 'darsteller', label: 'Person', value: p.darsteller || '', ph: 'z. B. Julian', quick: this.quickList().map(x => x.name) }, { k: 'rolle', label: 'Rolle', value: p.rolle || '', ph: 'z. B. Mackie Messer' }]; },
-  editPersons(showId) {
+  /** Personen des Stücks. Aus den Stückdaten (ab 2.9.0) als „Besetzung“ geöffnet; „x Gegenstände“ nur, wenn die Requisite
+      in der Veranstaltung UND auf diesem Gerät sichtbar ist. */
+  editPersons(showId, { title = 'Personen' } = {}) {
     const need = v => (v.rolle.trim() || v.darsteller.trim()) ? '' : 'Bitte Rolle oder Darsteller eintragen.';
+    const withR = App.visibleDepts(showId).includes('R');
     this.listSheet({
-      title: 'Personen', empty: 'Noch keine Personen. Jeder Gegenstand kann einer oder mehreren Personen gehören.',
+      title, empty: withR ? 'Noch keine Personen. Jeder Gegenstand kann einer oder mehreren Personen gehören.' : 'Noch keine Besetzung.',
       list: () => this.persons(showId),
       top: () => { const have = this.persons(showId).map(p => String(p.darsteller || '').trim().toLowerCase());
         const ens = this.quickList().filter(x => !have.includes(x.name.toLowerCase()));
@@ -7266,7 +7352,7 @@ Object.assign(Req, {
           <div class="rens"><div class="rqh"><span>Aus dem Ensemble</span><button type="button" class="btn ghost" data-la="ens">${I('edit', 'sm')} Ensemble bearbeiten</button></div>
           <div class="qkeys">${ens.map(x => `<button type="button" class="rq" data-la="take" data-key="${Utils.esc(x.id)}">${I('plus', 'sm')} ${Utils.esc(x.name)}</button>`).join('') || `<span class="muted" style="font-size:14px">${this.quickList().length ? 'Alle aus dem Ensemble sind schon im Stück.' : 'Noch leer – über „Ensemble bearbeiten“ eintragen.'}</span>`}</div></div>`; },
       row: (p, i, n) => { const cnt = this.entriesR(showId).filter(e => (e.f.personIds || []).includes(p.key)).length;
-        return `<div class="rrow"><span class="rrl">${I('user', 'sm')}<span><b>${Utils.esc(this.personLabel(p) || '–')}</b><small>${cnt} Gegenstand${cnt === 1 ? '' : 'e'}</small></span></span>
+        return `<div class="rrow"><span class="rrl">${I('user', 'sm')}<span><b>${Utils.esc(this.personLabel(p) || '–')}</b>${withR ? `<small>${cnt} Gegenstand${cnt === 1 ? '' : 'e'}</small>` : ''}</span></span>
           ${this.arrows(i, n, p.key)}<button type="button" class="btn icon" data-la="edit" data-key="${Utils.esc(p.key)}" aria-label="Bearbeiten">${I('edit', 'sm')}</button>
           <button type="button" class="btn icon danger" data-la="del" data-key="${Utils.esc(p.key)}" aria-label="Entfernen">${I('trash', 'sm')}</button></div>`; },
       onAct: async (a, key) => {
@@ -9082,6 +9168,7 @@ const SyncView = {
         <button class="pcard" data-act="import"><span class="ic">${I('download')}</span><span class="lb2"><h4>Sync-Paket oder Backup einspielen</h4><p>Wird zusammengeführt – nichts wird überschrieben oder gelöscht, was neuer ist.</p></span>${I('arrowR')}</button>
         <button class="pcard" data-act="backup"><span class="ic">${I('database')}</span><span class="lb2"><h4>Komplett-Backup erstellen</h4><p>Alle Veranstaltungen inkl. Fotos als JSON-Datei sichern.</p></span>${I('arrowR')}</button>
         <button class="pcard" data-act="diag"><span class="ic">${I('info')}</span><span class="lb2"><h4>Diagnose</h4><p>Lokale Daten, offene Änderungen, Protokoll der letzten Abgleiche.</p></span>${I('arrowR')}</button>
+        ${App.gastHint()}
         <input type="file" class="hidden" accept=".json,.ldsync,application/json,text/plain">`;
     };
     render();
@@ -9099,7 +9186,7 @@ const SyncView = {
   },
   async send() {
     const last = Sync.state.lastPackageAt;
-    const mine = Settings.v.depts;
+    const mine = App.deviceDepts();
     const changes = last ? Sync.collect({ since: last, depts: mine }) : null;
     const nCh = changes ? ['shows', 'entries', 'photos', 'runs', 'house', 'cuelists', 'cues', 'cueimgs'].reduce((n, k) => n + (changes[k] || []).length, 0) : 0;
     const lbl = '';            // ab 2.8.3 gehen Licht, Ton und Bühne immer mit (auch Einträge, die dieses Gerät weitergibt)
@@ -9273,7 +9360,7 @@ const DiagView = {
         <div class="bigstatus" data-state="${st.state}"><span class="dot"></span><div><h3>${Utils.esc(st.label)}</h3><p>${Utils.esc(st.text)}</p></div></div>
         <div class="group"><h3>Dieses Gerät</h3><dl class="kv">
           <dt>Name</dt><dd>${Utils.esc(Sync.deviceName())}</dd><dt>Geräte-ID</dt><dd>${Sync.deviceId}</dd><dt>App-Version</dt><dd>${APP_VERSION}</dd>
-          <dt>Dokumentiert</dt><dd>${Utils.esc(Sync.deptLabel())}</dd><dt>Paketformat</dt><dd>${FORMAT_VERSION}</dd>
+          <dt>Dokumentiert</dt><dd>Dieses Gerät dokumentiert: ${Utils.esc(Sync.deptLabel(Settings.v.depts))}${App.gastShows().length ? ` · zusätzlich für Gastspiele: ${Utils.esc(App.gastShows().map(x => x.f.titel).join(', '))}` : ''}</dd><dt>Paketformat</dt><dd>${FORMAT_VERSION}</dd>
           <dt>Speicher</dt><dd>${est ? `${Utils.fmtBytes(est.usage)} von ${Utils.fmtBytes(est.quota)} belegt` : 'unbekannt'}</dd>
           <dt>Dauerhaft</dt><dd>${persisted == null ? 'unbekannt' : persisted ? 'ja – Browser löscht die Daten nicht automatisch' : 'nein – bei Speichermangel könnte der Browser löschen'}</dd></dl></div>
         <div class="group"><h3>Lokale Daten</h3><dl class="kv">
@@ -9281,7 +9368,7 @@ const DiagView = {
           <dt>Fotos</dt><dd>${p.live} (+${p.dead} gelöscht)</dd><dt>Bilddaten</dt><dd>${blobs}</dd>
           <dt>Vorstellungen</dt><dd>${cnt(Repo.runs).live} Durchgänge (+${cnt(Repo.runs).dead} gelöscht)</dd>
           <dt>Cue-Fotos</dt><dd>${Cues.lists().length} Listen · ${cnt(Repo.cues).live} Cues · ${cnt(Repo.cueimgs).live} Fotos${Cues.deletedLists().length ? ` (+${Cues.deletedLists().length} Listen im Papierkorb)` : ''}</dd>
-          ${Repo.house.size || Settings.v.depts.includes('R') ? `<dt>Haus-Daten</dt><dd>${Repo.house.size} Datensatz${Repo.house.size === 1 ? '' : 'e'}${Repo.house.get('requisite') ? ` · ${Req.houseOrts().length} Haus-Orte, ${Req.vorlagen().length} Vorlagen · Stand ${Utils.fmtDate(Repo.house.get('requisite').mod)}` : ''}</dd>` : ''}
+          ${Repo.house.size || App.deviceDepts().includes('R') ? `<dt>Haus-Daten</dt><dd>${Repo.house.size} Datensatz${Repo.house.size === 1 ? '' : 'e'}${Repo.house.get('requisite') ? ` · ${Req.houseOrts().length} Haus-Orte, ${Req.vorlagen().length} Vorlagen · Stand ${Utils.fmtDate(Repo.house.get('requisite').mod)}` : ''}</dd>` : ''}
           ${(() => { const big = Repo.liveShows().filter(x => Object.keys(x.f).length >= 1500); return big.length ? `<dt>Hinweis</dt><dd style="color:var(--edit)">${big.map(x => { const n = Object.keys(x.f).length;
             return `„${Utils.esc(x.f.titel)}“: ${n} Felder${n >= Rec.MAX_FIELDS_OLD ? ` – Geräte mit Doku VT 2.8.2 oder älter nehmen diese Veranstaltung nicht mehr an (ab 2.8.3 bis ${Rec.MAX_FIELDS})` : ` (Geräte mit 2.8.2 oder älter nehmen höchstens ${Rec.MAX_FIELDS_OLD} an)`}`; }).join('<br>')}</dd>` : ''; })()}
           <dt>Fehlende Bilder</dt><dd>${missing.length}${missing.length ? ' – bitte vollständiges Paket/Live-Abgleich' : ''}</dd>
@@ -9563,6 +9650,8 @@ const App = {
     }
     if (Settings.v.depts.includes('R')) {          // Requisite: Haus-Standard und Demo „Einfache Leute“ (nur einmal)
       try { await Req.ensureHouse(); await Req.maybeDemo(); await Req.maybeTest(); } catch (e) { console.warn('Requisite-Standard nicht angelegt', e); }
+    } else if (this.deviceDepts().includes('R')) {   // Gastspiel-Stück mit Requisite (ab 2.9.0): nur Haus-Orte, keine Demo
+      try { await Req.ensureHouse(); } catch (e) { console.warn('Haus-Orte nicht angelegt', e); }
     }
     try { await Req.migrateHouse(); } catch (e) { console.warn('Haus-Orte nicht angepasst', e); }
     Repo.on(ev => { if (ev && ev.blobIds && ev.blobIds.length) Thumbs.miss.clear(); this.requestRender(); });
@@ -9614,6 +9703,7 @@ const App = {
       this.state.route = 'show';
     } else if (h[0] === 'cues') { this.state.route = 'cues'; this.state.showId = null; }                       // Cue-Fotos (ab 2.8.0)
     else if (h[0] === 'cue' && Cues.list(h[1])) { this.state.route = 'cue'; this.state.showId = null; this.state.cueListId = h[1]; }
+    else if (h[0] === 'archiv') { this.state.route = 'archiv'; this.state.showId = null; }                  // Abgespielt (ab 2.9.0)
     else { this.state.route = 'home'; this.state.showId = null; }
     this.render(true);
     window.scrollTo(0, 0);
@@ -9648,6 +9738,7 @@ const App = {
     if (this.state.route === 'show') this.renderShow(full);
     else if (this.state.route === 'cues') CueView.renderHome();
     else if (this.state.route === 'cue') CueView.renderList(full);
+    else if (this.state.route === 'archiv') this.renderArchiv();
     else this.renderHome();
     this.stickyTop();
   },
@@ -9657,7 +9748,9 @@ const App = {
     const bar = document.getElementById('appbarRow');
     bar.innerHTML = `<div class="brand" style="flex:1;min-width:0"><span class="brand-mark">${I('bulb')}</span><h1>Doku VT<span class="ver" title="App-Version">v${APP_VERSION}</span></h1></div>
       ${this.pillHtml()}<button class="btn icon ghost" data-act="settings" aria-label="Einstellungen">${I('settings')}</button>`;
-    const all = Repo.liveShows().sort((a, b) => this.isDemo(a) - this.isDemo(b));     // Demo und Testvorstellung immer am Ende (ab 2.7.0)
+    // Abgespielte (ab 2.9.0) erscheinen weder in der Liste noch in Zählern oder im Spielstätten-Filter
+    const live = Repo.liveShows(), nAbg = live.filter(s => this.isAbg(s)).length, nTrash = Repo.deletedShows().length;
+    const all = live.filter(s => !this.isAbg(s)).sort((a, b) => this.isDemo(a) - this.isDemo(b));     // Demo und Testvorstellung immer am Ende (ab 2.7.0)
     // Spielstätten-Filter (ab 2.6.0): nur sichtbar, wenn es mehr als eine Spielstätte gibt
     const sps = [...new Set(all.map(s => this.spOf(s)))].sort((a, b) => this.spRank(a) - this.spRank(b) || a.localeCompare(b, 'de'));
     if (this.state.homeSp !== 'all' && !sps.includes(this.state.homeSp)) this.state.homeSp = 'all';
@@ -9668,12 +9761,26 @@ const App = {
         <button class="btn" data-act="import">${I('download')} Import</button></div>${sps.length > 1 ? `
       <div class="spfilter" role="group" aria-label="Spielstätte">${[['all', 'Alle', all.length]].concat(sps.map(x => [x, x || 'Ohne Spielstätte', all.filter(s => this.spOf(s) === x).length])).map(([v, l, n]) =>
         `<button type="button" data-act="homesp" data-sp="${Utils.esc(v)}" aria-pressed="${this.state.homeSp === v}">${v !== 'all' && v ? `<span class="spdot" style="background:${spColor(v)}"></span>` : ''}${Utils.esc(l)} <span class="n">${n}</span></button>`).join('')}</div>` : ''}
-      ${shows.length ? `<div class="shows">${shows.map(s => this.showCard(s)).join('')}</div>` :
+      ${shows.length ? `<div class="shows">${shows.map(s => this.showCard(s)).join('')}</div>` : nAbg && !all.length ?
+        `<div class="empty"><div class="ico">${I('archive', 'lg')}</div><h3>Alles abgespielt</h3><p>Alle Veranstaltungen sind als abgespielt markiert – unten unter „Abgespielt“ weiter erreichbar.</p></div>` :
         `<div class="empty"><div class="ico">${I('bulb', 'lg')}</div><h3>Noch keine Veranstaltung</h3><p>Lege die erste Produktion an – oder spiele ein Backup bzw. Sync-Paket ein.</p></div>`}
-      ${Repo.deletedShows().length ? `<div style="text-align:center;margin-top:18px"><button class="btn ghost" data-act="trash">${I('trash', 'sm')} Papierkorb (${Repo.deletedShows().length})</button></div>` : ''}
+      ${nAbg || nTrash ? `<div class="homefoot">${nAbg ? `<button class="btn ghost" data-act="archiv">${I('archive', 'sm')} Abgespielt (${nAbg})</button>` : ''}${nTrash ? `<button class="btn ghost" data-act="trash">${I('trash', 'sm')} Papierkorb (${nTrash})</button>` : ''}</div>` : ''}
       <input type="file" class="hidden" accept=".json,.ldsync,application/json,text/plain" data-file>
       <div class="appver">Doku VT · Version ${APP_VERSION}</div></div>
       <div class="fabbar"><button class="fab" data-act="newshow">${I('plus')} Veranstaltung</button></div>`;
+    Thumbs.observe(main);
+    this.updatePill();
+  },
+  /* ---------- Abgespielt (ab 2.9.0): eigene Ansicht #/archiv ---------- */
+  renderArchiv() {
+    const bar = document.getElementById('appbarRow');
+    bar.innerHTML = `<button class="btn icon ghost" data-act="home" aria-label="Zurück zur Übersicht">${I('back')}</button>
+      <h1 style="flex:1;min-width:0">Abgespielt</h1>${this.pillHtml()}<button class="btn icon ghost" data-act="settings" aria-label="Einstellungen">${I('settings')}</button>`;
+    const list = Repo.liveShows().filter(s => this.isAbg(s));          // neueste Änderung zuerst
+    const main = document.getElementById('main');
+    main.innerHTML = `<div class="wrap"><div class="home-head"><div><h2>Abgespielt</h2><p>${list.length} ${list.length === 1 ? 'Produktion' : 'Produktionen'} – auf der Startseite ausgeblendet. Nichts ist gelöscht, abgeglichen wird weiter.</p></div></div>
+      ${list.length ? `<div class="shows">${list.map(s => this.showCard(s)).join('')}</div>` : `<div class="empty"><div class="ico">${I('archive', 'lg')}</div><h3>Keine abgespielten Veranstaltungen</h3><p>Über ⋯ → „Als abgespielt markieren“ verschwindet ein Stück von der Startseite.</p></div>`}
+      <div class="appver">Doku VT · Version ${APP_VERSION}</div></div>`;
     Thumbs.observe(main);
     this.updatePill();
   },
@@ -9696,14 +9803,53 @@ const App = {
     }).join('');
     return `<article class="showcard ${this.spOf(s) ? 'hassp' : ''}" style="${this.spOf(s) ? '--sp:' + spColor(this.spOf(s)) : ''}"><button class="open" data-act="open" data-id="${Utils.esc(s.id)}" aria-label="${Utils.esc(s.f.titel)} öffnen">
       <div class="mosaic">${[0, 1, 2].map(i => `<div class="m">${ph[i] ? Views.thumbImg(ph[i].b) : ''}</div>`).join('')}</div>
-      <div class="body">${this.spBadge(s)}<h3>${Utils.esc(s.f.titel)}</h3><div class="meta">${Repo.showDepts(s.id).length > 1 || Settings.v.depts.length > 1 ? `<span>${Utils.esc(Repo.showDepts(s.id).map(d => DEPT[d].short).join(' · '))}</span>` : ''}<span>${st.entries} Einträge</span><span>${st.photos} Fotos</span><span>geändert ${Utils.fmtAgo(s.mod)}</span></div>
+      <div class="body">${this.spBadge(s)}${this.allDept(s.id) ? `<span class="allbadge">${I('layers', 'sm')}alle Abteilungen</span>` : ''}${this.isAbg(s) ? `<span class="allbadge abg">${I('archive', 'sm')}abgespielt</span>` : ''}<h3>${Utils.esc(s.f.titel)}</h3><div class="meta">${Repo.showDepts(s.id).length > 1 || Settings.v.depts.length > 1 ? `<span>${Utils.esc(Repo.showDepts(s.id).map(d => DEPT[d].short).join(' · '))}</span>` : ''}<span>${st.entries} Einträge</span><span>${st.photos} Fotos</span><span>geändert ${Utils.fmtAgo(s.mod)}</span></div>
       ${progs ? `<div class="progs">${progs}</div>` : ''}</div></button>
       <button class="btn icon ghost menu" data-act="showmenu" data-id="${Utils.esc(s.id)}" aria-label="Aktionen für ${Utils.esc(s.f.titel)}">${I('more')}</button></article>`;
   },
 
   /* ---------- Abteilungen ---------- */
-  /** Sichtbar = Abteilungen der Veranstaltung ∩ Abteilungen dieses Geräts */
-  visibleDepts(showId) { const sd = Repo.showDepts(showId); return DEPT_ORDER.filter(d => sd.includes(d) && Settings.v.depts.includes(d)); },
+  /** Sichtbar = Abteilungen der Veranstaltung ∩ Abteilungen dieses Geräts.
+      Gastspiel-Schalter (ab 2.9.0): Stücke in Settings.allDeptShows zeigen HIER alle ihre Abteilungen. */
+  visibleDepts(showId) {
+    const sd = Repo.showDepts(showId);
+    if (this.allDept(showId)) return sd;
+    return DEPT_ORDER.filter(d => sd.includes(d) && Settings.v.depts.includes(d));
+  },
+  allDept(showId) { return Settings.v.allDeptShows.includes(showId); },
+  /** lebende Stücke mit Gastspiel-Schalter auf diesem Gerät */
+  gastShows() { return Settings.v.allDeptShows.map(id => Repo.show(id)).filter(Boolean); },
+  /** Wirksame Abteilungen dieses Geräts für Senden und Empfangen (ab 2.9.0): „Dieses Gerät dokumentiert“ ∪ Abteilungen aller
+      lebenden Gastspiel-Stücke. Gilt für Sync-Paket, Import (dropReq), Live-Abgleich und fehlende Requisite-Bilder –
+      NICHT für Demo/Testvorstellung beim Start (die richten sich nur nach Settings.v.depts). */
+  deviceDepts() {
+    const set = new Set(Settings.v.depts);
+    this.gastShows().forEach(s => Repo.showDepts(s.id).forEach(d => set.add(d)));
+    return DEPT_ORDER.filter(d => set.has(d));
+  },
+  /** Gastspiel-Schalter setzen/löschen. Wird die Requisite dadurch wirksam, Haus-Orte anlegen (feste Kennungen, keine Dubletten),
+      damit der Ort-Picker etwas anbietet – keine Demo. */
+  async setAllDept(showId, on) {
+    const cur = Settings.v.allDeptShows.filter(x => x !== showId);
+    if (on) cur.push(showId);
+    if (cur.join() === Settings.v.allDeptShows.join()) return;
+    await Settings.set({ allDeptShows: cur });
+    if (on && this.deviceDepts().includes('R')) { try { await Req.ensureHouse(); } catch (e) { console.warn('Haus-Orte nicht angelegt', e); } }
+  },
+  /** Hinweis in „Abgleich & Sicherung“, solange ein Gastspiel-Stück mit Requisite eingeschaltet ist */
+  gastHint() {
+    const gs = this.gastShows(); if (!gs.length) return '';
+    const withR = !Settings.v.depts.includes('R') && gs.some(s => Repo.showDepts(s.id).includes('R'));
+    return `<div class="gasthint">${I('info', 'sm')}<div><b>Gastspiel: alle Abteilungen auf diesem Gerät</b> – ${Utils.esc(gs.map(s => '„' + s.f.titel + '“').join(', '))}.
+      Abgeglichen werden dafür zusätzlich ${Utils.esc(Sync.deptLabel(this.deviceDepts().filter(d => !Settings.v.depts.includes(d))) || 'keine weiteren Abteilungen')}.${withR ? ' Solange das eingeschaltet ist, bekommt dieses Gerät die Requisite <b>aller</b> Stücke – angezeigt wird sie nur im Gastspiel-Stück.' : ''}</div></div>`;
+  },
+  /** abgespielt (ab 2.9.0): auf der Startseite ausgeblendet, unter „Abgespielt“ erreichbar. Fehlt das Feld = nicht abgespielt. */
+  isAbg(s) { return !!(s && s.f.abgespielt === true); },
+  async setAbg(id, on) {
+    const s = Repo.show(id); if (!s) return;
+    await Repo.patchShow(id, { abgespielt: !!on });
+    Ui.toast(on ? `„${s.f.titel}“ ist abgespielt – auf der Startseite ausgeblendet` : `„${s.f.titel}“ ist wieder im Spielplan`, 'ok');
+  },
   /** Abteilung, nach der sich Beschriftungen richten: gewählte, sonst die einzige sichtbare, sonst null („Alle“) */
   curAbt() {
     const v = this.visibleDepts(this.state.showId);
@@ -9721,12 +9867,13 @@ const App = {
     return `<div class="depttgls" role="group" aria-label="Abteilungen">${DEPT_ORDER.map(d => `<button type="button" class="depttgl" data-abt="${d}" data-tgl="${d}" aria-pressed="${sel.includes(d)}">
       <span class="ck">${sel.includes(d) ? I('check', 'sm') : ''}</span>${Utils.esc(DEPT[d].short)}</button>`).join('')}</div>`;
   },
-  bindToggles(root, sel) {
+  bindToggles(root, sel, onChange = null) {
     root.addEventListener('click', e => {
       const b = e.target.closest('[data-tgl]'); if (!b) return;
       const d = b.dataset.tgl, i = sel.indexOf(d);
       if (i >= 0) { if (sel.length === 1) { Ui.toast('Mindestens eine Abteilung', 'warn'); return; } sel.splice(i, 1); } else sel.push(d);
       const on = sel.includes(d); b.setAttribute('aria-pressed', on); b.querySelector('.ck').innerHTML = on ? I('check', 'sm') : '';
+      if (onChange) onChange(d, on);
     });
   },
 
@@ -9736,8 +9883,8 @@ const App = {
     const st = this.state;
     const vis = this.visibleDepts(s.id);
     const bar = document.getElementById('appbarRow');
-    bar.innerHTML = `<button class="btn icon ghost" data-act="home" aria-label="Zurück zur Übersicht">${I('back')}</button>
-      <h1><button class="title-btn" data-act="rename" title="Titel bearbeiten">${Utils.esc(s.f.titel)}<span class="sub">${this.spOf(s) ? `<span class="spsub">${I('pin', 'sm')} ${Utils.esc(this.spOf(s))}</span> · ` : ''}${Repo.stats(s.id, vis).entries} Einträge</span></button></h1>
+    bar.innerHTML = `<button class="btn icon ghost" data-act="${this.isAbg(s) ? 'archiv' : 'home'}" aria-label="${this.isAbg(s) ? 'Zurück zu „Abgespielt“' : 'Zurück zur Übersicht'}">${I('back')}</button>
+      <h1><button class="title-btn" data-act="rename" title="Stückdaten bearbeiten">${Utils.esc(s.f.titel)}<span class="sub">${this.spOf(s) ? `<span class="spsub">${I('pin', 'sm')} ${Utils.esc(this.spOf(s))}</span> · ` : ''}${Repo.stats(s.id, vis).entries} Einträge</span></button></h1>
       ${this.pillHtml()}
       <button class="btn icon ghost" data-act="runs" aria-label="Vorstellungs-Checkliste">${I('checklist')}</button>
       <button class="btn icon ghost" data-act="pdf" aria-label="PDF exportieren">${I('pdf')}</button>
@@ -9746,12 +9893,14 @@ const App = {
     if (!vis.length) {
       // keine gemeinsame Abteilung: klarer Hinweis statt leerer Liste
       const sd = Repo.showDepts(s.id).map(d => DEPT[d].name).join(', ');
-      main.innerHTML = `<div class="wrap"><div class="empty"><div class="ico">${I('layers', 'lg')}</div>
+      main.innerHTML = `<div class="wrap">${this.abgBanner(s)}<div class="empty"><div class="ico">${I('layers', 'lg')}</div>
         <h3>Keine Abteilung dieses Geräts</h3>
         <p>Diese Veranstaltung umfasst: <b>${Utils.esc(sd)}</b>.<br>Dieses Gerät dokumentiert: <b>${Utils.esc(Settings.v.depts.map(d => DEPT[d].name).join(', '))}</b>.</p>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
           <button class="btn big primary" data-act="settings">${I('settings')} Einstellungen öffnen</button>
-          <button class="btn big" data-act="rename">${I('edit')} Abteilungen der Veranstaltung</button></div></div></div>`;
+          <button class="btn big" data-act="rename">${I('edit')} Abteilungen der Veranstaltung</button>
+          <button class="btn big" data-act="allhere">${I('layers')} Hier trotzdem anzeigen (nur dieses Stück)</button></div>
+        <p class="muted" style="font-size:14px;margin-top:14px">„Hier trotzdem anzeigen“ ist für Gastspiele und Abstecher: Es gilt nur für dieses Stück und nur auf diesem Gerät.</p></div></div>`;
       this.updatePill(); this.stickyTop(); return;
     }
     if (full || !main.querySelector('.toolbar')) {
@@ -9764,14 +9913,20 @@ const App = {
           <div class="seg" role="group" aria-label="Darstellung"><button data-view="list" aria-label="Liste">${I('list', 'sm')}</button><button data-view="grid" aria-label="Kacheln">${I('grid', 'sm')}</button><button data-view="big" aria-label="Große Bilder">${I('image', 'sm')}</button></div>
           <button class="modesw" data-act="mode" role="switch" aria-checked="false" aria-pressed="false"><span class="lab l0">${I('lock', 'sm')} Ansicht</span><span class="trk"><span class="knob"></span></span><span class="lab l1">Bearbeiten ${I('edit', 'sm')}</span></button>
         </div><div class="row progress-strip hidden" data-prog></div><div class="row qrow hidden" data-qrow role="group" aria-label="Schnellzugriff"></div></div>
-        <div class="split"><div class="listpane"><div data-setup></div><div data-list></div></div><aside class="detailpane" aria-label="Details" data-detail></aside></div>
+        <div class="split"><div class="listpane"><div data-abg></div><div data-setup></div><div data-list></div></div><aside class="detailpane" aria-label="Details" data-detail></aside></div>
         <div class="fabbar" data-fab></div>`;
     }
+    const ab = main.querySelector('[data-abg]'); if (ab) ab.innerHTML = this.abgBanner(s);
     this.renderToolbar(); this.renderList(); this.renderDetail();
     this.updatePill();
     const tb = main.querySelector('.toolbar');
     if (tb && !tb._ro) { tb._ro = new ResizeObserver(() => this.stickyTop()); tb._ro.observe(tb); }
     this.stickyTop();
+  },
+  /** Hinweis oben in einer abgespielten Veranstaltung (ab 2.9.0) */
+  abgBanner(s) {
+    if (!this.isAbg(s)) return '';
+    return `<div class="abgbanner" role="status">${I('archive', 'sm')}<span>Abgespielt – auf der Startseite ausgeblendet</span><button class="btn" data-act="unplay">${I('undo', 'sm')} Wieder in den Spielplan</button></div>`;
   },
   renderToolbar() {
     const st = this.state, main = document.getElementById('main');
@@ -10030,28 +10185,8 @@ const App = {
     if (v === '*' || (v && !SPIELSTAETTEN.includes(v))) return box.querySelector('[data-spt]').value.trim() || 'Sonstiges';
     return v;
   },
-  async newShow() {
-    const sel = Settings.v.depts.slice();
-    const sh = Ui.sheet({ title: 'Neue Veranstaltung', center: true });
-    const sp0 = this.state.homeSp !== 'all' ? this.state.homeSp : '';
-    sh.body.innerHTML = `<form class="form" onsubmit="return false">
-      <div class="f"><label for="ns-t">Titel</label><input id="ns-t" placeholder="z. B. Die Zauberflöte" enterkeyhint="done"></div>
-      <div class="f"><label>Spielstätte</label>${this.spChooser(sp0)}</div>
-      <div class="f"><label>Abteilungen</label>${this.deptToggles(sel)}</div>
-      <button class="btn primary big block" data-ok>${I('plus')} Anlegen</button></form>`;
-    this.bindToggles(sh.body, sel); this.bindSp(sh.body);
-    const go = async () => {
-      try {
-        const t = sh.body.querySelector('#ns-t').value.trim();
-        const s = await Repo.createShow(t || 'Neue Veranstaltung', sel, this.readSp(sh.body));
-        sh.close(); await Ui.afterBack();          // erst die Zurück-Navigation des Blatts abwarten, sonst hebt sie den Seitenwechsel auf
-        this.state.edit = true; this.state.abt = 'all'; this.go('#/show/' + s.id);
-      } catch (err) { this.error(err); }
-    };
-    sh.body.querySelector('[data-ok]').onclick = go;
-    sh.body.querySelector('#ns-t').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
-    setTimeout(() => sh.body.querySelector('#ns-t').focus(), 50);
-  },
+  /** Neue Veranstaltung: dasselbe Formular wie „Stückdaten bearbeiten“ (ab 2.9.0). Nichts wird angelegt, bevor „Anlegen“ getippt ist. */
+  newShow() { return this.showForm(null); },
   /** Ansichtsmodus schützt vor versehentlichen Änderungen (ab 2.8.3 auch Titel und ⋯-Menü): Ändern, Duplizieren, Löschen und
       Zurücksetzen fragen erst, ob der Bearbeitungsmodus eingeschaltet werden soll. Auf den Übersichten (ohne Umschalter) nicht. */
   async needEdit(what) {
@@ -10066,17 +10201,18 @@ const App = {
     const s = Repo.show(id); if (!s) return;
     const dups = Repo.duplicatesOf(id, this.visibleDepts(id)).length;
     const v = await Ui.menu(s.f.titel, [
-      { label: 'Titel & Details bearbeiten', value: 'edit', icon: 'edit' },
+      { label: 'Stückdaten bearbeiten', value: 'edit', icon: 'edit' },
       { label: 'PDF exportieren', value: 'pdf', icon: 'pdf' },
       { label: 'Backup dieser Veranstaltung', value: 'backup', icon: 'database' },
       { label: 'Duplizieren', value: 'dup', icon: 'copy' },
       { label: 'Vorstellungs-Checkliste', value: 'runs', icon: 'checklist' },
       { label: 'Haken an Einträgen zurücksetzen', value: 'reset', icon: 'undo' },
       dups && { label: `${dups} doppelte Einträge zusammenführen`, value: 'merge', icon: 'merge' },
+      this.isAbg(s) ? { label: 'Wieder in den Spielplan', value: 'unplay', icon: 'undo' } : { label: 'Als abgespielt markieren', value: 'play', icon: 'archive' },
       { label: 'Veranstaltung löschen', value: 'del', icon: 'trash', danger: true }
     ]);
     try {
-      const need = { edit: 'Titel und Details ändern', dup: 'Duplizieren', reset: 'Haken zurücksetzen', merge: 'Zusammenführen', del: 'Löschen' }[v];
+      const need = { edit: 'Stückdaten ändern', dup: 'Duplizieren', reset: 'Haken zurücksetzen', merge: 'Zusammenführen', del: 'Löschen', play: 'Als abgespielt markieren', unplay: 'Wieder in den Spielplan holen' }[v];
       if (need && !this.state.edit && ['show', 'cue'].includes(this.state.route)) { await Ui.afterBack(); if (!(await this.needEdit(need))) return; }   // erst das Menü ganz schließen
       if (v === 'edit') await this.editShow(id);
       else if (v === 'pdf') this.pdf(id);
@@ -10085,43 +10221,152 @@ const App = {
       else if (v === 'reset') this.resetChecks(id);
       else if (v === 'runs') RunList.open(id);
       else if (v === 'merge') { const n = await Repo.mergeDuplicates(id, this.visibleDepts(id)); Ui.toast(`${n} Einträge zusammengeführt`); }
+      else if (v === 'play') {
+        await Ui.afterBack();             // Menü ganz schließen, dann die eigene Rückfrage
+        if (await Ui.confirm('Als abgespielt markieren?', `„${s.f.titel}“ wird auf der Startseite ausgeblendet und ist unter „Abgespielt“ weiter erreichbar. Nichts wird gelöscht – nach dem Abgleich auch auf den anderen Geräten (ab 2.9.0) ausgeblendet.`, 'Abgespielt')) await this.setAbg(id, true);
+      }
+      else if (v === 'unplay') await this.setAbg(id, false);
       else if (v === 'del') {
         const st = Repo.stats(id);
         if (await Ui.confirm('Veranstaltung löschen?', `„${s.f.titel}“ mit ${st.entries} Einträgen und ${st.photos} Fotos wird gelöscht – auch auf Geräten, mit denen später abgeglichen wird. Sie bleibt im Papierkorb (Startseite unten) und lässt sich von dort wiederherstellen.`, 'Löschen', true)) {
-          await Repo.deleteShow(id); Ui.toast('Veranstaltung gelöscht'); if (this.state.showId === id) this.go('#/');
+          await Repo.deleteShow(id); await this.setAllDept(id, false); Ui.toast('Veranstaltung gelöscht'); if (this.state.showId === id) this.go('#/');
         }
       }
     } catch (err) { this.error(err); }
   },
-  async editShow(id) {
-    const s = Repo.show(id);
-    const before = Repo.showDepts(id), sel = before.slice();
-    const sh = Ui.sheet({ title: 'Veranstaltung', center: true });
-    sh.body.innerHTML = `<form class="form" onsubmit="return false">
-      <div class="f"><label for="sh-t">Titel</label><input id="sh-t" value="${Utils.esc(s.f.titel)}"></div>
-      <div class="f"><label>Spielstätte</label>${this.spChooser(s.f.spielstaette)}</div>
-      <div class="f"><label>Abteilungen</label>${this.deptToggles(sel)}
-        <div class="fh">Abwählen blendet die Abteilung nur aus – Einträge werden nicht gelöscht.</div></div>
-      <div class="f"><label for="sh-n">Notiz</label><textarea id="sh-n" rows="3" placeholder="Allgemeines zur Produktion">${Utils.esc(s.f.notiz || '')}</textarea></div>
-      <button class="btn primary big block" data-ok>Speichern</button></form>`;
-    this.bindToggles(sh.body, sel); this.bindSp(sh.body);
-    sh.body.querySelector('[data-ok]').onclick = async () => {
+  /** Stückdaten bearbeiten (Titel-Knopf, ⋯-Menü, Zuständig-Zeile) – dasselbe Formular wie beim Anlegen (ab 2.9.0) */
+  editShow(id, opts = {}) { return this.showForm(id, opts); },
+  /* ---------- Ein Formular für Anlegen und Bearbeiten (ab 2.9.0) ----------
+     Titel · Spielstätte · Abteilungen · „Mehr Angaben“ (Dauer, Besetzung, Zuständig je Abteilung, Notiz, beim Bearbeiten
+     „Abgespielt“) · Kasten „Nur auf diesem Gerät“ (Gastspiel-Schalter) · Anlegen/Speichern.
+     Beim Bearbeiten wird nur geschrieben, was sich gegenüber dem Stand BEIM ÖFFNEN geändert hat: Kommt währenddessen eine
+     Änderung eines anderen Geräts an (Live-Abgleich), wird sie nicht mit dem alten Wert aus dem Formular zurückgedreht.
+     id = null → neue Veranstaltung. opts.more: „Mehr Angaben“ aufklappen, opts.focus: Abteilung, deren Zuständig-Feld den Fokus bekommt. */
+  showForm(id = null, { more = false, focus = null } = {}) {
+    const isNew = !id, s0 = isNew ? null : Repo.show(id);
+    if (!isNew && !s0) return null;
+    const e = Utils.esc, f0 = isNew ? {} : Utils.clone(s0.f);                 // Stand beim Öffnen
+    const txt = k => String(f0[k] == null ? '' : f0[k]).trim();
+    const before = isNew ? null : Repo.showDepts(id);
+    const sel = isNew ? Settings.v.depts.slice() : before.slice();
+    const sp0 = isNew ? (this.state.homeSp !== 'all' ? this.state.homeSp : '') : f0.spielstaette;
+    const all0 = !isNew && this.allDept(id), abg0 = !isNew && this.isAbg(s0);
+    const filled = !isNew && !!(txt('dauer') || txt('notiz') || ZUST_FIELDS.some(k => txt(k)) || Req.persons(id).length || abg0);
+    const tid = isNew ? 'ns-t' : 'sh-t', nid = isNew ? 'ns-n' : 'sh-n';
+    const sh = Ui.sheet({ title: isNew ? 'Neue Veranstaltung' : 'Stückdaten', center: true });
+    sh.el.classList.add('showform');
+    sh.body.innerHTML = `<form class="form" onsubmit="return false" data-sform>
+      <div class="f"><label for="${tid}">Titel</label><input id="${tid}" value="${e(isNew ? '' : f0.titel || '')}" placeholder="z. B. Die Zauberflöte" enterkeyhint="done" autocomplete="off"></div>
+      <div class="f"><label>Spielstätte</label>${this.spChooser(sp0)}</div>
+      <div class="f"><label>Abteilungen</label>${this.deptToggles(sel)}${isNew ? '' : '<div class="fh">Abwählen blendet die Abteilung nur aus – Einträge werden nicht gelöscht.</div>'}</div>
+      <details class="more sfmore" data-more ${more || filled ? 'open' : ''}><summary>${I('layers', 'sm')}<span class="sfm"><b>Mehr Angaben</b><small>Dauer, Besetzung, Zuständig, Notiz – alles optional</small></span>${I('arrowR', 'sm chev')}</summary>
+        <div class="inner">
+          <div class="f"><label for="sf-d">Dauer</label><input id="sf-d" value="${e(txt('dauer'))}" placeholder="z. B. 1:40, keine Pause" autocomplete="off" enterkeyhint="next"></div>
+          <div class="f"><label>Besetzung</label><div data-bes></div></div>
+          <div class="f"><label>Zuständig</label><div class="sfz">${DEPT_ORDER.map(d => `<div class="sfzr${sel.includes(d) ? '' : ' hidden'}" data-zr="${d}" data-abt="${d}"><label for="sf-z${d}">${e(DEPT[d].short)}</label><input id="sf-z${d}" data-z="${d}" value="${e(txt(ZUST[d]))}" placeholder="Name" autocomplete="off" enterkeyhint="next"></div>`).join('')}</div></div>
+          <div class="f"><label for="${nid}">Notiz</label><textarea id="${nid}" rows="3" placeholder="Allgemeines zur Produktion">${e(isNew ? '' : f0.notiz || '')}</textarea></div>
+          ${isNew ? '' : `<label class="sfsw"><span class="lb"><b>Abgespielt</b><small>Auf der Startseite ausgeblendet, unter ‚Abgespielt‘ weiter erreichbar. Nichts wird gelöscht.</small></span><span class="switch"><input type="checkbox" data-abgsw ${abg0 ? 'checked' : ''}><span></span></span></label>`}
+        </div></details>
+      <div class="sfdev"><div class="sfdh">${I('phone', 'sm')} Nur auf diesem Gerät</div>
+        <label class="sfsw"><span class="lb"><b>Alle Abteilungen dieses Stücks hier anzeigen</b><small>Für Gastspiele und Abstecher. Gilt nur für dieses Stück und nur auf diesem Gerät – die Einstellung ‚Dieses Gerät dokumentiert‘ bleibt, wie sie ist.</small></span><span class="switch"><input type="checkbox" data-allsw ${all0 ? 'checked' : ''}><span></span></span></label></div>
+      <button class="btn primary big block" data-ok>${isNew ? I('plus') + ' Anlegen' : I('check') + ' Speichern'}</button></form>`;
+    const q = x => sh.body.querySelector(x);
+    // Abteilung an-/abwählen: Zuständig-Feld erscheint bzw. verschwindet sofort (der Wert bleibt erhalten)
+    this.bindToggles(sh.body, sel, () => sh.body.querySelectorAll('[data-zr]').forEach(r => r.classList.toggle('hidden', !sel.includes(r.dataset.zr))));
+    this.bindSp(sh.body);
+
+    /* Besetzung: beim Anlegen Zeilen Person + Rolle (aus dem Ensemble oder frei), gespeichert mit der Veranstaltung in EINER
+       Transaktion. Beim Bearbeiten: kompakte Liste + „Besetzung bearbeiten“ (Req.editPersons, speichert sofort wie bisher). */
+    const bes = q('[data-bes]');
+    let readPersons = () => [];
+    if (isNew) {
+      bes.innerHTML = `<div class="sfens"><div class="rqh"><span>Aus dem Ensemble</span><button type="button" class="btn ghost" data-ens>${I('edit', 'sm')} Ensemble bearbeiten</button></div><div class="qkeys" data-qk role="group" aria-label="Ensemble: antippen fügt eine Zeile hinzu"></div></div>
+        <div class="sfrows" data-rows></div>
+        <button type="button" class="btn" data-addp>${I('plus', 'sm')} Person</button>`;
+      const rowsBox = bes.querySelector('[data-rows]');
+      const taken = () => [...rowsBox.querySelectorAll('[data-pd]')].map(x => x.value.trim().toLowerCase()).filter(Boolean);
+      const drawKeys = () => {
+        const have = taken(), ens = Req.quickList(), box = bes.querySelector('[data-qk]');
+        const keys = ens.filter(x => !have.includes(x.name.toLowerCase()));
+        box.innerHTML = !ens.length ? '<span class="muted sfhint" data-ensempty>Ensemble leer – Personen hier eintippen oder unter Einstellungen pflegen.</span>'
+          : keys.length ? keys.map(x => `<button type="button" class="rq" data-qn="${e(x.name)}">${I('plus', 'sm')} ${e(x.name)}</button>`).join('')
+          : '<span class="muted sfhint">Alle aus dem Ensemble sind eingetragen.</span>';
+      };
+      const addRow = (name = '') => {
+        const r = document.createElement('div'); r.className = 'sfprow';
+        r.innerHTML = `<input data-pd value="${e(name)}" placeholder="Person" aria-label="Person" autocomplete="off" enterkeyhint="next">
+          <input data-pr placeholder="Rolle" aria-label="Rolle" autocomplete="off" enterkeyhint="next">
+          <button type="button" class="btn icon ghost" data-rm aria-label="Zeile entfernen">${I('close', 'sm')}</button>`;
+        rowsBox.appendChild(r); drawKeys();
+        (name ? r.querySelector('[data-pr]') : r.querySelector('[data-pd]')).focus();
+      };
+      bes.addEventListener('click', ev => {
+        const k = ev.target.closest('[data-qn]'); if (k) { addRow(k.dataset.qn); return; }
+        if (ev.target.closest('[data-addp]')) { addRow(''); return; }
+        const rm = ev.target.closest('[data-rm]'); if (rm) { rm.closest('.sfprow').remove(); drawKeys(); return; }   // noch nichts gespeichert → keine Rückfrage
+        if (ev.target.closest('[data-ens]')) Req.editQuick(() => { if (!sh.layer.closed) drawKeys(); });           // Zeilen bleiben, nur die Tasten neu
+      });
+      rowsBox.addEventListener('change', ev => { if (ev.target.matches('[data-pd]')) drawKeys(); });           // eingetippter Ensemble-Name: Taste weg
+      drawKeys();
+      readPersons = () => [...rowsBox.querySelectorAll('.sfprow')].map(r => ({ darsteller: r.querySelector('[data-pd]').value.trim(), rolle: r.querySelector('[data-pr]').value.trim() }))
+        .filter(p => p.darsteller || p.rolle);
+    } else {
+      const draw = () => {
+        const ps = Req.persons(id);
+        bes.innerHTML = `<div class="sfplist">${ps.length ? ps.map(p => `<span class="sfp">${I('user', 'sm')}${e(Req.personLabel(p) || '–')}</span>`).join('') : '<span class="muted sfhint">Noch keine Besetzung.</span>'}</div>
+          <button type="button" class="btn" data-editp>${I('edit', 'sm')} Besetzung bearbeiten</button>`;
+      };
+      draw();
+      const off = Repo.on(() => { if (sh.layer.closed) { off(); return; } draw(); });       // nur Text und ein Knopf – kein Eingabefeld betroffen
+      bes.addEventListener('click', ev => { if (ev.target.closest('[data-editp]')) Req.editPersons(id, { title: 'Besetzung' }); });
+    }
+
+    const okb = q('[data-ok]');
+    const go = async () => {
+      if (okb.disabled) return;
+      const val = { titel: q('#' + tid).value.trim(), spielstaette: this.readSp(sh.body), dauer: q('#sf-d').value.trim(), notiz: q('#' + nid).value.trim() };
+      DEPT_ORDER.forEach(d => { val[ZUST[d]] = q(`[data-z="${d}"]`).value.trim(); });       // auch abgewählte Abteilungen: Wert bleibt
+      const allOn = q('[data-allsw]').checked, now = DEPT_ORDER.filter(d => sel.includes(d));
+      okb.disabled = true;
       try {
-        const patch = { titel: sh.body.querySelector('#sh-t').value.trim() || 'Ohne Titel', spielstaette: this.readSp(sh.body), notiz: sh.body.querySelector('#sh-n').value.trim() };
-        const now = DEPT_ORDER.filter(d => sel.includes(d));
+        if (isNew) {
+          const extra = { dauer: val.dauer, notiz: val.notiz, persons: readPersons() };
+          ZUST_FIELDS.forEach(k => { extra[k] = val[k]; });
+          const s = await Repo.createShow(val.titel || 'Neue Veranstaltung', now, val.spielstaette, extra);
+          if (allOn) await this.setAllDept(s.id, true);
+          sh.close(); await Ui.afterBack();          // erst die Zurück-Navigation des Blatts abwarten, sonst hebt sie den Seitenwechsel auf
+          this.state.edit = true; this.state.abt = 'all'; this.go('#/show/' + s.id);
+          return;
+        }
+        const patch = {};
+        const chg = (k, v, old) => { if (v !== old) patch[k] = v; };
+        chg('titel', val.titel || 'Ohne Titel', txt('titel') || 'Ohne Titel');
+        chg('spielstaette', val.spielstaette, txt('spielstaette'));
+        ['dauer', 'notiz', ...ZUST_FIELDS].forEach(k => chg(k, val[k], txt(k)));
+        const abg = q('[data-abgsw]').checked; if (abg !== abg0) patch.abgespielt = abg;
         if (now.join() !== before.join()) {           // nur schreiben, wenn die Auswahl wirklich geändert wurde
           const gone = before.filter(d => !now.includes(d));
-          const hit = Repo.entriesOf(id).filter(e => gone.includes(abtOf(e))).length;
-          if (hit && !await Ui.confirm('Abteilung ausblenden?', `${hit} Einträge (${gone.map(d => DEPT[d].short).join(', ')}) werden in dieser Veranstaltung ausgeblendet. Sie bleiben gespeichert und erscheinen wieder, wenn die Abteilung erneut gewählt wird.`, 'Ausblenden')) return;
+          const hit = Repo.entriesOf(id).filter(x => gone.includes(abtOf(x))).length;
+          if (hit && !await Ui.confirm('Abteilung ausblenden?', `${hit} Einträge (${gone.map(d => DEPT[d].short).join(', ')}) werden in dieser Veranstaltung ausgeblendet. Sie bleiben gespeichert und erscheinen wieder, wenn die Abteilung erneut gewählt wird.`, 'Ausblenden')) { okb.disabled = false; return; }
           patch.abteilungen = now;
           if (now.includes('R') && !before.includes('R') && !Req.hasAbschnitte(id)) Object.assign(patch, Req.defaultAbschnitte());
         }
-        await Repo.patchShow(id, patch); sh.close();
-        if (this.state.route === 'show') this.render(true);
-      }
-      catch (err) { this.error(err); }
+        if (Object.keys(patch).length) await Repo.patchShow(id, patch);
+        await this.setAllDept(id, allOn);
+        sh.close();
+        if (this.state.route === 'show' || this.state.route === 'archiv') { await Ui.afterBack(); this.render(true); }
+      } catch (err) { okb.disabled = false; this.error(err); }
     };
-    setTimeout(() => sh.body.querySelector('#sh-t').focus(), 50);
+    okb.onclick = go;
+    q('#' + tid).addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); go(); } });
+    setTimeout(() => {
+      if (sh.layer.closed) return;
+      const zf = focus && q(`[data-z="${focus}"]`);
+      if (zf && !zf.closest('.hidden')) { zf.focus(); return; }
+      if (more && !isNew) { q('[data-more]').scrollIntoView({ block: 'start' }); return; }
+      q('#' + tid).focus();
+    }, 50);
+    return sh;
   },
   async resetChecks(id) {
     // getrennt nach Abteilung und Phase: gilt für die gewählte Abteilung, bei „Alle“ für alle sichtbaren
@@ -10279,7 +10524,10 @@ const App = {
       case 'showmenu': this.showMenu(b.dataset.id); break;
       case 'settings': SettingsView.open(); break;
       case 'sync': SyncView.open(); break;
-      case 'rename': if (await this.needEdit('Titel und Details ändern')) this.editShow(st.showId); break;
+      case 'rename': if (await this.needEdit('Stückdaten ändern')) this.editShow(st.showId); break;
+      case 'archiv': this.go('#/archiv'); break;
+      case 'unplay': if (st.showId && await this.needEdit('Wieder in den Spielplan holen')) { try { await this.setAbg(st.showId, false); } catch (err) { this.error(err); } } break;
+      case 'allhere': if (st.showId) { try { await this.setAllDept(st.showId, true); Ui.toast('Alle Abteilungen dieses Stücks werden hier angezeigt – nur auf diesem Gerät', 'ok'); st.abt = 'all'; this.render(true); } catch (err) { this.error(err); } } break;
       case 'pdf': this.pdf(st.showId); break;
       case 'runs': RunList.open(st.showId); break;
       case 'mode': st.edit = !st.edit; this.render(); Ui.toast(st.edit ? 'Bearbeitungsmodus – Änderungen möglich' : 'Ansichtsmodus – geschützt vor versehentlichen Änderungen'); break;

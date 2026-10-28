@@ -1,5 +1,18 @@
 # Änderungsprotokoll – Doku VT
 
+## 2.9.0 – 28.10.2026
+
+Stückdaten an einer Stelle: Anlegen und Bearbeiten in einem Formular, Besetzung schon beim Anlegen, Zuständige je Abteilung, abgespielte Stücke ausblenden und ein Gastspiel-Schalter je Stück. Kein Datenbank-Update, Paketformat unverändert – **2.9.0 und 2.8.x gleichen ohne Einschränkung miteinander ab**, Geräte können auch später aktualisiert werden. Ausblenden und Zuständige sind nur auf Geräten mit 2.9.0 sichtbar; ältere Geräte tragen die Angaben unverändert weiter.
+
+- **Ein Formular für Anlegen und Bearbeiten:** Titel, Spielstätte, Abteilungen und einklappbar **„Mehr Angaben“** (Dauer, Besetzung, Zuständig, Notiz – alles optional). Anlegen geht weiter mit nur dem Titel. Titel antippen bzw. ⋯ → **„Stückdaten bearbeiten“** öffnet dasselbe Formular. Beim Speichern wird nur geschrieben, was geändert wurde – eine gleichzeitige Änderung auf einem anderen Gerät bleibt erhalten.
+- **Dauer** gilt jetzt für alle Abteilungen (dasselbe Feld wie bisher bei der Requisite).
+- **Besetzung beim Anlegen:** Personen aus dem Ensemble antippen (Person ist ausgefüllt, Rolle dazuschreiben) oder „+ Person“; „Ensemble bearbeiten“ direkt aus dem Formular. Gespeichert wird zusammen mit der Veranstaltung. Beim Bearbeiten: Liste und „Besetzung bearbeiten“. In der Requisite heißen sie weiter „Personen“.
+- **Zuständig je Abteilung:** Freitext (z. B. „Hendrik“) je gewählter Abteilung. In der Veranstaltung steht über den Kästen „Zuständig: Hendrik · Dauer 1:40“ (im Bearbeitungsmodus antippen = Stückdaten öffnen). Im PDF auf der Kapitelseite und in der Fußzeile jeder Seite der Abteilung; bei der Requisite neben der Dauer. Das Deckblatt bleibt, wie es ist.
+- **Abgespielt:** ⋯ → „Als abgespielt markieren“ (oder Schalter im Formular). Das Stück verschwindet von der Startseite, aus Zählern und Spielstätten-Filter und steht unten unter **„Abgespielt (n)“**. Darin ein Hinweis mit „Wieder in den Spielplan“. Nichts wird gelöscht; abgeglichen, exportiert und abgehakt wird wie gewohnt.
+- **Gastspiel / Abstecher:** Im Formular unter „Nur auf diesem Gerät“ → **„Alle Abteilungen dieses Stücks hier anzeigen“**. Gilt nur für dieses Stück und dieses Gerät; „Dieses Gerät dokumentiert“ bleibt. Plakette „alle Abteilungen“ auf der Startseite; bei einem Stück ohne Abteilung dieses Geräts der Knopf **„Hier trotzdem anzeigen“**. Beim Abgleich nimmt das Gerät dann auch die Requisite an (solange eingeschaltet, die aller Stücke – angezeigt nur im Gastspiel-Stück). Die Diagnose nennt die Gastspiel-Stücke.
+- **Duplizieren** übernimmt Dauer, Zuständige und Besetzung; die Kopie ist nie abgespielt.
+- **Test:** `test_290.py` (50 Prüfungen, mit zweitem Ordner 2.8.3 57 – dann auch Mischbetrieb mit 2.8.3 per Paket und live in beide Richtungen). `test_basis.py`, `test_281.py`, `test_282.py`, `test_283.py`, `test_cues.py` und `test_stress.py` laufen unverändert durch.
+
 ## 2.8.3 – 24.10.2026
 
 Korrekturen aus dem QA-Bericht zu 2.8.2. Kein Datenbank-Update, Paketformat unverändert – 2.8.0 bis 2.8.3 gleichen weiter miteinander ab. **Alle Geräte auf 2.8.3 aktualisieren:** Erst dann wirken ein Durchgang je Spieltag und das feldweise Zusammenführen der Züge überall.

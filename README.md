@@ -1,6 +1,6 @@
 # Doku VT – Technikdokumentation
 
-**Version 2.8.3** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton, Bühnentechnik und Requisite: Einträge mit Fotos, Abläufe zum Abhaken, PDF-Export und Geräte-Abgleich. Dazu **Cue-Fotos**: Lichtstimmungen vom Stellwerk aus fotografieren und als PDF ablegen. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
+**Version 2.9.0** · Web-App für die technische Dokumentation im Theater – Beleuchtung, Ton, Bühnentechnik und Requisite: Einträge mit Fotos, Abläufe zum Abhaken, PDF-Export und Geräte-Abgleich. Dazu **Cue-Fotos**: Lichtstimmungen vom Stellwerk aus fotografieren und als PDF ablegen. Die App läuft komplett offline, braucht keine Anmeldung und keinen Server.
 
 ## Auf GitHub veröffentlichen
 
@@ -22,6 +22,21 @@ Installiert startet Doku VT auch ohne Internet, und der Browser behandelt die Da
 Unter *Einstellungen → Dieses Gerät dokumentiert* festlegen, welche Abteilungen das Gerät führt (Standard nach dem Update: nur Licht). Jede Veranstaltung hat zusätzlich eigene Abteilungen. Sichtbar ist, was beide gemeinsam haben. Beim Abgleich gibt jedes Gerät ab 2.8.3 alles weiter, was es hat (Licht, Ton, Bühne – auch Einträge anderer Geräte), die Requisite nur an Geräte mit Requisite. Die Reihenfolge der Abgleiche ist damit egal.
 
 Die Daten liegen **nur lokal auf dem jeweiligen Gerät** (IndexedDB). Das Repository enthält keine Daten. Regelmäßig über *Abgleich → Komplett-Backup* sichern und das Backup auf einem zweiten Ort ablegen (z. B. Fritzbox-Speicher).
+
+## Stückdaten, Besetzung, Zuständige (ab 2.9.0)
+
+Anlegen und Bearbeiten nutzen **ein Formular** (Titel antippen oder ⋯ → „Stückdaten bearbeiten“, nur im Bearbeitungsmodus). Unter **„Mehr Angaben“** – alles optional:
+
+- **Dauer** – gilt jetzt für alle Abteilungen (bei der Requisite dasselbe Feld wie bisher).
+- **Besetzung** – beim Anlegen Personen aus dem Ensemble antippen und die Rolle dazuschreiben, oder „+ Person“. Beim Bearbeiten über „Besetzung bearbeiten“. In der Requisite heißen sie weiter „Personen“.
+- **Zuständig** – je Abteilung ein Name (z. B. „Hendrik“). Steht in der Veranstaltung über den Kästen („Zuständig: Hendrik · Dauer 1:40“), auf der Kapitelseite im PDF und in der Fußzeile jeder Seite der Abteilung.
+- **Notiz**, beim Bearbeiten außerdem **Abgespielt**.
+
+**Abgespielt:** ⋯ → „Als abgespielt markieren“. Das Stück verschwindet von der Startseite und steht unten unter **„Abgespielt (n)“**. Nichts wird gelöscht, abgeglichen wird weiter; „Wieder in den Spielplan“ holt es zurück.
+
+**Gastspiel / Abstecher:** Im Formular unter „Nur auf diesem Gerät“ → **„Alle Abteilungen dieses Stücks hier anzeigen“**. Gilt nur für dieses Stück und nur auf diesem Gerät, „Dieses Gerät dokumentiert“ bleibt, wie es ist. Solange das bei einem Stück mit Requisite eingeschaltet ist, bekommt das Gerät beim Abgleich die Requisite aller Stücke (angezeigt wird sie nur im Gastspiel-Stück).
+
+**Mischbetrieb:** 2.9.0 und 2.8.x gleichen ohne Einschränkung miteinander ab – Geräte können auch erst Tage später aktualisiert werden. Ausblenden abgespielter Stücke und die Zuständigen sind nur auf Geräten mit 2.9.0 sichtbar; ältere Geräte tragen die Angaben unverändert weiter.
 
 ## Vorstellungs-Checkliste: Spieltag (ab 2.8.3)
 
@@ -73,6 +88,6 @@ Jede Veranstaltung kann eine Spielstätte haben: Großes Haus, Werkstattbühne, 
 | `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png` | App-Icons |
 | `DOKUMENTATION.md` | Architektur, Testcheckliste, Designentscheidungen, Ausblick |
 | `CHANGELOG.md` | Änderungen je Version |
-| `test_basis.py`, `test_281.py`, `test_282.py`, `test_283.py`, `test_cues.py`, `test_stress.py` | Automatische Tests (Python + Playwright/Chromium): `python3 test_basis.py <ordner>` (Grundfunktionen, Licht/Ton/Bühne/Requisite), `python3 test_281.py <ordner>` (Änderungen aus 2.8.1), `python3 test_282.py <ordner>` (Schnellauswahl und ±0,1 der Cue-Fotos), `python3 test_283.py <ordner> [<ordner mit 2.8.2>]` (Korrekturen aus dem QA-Bericht zu 2.8.2, optional Abgleich mit einem Gerät auf 2.8.2), `python3 test_cues.py <ordner> [<ordner mit 2.7.0>]` (Cue-Fotos mit simulierter Kamera, optional Ablehnung durch 2.7.0), `python3 test_stress.py <ordner> [-k A1,B3]` (Stresstest der QA-Runde, an 2.8.3 angepasst, ca. 8 min). Nicht nötig für den Betrieb; müssen nicht hochgeladen werden. |
+| `test_basis.py`, `test_281.py`, `test_282.py`, `test_283.py`, `test_290.py`, `test_cues.py`, `test_stress.py` | Automatische Tests (Python + Playwright/Chromium): `python3 test_290.py <ordner> [<ordner mit 2.8.3>]` (Stückdaten, Besetzung, Zuständige, Archiv, Gastspiel, PDF; optional Mischbetrieb mit einem Gerät auf 2.8.3), `python3 test_basis.py <ordner>` (Grundfunktionen, Licht/Ton/Bühne/Requisite), `python3 test_281.py <ordner>` (Änderungen aus 2.8.1), `python3 test_282.py <ordner>` (Schnellauswahl und ±0,1 der Cue-Fotos), `python3 test_283.py <ordner> [<ordner mit 2.8.2>]` (Korrekturen aus dem QA-Bericht zu 2.8.2, optional Abgleich mit einem Gerät auf 2.8.2), `python3 test_cues.py <ordner> [<ordner mit 2.7.0>]` (Cue-Fotos mit simulierter Kamera, optional Ablehnung durch 2.7.0), `python3 test_stress.py <ordner> [-k A1,B3]` (Stresstest der QA-Runde, an 2.8.3 angepasst, ca. 8 min). Nicht nötig für den Betrieb; müssen nicht hochgeladen werden. |
 
 Kamera, Teilen und Live-Abgleich brauchen **https**. Das bietet GitHub Pages automatisch. Per Doppelklick (`file://`) geöffnet funktioniert die App ebenfalls, aber ohne Kamera-Live-Vorschau und ohne Offline-Installation.
